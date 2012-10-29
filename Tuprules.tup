@@ -1,0 +1,10 @@
+.gitignore
+
+#toolchain stuff
+
+CXX = clang++
+CPPFLAGS = -std=c++11 -Wall -Wextra -O0 -g
+
+!cxx = |> $(CXX) $(CPPFLAGS) -c %f -o %o |> %B.o
+!linker = |> $(CXX) %f -o %o |>
+ 

@@ -1,1 +1,6 @@
-int main() {}
+
+#include "../src/test.hpp"
+
+int main() {
+	f();
+}
