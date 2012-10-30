@@ -4,6 +4,8 @@
 
 CXX = clang++
 CPPFLAGS = -std=c++11 -Wall -Wextra -O0 -g
+#CXX = g++
+#CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g
 
 
 boost_lib_dir = /usr/local/lib
@@ -12,7 +14,12 @@ boost_lib_statement = -L $(boost_lib_dir)
 png_lib_dir = /usr/local/lib
 png_lib_statement = -L $(png_lib_dir)
 
-LIB_DIRS += $(boost_lib_statement) $(png_lib_statement)
+gmp_lib_dir = /usr/local/lib
+gmp_lib_statement = -L $(gmp_lib_dir)
+
+
+
+LIB_DIRS += $(boost_lib_statement) $(png_lib_statement) $(gmp_lib_statement)
 
 BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 	$(boost_lib_dir)/libboost_system.a \
@@ -22,6 +29,8 @@ BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 
 PNG_LIBS = $(png_lib_dir)/libpng.a
 
+GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a 
+
 !cxx = |> $(CXX) $(CPPFLAGS) -c %f -o %o |> %B.o
-!linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) -o %o |>
+!linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) $(PNG_LIBS) $(GMP_LIBS) -o %o |>
  
