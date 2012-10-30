@@ -9,7 +9,10 @@ CPPFLAGS = -std=c++11 -Wall -Wextra -O0 -g
 boost_lib_dir = /usr/local/lib
 boost_lib_statement = -L $(boost_lib_dir)
 
-LIB_DIRS += $(boost_lib_statement)
+png_lib_dir = /usr/local/lib
+png_lib_statement = -L $(png_lib_dir)
+
+LIB_DIRS += $(boost_lib_statement) $(png_lib_statement)
 
 BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 	$(boost_lib_dir)/libboost_system.a \
@@ -17,7 +20,8 @@ BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 	$(boost_lib_dir)/libboost_regex.a \
 	$(boost_lib_dir)/libboost_program_options.a
 
+PNG_LIBS = $(png_lib_dir)/libpng.a
 
 !cxx = |> $(CXX) $(CPPFLAGS) -c %f -o %o |> %B.o
-!linker = |> $(CXX) %f $(LIB_DIRS) -o %o |>
+!linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) -o %o |>
  

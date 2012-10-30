@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-void f() { std::cout << "it works 2" << std::endl; }
+void f() { std::cout << "it works" << std::endl; }
 
 
 
