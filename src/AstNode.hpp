@@ -2,9 +2,9 @@
 #ifndef ASTNODE_HPP_
 #define ASTNODE_HPP_
 
-#include "AstNodeTypes.hpp"
+#include <initializer_list>
 
-#include <utility>
+#include "AstNodeTypes.hpp"
 
 namespace tungsten {
 
@@ -17,6 +17,7 @@ public:
 	template<class... Ts> static AstNode makeReal(const Ts&... args);
 	template<class... Ts> static AstNode makeRational(const Ts&... args);
 	template<class... Ts> static AstNode makeFunction(const Ts&... args);
+	static AstNode makeFunction(const FunctionName& name, std::initializer_list<Operands::value_type> init_list);
 	template<class... Ts> static AstNode makeString(const Ts&... args);
 	template<class... Ts> static AstNode makeIdentifier(const Ts&... args);
 
@@ -72,6 +73,14 @@ template<class... Ts> AstNode AstNode::makeFunction(const Ts&... args) {
 	AstNode node;
 	node.type_ = Type::Function;
 	node.function = Function(args...);
+	return node;
+}
+
+inline
+AstNode AstNode::makeFunction(const FunctionName& name, std::initializer_list<Operands::value_type> init_list) {
+	AstNode node;
+	node.type_ = Type::Function;
+	node.function = Function(name, Operands(init_list));
 	return node;
 }
 

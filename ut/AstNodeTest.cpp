@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE( makeReal_creates_Real ) {
 }
 
 BOOST_AUTO_TEST_CASE( makeRational_creates_Rational ) {
-	AstNode node = AstNode::makeRational( 1, 3 );
+	AstNode node = AstNode::makeRational(1, 3);
 
 	BOOST_REQUIRE( node.isRational() );
 	BOOST_REQUIRE( node.type() == AstNode::Type::Rational );
@@ -26,13 +26,21 @@ BOOST_AUTO_TEST_CASE( makeRational_creates_Rational ) {
 }
 
 BOOST_AUTO_TEST_CASE( makeFunction_creates_Function ) {
-	AstNode node = AstNode::makeFunction( "abc", Operands{1} );
+	AstNode node = AstNode::makeFunction( "abc", { AstNode::makeRational(1, 3), AstNode::makeRational(2, 3) } );
 
 	BOOST_REQUIRE( node.isFunction() );
 	BOOST_REQUIRE( node.type() == AstNode::Type::Function );
 
 	BOOST_CHECK_EQUAL( node.getFunction().name, "abc" );
-	BOOST_CHECK_EQUAL( node.getFunction().operands.size(), 1 );
+
+	BOOST_REQUIRE_EQUAL( node.getFunction().operands.size(), 2 );
+
+	BOOST_REQUIRE( node[0].isRational() );
+	BOOST_CHECK_EQUAL( node[0].getRational(), Rational(1, 3) );
+
+	BOOST_REQUIRE( node[1].isRational() );
+	BOOST_CHECK_EQUAL( node[1].getRational(), Rational(2, 3) );
+
 }
 
 BOOST_AUTO_TEST_CASE( makeString_creates_String ) {
