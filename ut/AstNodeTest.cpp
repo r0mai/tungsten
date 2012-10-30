@@ -63,4 +63,10 @@ BOOST_AUTO_TEST_CASE( makeIdentifier_creates_Identifier ) {
 
 }
 
+BOOST_AUTO_TEST_CASE( toString_output_is_correct ) {
+	AstNode node = AstNode::makeFunction( "Func", { AstNode::makeIdentifier("x"), AstNode::makeIdentifier("y") } );
+
+	BOOST_CHECK_EQUAL(node.toString(), "Func[x, y]");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
