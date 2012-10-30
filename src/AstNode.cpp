@@ -55,12 +55,18 @@ const Identifier& AstNode::getIdentifier() const {
 }
 
 
-AstNode& AstNode::operator[](unsigned /*index*/) {
-	return *this;
+AstNode& AstNode::operator[](unsigned index) {
+	assert( type_ == Type::Function );
+	assert( function.operands.size() > index );
+
+	return function.operands[index];
 }
 
-const AstNode& AstNode::operator[](unsigned /*index*/) const {
-	return *this;
+const AstNode& AstNode::operator[](unsigned index) const {
+	assert( type_ == Type::Function );
+	assert( function.operands.size() > index );
+
+	return function.operands[index];
 }
 
 } //namespace tungsten
