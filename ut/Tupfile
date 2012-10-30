@@ -1,0 +1,8 @@
+.gitignore
+
+include_rules
+
+BOOST_LIBS += $(boost_lib_dir)/libboost_unit_test_framework.a
+
+: foreach *.cpp |> !cxx |>
+: *.o ../src/*.o |> $(CXX) %f $(BOOST_LIBS) -o %o |> unitTest
