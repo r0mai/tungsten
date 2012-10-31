@@ -4,7 +4,6 @@
 #include <cassert>
 #include <sstream>
 
-#include "AstNodeVisitor.hpp"
 #include "rangeToString.hpp"
 
 namespace tungsten {
