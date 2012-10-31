@@ -63,10 +63,29 @@ BOOST_AUTO_TEST_CASE( makeIdentifier_creates_Identifier ) {
 
 }
 
-BOOST_AUTO_TEST_CASE( toString_output_is_correct ) {
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_1 ) {
 	AstNode node = AstNode::makeFunction( "Func", { AstNode::makeIdentifier("x"), AstNode::makeIdentifier("y") } );
 
 	BOOST_CHECK_EQUAL(node.toString(), "Func[x, y]");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_2 ) {
+	AstNode node = AstNode::makeFunction(
+			"f", { AstNode::makeFunction("g", { AstNode::makeRational(1,5) }), AstNode::makeIdentifier("y") } );
+
+	BOOST_CHECK_EQUAL(node.toString(), "f[g[1/5], y]");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_3 ) {
+	AstNode node = AstNode::makeFunction("h");
+
+	BOOST_CHECK_EQUAL(node.toString(), "h[]");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_4 ) {
+	AstNode node = AstNode::makeString("abc d efg");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc d efg\"");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

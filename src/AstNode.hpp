@@ -5,10 +5,14 @@
 #include <cassert>
 #include <initializer_list>
 
+#include <boost/variant.hpp>
+
 #include "AstNodeTypes.hpp"
 
 namespace tungsten {
 
+
+//Immutable (so far)
 class AstNode {
 public:
 
@@ -36,16 +40,13 @@ public:
 	const String& getString() const;
 	const Identifier& getIdentifier() const;
 
-	//Returns nth operand
-	AstNode& operator[](unsigned index);
 	const AstNode& operator[](unsigned index) const;
 
 	//string representation of an AstNode
 	std::string toString() const;
 
-	//TODO try to make a nonconst version of this, without c
 	template<class Visitor>
-	typename Visitor::ReturnType applyVisitor(Visitor&& visitor) const;
+	typename Visitor::result_type applyVisitor(Visitor&& visitor) const;
 
 	//Totally arbitrary. default constructed AstNode should never be used
 	AstNode() : type_(Type::Rational) {}
@@ -54,12 +55,10 @@ private:
 
 	Type type_;
 
-	//TODO put these into union or boost::variant to save space
-	Real real;
-	Rational rational;
-	Function function;
-	String string;
-	Identifier identifier;
+	typedef boost::variant<Real, Rational, Function, String, Identifier> Storage;
+
+	Storage storage;
+
 
 };
 
@@ -68,7 +67,7 @@ template<class... Ts>
 AstNode AstNode::makeReal(const Ts&... args) {
 	AstNode node;
 	node.type_ = Type::Real;
-	node.real = Real(args...);
+	node.storage = Real(args...);
 	return node;
 }
 
@@ -76,7 +75,7 @@ template<class... Ts>
 AstNode AstNode::makeRational(const Ts&... args) {
 	AstNode node;
 	node.type_ = Type::Rational;
-	node.rational = Rational(args...);
+	node.storage = Rational(args...);
 	return node;
 }
 
@@ -84,7 +83,7 @@ template<class... Ts>
 AstNode AstNode::makeFunction(const Ts&... args) {
 	AstNode node;
 	node.type_ = Type::Function;
-	node.function = Function(args...);
+	node.storage = Function(args...);
 	return node;
 }
 
@@ -92,7 +91,7 @@ inline
 AstNode AstNode::makeFunction(const FunctionName& name, std::initializer_list<Operands::value_type> init_list) {
 	AstNode node;
 	node.type_ = Type::Function;
-	node.function = Function(name, Operands(init_list));
+	node.storage = Function(name, Operands(init_list));
 	return node;
 
 }
@@ -101,7 +100,7 @@ template<class... Ts>
 AstNode AstNode::makeString(const Ts&... args) {
 	AstNode node;
 	node.type_ = Type::String;
-	node.string = String(args...);
+	node.storage = String(args...);
 	return node;
 }
 
@@ -109,36 +108,13 @@ template<class... Ts>
 AstNode AstNode::makeIdentifier(const Ts&... args) {
 	AstNode node;
 	node.type_ = Type::Identifier;
-	node.identifier = Identifier(args...);
+	node.storage = Identifier(args...);
 	return node;
 }
 
-namespace impl {
-
-template<class Node, class Visitor>
-typename Visitor::ReturnType applyVisitor(const Node& node, Visitor&& visitor) {
-	switch ( node.type() ) {
-	case AstNode::Type::Real:
-		return visitor( node.getReal() );
-	case AstNode::Type::Rational:
-		return visitor( node.getRational() );
-	case AstNode::Type::Function:
-		return visitor( node.getFunction() );
-	case AstNode::Type::String:
-		return visitor( node.getString() );
-	case AstNode::Type::Identifier:
-		return visitor( node.getIdentifier() );
-	default:
-		assert(false && "Control reaches default in visitor");
-		return visitor( Real() ); //We have to do something to silent warnings
-	}
-}
-
-} //namespace impl
-
 template<class Visitor>
-typename Visitor::ReturnType AstNode::applyVisitor(Visitor&& visitor) const {
-	return impl::applyVisitor( *this, std::forward<Visitor>(visitor) );
+typename Visitor::result_type AstNode::applyVisitor(Visitor&& visitor) const {
+	return boost::apply_visitor(std::forward<Visitor>(visitor), storage);
 }
 
 } //namespace tungsten

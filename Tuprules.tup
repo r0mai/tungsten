@@ -2,10 +2,10 @@
 
 #toolchain stuff
 
-CXX = clang++
+#CXX = clang++
+CXX = g++-4.7
 CPPFLAGS = -std=c++11 -Wall -Wextra -O0 -g
-#CXX = g++
-#CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g
+
 
 
 boost_lib_dir = /usr/local/lib
