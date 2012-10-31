@@ -6,6 +6,7 @@
 #include <initializer_list>
 
 #include <boost/variant.hpp>
+#include <boost/operators.hpp>
 
 #include "AstNodeTypes.hpp"
 
@@ -13,7 +14,7 @@ namespace tungsten {
 
 
 //Immutable (so far)
-class AstNode {
+class AstNode : boost::equality_comparable<AstNode> {
 public:
 
 	enum class Type { Real, Rational, Function, String, Identifier };
@@ -42,6 +43,8 @@ public:
 
 	const AstNode& operator[](unsigned index) const;
 
+	bool operator==(const AstNode& other) const;
+
 	//string representation of an AstNode
 	std::string toString() const;
 
@@ -61,6 +64,8 @@ private:
 
 
 };
+
+std::ostream& operator<<(std::ostream& os, const AstNode& node);
 
 //Template impl
 template<class... Ts>

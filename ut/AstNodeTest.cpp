@@ -88,4 +88,49 @@ BOOST_AUTO_TEST_CASE( toString_output_is_correct_4 ) {
 	BOOST_CHECK_EQUAL(node.toString(), "\"abc d efg\"");
 }
 
+BOOST_AUTO_TEST_CASE( equality_test_real ) {
+	BOOST_CHECK_EQUAL(AstNode::makeReal(5.0), AstNode::makeReal(5.0));
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_rational ) {
+	BOOST_CHECK_EQUAL(AstNode::makeRational(1,3), AstNode::makeRational(1,3));
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_function ) {
+	BOOST_CHECK_EQUAL(AstNode::makeFunction("h"), AstNode::makeFunction("h"));
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_nested_function ) {
+	BOOST_CHECK_EQUAL(
+			AstNode::makeFunction(
+					"f", { AstNode::makeFunction("g", { AstNode::makeRational(1,5) }), AstNode::makeIdentifier("y") } ),
+			AstNode::makeFunction(
+					"f", { AstNode::makeFunction("g", { AstNode::makeRational(1,5) }), AstNode::makeIdentifier("y") } ));
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_string ) {
+	BOOST_CHECK_EQUAL(AstNode::makeString( "abc d efg" ), AstNode::makeString( "abc d efg" ));
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_identifier ) {
+	BOOST_CHECK_EQUAL(AstNode::makeIdentifier( "Pi" ), AstNode::makeIdentifier( "Pi" ));
+}
+
+BOOST_AUTO_TEST_CASE( non_equality_test_string_identifier ) {
+	BOOST_CHECK_NE(AstNode::makeIdentifier( "Pi" ), AstNode::makeString( "Pi" ));
+}
+
+BOOST_AUTO_TEST_CASE( non_equality_test_different_function_params ) {
+	BOOST_CHECK_NE(AstNode::makeFunction("h"), AstNode::makeFunction("h", {AstNode::makeIdentifier("x")}));
+}
+
+BOOST_AUTO_TEST_CASE( non_equality_test_different_function_name ) {
+	BOOST_CHECK_NE(AstNode::makeFunction("h"), AstNode::makeFunction("g"));
+}
+
+BOOST_AUTO_TEST_CASE( non_equality_test_real_rational ) {
+	//They're only equal in mathematical sense
+	BOOST_CHECK_NE(AstNode::makeReal(1), AstNode::makeRational(1));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

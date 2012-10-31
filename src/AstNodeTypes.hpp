@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <boost/operators.hpp>
 
 namespace tungsten {
 
@@ -40,12 +41,14 @@ struct Identifier : std::string {
 typedef std::string FunctionName;
 typedef std::vector<AstNode> Operands;
 
-struct Function {
+struct Function : boost::equality_comparable<Function> {
 
 	Function() {}
 	Function(const FunctionName& name) : name(name) {}
 	Function(const FunctionName& name, const Operands& operands) :
 		name(name), operands(operands) {}
+
+	bool operator==(const Function& other) const { return name == other.name && operands == other.operands; }
 
 	FunctionName name;
 	Operands operands;

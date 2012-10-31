@@ -53,6 +53,14 @@ const AstNode& AstNode::operator[](unsigned index) const {
 	return function.operands[index];
 }
 
+bool AstNode::operator==(const AstNode& other) const {
+	bool result = storage == other.storage;
+	if ( result ) {
+		assert( type_ == other.type_ );
+	}
+	return result;
+}
+
 //TODO optimize this to use a single stream to stringize the whole tree
 std::string AstNode::toString() const {
 	struct ToStringVisitor : boost::static_visitor<> {
@@ -79,6 +87,11 @@ std::string AstNode::toString() const {
 
 	return ss.str();
 
+}
+
+std::ostream& operator<<(std::ostream& os, const AstNode& node) {
+	os << node.toString();
+	return os;
 }
 
 } //namespace tungsten
