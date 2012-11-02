@@ -22,7 +22,7 @@ typedef mpq_class Rational;
 typedef mpf_class Real;
 
 //String type //note: std::string should be used when strings outside an Ast needed
-//Making an extra class so type resolution works correctly
+//Making an extra classes so type resolution works correctly
 struct String : std::string {
 	//No constructor inheritance support
 	template<class... Ts>
@@ -48,7 +48,9 @@ struct Function : boost::equality_comparable<Function> {
 	Function(const FunctionName& name, const Operands& operands) :
 		name(name), operands(operands) {}
 
-	bool operator==(const Function& other) const { return name == other.name && operands == other.operands; }
+	bool operator==(const Function& other) const {
+		return name == other.name && operands == other.operands;
+	}
 
 	FunctionName name;
 	Operands operands;
