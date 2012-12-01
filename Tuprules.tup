@@ -2,9 +2,9 @@
 
 #toolchain stuff
 
-CXX = clang++
+CXX = g++
 #CXX = g++-4.7
-CPPFLAGS = -std=c++11 -Wall -Wextra -O0 -g
+CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g
 
 
 
