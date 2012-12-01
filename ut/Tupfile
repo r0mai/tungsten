@@ -6,3 +6,5 @@ BOOST_LIBS += $(boost_lib_dir)/libboost_unit_test_framework.a
 
 : foreach *.cpp |> !cxx |>
 : *.o ../src/*.o |> !linker |> unitTest
+
+#edited
