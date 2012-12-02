@@ -1,7 +1,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "../src/rangeToString.hpp"
+#include "rangeToString.hpp"
 
 BOOST_AUTO_TEST_SUITE( rangeToStringTest )
 

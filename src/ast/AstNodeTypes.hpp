@@ -2,11 +2,12 @@
 #ifndef ASTNODETYPES_HPP_
 #define ASTNODETYPES_HPP_
 
-#include <gmpxx.h>
-
 #include <string>
 #include <vector>
 #include <utility>
+
+#include <gmpxx.h>
+
 #include <boost/operators.hpp>
 
 namespace tungsten {

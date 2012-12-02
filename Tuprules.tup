@@ -2,10 +2,9 @@
 
 #toolchain stuff
 
-CXX = g++
+CXX = clang++
 #CXX = g++-4.7
 CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g
-
 
 
 boost_lib_dir = /usr/local/lib
@@ -18,6 +17,9 @@ gmp_lib_dir = /usr/local/lib
 gmp_lib_statement = -L $(gmp_lib_dir)
 
 
+source_dir = $(TUP_CWD)/src
+
+INCLUDE_DIRS += $(source_dir)
 
 LIB_DIRS += $(boost_lib_statement) $(png_lib_statement) $(gmp_lib_statement)
 
@@ -31,6 +33,6 @@ PNG_LIBS = $(png_lib_dir)/libpng.a
 
 GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a 
 
-!cxx = |> $(CXX) $(CPPFLAGS) -c %f -o %o |> %B.o
+!cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) $(PNG_LIBS) $(GMP_LIBS) -o %o |>
  

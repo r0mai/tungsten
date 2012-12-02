@@ -1,7 +1,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "../src/AstParser.hpp"
+#include "ast/AstParser.hpp"
 
 BOOST_AUTO_TEST_SUITE( AstParserTest )
 
