@@ -1,6 +1,6 @@
 
-#ifndef RANGETOSTRING_HPP_
-#define RANGETOSTRING_HPP_
+#ifndef UTIL_RANGETOSTRING_HPP_
+#define UTIL_RANGETOSTRING_HPP_
 
 #include <sstream>
 #include <string>
@@ -8,7 +8,7 @@
 
 #include <boost/range.hpp>
 
-namespace tungsten {
+namespace tungsten { namespace util {
 
 template<class Range, class PrintFunction>
 void rangeToStream(std::ostream& os,
@@ -50,6 +50,6 @@ std::string rangeToString(const Range& range, const std::string& separator) {
 }
 
 
-} //namespace tungsten
+}} //namespace tungsten::util
 
-#endif /* RANGETOSTRING_HPP_ */
+#endif /* UTIL_RANGETOSTRING_HPP_ */

@@ -1,11 +1,11 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "rangeToString.hpp"
+#include "util/rangeToString.hpp"
 
 BOOST_AUTO_TEST_SUITE( rangeToStringTest )
 
-using namespace tungsten;
+using namespace tungsten::util;
 
 BOOST_AUTO_TEST_CASE( empty_range_prints_nothing ) {
 	BOOST_CHECK_EQUAL( "", rangeToString(std::vector<int>(), ", ") );
