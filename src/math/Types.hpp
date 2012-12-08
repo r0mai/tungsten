@@ -5,12 +5,12 @@
 
 #include <gmpxx.h>
 
-namespace tungsten {
+namespace tungsten { namespace math {
 
 typedef mpz_class Integer;
 typedef mpq_class Rational;
 typedef mpf_class Real;
 
-} //namespace tungsten
+}} //namespace tungsten::math
 
 #endif /* MATH_TYPES_HPP_ */

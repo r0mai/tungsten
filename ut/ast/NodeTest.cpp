@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE( makeRational_creates_Rational ) {
 	BOOST_REQUIRE( node.isRational() );
 	BOOST_REQUIRE( node.type() == Node::Type::Rational );
 
-	BOOST_CHECK_EQUAL( node.getRational(), Rational(1,3) );
+	BOOST_CHECK_EQUAL( node.getRational(), math::Rational(1,3) );
 }
 
 BOOST_AUTO_TEST_CASE( makeFunction_creates_Function ) {
@@ -37,10 +37,10 @@ BOOST_AUTO_TEST_CASE( makeFunction_creates_Function ) {
 	BOOST_REQUIRE_EQUAL( node.getFunction().operands.size(), 2 );
 
 	BOOST_REQUIRE( node[0].isRational() );
-	BOOST_CHECK_EQUAL( node[0].getRational(), Rational(1, 3) );
+	BOOST_CHECK_EQUAL( node[0].getRational(), math::Rational(1, 3) );
 
 	BOOST_REQUIRE( node[1].isRational() );
-	BOOST_CHECK_EQUAL( node[1].getRational(), Rational(2, 3) );
+	BOOST_CHECK_EQUAL( node[1].getRational(), math::Rational(2, 3) );
 
 }
 

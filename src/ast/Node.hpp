@@ -35,8 +35,8 @@ public:
 
 	Type type() const;
 
-	const Real& getReal() const;
-	const Rational& getRational() const;
+	const math::Real& getReal() const;
+	const math::Rational& getRational() const;
 	const Function& getFunction() const;
 	const String& getString() const;
 	const Identifier& getIdentifier() const;
@@ -58,7 +58,7 @@ private:
 
 	Type type_;
 
-	typedef boost::variant<Real, Rational, Function, String, Identifier> Storage;
+	typedef boost::variant<math::Real, math::Rational, Function, String, Identifier> Storage;
 
 	Storage storage;
 
@@ -72,7 +72,7 @@ template<class... Ts>
 Node Node::makeReal(const Ts&... args) {
 	Node node;
 	node.type_ = Type::Real;
-	node.storage = Real(args...);
+	node.storage = math::Real(args...);
 	return node;
 }
 
@@ -80,7 +80,7 @@ template<class... Ts>
 Node Node::makeRational(const Ts&... args) {
 	Node node;
 	node.type_ = Type::Rational;
-	node.storage = Rational(args...);
+	node.storage = math::Rational(args...);
 	return node;
 }
 

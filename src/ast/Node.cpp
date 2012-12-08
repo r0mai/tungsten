@@ -18,14 +18,14 @@ Node::Type Node::type() const {
 	return type_;
 }
 
-const Real& Node::getReal() const {
+const math::Real& Node::getReal() const {
 	assert( type_ == Type::Real );
-	return boost::get<Real>(storage);
+	return boost::get<math::Real>(storage);
 }
 
-const Rational& Node::getRational() const {
+const math::Rational& Node::getRational() const {
 	assert( type_ == Type::Rational );
-	return boost::get<Rational>(storage);
+	return boost::get<math::Rational>(storage);
 }
 
 const Function& Node::getFunction() const {
@@ -67,8 +67,8 @@ std::string Node::toString() const {
 		ToStringVisitor(std::stringstream& ss) : sstream(ss) {}
 		std::stringstream& sstream;
 
-		void operator()(const Real& real) const { sstream << real; }
-		void operator()(const Rational& rational) const { sstream << rational; }
+		void operator()(const math::Real& real) const { sstream << real; }
+		void operator()(const math::Rational& rational) const { sstream << rational; }
 		void operator()(const String& string) const { sstream << '"' << string << '"'; } //TODO escape chars
 		void operator()(const Identifier& identifier) const { sstream << identifier; }
 
