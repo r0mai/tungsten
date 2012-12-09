@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE( function_without_parameters_parsed_correctly ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("foo") );
 }
 
 BOOST_AUTO_TEST_CASE( function_without_parameters_with_spaces_parsed_correctly ) {
@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE( function_without_parameters_with_spaces_parsed_correctly )
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("foo") );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_single_parameter_parsed_correctly ) {
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE( function_with_single_parameter_parsed_correctly ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo", {ast::Node::makeRational(1)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("foo", {ast::Node::makeRational(1)}) );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_single_parameter_with_spaces_parsed_correctly ) {
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE( function_with_single_parameter_with_spaces_parsed_correctl
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("f", {ast::Node::makeRational(1)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("f", {ast::Node::makeRational(1)}) );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_multiple_parameter_parsed_correctly ) {
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE( function_with_multiple_parameter_parsed_correctly ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo",
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("foo",
 			{ast::Node::makeRational(1),
 			ast::Node::makeRational(2),
 			ast::Node::makeRational(3)}) );
@@ -211,7 +211,7 @@ BOOST_AUTO_TEST_CASE( function_with_multiple_parameter_with_spaces_parsed_correc
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo",
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("foo",
 			{ast::Node::makeRational(1),
 			ast::Node::makeRational(2),
 			ast::Node::makeRational(3)}) );
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE( nested_function_parsed_correctly_1 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("f", {ast::Node::makeFunction("g")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("f", {ast::Node::makeFunctionCall("g")}) );
 
 }
 
@@ -231,13 +231,52 @@ BOOST_AUTO_TEST_CASE( nested_function_parsed_correctly_2 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("f", {
-					ast::Node::makeFunction("g"),
-					ast::Node::makeFunction("h", {
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("f", {
+					ast::Node::makeFunctionCall("g"),
+					ast::Node::makeFunctionCall("h", {
 							ast::Node::makeRational(1)
 					})
 	}) );
 
+}
+
+BOOST_AUTO_TEST_CASE( non_identifier_function_parsed_correctly_1 ) {
+	boost::optional<ast::Node> tree = ast::parseInput(" 2 []\t");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall(
+			ast::Node::makeRational(2) ) );
+}
+
+BOOST_AUTO_TEST_CASE( non_identifier_function_parsed_correctly_2 ) {
+	boost::optional<ast::Node> tree = ast::parseInput("f[ ]\t[]");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(),
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall("f")
+			)
+	);
+}
+
+BOOST_AUTO_TEST_CASE( identifier_function_parsed_correctly_with_parentheses ) {
+	boost::optional<ast::Node> tree = ast::parseInput("( f) []");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(),
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall("f")
+			)
+	);
+}
+
+BOOST_AUTO_TEST_CASE( empty_brackets_not_parsed ) {
+	boost::optional<ast::Node> tree = ast::parseInput("[]");
+
+	BOOST_CHECK( !tree );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments ) {
@@ -245,7 +284,7 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments_with_spaces ) {
@@ -253,7 +292,7 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments_with_spaces ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments ) {
@@ -261,7 +300,7 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments_with_spaces ) {
@@ -269,7 +308,7 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments_with_spaces ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 
@@ -278,7 +317,7 @@ BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_2_arguments ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_2_arguments_with_spaces ) {
@@ -286,7 +325,7 @@ BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_2_arguments_with_spac
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_3_arguments ) {
@@ -294,7 +333,7 @@ BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_3_arguments ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_3_arguments_with_spaces ) {
@@ -302,7 +341,7 @@ BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_3_arguments_with_spac
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_identifiers ) {
@@ -310,7 +349,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_identifiers ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_integers ) {
@@ -318,7 +357,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_integers ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeRational(10), ast::Node::makeRational(2)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(10), ast::Node::makeRational(2)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_1 ) {
@@ -326,7 +365,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_1 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(10.0), ast::Node::makeReal(2.5)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeReal(10.0), ast::Node::makeReal(2.5)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_2 ) {
@@ -334,7 +373,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_2 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(10.0), ast::Node::makeReal(0.5)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeReal(10.0), ast::Node::makeReal(0.5)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_3 ) {
@@ -342,7 +381,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_3 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(.5), ast::Node::makeReal(2.)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeReal(.5), ast::Node::makeReal(2.)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_integer_and_identifier ) {
@@ -350,7 +389,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_between_integer_and_identifier ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeRational(3), ast::Node::makeIdentifier("Pi")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(3), ast::Node::makeIdentifier("Pi")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_real_and_identifier_1 ) {
@@ -358,7 +397,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_between_real_and_identifier_1 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(3.5), ast::Node::makeIdentifier("Pi")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeReal(3.5), ast::Node::makeIdentifier("Pi")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_real_and_identifier_2 ) {
@@ -366,7 +405,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_between_real_and_identifier_2 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(3.), ast::Node::makeIdentifier("Pi")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeReal(3.), ast::Node::makeIdentifier("Pi")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_with_integer_and_paranthesis ) {
@@ -374,7 +413,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_with_integer_and_paranthesis ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeRational(3), ast::Node::makeRational(4)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(3), ast::Node::makeRational(4)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_two_paranthesis ) {
@@ -382,7 +421,7 @@ BOOST_AUTO_TEST_CASE( juxtaposition_works_between_two_paranthesis ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y")}) );
 }
 
 BOOST_AUTO_TEST_CASE( exponentation_parsed_correctly_with_2_arguments ) {
@@ -390,7 +429,7 @@ BOOST_AUTO_TEST_CASE( exponentation_parsed_correctly_with_2_arguments ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( right_to_left_associativity_works_with_exponentation ) {
@@ -398,7 +437,7 @@ BOOST_AUTO_TEST_CASE( right_to_left_associativity_works_with_exponentation ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeFunction("Power", {ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")})}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeFunctionCall("Power", {ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")})}) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

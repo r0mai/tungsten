@@ -28,7 +28,7 @@ const math::Rational& Node::getRational() const {
 	return boost::get<math::Rational>(storage);
 }
 
-const FunctionCall& Node::getFunction() const {
+const FunctionCall& Node::getFunctionCall() const {
 	assert( type_ == Type::FunctionCall );
 	return boost::get<FunctionCall>(storage);
 }
@@ -46,7 +46,7 @@ const Identifier& Node::getIdentifier() const {
 const Node& Node::operator[](unsigned index) const {
 	assert( type_ == Type::FunctionCall );
 
-	const FunctionCall& function = getFunction();
+	const FunctionCall& function = getFunctionCall();
 	assert( function.getOperands().size() > index );
 
 	return function.getOperands()[index];

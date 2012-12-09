@@ -25,23 +25,37 @@ BOOST_AUTO_TEST_CASE( makeRational_creates_Rational ) {
 	BOOST_CHECK_EQUAL( node.getRational(), math::Rational(1,3) );
 }
 
-BOOST_AUTO_TEST_CASE( makeFunction_creates_Function ) {
-	ast::Node node = ast::Node::makeFunction( "abc", { ast::Node::makeRational(1, 3), ast::Node::makeRational(2, 3) } );
+BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_paramters ) {
+	ast::Node node = ast::Node::makeFunctionCall( "abc", { ast::Node::makeRational(1, 3), ast::Node::makeRational(2, 3) } );
 
 	BOOST_REQUIRE( node.isFunction() );
 	BOOST_REQUIRE( node.type() == ast::Node::Type::FunctionCall );
 
-	BOOST_REQUIRE( node.getFunction().getFunction().isIdentifier() );
+	BOOST_REQUIRE( node.getFunctionCall().getFunction().isIdentifier() );
 
-	BOOST_CHECK_EQUAL( node.getFunction().getFunction().getIdentifier(), "abc" );
+	BOOST_CHECK_EQUAL( node.getFunctionCall().getFunction().getIdentifier(), "abc" );
 
-	BOOST_REQUIRE_EQUAL( node.getFunction().getOperands().size(), 2 );
+	BOOST_REQUIRE_EQUAL( node.getFunctionCall().getOperands().size(), 2 );
 
 	BOOST_REQUIRE( node[0].isRational() );
 	BOOST_CHECK_EQUAL( node[0].getRational(), math::Rational(1, 3) );
 
 	BOOST_REQUIRE( node[1].isRational() );
 	BOOST_CHECK_EQUAL( node[1].getRational(), math::Rational(2, 3) );
+
+}
+
+BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_non_Identifier_function ) {
+	ast::Node node = ast::Node::makeFunctionCall( ast::Node::makeRational(1, 3) );
+
+	BOOST_REQUIRE( node.isFunction() );
+	BOOST_REQUIRE( node.type() == ast::Node::Type::FunctionCall );
+
+	BOOST_REQUIRE( node.getFunctionCall().getFunction().isRational() );
+
+	BOOST_CHECK_EQUAL( node.getFunctionCall().getFunction().getRational(), math::Rational(1, 3) );
+
+	BOOST_REQUIRE_EQUAL( node.getFunctionCall().getOperands().size(), 0 );
 
 }
 
@@ -66,20 +80,20 @@ BOOST_AUTO_TEST_CASE( makeIdentifier_creates_Identifier ) {
 }
 
 BOOST_AUTO_TEST_CASE( toString_output_is_correct_1 ) {
-	ast::Node node = ast::Node::makeFunction( "Func", { ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y") } );
+	ast::Node node = ast::Node::makeFunctionCall( "Func", { ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y") } );
 
 	BOOST_CHECK_EQUAL(node.toString(), "Func[x, y]");
 }
 
 BOOST_AUTO_TEST_CASE( toString_output_is_correct_2 ) {
-	ast::Node node = ast::Node::makeFunction(
-			"f", { ast::Node::makeFunction("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } );
+	ast::Node node = ast::Node::makeFunctionCall(
+			"f", { ast::Node::makeFunctionCall("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } );
 
 	BOOST_CHECK_EQUAL(node.toString(), "f[g[1/5], y]");
 }
 
 BOOST_AUTO_TEST_CASE( toString_output_is_correct_3 ) {
-	ast::Node node = ast::Node::makeFunction("h");
+	ast::Node node = ast::Node::makeFunctionCall("h");
 
 	BOOST_CHECK_EQUAL(node.toString(), "h[]");
 }
@@ -99,15 +113,37 @@ BOOST_AUTO_TEST_CASE( equality_test_rational ) {
 }
 
 BOOST_AUTO_TEST_CASE( equality_test_function ) {
-	BOOST_CHECK_EQUAL(ast::Node::makeFunction("h"), ast::Node::makeFunction("h"));
+	BOOST_CHECK_EQUAL(ast::Node::makeFunctionCall("h"), ast::Node::makeFunctionCall("h"));
 }
 
 BOOST_AUTO_TEST_CASE( equality_test_nested_function ) {
 	BOOST_CHECK_EQUAL(
-			ast::Node::makeFunction(
-					"f", { ast::Node::makeFunction("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ),
-			ast::Node::makeFunction(
-					"f", { ast::Node::makeFunction("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ));
+			ast::Node::makeFunctionCall(
+					"f", { ast::Node::makeFunctionCall("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ),
+			ast::Node::makeFunctionCall(
+					"f", { ast::Node::makeFunctionCall("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ));
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_non_identifier_function_function_with_no_params ) {
+	BOOST_CHECK_EQUAL(
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall("f")
+			),
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall("f")
+			)
+	);
+}
+
+BOOST_AUTO_TEST_CASE( equality_test_non_identifier_function_function_with_params ) {
+	BOOST_CHECK_EQUAL(
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall("f"), {ast::Node::makeRational(3,2)}
+			),
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall("f"), {ast::Node::makeRational(3,2)}
+			)
+	);
 }
 
 BOOST_AUTO_TEST_CASE( equality_test_string ) {
@@ -123,11 +159,11 @@ BOOST_AUTO_TEST_CASE( non_equality_test_string_identifier ) {
 }
 
 BOOST_AUTO_TEST_CASE( non_equality_test_different_function_params ) {
-	BOOST_CHECK_NE(ast::Node::makeFunction("h"), ast::Node::makeFunction("h", {ast::Node::makeIdentifier("x")}));
+	BOOST_CHECK_NE(ast::Node::makeFunctionCall("h"), ast::Node::makeFunctionCall("h", {ast::Node::makeIdentifier("x")}));
 }
 
 BOOST_AUTO_TEST_CASE( non_equality_test_different_function_name ) {
-	BOOST_CHECK_NE(ast::Node::makeFunction("h"), ast::Node::makeFunction("g"));
+	BOOST_CHECK_NE(ast::Node::makeFunctionCall("h"), ast::Node::makeFunctionCall("g"));
 }
 
 BOOST_AUTO_TEST_CASE( non_equality_test_real_rational ) {

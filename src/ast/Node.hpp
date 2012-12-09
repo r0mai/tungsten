@@ -26,8 +26,9 @@ public:
 	//TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class... Ts> static Node makeReal(const Ts&... args);
 	template<class... Ts> static Node makeRational(const Ts&... args);
-	template<class... Ts> static Node makeFunction(const Ts&... args);
-	static Node makeFunction(const Identifier& name, std::initializer_list<Operands::value_type> init_list);
+	template<class... Ts> static Node makeFunctionCall(const Ts&... args);
+	static Node makeFunctionCall(const Identifier& name, std::initializer_list<Operands::value_type> init_list);
+	static Node makeFunctionCall(const Node& function, std::initializer_list<Operands::value_type> init_list);
 	template<class... Ts> static Node makeString(const Ts&... args);
 	template<class... Ts> static Node makeIdentifier(const Ts&... args);
 
@@ -41,7 +42,7 @@ public:
 
 	const math::Real& getReal() const;
 	const math::Rational& getRational() const;
-	const FunctionCall& getFunction() const;
+	const FunctionCall& getFunctionCall() const;
 	const String& getString() const;
 	const Identifier& getIdentifier() const;
 
@@ -89,7 +90,7 @@ Node Node::makeRational(const Ts&... args) {
 }
 
 template<class... Ts>
-Node Node::makeFunction(const Ts&... args) {
+Node Node::makeFunctionCall(const Ts&... args) {
 	Node node;
 	node.type_ = Type::FunctionCall;
 	node.storage = FunctionCall(args...);
@@ -97,12 +98,20 @@ Node Node::makeFunction(const Ts&... args) {
 }
 
 inline
-Node Node::makeFunction(const Identifier& name, std::initializer_list<Operands::value_type> init_list) {
+Node Node::makeFunctionCall(const Identifier& name, std::initializer_list<Operands::value_type> init_list) {
 	Node node;
 	node.type_ = Type::FunctionCall;
 	node.storage = FunctionCall(name, Operands(init_list));
 	return node;
 
+}
+
+inline
+Node Node::makeFunctionCall(const Node& function, std::initializer_list<Operands::value_type> init_list) {
+	Node node;
+	node.type_ = Type::FunctionCall;
+	node.storage = FunctionCall(function, Operands(init_list));
+	return node;
 }
 
 template<class... Ts>
