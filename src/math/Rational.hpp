@@ -27,6 +27,8 @@ public:
 		return get_num();
 	}
 
+
+
 };
 
 }} //namespace tungsten::math

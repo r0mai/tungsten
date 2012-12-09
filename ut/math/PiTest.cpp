@@ -14,11 +14,6 @@ BOOST_AUTO_TEST_CASE( Pi_Precision_test ) {
 
 	math::Real realPi = boost::math::constants::pi<double>();
 
-	std::cout << math::calculatePi(1).get_prec() << std::endl;
-	std::cout << math::calculatePi(2).get_prec() << std::endl;
-	std::cout << math::calculatePi(3).get_prec() << std::endl;
-
-
 	BOOST_CHECK_LE(abs(math::calculatePi(1) - realPi), math::Real(0.5) );
 
 	BOOST_CHECK_LE(abs(math::calculatePi(2) - realPi), math::Real(0.05) );
