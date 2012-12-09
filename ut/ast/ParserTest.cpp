@@ -5,400 +5,400 @@
 
 BOOST_AUTO_TEST_SUITE( AstParserTest )
 
-using namespace tungsten::ast;
+using namespace tungsten;
 
 BOOST_AUTO_TEST_CASE( empty_input_fails ) {
-	boost::optional<Node> tree = parseInput("");
+	boost::optional<ast::Node> tree = ast::parseInput("");
 
 	BOOST_CHECK( !tree );
 }
 
 BOOST_AUTO_TEST_CASE( empty_input_with_spaces_fails ) {
-	boost::optional<Node> tree = parseInput(" \t");
+	boost::optional<ast::Node> tree = ast::parseInput(" \t");
 
 	BOOST_CHECK( !tree );
 }
 
 BOOST_AUTO_TEST_CASE( integer_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("42");
+	boost::optional<ast::Node> tree = ast::parseInput("42");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeRational(42) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(42) );
 }
 
 BOOST_AUTO_TEST_CASE( integer_with_spaces_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput(" 42\t");
+	boost::optional<ast::Node> tree = ast::parseInput(" 42\t");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeRational(42) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(42) );
 }
 
 BOOST_AUTO_TEST_CASE( negative_integer_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("-42");
+	boost::optional<ast::Node> tree = ast::parseInput("-42");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeRational(-42) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(-42) );
 }
 
 BOOST_AUTO_TEST_CASE( positive_integer_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("+42");
+	boost::optional<ast::Node> tree = ast::parseInput("+42");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeRational(42) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(42) );
 }
 
 BOOST_AUTO_TEST_CASE( real_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("1.5");
+	boost::optional<ast::Node> tree = ast::parseInput("1.5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(1.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(1.5) );
 }
 
 BOOST_AUTO_TEST_CASE( negative_real_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("-3.5");
+	boost::optional<ast::Node> tree = ast::parseInput("-3.5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(-3.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-3.5) );
 }
 
 BOOST_AUTO_TEST_CASE( positive_real_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("3.5");
+	boost::optional<ast::Node> tree = ast::parseInput("3.5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(3.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(3.5) );
 }
 
 BOOST_AUTO_TEST_CASE( real_with_no_fraction_part_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("3.");
+	boost::optional<ast::Node> tree = ast::parseInput("3.");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(-3.) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-3.) );
 }
 
 BOOST_AUTO_TEST_CASE( real_with_no_integer_part_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput(".5");
+	boost::optional<ast::Node> tree = ast::parseInput(".5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(-.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-.5) );
 }
 
 BOOST_AUTO_TEST_CASE( negative_real_with_no_integer_part_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("-.5");
+	boost::optional<ast::Node> tree = ast::parseInput("-.5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(-.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-.5) );
 }
 
 BOOST_AUTO_TEST_CASE( positive_real_with_no_integer_part_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("+.5");
+	boost::optional<ast::Node> tree = ast::parseInput("+.5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeReal(.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(.5) );
 }
 
 BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("Pi");
+	boost::optional<ast::Node> tree = ast::parseInput("Pi");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeIdentifier("Pi") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("Pi") );
 }
 
 BOOST_AUTO_TEST_CASE( Identifier_with_trailing_numbers_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("X123");
+	boost::optional<ast::Node> tree = ast::parseInput("X123");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeIdentifier("X123") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("X123") );
 }
 
 BOOST_AUTO_TEST_CASE( Identifier_with_numbers_in_middle_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("X123Y");
+	boost::optional<ast::Node> tree = ast::parseInput("X123Y");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeIdentifier("X123Y") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("X123Y") );
 }
 
 BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly_with_spaces ) {
-	boost::optional<Node> tree = parseInput("\tPi ");
+	boost::optional<ast::Node> tree = ast::parseInput("\tPi ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeIdentifier("Pi") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("Pi") );
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("\"abc\"");
+	boost::optional<ast::Node> tree = ast::parseInput("\"abc\"");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeString("abc") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("abc") );
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_spaces_inside ) {
-	boost::optional<Node> tree = parseInput("\"a b\t c\"");
+	boost::optional<ast::Node> tree = ast::parseInput("\"a b\t c\"");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeString("a b\tc") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a b\tc") );
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_spaces_outside ) {
-	boost::optional<Node> tree = parseInput("  \"a b\t c\" ");
+	boost::optional<ast::Node> tree = ast::parseInput("  \"a b\t c\" ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeString("a b\tc") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a b\tc") );
 }
 
 BOOST_AUTO_TEST_CASE( function_without_parameters_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("foo[]");
+	boost::optional<ast::Node> tree = ast::parseInput("foo[]");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("foo") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo") );
 }
 
 BOOST_AUTO_TEST_CASE( function_without_parameters_with_spaces_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("\tfoo\t[ ] ");
+	boost::optional<ast::Node> tree = ast::parseInput("\tfoo\t[ ] ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("foo") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo") );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_single_parameter_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("foo[1]");
+	boost::optional<ast::Node> tree = ast::parseInput("foo[1]");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("foo", {Node::makeRational(1)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo", {ast::Node::makeRational(1)}) );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_single_parameter_with_spaces_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("  foo [1 ] ");
+	boost::optional<ast::Node> tree = ast::parseInput("  foo [1 ] ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("f", {Node::makeRational(1)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("f", {ast::Node::makeRational(1)}) );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_multiple_parameter_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("foo[1,2,3]");
+	boost::optional<ast::Node> tree = ast::parseInput("foo[1,2,3]");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("foo",
-			{Node::makeRational(1),
-			Node::makeRational(2),
-			Node::makeRational(3)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo",
+			{ast::Node::makeRational(1),
+			ast::Node::makeRational(2),
+			ast::Node::makeRational(3)}) );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_multiple_parameter_with_spaces_parsed_correctly ) {
-	boost::optional<Node> tree = parseInput("  foo [1 ,2,3 ] ");
+	boost::optional<ast::Node> tree = ast::parseInput("  foo [1 ,2,3 ] ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("foo",
-			{Node::makeRational(1),
-			Node::makeRational(2),
-			Node::makeRational(3)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("foo",
+			{ast::Node::makeRational(1),
+			ast::Node::makeRational(2),
+			ast::Node::makeRational(3)}) );
 }
 
 BOOST_AUTO_TEST_CASE( nested_function_parsed_correctly_1 ) {
-	boost::optional<Node> tree = parseInput("f[g[]]");
+	boost::optional<ast::Node> tree = ast::parseInput("f[g[]]");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("f", {Node::makeFunction("g")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("f", {ast::Node::makeFunction("g")}) );
 
 }
 
 BOOST_AUTO_TEST_CASE( nested_function_parsed_correctly_2 ) {
-	boost::optional<Node> tree = parseInput("f[g[], h[1]]");
+	boost::optional<ast::Node> tree = ast::parseInput("f[g[], h[1]]");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("f", {
-					Node::makeFunction("g"),
-					Node::makeFunction("h", {
-							Node::makeRational(1)
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("f", {
+					ast::Node::makeFunction("g"),
+					ast::Node::makeFunction("h", {
+							ast::Node::makeRational(1)
 					})
 	}) );
 
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments ) {
-	boost::optional<Node> tree = parseInput("a+b");
+	boost::optional<ast::Node> tree = ast::parseInput("a+b");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Plus", {Node::makeIdentifier("a"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments_with_spaces ) {
-	boost::optional<Node> tree = parseInput("a +  b ");
+	boost::optional<ast::Node> tree = ast::parseInput("a +  b ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Plus", {Node::makeIdentifier("a"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments ) {
-	boost::optional<Node> tree = parseInput("a+b+c");
+	boost::optional<ast::Node> tree = ast::parseInput("a+b+c");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Plus", {Node::makeIdentifier("a"), Node::makeIdentifier("b"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments_with_spaces ) {
-	boost::optional<Node> tree = parseInput(" \ta \t+ b + c ");
+	boost::optional<ast::Node> tree = ast::parseInput(" \ta \t+ b + c ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Plus", {Node::makeIdentifier("a"), Node::makeIdentifier("b"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_2_arguments ) {
-	boost::optional<Node> tree = parseInput("a*b");
+	boost::optional<ast::Node> tree = ast::parseInput("a*b");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeIdentifier("a"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_2_arguments_with_spaces ) {
-	boost::optional<Node> tree = parseInput("a *  b ");
+	boost::optional<ast::Node> tree = ast::parseInput("a *  b ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeIdentifier("a"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_3_arguments ) {
-	boost::optional<Node> tree = parseInput("a*b*c");
+	boost::optional<ast::Node> tree = ast::parseInput("a*b*c");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeIdentifier("a"), Node::makeIdentifier("b"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_3_arguments_with_spaces ) {
-	boost::optional<Node> tree = parseInput(" \ta \t* b * c ");
+	boost::optional<ast::Node> tree = ast::parseInput(" \ta \t* b * c ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeIdentifier("a"), Node::makeIdentifier("b"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_identifiers ) {
-	boost::optional<Node> tree = parseInput("a b");
+	boost::optional<ast::Node> tree = ast::parseInput("a b");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeIdentifier("a"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_integers ) {
-	boost::optional<Node> tree = parseInput("10 2");
+	boost::optional<ast::Node> tree = ast::parseInput("10 2");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeRational(10), Node::makeRational(2)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeRational(10), ast::Node::makeRational(2)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_1 ) {
-	boost::optional<Node> tree = parseInput("10.0 2.5");
+	boost::optional<ast::Node> tree = ast::parseInput("10.0 2.5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeReal(10.0), Node::makeReal(2.5)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(10.0), ast::Node::makeReal(2.5)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_2 ) {
-	boost::optional<Node> tree = parseInput("10. .5");
+	boost::optional<ast::Node> tree = ast::parseInput("10. .5");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeReal(10.0), Node::makeReal(0.5)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(10.0), ast::Node::makeReal(0.5)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_for_two_reals_3 ) {
-	boost::optional<Node> tree = parseInput(".5 2.");
+	boost::optional<ast::Node> tree = ast::parseInput(".5 2.");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeReal(.5), Node::makeReal(2.)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(.5), ast::Node::makeReal(2.)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_integer_and_identifier ) {
-	boost::optional<Node> tree = parseInput("3Pi");
+	boost::optional<ast::Node> tree = ast::parseInput("3Pi");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeRational(3), Node::makeIdentifier("Pi")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeRational(3), ast::Node::makeIdentifier("Pi")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_real_and_identifier_1 ) {
-	boost::optional<Node> tree = parseInput("3.5Pi");
+	boost::optional<ast::Node> tree = ast::parseInput("3.5Pi");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeReal(3.5), Node::makeIdentifier("Pi")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(3.5), ast::Node::makeIdentifier("Pi")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_real_and_identifier_2 ) {
-	boost::optional<Node> tree = parseInput("3.Pi");
+	boost::optional<ast::Node> tree = ast::parseInput("3.Pi");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeReal(3.), Node::makeIdentifier("Pi")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeReal(3.), ast::Node::makeIdentifier("Pi")}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_with_integer_and_paranthesis ) {
-	boost::optional<Node> tree = parseInput("3(4)");
+	boost::optional<ast::Node> tree = ast::parseInput("3(4)");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeRational(3), Node::makeRational(4)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeRational(3), ast::Node::makeRational(4)}) );
 }
 
 BOOST_AUTO_TEST_CASE( juxtaposition_works_between_two_paranthesis ) {
-	boost::optional<Node> tree = parseInput("(x)(y)");
+	boost::optional<ast::Node> tree = ast::parseInput("(x)(y)");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Times", {Node::makeIdentifier("x"), Node::makeIdentifier("y")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Times", {ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y")}) );
 }
 
 BOOST_AUTO_TEST_CASE( exponentation_parsed_correctly_with_2_arguments ) {
-	boost::optional<Node> tree = parseInput("a^b");
+	boost::optional<ast::Node> tree = ast::parseInput("a^b");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Power", {Node::makeIdentifier("a"), Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}) );
 }
 
 BOOST_AUTO_TEST_CASE( right_to_left_associativity_works_with_exponentation ) {
-	boost::optional<Node> tree = parseInput("a^b^c");
+	boost::optional<ast::Node> tree = ast::parseInput("a^b^c");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), Node::makeFunction("Power", {Node::makeIdentifier("a"), Node::makeFunction("Power", {Node::makeIdentifier("b"), Node::makeIdentifier("c")})}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunction("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeFunction("Power", {ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")})}) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
