@@ -4,11 +4,15 @@
 
 #include <cassert>
 #include <initializer_list>
+#include <memory>
 
 #include <boost/variant.hpp>
 #include <boost/operators.hpp>
 
+#include "NodeFwd.hpp"
+#include "FunctionCall.hpp"
 #include "NodeTypes.hpp"
+#include "util/make_unique.hpp"
 
 namespace tungsten { namespace ast {
 
@@ -17,13 +21,13 @@ namespace tungsten { namespace ast {
 class Node : boost::equality_comparable<Node> {
 public:
 
-	enum class Type { Real, Rational, Function, String, Identifier };
+	enum class Type { Real, Rational, FunctionCall, String, Identifier };
 
 	//TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class... Ts> static Node makeReal(const Ts&... args);
 	template<class... Ts> static Node makeRational(const Ts&... args);
 	template<class... Ts> static Node makeFunction(const Ts&... args);
-	static Node makeFunction(const FunctionName& name, std::initializer_list<Operands::value_type> init_list);
+	static Node makeFunction(const Identifier& name, std::initializer_list<Operands::value_type> init_list);
 	template<class... Ts> static Node makeString(const Ts&... args);
 	template<class... Ts> static Node makeIdentifier(const Ts&... args);
 
@@ -37,7 +41,7 @@ public:
 
 	const math::Real& getReal() const;
 	const math::Rational& getRational() const;
-	const Function& getFunction() const;
+	const FunctionCall& getFunction() const;
 	const String& getString() const;
 	const Identifier& getIdentifier() const;
 
@@ -58,7 +62,7 @@ private:
 
 	Type type_;
 
-	typedef boost::variant<math::Real, math::Rational, Function, String, Identifier> Storage;
+	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
 
 	Storage storage;
 
@@ -87,16 +91,16 @@ Node Node::makeRational(const Ts&... args) {
 template<class... Ts>
 Node Node::makeFunction(const Ts&... args) {
 	Node node;
-	node.type_ = Type::Function;
-	node.storage = Function(args...);
+	node.type_ = Type::FunctionCall;
+	node.storage = FunctionCall(args...);
 	return node;
 }
 
 inline
-Node Node::makeFunction(const FunctionName& name, std::initializer_list<Operands::value_type> init_list) {
+Node Node::makeFunction(const Identifier& name, std::initializer_list<Operands::value_type> init_list) {
 	Node node;
-	node.type_ = Type::Function;
-	node.storage = Function(name, Operands(init_list));
+	node.type_ = Type::FunctionCall;
+	node.storage = FunctionCall(name, Operands(init_list));
 	return node;
 
 }

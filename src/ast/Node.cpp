@@ -10,7 +10,7 @@ namespace tungsten { namespace ast {
 
 bool Node::isReal() const { return type_ == Type::Real; }
 bool Node::isRational() const { return type_ == Type::Rational; }
-bool Node::isFunction() const { return type_ == Type::Function; }
+bool Node::isFunction() const { return type_ == Type::FunctionCall; }
 bool Node::isString() const { return type_ == Type::String; }
 bool Node::isIdentifier() const { return type_ == Type::Identifier; }
 
@@ -28,9 +28,9 @@ const math::Rational& Node::getRational() const {
 	return boost::get<math::Rational>(storage);
 }
 
-const Function& Node::getFunction() const {
-	assert( type_ == Type::Function );
-	return boost::get<Function>(storage);
+const FunctionCall& Node::getFunction() const {
+	assert( type_ == Type::FunctionCall );
+	return boost::get<FunctionCall>(storage);
 }
 
 const String& Node::getString() const {
@@ -44,12 +44,12 @@ const Identifier& Node::getIdentifier() const {
 }
 
 const Node& Node::operator[](unsigned index) const {
-	assert( type_ == Type::Function );
+	assert( type_ == Type::FunctionCall );
 
-	const Function& function = getFunction();
-	assert( function.operands.size() > index );
+	const FunctionCall& function = getFunction();
+	assert( function.getOperands().size() > index );
 
-	return function.operands[index];
+	return function.getOperands()[index];
 }
 
 bool Node::operator==(const Node& other) const {
@@ -72,9 +72,9 @@ std::string Node::toString() const {
 		void operator()(const String& string) const { sstream << '"' << string << '"'; } //TODO escape chars
 		void operator()(const Identifier& identifier) const { sstream << identifier; }
 
-		void operator()(const Function& function) const {
-			sstream << function.name << '[';
-			util::rangeToStream(sstream, function.operands, [](const Node& node) { return node.toString(); }, ", " );
+		void operator()(const FunctionCall& function) const {
+			sstream << function.getFunction().toString() << '[';
+			util::rangeToStream(sstream, function.getOperands(), [](const Node& node) { return node.toString(); }, ", " );
 			sstream << ']';
 		}
 

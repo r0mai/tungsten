@@ -29,11 +29,13 @@ BOOST_AUTO_TEST_CASE( makeFunction_creates_Function ) {
 	ast::Node node = ast::Node::makeFunction( "abc", { ast::Node::makeRational(1, 3), ast::Node::makeRational(2, 3) } );
 
 	BOOST_REQUIRE( node.isFunction() );
-	BOOST_REQUIRE( node.type() == ast::Node::Type::Function );
+	BOOST_REQUIRE( node.type() == ast::Node::Type::FunctionCall );
 
-	BOOST_CHECK_EQUAL( node.getFunction().name, "abc" );
+	BOOST_REQUIRE( node.getFunction().getFunction().isIdentifier() );
 
-	BOOST_REQUIRE_EQUAL( node.getFunction().operands.size(), 2 );
+	BOOST_CHECK_EQUAL( node.getFunction().getFunction().getIdentifier(), "abc" );
+
+	BOOST_REQUIRE_EQUAL( node.getFunction().getOperands().size(), 2 );
 
 	BOOST_REQUIRE( node[0].isRational() );
 	BOOST_CHECK_EQUAL( node[0].getRational(), math::Rational(1, 3) );

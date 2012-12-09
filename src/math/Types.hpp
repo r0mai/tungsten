@@ -10,5 +10,4 @@
 #include "Real.hpp"
 #include "Precision.hpp"
 
-
 #endif /* MATH_TYPES_HPP_ */
