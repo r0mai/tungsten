@@ -33,6 +33,13 @@ void makeFunction(const std::string& s, Node& n1, const Node& n2){
 	}
 }
 
+Node addToFunction(const Node& n1, const boost::optional<std::vector<Node> >& nodes) {
+	if(nodes)
+	    return Node::makeFunctionCall(n1, *nodes);
+	else
+		return Node::makeFunctionCall(n1);
+}
+
 typedef boost::spirit::ascii::blank_type delimiter;
 
 template<class Iterator>
@@ -44,7 +51,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::_val;
 
 		start %= additiveExpression.alias();
-		primary %= approximate | exact | parenthesis | stringLiteral | identifier;
+		primary %= approximate | exact | parenthesis | stringLiteral | identifier | functionCall;
 
 		identifier = (*qi::ascii::alpha) [_val = phx::bind(&makeIdentifier , _1) ];
 		approximate = realParser[_val = phx::bind(&makeReal, _1) ];
@@ -52,6 +59,9 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		parenthesis = ( '(' >> start >> ')' );
 		stringLiteral = '"' >> (*qi::alnum)[_val = phx::bind(&makeString , _1)] >> '"';
 		
+		functionCall = 
+            additiveExpression[_val = _1] >> '[' >> (-(primary % ','))[_val = phx::bind(&addToFunction, _val, _1)] >> ']';
+            
 		additiveExpression =
 			multiplicativeExpression[_val = _1] >> *(
 			'+' >> multiplicativeExpression[phx::bind(&makeFunction, "Plus", _val, _1) ] |
@@ -68,14 +78,6 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 			primary[_val = _1] >> *(
 			'^' >> primary[phx::bind(&makeFunction, "Power", _val, _1) ]
 			);
-		
-		
-
-
-
-		
-		
-
 	}
 
 
