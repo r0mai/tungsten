@@ -36,7 +36,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 		using qi::_1;
-		start %= additiveExpression.alias();
+		start %= powerExpression.alias();
 		primary %= approximate | constant | parenthesis | stringLiteral | variable;
 		approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
 		exact = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
