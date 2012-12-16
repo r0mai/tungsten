@@ -50,8 +50,9 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::_1;
 		using qi::_val;
 
-		start %= additiveExpression.alias();
-		primary %= approximate | exact | parenthesis | stringLiteral | identifier | functionCall;
+		start %= expression.alias();
+		expression %= functionCall | additiveExpression;
+		primary %=  approximate | exact | parenthesis | stringLiteral | identifier;
 
 		identifier = (*qi::ascii::alpha) [_val = phx::bind(&makeIdentifier , _1) ];
 		approximate = realParser[_val = phx::bind(&makeReal, _1) ];
@@ -60,7 +61,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		stringLiteral = '"' >> (*qi::alnum)[_val = phx::bind(&makeString , _1)] >> '"';
 		
 		functionCall = 
-            additiveExpression[_val = _1] >> '[' >> (-(primary % ','))[_val = phx::bind(&addToFunction, _val, _1)] >> ']';
+            additiveExpression[_val = _1] >> '[' >> -(expression % ',')[_val = phx::bind(&addToFunction, _val, _1)] >> ']';
             
 		additiveExpression =
 			multiplicativeExpression[_val = _1] >> *(
@@ -97,6 +98,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
+	qi::rule<Iterator, Node(), delimiter> expression;
 
 };
 
