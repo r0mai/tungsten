@@ -35,29 +35,34 @@ template<class Iterator>
 struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter> {
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
+
 		using qi::_1;
+		using qi::_val;
+
 		start %= additiveExpression.alias();
-		primary %= approximate | exact | parenthesis | stringLiteral | variable;
-		approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
-		exact = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
+		primary %= approximate | exact | parenthesis | stringLiteral | identifier;
+
+		identifier = (*qi::ascii::alpha) [_val = phx::bind(&makeIdentifier , _1) ];
+		approximate = realParser[_val = phx::bind(&makeReal, _1) ];
+//		exact = integerParser[_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
 		parenthesis = ( '(' >> start >> ')' );
-		stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
+		stringLiteral = '"' >> (*qi::alnum)[_val = phx::bind(&makeString , _1)] >> '"';
 		
 		additiveExpression =
-			multiplicativeExpression[qi::_val = _1] >> *(
-			'+' >> multiplicativeExpression[qi::_val = phx::bind(&makeFunction, "Plus", qi::_val, _1) ] |
-			'-' >> multiplicativeExpression[qi::_val = phx::bind(&makeFunction, "Minus", qi::_val, _1) ]
+			multiplicativeExpression[_val = _1] >> *(
+			'+' >> multiplicativeExpression[_val = phx::bind(&makeFunction, "Plus", _val, _1) ] |
+			'-' >> multiplicativeExpression[_val = phx::bind(&makeFunction, "Minus", _val, _1) ]
 			);
 
 		multiplicativeExpression =
-			powerExpression[qi::_val = _1] >> *(
-			'*' >> powerExpression[qi::_val = phx::bind(&makeFunction, "Times", qi::_val, _1 )] |
-			'/' >> powerExpression[qi::_val = phx::bind(&makeFunction, "Divide", qi::_val, _1)]
+			powerExpression[_val = _1] >> *(
+			'*' >> powerExpression[_val = phx::bind(&makeFunction, "Times", _val, _1 )] |
+			'/' >> powerExpression[_val = phx::bind(&makeFunction, "Divide", _val, _1)]
 			);
 		
 		powerExpression = 
-			primary[qi::_val = _1] >> *(
-			'^' >> primary[qi::_val = phx::bind(&makeFunction, "Power", qi::_val, _1) ]
+			primary[_val = _1] >> *(
+			'^' >> primary[_val = phx::bind(&makeFunction, "Power", _val, _1) ]
 			);
 		
 		
@@ -66,7 +71,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		
 		
-	//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
+
 	}
 
 
@@ -76,7 +81,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> start;
 	qi::rule<Iterator, Node(), delimiter> primary;
 	qi::rule<Iterator, Node(), delimiter> functionCall;
-	qi::rule<Iterator, Node(), delimiter> variable;
+	qi::rule<Iterator, Node(), delimiter> identifier;
 	qi::rule<Iterator, Node(), delimiter> parenthesis;
 	qi::rule<Iterator, Node(), delimiter> exact;
 	qi::rule<Iterator, Node(), delimiter> approximate;
