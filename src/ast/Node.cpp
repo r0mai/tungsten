@@ -18,9 +18,19 @@ Node::Type Node::type() const {
 	return type_;
 }
 
+math::Real& Node::getReal() {
+	assert( type_ == Type::Real );
+	return boost::get<math::Real>(storage);
+}
+
 const math::Real& Node::getReal() const {
 	assert( type_ == Type::Real );
 	return boost::get<math::Real>(storage);
+}
+
+math::Rational& Node::getRational() {
+	assert( type_ == Type::Rational );
+	return boost::get<math::Rational>(storage);
 }
 
 const math::Rational& Node::getRational() const {
@@ -28,28 +38,35 @@ const math::Rational& Node::getRational() const {
 	return boost::get<math::Rational>(storage);
 }
 
+FunctionCall& Node::getFunctionCall() {
+	assert( type_ == Type::FunctionCall );
+	return boost::get<FunctionCall>(storage);
+}
+
 const FunctionCall& Node::getFunctionCall() const {
 	assert( type_ == Type::FunctionCall );
 	return boost::get<FunctionCall>(storage);
 }
+
+String& Node::getString() {
+	assert( type_ == Type::String );
+	return boost::get<String>(storage);
+}
+
 
 const String& Node::getString() const {
 	assert( type_ == Type::String );
 	return boost::get<String>(storage);
 }
 
-const Identifier& Node::getIdentifier() const {
+Identifier& Node::getIdentifier() {
 	assert( type_ == Type::Identifier );
 	return boost::get<Identifier>(storage);
 }
 
-const Node& Node::operator[](unsigned index) const {
-	assert( type_ == Type::FunctionCall );
-
-	const FunctionCall& function = getFunctionCall();
-	assert( function.getOperands().size() > index );
-
-	return function.getOperands()[index];
+const Identifier& Node::getIdentifier() const {
+	assert( type_ == Type::Identifier );
+	return boost::get<Identifier>(storage);
 }
 
 bool Node::operator==(const Node& other) const {

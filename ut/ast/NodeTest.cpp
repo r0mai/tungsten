@@ -37,11 +37,11 @@ BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_paramters ) {
 
 	BOOST_REQUIRE_EQUAL( node.getFunctionCall().getOperands().size(), 2 );
 
-	BOOST_REQUIRE( node[0].isRational() );
-	BOOST_CHECK_EQUAL( node[0].getRational(), math::Rational(1, 3) );
+	BOOST_REQUIRE( node.getFunctionCall().getOperands()[0].isRational() );
+	BOOST_CHECK_EQUAL( node.getFunctionCall().getOperands()[0].getRational(), math::Rational(1, 3) );
 
-	BOOST_REQUIRE( node[1].isRational() );
-	BOOST_CHECK_EQUAL( node[1].getRational(), math::Rational(2, 3) );
+	BOOST_REQUIRE( node.getFunctionCall().getOperands()[1].isRational() );
+	BOOST_CHECK_EQUAL( node.getFunctionCall().getOperands()[1].getRational(), math::Rational(2, 3) );
 
 }
 

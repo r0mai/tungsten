@@ -30,8 +30,16 @@ bool FunctionCall::operator==(const FunctionCall& other) const {
 	return *function == *other.function && operands == other.operands;
 }
 
+Node& FunctionCall::getFunction() {
+	return *function;
+}
+
 const Node& FunctionCall::getFunction() const {
 	return *function;
+}
+
+Operands& FunctionCall::getOperands() {
+	return operands;
 }
 
 const Operands& FunctionCall::getOperands() const {

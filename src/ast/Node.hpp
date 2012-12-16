@@ -40,13 +40,20 @@ public:
 
 	Type type() const;
 
+	math::Real& getReal();
 	const math::Real& getReal() const;
-	const math::Rational& getRational() const;
-	const FunctionCall& getFunctionCall() const;
-	const String& getString() const;
-	const Identifier& getIdentifier() const;
 
-	const Node& operator[](unsigned index) const;
+	math::Rational& getRational();
+	const math::Rational& getRational() const;
+
+	FunctionCall& getFunctionCall();
+	const FunctionCall& getFunctionCall() const;
+
+	String& getString();
+	const String& getString() const;
+
+	Identifier& getIdentifier();
+	const Identifier& getIdentifier() const;
 
 	bool operator==(const Node& other) const;
 

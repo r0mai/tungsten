@@ -28,8 +28,13 @@ struct FunctionCall : boost::equality_comparable<FunctionCall> {
 
 	bool operator==(const FunctionCall& other) const;
 
+	Node& getFunction();
 	const Node& getFunction() const;
+
+	Operands& getOperands();
 	const Operands& getOperands() const;
+
+
 
 	friend void swap(FunctionCall& fc1, FunctionCall& fc2);
 
