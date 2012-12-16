@@ -26,12 +26,11 @@ Node makeIdentifier(const std::vector<char>& v){
 }
 
 void makeFunction(const std::string& s, Node& n1, const Node& n2){
-	if(n1.isFunctionCall()) {
-		if(Node::makeIdentifier(s) == n1.getFunctionCall().getFunction()){
+	if( n1.isFunctionCall() && Node::makeIdentifier(s) == n1.getFunctionCall().getFunction() ) {
 			n1.getFunctionCall().getOperands().push_back(n2);
-		}
+	} else {
+		n1 = Node::makeFunctionCall(s, {n1, n2} );
 	}
-	n1 = Node::makeFunctionCall(s, {n1, n2} );
 }
 
 typedef boost::spirit::ascii::blank_type delimiter;
