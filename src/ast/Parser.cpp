@@ -1,42 +1,74 @@
 
 #include "Parser.hpp"
+#include "math/Rational.hpp"
+#include "math/Real.hpp"
 
 //#include <boost/phoenix/function.hpp>
-//#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix.hpp>
 
 namespace tungsten { namespace ast {
+namespace spirit = boost::spirit;
+namespace qi = spirit::qi;
+namespace phx = boost::phoenix;
 
-//struct MakeInt {
-//	template <typename T>
-//	struct result { typedef Node type; };
-//
-//	Node operator()(int x) const
-//	{
-//		return Node::makeRational(x);
-//	}
-//};
-//
-//boost::phoenix::function<MakeInt> makeInt;
-//
-//template<class Iterator>
-//struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), boost::spirit::ascii::space_type> {
-//
-//	namespace qi = boost::spirit::qi;
-//	namespace ascii = boost::spirit::ascii;
-//	namespace phx = boost::phoenix;
-//
-//	TungstenGrammar() : TungstenGrammar::base_type(primary) {
-//		primary = qi::int_[ qi::_val = makeInt(qi::_1) ];
-//	}
-//
-//	qi::rule<Iterator, Node(), ascii::blank_type> primary;
-//
-//};
+Node makeRational(const math::Rational& r) {
+	return Node::makeRational(r);
+}
 
-boost::optional<Node> parseInput(const std::string& /*input*/) {
-	return boost::optional<Node>{};
+Node makeReal(const math::Real& r) {
+	return Node::makeReal(r);
+}
+
+template<class Iterator>
+struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), boost::spirit::ascii::blank_type> {
+typedef boost::spirit::ascii::blank_type delimiter;
+
+
+TungstenGrammar() : TungstenGrammar::base_type(start) {
+	using qi::_1;
+	start %= constant | parenthesis;
+//	approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
+    constant = integerParser[ qi::_val = phx::bind(&makeRational, _1) ];
+    parenthesis = ( '(' >> start >> ')' );
+}
+	
+
+qi::uint_parser< math::Rational > integerParser;
+qi::real_parser< math::Real > realParser;
+
+qi::rule<Iterator, Node(), delimiter> start;
+qi::rule<Iterator, Node(), delimiter> primary;
+qi::rule<Iterator, Node(), delimiter> functionCall;
+qi::rule<Iterator, Node(), delimiter> variable;
+qi::rule<Iterator, Node(), delimiter> parenthesis;
+qi::rule<Iterator, Node(), delimiter> constant;
+qi::rule<Iterator, Node(), delimiter> approximate;
+qi::rule<Iterator, Node(), delimiter> expression;
+
+};
+
+boost::optional<Node> parseInput(const std::string& input) {
+	Node result;
+	
+	std::string::const_iterator begin = input.cbegin();
+	std::string::const_iterator end = input.cend();
+	
+	TungstenGrammar<std::string::const_iterator> grammar;
+	
+	bool success = qi::phrase_parse(
+		begin, end,
+		grammar,
+		spirit::ascii::blank,
+		result);
+	if(success && begin == end){
+		return result;
+	} else {
+		return boost::optional<Node>();
+	}
 }
 
 
-}} //namespace tungsten::ast
+}
+} //namespace tungsten::ast
 
