@@ -16,9 +16,22 @@ Node makeRational(const math::Rational& r) {
 	return Node::makeRational(r);
 }
 
-Node makeReal(const math::Real& r) {
+Node makeReal(const double& r) {
 	return Node::makeReal(r);
 }
+
+Node makeString(std::vector<char> v){
+	std::string s;
+	std::copy(v.begin(), v.end(), s.begin());
+	return Node::makeString(s);
+}
+
+Node makeIdentifier(std::vector<char> v){
+	std::string s;
+	std::copy(v.begin(), v.end(), s.begin());
+	return Node::makeIdentifier(s);
+}
+
 
 template<class Iterator>
 struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), boost::spirit::ascii::blank_type> {
@@ -27,15 +40,17 @@ typedef boost::spirit::ascii::blank_type delimiter;
 
 TungstenGrammar() : TungstenGrammar::base_type(start) {
 	using qi::_1;
-	start %= constant | parenthesis;
-//	approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
+	start %= constant | parenthesis | approximate | stringLiteral | variable;
+	approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
     constant = integerParser[ qi::_val = phx::bind(&makeRational, _1) ];
     parenthesis = ( '(' >> start >> ')' );
+	stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
+//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
 }
 	
 
 qi::uint_parser< math::Rational > integerParser;
-qi::real_parser< math::Real > realParser;
+qi::real_parser< double, qi::strict_ureal_policies<double> > realParser;
 
 qi::rule<Iterator, Node(), delimiter> start;
 qi::rule<Iterator, Node(), delimiter> primary;
@@ -44,7 +59,8 @@ qi::rule<Iterator, Node(), delimiter> variable;
 qi::rule<Iterator, Node(), delimiter> parenthesis;
 qi::rule<Iterator, Node(), delimiter> constant;
 qi::rule<Iterator, Node(), delimiter> approximate;
-qi::rule<Iterator, Node(), delimiter> expression;
+qi::rule<Iterator, Node(), delimiter> text;
+qi::rule<Iterator, Node(), delimiter> stringLiteral;
 
 };
 
