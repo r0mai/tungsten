@@ -25,6 +25,10 @@ Node makeIdentifier(const std::vector<char>& v){
 	return Node::makeIdentifier( v.begin(), v.end() );
 }
 
+Node makeFunction(const std::string& s, const Node& n1, const Node& n2){
+	return Node::makeFunctionCall(s, {n1, n2} );
+}
+
 typedef boost::spirit::ascii::blank_type delimiter;
 
 template<class Iterator>
@@ -33,10 +37,19 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 		using qi::_1;
 		start %= approximate | constant | parenthesis | stringLiteral | variable;
+		primary %= approximate | constant | parenthesis | stringLiteral | variable;
 		approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
 		exact = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
 		parenthesis = ( '(' >> start >> ')' );
 		stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
+		
+		
+		additiveExpression = (primary[qi::_val = _1] >> *('+' >> primary[phx::bind(&makeFunction, "Plus", qi::_val, _1) ] ));
+		
+		multiplicativeExpression = (additiveExpression[qi::_val = _1] >> 
+		*('*' >> additiveExpression[qi::_val = phx::bind(&makeFunction, "Times", qi::_val, _1 )] ));
+		
+	//	powerExpression = (multiplicativeExpression >> *('^' >> multiplicativeExpression)) 
 		
 	//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
 	}
@@ -56,6 +69,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> text;
 	qi::rule<Iterator, Node(), delimiter> stringLiteral;
 	qi::rule<Iterator, Node(), delimiter> sign;
+	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
+	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 
 };
 
