@@ -15,10 +15,10 @@ public:
 	template<class... Ts>
 	Integer(Ts&&... args) : mpz_class(std::forward<Ts>(args)...) {}
 
-	bool fitsUL() const { return fits_ulong_p();	}
+	bool fitsUL() const { return fits_ulong_p(); }
 	bool fitsSL() const { return fits_slong_p(); }
 
-	unsigned long asUL() const { assert( fitsUL() );	return get_ui(); }
+	unsigned long asUL() const { assert( fitsUL() ); return get_ui(); }
 	signed long asSL() const { assert( fitsSL() ); return get_si(); }
 
 };
