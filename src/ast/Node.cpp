@@ -10,7 +10,7 @@ namespace tungsten { namespace ast {
 
 bool Node::isReal() const { return type_ == Type::Real; }
 bool Node::isRational() const { return type_ == Type::Rational; }
-bool Node::isFunction() const { return type_ == Type::FunctionCall; }
+bool Node::isFunctionCall() const { return type_ == Type::FunctionCall; }
 bool Node::isString() const { return type_ == Type::String; }
 bool Node::isIdentifier() const { return type_ == Type::Identifier; }
 

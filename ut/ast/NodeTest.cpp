@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE( makeRational_creates_Rational ) {
 BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_paramters ) {
 	ast::Node node = ast::Node::makeFunctionCall( "abc", { ast::Node::makeRational(1, 3), ast::Node::makeRational(2, 3) } );
 
-	BOOST_REQUIRE( node.isFunction() );
+	BOOST_REQUIRE( node.isFunctionCall() );
 	BOOST_REQUIRE( node.type() == ast::Node::Type::FunctionCall );
 
 	BOOST_REQUIRE( node.getFunctionCall().getFunction().isIdentifier() );
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_paramters ) {
 BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_non_Identifier_function ) {
 	ast::Node node = ast::Node::makeFunctionCall( ast::Node::makeRational(1, 3) );
 
-	BOOST_REQUIRE( node.isFunction() );
+	BOOST_REQUIRE( node.isFunctionCall() );
 	BOOST_REQUIRE( node.type() == ast::Node::Type::FunctionCall );
 
 	BOOST_REQUIRE( node.getFunctionCall().getFunction().isRational() );

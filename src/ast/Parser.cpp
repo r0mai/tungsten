@@ -44,7 +44,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		identifier = (*qi::ascii::alpha) [_val = phx::bind(&makeIdentifier , _1) ];
 		approximate = realParser[_val = phx::bind(&makeReal, _1) ];
-//		exact = integerParser[_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
+		exact = integerParser[_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
 		parenthesis = ( '(' >> start >> ')' );
 		stringLiteral = '"' >> (*qi::alnum)[_val = phx::bind(&makeString , _1)] >> '"';
 		

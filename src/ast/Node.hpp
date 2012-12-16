@@ -34,7 +34,7 @@ public:
 
 	bool isReal() const;
 	bool isRational() const;
-	bool isFunction() const;
+	bool isFunctionCall() const;
 	bool isString() const;
 	bool isIdentifier() const;
 
