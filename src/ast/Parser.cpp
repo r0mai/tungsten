@@ -43,24 +43,27 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		parenthesis = ( '(' >> start >> ')' );
 		stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
 		
-		
-		powerExpression = 
-			primary[qi::_val = _1] >> *(
-			'^' >> primary[qi::_val = phx::bind(&makeFunction, "Pow", qi::_val, _1) ]
+		additiveExpression =
+			multiplicativeExpression[qi::_val = _1] >> *(
+			'+' >> multiplicativeExpression[qi::_val = phx::bind(&makeFunction, "Plus", qi::_val, _1) ] |
+			'-' >> multiplicativeExpression[qi::_val = phx::bind(&makeFunction, "Minus", qi::_val, _1) ]
 			);
-		
-		
-		multiplicativeExpression = 
+
+		multiplicativeExpression =
 			powerExpression[qi::_val = _1] >> *(
 			'*' >> powerExpression[qi::_val = phx::bind(&makeFunction, "Times", qi::_val, _1 )] |
 			'/' >> powerExpression[qi::_val = phx::bind(&makeFunction, "Divide", qi::_val, _1)]
 			);
+		
+		powerExpression = 
+			primary[qi::_val = _1] >> *(
+			'^' >> primary[qi::_val = phx::bind(&makeFunction, "Power", qi::_val, _1) ]
+			);
+		
+		
 
-		additiveExpression = 
-			multiplicativeExpression[qi::_val = _1] >> *(
-			'+' >> multiplicativeExpression[phx::bind(&makeFunction, "Plus", qi::_val, _1) ] |
-			'-' >> multiplicativeExpression[phx::bind(&makeFunction, "Minus", qi::_val, _1) ]
-		);
+
+
 		
 		
 	//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
