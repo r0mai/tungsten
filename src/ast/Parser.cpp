@@ -13,10 +13,6 @@ namespace spirit = boost::spirit;
 namespace qi = spirit::qi;
 namespace phx = boost::phoenix;
 
-Node makeRational(const math::Rational& r) {
-	return Node::makeRational(r);
-}
-
 Node makeReal(double r) {
 	return Node::makeReal(r);
 }
@@ -38,7 +34,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::_1;
 		start %= constant | parenthesis | approximate | stringLiteral | variable;
 		approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
-		constant = integerParser[ qi::_val = phx::bind(&makeRational, _1) ];
+		constant = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
 		parenthesis = ( '(' >> start >> ')' );
 		stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
 	//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
