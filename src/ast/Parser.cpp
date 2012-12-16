@@ -25,8 +25,13 @@ Node makeIdentifier(const std::vector<char>& v){
 	return Node::makeIdentifier( v.begin(), v.end() );
 }
 
-Node makeFunction(const std::string& s, const Node& n1, const Node& n2){
-	return Node::makeFunctionCall(s, {n1, n2} );
+void makeFunction(const std::string& s, Node& n1, const Node& n2){
+	if(n1.isFunctionCall()) {
+		if(Node::makeIdentifier(s) == n1.getFunctionCall().getFunction()){
+			n1.getFunctionCall().getOperands().push_back(n2);
+		}
+	}
+	n1 = Node::makeFunctionCall(s, {n1, n2} );
 }
 
 typedef boost::spirit::ascii::blank_type delimiter;
@@ -50,19 +55,19 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		
 		additiveExpression =
 			multiplicativeExpression[_val = _1] >> *(
-			'+' >> multiplicativeExpression[_val = phx::bind(&makeFunction, "Plus", _val, _1) ] |
-			'-' >> multiplicativeExpression[_val = phx::bind(&makeFunction, "Minus", _val, _1) ]
+			'+' >> multiplicativeExpression[phx::bind(&makeFunction, "Plus", _val, _1) ] |
+			'-' >> multiplicativeExpression[phx::bind(&makeFunction, "Minus", _val, _1) ]
 			);
 
 		multiplicativeExpression =
 			powerExpression[_val = _1] >> *(
-			'*' >> powerExpression[_val = phx::bind(&makeFunction, "Times", _val, _1 )] |
-			'/' >> powerExpression[_val = phx::bind(&makeFunction, "Divide", _val, _1)]
+			'*' >> powerExpression[phx::bind(&makeFunction, "Times", _val, _1 )] |
+			'/' >> powerExpression[phx::bind(&makeFunction, "Divide", _val, _1)]
 			);
 		
 		powerExpression = 
 			primary[_val = _1] >> *(
-			'^' >> primary[_val = phx::bind(&makeFunction, "Power", _val, _1) ]
+			'^' >> primary[phx::bind(&makeFunction, "Power", _val, _1) ]
 			);
 		
 		
