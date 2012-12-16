@@ -8,6 +8,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 
 namespace tungsten { namespace ast {
+
 namespace spirit = boost::spirit;
 namespace qi = spirit::qi;
 namespace phx = boost::phoenix;
@@ -28,11 +29,10 @@ Node makeIdentifier(const std::vector<char>& v){
 	return Node::makeIdentifier( v.begin(), v.end() );
 }
 
+typedef boost::spirit::ascii::blank_type delimiter;
 
 template<class Iterator>
-struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), boost::spirit::ascii::blank_type> {
-	typedef boost::spirit::ascii::blank_type delimiter;
-
+struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter> {
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 		using qi::_1;
