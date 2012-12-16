@@ -32,11 +32,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 		using qi::_1;
-		start %= constant | parenthesis | approximate | stringLiteral | variable;
+		start %= approximate | constant | parenthesis | stringLiteral | variable;
 		approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
-		constant = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
+		exact = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
 		parenthesis = ( '(' >> start >> ')' );
 		stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
+		
 	//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
 	}
 
@@ -49,10 +50,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> functionCall;
 	qi::rule<Iterator, Node(), delimiter> variable;
 	qi::rule<Iterator, Node(), delimiter> parenthesis;
+	qi::rule<Iterator, Node(), delimiter> exact;
 	qi::rule<Iterator, Node(), delimiter> constant;
 	qi::rule<Iterator, Node(), delimiter> approximate;
 	qi::rule<Iterator, Node(), delimiter> text;
 	qi::rule<Iterator, Node(), delimiter> stringLiteral;
+	qi::rule<Iterator, Node(), delimiter> sign;
 
 };
 
