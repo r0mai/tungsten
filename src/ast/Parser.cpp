@@ -36,7 +36,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 		using qi::_1;
-		start %= approximate | constant | parenthesis | stringLiteral | variable;
+		start %= additiveExpression.alias();
 		primary %= approximate | constant | parenthesis | stringLiteral | variable;
 		approximate = realParser[ qi::_val = phx::bind(&makeReal, _1) ];
 		exact = integerParser[ qi::_val = phx::bind(&Node::makeRational<math::Rational>, _1) ];
@@ -44,12 +44,24 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		stringLiteral = '"' >> (*qi::alnum)[ qi::_val = phx::bind(&makeString , _1) ] >> '"';
 		
 		
-		additiveExpression = (primary[qi::_val = _1] >> *('+' >> primary[phx::bind(&makeFunction, "Plus", qi::_val, _1) ] ));
+		additiveExpression = 
+			primary[qi::_val = _1] >> *(
+			'+' >> primary[phx::bind(&makeFunction, "Plus", qi::_val, _1) ] |
+			'-' >> primary[phx::bind(&makeFunction, "Minus", qi::_val, _1) ]
+		);
+
 		
-		multiplicativeExpression = (additiveExpression[qi::_val = _1] >> 
-		*('*' >> additiveExpression[qi::_val = phx::bind(&makeFunction, "Times", qi::_val, _1 )] ));
+		multiplicativeExpression = 
+			additiveExpression[qi::_val = _1] >> *(
+			'*' >> additiveExpression[qi::_val = phx::bind(&makeFunction, "Times", qi::_val, _1 )] |
+			'/' >> additiveExpression[qi::_val = phx::bind(&makeFunction, "Divide", qi::_val, _1)]
+			);
+
 		
-	//	powerExpression = (multiplicativeExpression >> *('^' >> multiplicativeExpression)) 
+		powerExpression = 
+			multiplicativeExpression[qi::_val = _1] >> *(
+			'^' >> multiplicativeExpression[qi::_val = phx::bind(&makeFunction, "Pow", qi::_val, _1) ]
+			);
 		
 	//	variable = (*qi::alnum)[qi::_val = phx::bind(&makeIdentifier , _1) ];
 	}
@@ -71,6 +83,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> sign;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
+	qi::rule<Iterator, Node(), delimiter> powerExpression;
 
 };
 
