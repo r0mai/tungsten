@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")}) );
 }
 
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments_with_spaces ) {
@@ -348,7 +348,7 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments_with_spaces ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("b")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")}) );
 }
 
 
@@ -490,6 +490,14 @@ BOOST_AUTO_TEST_CASE( plus_has_higher_precedence_than_multiplication_1 ) {
 
 BOOST_AUTO_TEST_CASE( plus_has_higher_precedence_than_multiplication_2 ) {
 	boost::optional<ast::Node> tree = ast::parseInput("a * b + c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("a")}) );
+}
+
+BOOST_AUTO_TEST_CASE( parenthesis_modifies_precedence ) {
+	boost::optional<ast::Node> tree = ast::parseInput("(a + b) * c");
 
 	BOOST_REQUIRE( tree );
 
