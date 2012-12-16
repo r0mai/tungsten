@@ -22,7 +22,7 @@ FunctionCall::FunctionCall(const Node& function, const Operands& operands) :
 		function( new Node(function) ), operands(operands) {}
 
 FunctionCall& FunctionCall::operator=(FunctionCall other) {
-	std::swap(*this, other);
+	swap(*this, other);
 	return *this;
 }
 
@@ -36,6 +36,11 @@ const Node& FunctionCall::getFunction() const {
 
 const Operands& FunctionCall::getOperands() const {
 	return operands;
+}
+
+void swap(FunctionCall& fc1, FunctionCall& fc2) {
+	std::swap( fc1.function, fc2.function );
+	std::swap( fc1.operands, fc2.operands );
 }
 
 }} //namespace tungsten::ast

@@ -31,6 +31,8 @@ struct FunctionCall : boost::equality_comparable<FunctionCall> {
 	const Node& getFunction() const;
 	const Operands& getOperands() const;
 
+	friend void swap(FunctionCall& fc1, FunctionCall& fc2);
+
 private:
 
 	NodePtr function;
