@@ -493,7 +493,7 @@ BOOST_AUTO_TEST_CASE( plus_has_higher_precedence_than_multiplication_2 ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("a")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("c")}) );
 }
 
 BOOST_AUTO_TEST_CASE( parenthesis_modifies_precedence ) {
@@ -501,7 +501,7 @@ BOOST_AUTO_TEST_CASE( parenthesis_modifies_precedence ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("a")}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("c")}) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
