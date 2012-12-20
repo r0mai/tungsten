@@ -19,9 +19,7 @@ public:
 	template<class... Ts>
 	Rational(Ts&&... args) : mpq_class(std::forward<Ts>(args)...) {}
 
-	bool isInteger() const {
-		return get_den() == 1;
-	}
+	bool isInteger() const { return get_den() == 1; }
 
 	Integer asInteger() const {
 		assert( isInteger() );

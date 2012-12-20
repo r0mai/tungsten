@@ -3,11 +3,38 @@
 
 #include <sstream>
 
+#include <boost/range/algorithm.hpp>
+#include <boost/range/adaptors.hpp>
+
 namespace tungsten { namespace ast {
 
 std::string String::toString() const {
+
+	struct StringEscaper {
+		std::string operator()(char ch) const {
+			switch (ch) {
+			default:
+				return std::string(1, ch);
+			case '\\':
+				return "\\\\";
+			case '\"':
+				return "\\\"";
+			case '\'':
+				return "\\'";
+			case '\n':
+				return "\\n";
+			case '\t':
+				return "\\t";
+			//TODO make sure that's all
+			}
+		}
+	};
+
 	std::stringstream ss;
-	ss << '"' << static_cast<std::string>(*this) << '"';
+	ss << '"';
+	boost::copy( *this | boost::adaptors::transformed( StringEscaper{} ),
+			std::ostream_iterator<std::string>(ss) );
+	ss << '"';
 	return ss.str();
 }
 

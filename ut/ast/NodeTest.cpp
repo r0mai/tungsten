@@ -79,30 +79,37 @@ BOOST_AUTO_TEST_CASE( makeIdentifier_creates_Identifier ) {
 
 }
 
-BOOST_AUTO_TEST_CASE( toString_output_is_correct_1 ) {
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_function ) {
 	ast::Node node = ast::Node::makeFunctionCall( "Func", { ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y") } );
 
 	BOOST_CHECK_EQUAL(node.toString(), "Func[x, y]");
 }
 
-BOOST_AUTO_TEST_CASE( toString_output_is_correct_2 ) {
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_nested_function ) {
 	ast::Node node = ast::Node::makeFunctionCall(
 			"f", { ast::Node::makeFunctionCall("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } );
 
 	BOOST_CHECK_EQUAL(node.toString(), "f[g[1/5], y]");
 }
 
-BOOST_AUTO_TEST_CASE( toString_output_is_correct_3 ) {
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_function_with_no_parameters  ) {
 	ast::Node node = ast::Node::makeFunctionCall("h");
 
 	BOOST_CHECK_EQUAL(node.toString(), "h[]");
 }
 
-BOOST_AUTO_TEST_CASE( toString_output_is_correct_4 ) {
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_normal_characters ) {
 	ast::Node node = ast::Node::makeString("abc d efg");
 
 	BOOST_CHECK_EQUAL(node.toString(), "\"abc d efg\"");
 }
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_characters ) {
+	ast::Node node = ast::Node::makeString("\tc\n \"d");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"\\tc\\n \\\"d\"");
+}
+
 
 //EQUALITY TESTS
 
