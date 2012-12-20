@@ -117,12 +117,24 @@ BOOST_AUTO_TEST_CASE( equality_test_real ) {
 	BOOST_CHECK_EQUAL(ast::Node::makeReal(5.0), ast::Node::makeReal(5.0));
 }
 
+BOOST_AUTO_TEST_CASE( non_equality_test_real ) {
+	BOOST_CHECK_NE(ast::Node::makeReal(6.0), ast::Node::makeReal(5.0));
+}
+
 BOOST_AUTO_TEST_CASE( equality_test_rational ) {
 	BOOST_CHECK_EQUAL(ast::Node::makeRational(1,3), ast::Node::makeRational(1,3));
 }
 
+BOOST_AUTO_TEST_CASE( non_equality_test_rational ) {
+	BOOST_CHECK_NE(ast::Node::makeRational(1,4), ast::Node::makeRational(1,3));
+}
+
 BOOST_AUTO_TEST_CASE( equality_test_function ) {
 	BOOST_CHECK_EQUAL(ast::Node::makeFunctionCall("h"), ast::Node::makeFunctionCall("h"));
+}
+
+BOOST_AUTO_TEST_CASE( non_equality_test_function ) {
+	BOOST_CHECK_NE(ast::Node::makeFunctionCall("g"), ast::Node::makeFunctionCall("f"));
 }
 
 BOOST_AUTO_TEST_CASE( equality_test_nested_function ) {
@@ -133,10 +145,29 @@ BOOST_AUTO_TEST_CASE( equality_test_nested_function ) {
 					"f", { ast::Node::makeFunctionCall("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ));
 }
 
+BOOST_AUTO_TEST_CASE( non_equality_test_nested_function ) {
+	BOOST_CHECK_NE(
+			ast::Node::makeFunctionCall(
+					"f", { ast::Node::makeFunctionCall("g", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ),
+			ast::Node::makeFunctionCall(
+					"f", { ast::Node::makeFunctionCall("h", { ast::Node::makeRational(1,5) }), ast::Node::makeIdentifier("y") } ));
+}
+
 BOOST_AUTO_TEST_CASE( equality_test_non_identifier_function_function_with_no_params ) {
 	BOOST_CHECK_EQUAL(
 			ast::Node::makeFunctionCall(
 					ast::Node::makeFunctionCall( ast::Node::makeRational(1) )
+			),
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall( ast::Node::makeRational(1) )
+			)
+	);
+}
+
+BOOST_AUTO_TEST_CASE( non_equality_test_with_different_function_types_in_function ) {
+	BOOST_CHECK_NE(
+			ast::Node::makeFunctionCall(
+					ast::Node::makeFunctionCall( ast::Node::makeReal(1) )
 			),
 			ast::Node::makeFunctionCall(
 					ast::Node::makeFunctionCall( ast::Node::makeRational(1) )
