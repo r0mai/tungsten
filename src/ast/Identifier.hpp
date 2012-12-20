@@ -11,7 +11,11 @@ struct Identifier : std::string {
 	//No constructor inheritance support
 	template<class... Ts>
 	Identifier(Ts&&... args) : std::string(std::forward<Ts>(args)...) {}
+
+	std::string toString() const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Identifier& identifier);
 
 }} //namespace tungsten::ast
 

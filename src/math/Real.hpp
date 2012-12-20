@@ -15,6 +15,7 @@ public:
 	template<class... Ts>
 	Real(Ts&&... args) : mpf_class(std::forward<Ts>(args)...) {}
 
+	std::string toString() const;
 };
 
 }} //namespace tungsten::math

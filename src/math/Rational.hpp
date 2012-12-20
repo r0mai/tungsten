@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <utility>
+#include <string>
 
 #include "Integer.hpp"
 
@@ -27,7 +28,7 @@ public:
 		return get_num();
 	}
 
-
+	std::string toString() const;
 
 };
 

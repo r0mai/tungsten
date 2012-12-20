@@ -6,6 +6,7 @@
 #include <gmpxx.h>
 
 #include <cassert>
+#include <string>
 
 namespace tungsten { namespace math {
 
@@ -20,6 +21,8 @@ public:
 
 	unsigned long asUL() const { assert( fitsUL() ); return get_ui(); }
 	signed long asSL() const { assert( fitsSL() ); return get_si(); }
+
+	std::string toString() const;
 
 };
 

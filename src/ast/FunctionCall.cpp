@@ -1,6 +1,10 @@
 
+#include <sstream>
+
 #include "FunctionCall.hpp"
 #include "Node.hpp"
+
+#include "util/rangeToString.hpp"
 
 namespace tungsten { namespace ast {
 
@@ -49,6 +53,19 @@ const Operands& FunctionCall::getOperands() const {
 void swap(FunctionCall& fc1, FunctionCall& fc2) {
 	std::swap( fc1.function, fc2.function );
 	std::swap( fc1.operands, fc2.operands );
+}
+
+std::string FunctionCall::toString() const {
+	std::stringstream ss;
+	ss << function->toString() << '[';
+	util::rangeToStream(ss, operands, [](const Node& node) { return node.toString(); }, ", " );
+	ss << ']';
+	return ss.str();
+}
+
+std::ostream& operator<<(std::ostream& os, const FunctionCall& fc) {
+	os << fc.toString();
+	return os;
 }
 
 }} //namespace tungsten::ast

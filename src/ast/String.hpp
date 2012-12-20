@@ -4,6 +4,7 @@
 
 #include <string>
 #include <utility>
+#include <ostream>
 
 namespace tungsten { namespace ast {
 
@@ -13,7 +14,11 @@ struct String : std::string {
 	//No constructor inheritance support
 	template<class... Ts>
 	String(Ts&&... args) : std::string(std::forward<Ts>(args)...) {}
+
+	std::string toString() const;
 };
+
+std::ostream& operator<<(std::ostream& os, const String& string);
 
 }} //namespace tungsten::ast
 

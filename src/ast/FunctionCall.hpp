@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <functional>
+#include <ostream>
 
 #include <boost/operators.hpp>
 
@@ -34,7 +35,7 @@ struct FunctionCall : boost::equality_comparable<FunctionCall> {
 	Operands& getOperands();
 	const Operands& getOperands() const;
 
-
+	std::string toString() const;
 
 	friend void swap(FunctionCall& fc1, FunctionCall& fc2);
 
@@ -43,6 +44,8 @@ private:
 	NodePtr function;
 	Operands operands;
 };
+
+std::ostream& operator<<(std::ostream& os, const FunctionCall& fc);
 
 }} //namespace tungsten::ast
 

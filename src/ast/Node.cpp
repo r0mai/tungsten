@@ -77,31 +77,19 @@ bool Node::operator==(const Node& other) const {
 	return result;
 }
 
+bool Node::operator<(const Node& other) const {
+	return false; //TODO
+}
+
 //TODO optimize this to use a single stream to stringize the whole tree
 std::string Node::toString() const {
-	struct ToStringVisitor : boost::static_visitor<> {
 
-		ToStringVisitor(std::stringstream& ss) : sstream(ss) {}
-		std::stringstream& sstream;
-
-		void operator()(const math::Real& real) const { sstream << real; }
-		void operator()(const math::Rational& rational) const { sstream << rational; }
-		void operator()(const String& string) const { sstream << '"' << string << '"'; } //TODO escape chars
-		void operator()(const Identifier& identifier) const { sstream << identifier; }
-
-		void operator()(const FunctionCall& function) const {
-			sstream << function.getFunction().toString() << '[';
-			util::rangeToStream(sstream, function.getOperands(), [](const Node& node) { return node.toString(); }, ", " );
-			sstream << ']';
-		}
-
+	struct ToStringVisitor : boost::static_visitor<std::string> {
+		template<class T>
+		std::string operator()(const T& t) const { return t.toString(); }
 	};
 
-	std::stringstream ss;
-
-	applyVisitor( ToStringVisitor{ss} );
-
-	return ss.str();
+	return applyVisitor( ToStringVisitor{} );
 
 }
 

@@ -104,6 +104,8 @@ BOOST_AUTO_TEST_CASE( toString_output_is_correct_4 ) {
 	BOOST_CHECK_EQUAL(node.toString(), "\"abc d efg\"");
 }
 
+//EQUALITY TESTS
+
 BOOST_AUTO_TEST_CASE( equality_test_real ) {
 	BOOST_CHECK_EQUAL(ast::Node::makeReal(5.0), ast::Node::makeReal(5.0));
 }
@@ -127,10 +129,10 @@ BOOST_AUTO_TEST_CASE( equality_test_nested_function ) {
 BOOST_AUTO_TEST_CASE( equality_test_non_identifier_function_function_with_no_params ) {
 	BOOST_CHECK_EQUAL(
 			ast::Node::makeFunctionCall(
-					ast::Node::makeFunctionCall("f")
+					ast::Node::makeFunctionCall( ast::Node::makeRational(1) )
 			),
 			ast::Node::makeFunctionCall(
-					ast::Node::makeFunctionCall("f")
+					ast::Node::makeFunctionCall( ast::Node::makeRational(1) )
 			)
 	);
 }
@@ -138,10 +140,10 @@ BOOST_AUTO_TEST_CASE( equality_test_non_identifier_function_function_with_no_par
 BOOST_AUTO_TEST_CASE( equality_test_non_identifier_function_function_with_params ) {
 	BOOST_CHECK_EQUAL(
 			ast::Node::makeFunctionCall(
-					ast::Node::makeFunctionCall("f"), {ast::Node::makeRational(3,2)}
+					ast::Node::makeFunctionCall( ast::Node::makeRational(1) ), {ast::Node::makeRational(3,2)}
 			),
 			ast::Node::makeFunctionCall(
-					ast::Node::makeFunctionCall("f"), {ast::Node::makeRational(3,2)}
+					ast::Node::makeFunctionCall( ast::Node::makeRational(1) ), {ast::Node::makeRational(3,2)}
 			)
 	);
 }
@@ -166,9 +168,205 @@ BOOST_AUTO_TEST_CASE( non_equality_test_different_function_name ) {
 	BOOST_CHECK_NE(ast::Node::makeFunctionCall("h"), ast::Node::makeFunctionCall("g"));
 }
 
-BOOST_AUTO_TEST_CASE( non_equality_test_real_rational ) {
+BOOST_AUTO_TEST_CASE( non_equality_test_real_Rational ) {
 	//They're only equal in mathematical sense
 	BOOST_CHECK_NE(ast::Node::makeReal(1), ast::Node::makeRational(1));
+}
+
+//ORDERING TESTS
+BOOST_AUTO_TEST_CASE( different_Rational_ordering_test ) {
+	ast::Node x = ast::Node::makeRational(1);
+	ast::Node y = ast::Node::makeRational(2);
+
+	BOOST_CHECK_NE(x, y); //x != y
+	BOOST_CHECK_LT(x, y); //x < y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GT(y, x); //y > x
+	BOOST_CHECK_GE(y, x); //y >= x
+}
+
+BOOST_AUTO_TEST_CASE( same_Rational_ordering_test ) {
+	ast::Node x = ast::Node::makeRational(1);
+	ast::Node y = ast::Node::makeRational(1);
+
+	BOOST_CHECK_EQUAL(x, y); //x != y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GE(y, x); //y >= x
+
+	BOOST_CHECK( !(x < y) );
+	BOOST_CHECK( !(y < x) );
+}
+
+BOOST_AUTO_TEST_CASE( different_Real_ordering_test ) {
+	ast::Node x = ast::Node::makeReal(1);
+	ast::Node y = ast::Node::makeReal(2);
+
+	BOOST_CHECK_NE(x, y); //x != y
+	BOOST_CHECK_LT(x, y); //x < y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GT(y, x); //y > x
+	BOOST_CHECK_GE(y, x); //y >= x
+}
+
+BOOST_AUTO_TEST_CASE( same_Real_ordering_test ) {
+	ast::Node x = ast::Node::makeReal(1);
+	ast::Node y = ast::Node::makeReal(1);
+
+	BOOST_CHECK_EQUAL(x, y); //x != y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GE(x, y); //x >= y
+	BOOST_CHECK_LE(y, x); //y <= x
+	BOOST_CHECK_GE(y, x); //y >= x
+
+	BOOST_CHECK( !(x < y) );
+	BOOST_CHECK( !(y < x) );
+}
+
+BOOST_AUTO_TEST_CASE( Rational_and_Real_compares_by_value_test_1 ) {
+	ast::Node x = ast::Node::makeReal(1);
+	ast::Node y = ast::Node::makeRational(2);
+
+	BOOST_CHECK_NE(x, y); //x != y
+	BOOST_CHECK_LT(x, y); //x < y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GT(y, x); //y > x
+	BOOST_CHECK_GE(y, x); //y >= x
+}
+
+BOOST_AUTO_TEST_CASE( Rational_and_Real_compares_by_value_test_2 ) {
+	ast::Node x = ast::Node::makeRational(1);
+	ast::Node y = ast::Node::makeReal(2);
+
+	BOOST_CHECK_NE(x, y); //x != y
+	BOOST_CHECK_LT(x, y); //x < y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GT(y, x); //y > x
+	BOOST_CHECK_GE(y, x); //y >= x
+}
+
+BOOST_AUTO_TEST_CASE( Rational_is_smaller_than_Real_ordering_test ) {
+	ast::Node x = ast::Node::makeRational(1);
+	ast::Node y = ast::Node::makeReal(1);
+
+	BOOST_CHECK_NE(x, y); //x != y
+	BOOST_CHECK_LT(x, y); //x < y
+	BOOST_CHECK_LE(x, y); //x <= y
+	BOOST_CHECK_GT(y, x); //y > x
+	BOOST_CHECK_GE(y, x); //y >= x
+}
+
+BOOST_AUTO_TEST_CASE( different_Identifier_ordering_test ) {
+	ast::Node a = ast::Node::makeIdentifier( "a" );
+	ast::Node b = ast::Node::makeIdentifier( "b" );
+
+	BOOST_CHECK_NE(a, b);
+	BOOST_CHECK_LT(a, b);
+	BOOST_CHECK_LE(a, b);
+	BOOST_CHECK_GT(b, a);
+	BOOST_CHECK_GE(b, a);
+
+}
+
+BOOST_AUTO_TEST_CASE( same_Identifier_ordering_test ) {
+	ast::Node a1 = ast::Node::makeIdentifier( "a" );
+	ast::Node a2 = ast::Node::makeIdentifier( "a" );
+
+	BOOST_CHECK_EQUAL(a1, a2);
+	BOOST_CHECK_LE(a1, a2);
+	BOOST_CHECK_GE(a1, a2);
+
+	BOOST_CHECK( !(a1 < a2) );
+	BOOST_CHECK( !(a2 < a1) );
+}
+
+BOOST_AUTO_TEST_CASE( Strings_compares_lexicographically_a_b ) {
+	ast::Node a = ast::Node::makeString( "a" );
+	ast::Node b = ast::Node::makeString( "b" );
+
+	BOOST_CHECK_NE(a, b);
+	BOOST_CHECK_LT(a, b);
+	BOOST_CHECK_LE(a, b);
+	BOOST_CHECK_GT(b, a);
+	BOOST_CHECK_GE(b, a);
+}
+
+BOOST_AUTO_TEST_CASE( empty_String_is_less_than_any_other ) {
+	ast::Node e = ast::Node::makeString( "" );
+	ast::Node b = ast::Node::makeString( "b" );
+
+	BOOST_CHECK_NE(e, b);
+	BOOST_CHECK_LT(e, b);
+	BOOST_CHECK_LE(e, b);
+	BOOST_CHECK_GT(b, e);
+	BOOST_CHECK_GE(b, e);
+}
+
+BOOST_AUTO_TEST_CASE( Rational_is_smaller_than_Identifier ) {
+	ast::Node r = ast::Node::makeRational( 3, 2 );
+	ast::Node i = ast::Node::makeIdentifier( "a" );
+
+	BOOST_CHECK_NE(r, i);
+	BOOST_CHECK_LT(r, i);
+	BOOST_CHECK_LE(r, i);
+	BOOST_CHECK_GT(i, r);
+	BOOST_CHECK_GE(i, r);
+}
+
+BOOST_AUTO_TEST_CASE( Real_is_smaller_than_Identifier ) {
+	ast::Node r = ast::Node::makeReal( 1.5 );
+	ast::Node i = ast::Node::makeIdentifier( "a" );
+
+	BOOST_CHECK_NE(r, i);
+	BOOST_CHECK_LT(r, i);
+	BOOST_CHECK_LE(r, i);
+	BOOST_CHECK_GT(i, r);
+	BOOST_CHECK_GE(i, r);
+}
+
+BOOST_AUTO_TEST_CASE( Rational_is_smaller_than_String ) {
+	ast::Node r = ast::Node::makeRational( -3, 2 );
+	ast::Node s = ast::Node::makeString( "string" );
+
+	BOOST_CHECK_NE(r, s);
+	BOOST_CHECK_LT(r, s);
+	BOOST_CHECK_LE(r, s);
+	BOOST_CHECK_GT(s, r);
+	BOOST_CHECK_GE(s, r);
+}
+
+BOOST_AUTO_TEST_CASE( Real_is_smaller_than_String ) {
+	ast::Node r = ast::Node::makeReal( -1.5 );
+	ast::Node s = ast::Node::makeString( "string" );
+
+	BOOST_CHECK_NE(r, s);
+	BOOST_CHECK_LT(r, s);
+	BOOST_CHECK_LE(r, s);
+	BOOST_CHECK_GT(s, r);
+	BOOST_CHECK_GE(s, r);
+}
+
+
+//FunctionCall related comparsions might change in the future
+BOOST_AUTO_TEST_CASE( FunctionCalls_ordered_by_their_functions_first ) {
+	ast::Node f = ast::Node::makeFunctionCall( "aaa", { ast::Node::makeReal( -1.5 ) } );
+	ast::Node g = ast::Node::makeFunctionCall( "bbb", { } );
+
+	BOOST_CHECK_NE(f, g);
+	BOOST_CHECK_LT(f, g);
+	BOOST_CHECK_LE(f, g);
+	BOOST_CHECK_GT(g, f);
+	BOOST_CHECK_GE(g, f);
+}
+
+BOOST_AUTO_TEST_CASE( FunctionCalls_ordered_by_their_parameters_lexicographically_next ) {
+	ast::Node f = ast::Node::makeFunctionCall( "aaa", { ast::Node::makeString( "xxx" ) } );
+	ast::Node g = ast::Node::makeFunctionCall( "aaa", { ast::Node::makeString( "yyy" ) } );
+
+	BOOST_CHECK_NE(f, g);
+	BOOST_CHECK_LT(f, g);
+	BOOST_CHECK_LE(f, g);
+	BOOST_CHECK_GT(g, f);
+	BOOST_CHECK_GE(g, f);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

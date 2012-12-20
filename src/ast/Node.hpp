@@ -16,9 +16,7 @@
 
 namespace tungsten { namespace ast {
 
-
-//Immutable (so far)
-class Node : boost::equality_comparable<Node> {
+class Node : boost::partially_ordered<Node> {
 public:
 
 	enum class Type { Real, Rational, FunctionCall, String, Identifier };
@@ -56,6 +54,7 @@ public:
 	const Identifier& getIdentifier() const;
 
 	bool operator==(const Node& other) const;
+	bool operator<(const Node& other) const;
 
 	//string representation of an Node
 	std::string toString() const;
