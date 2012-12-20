@@ -16,7 +16,9 @@ namespace tungsten { namespace ast {
 
 typedef std::vector<Node> Operands;
 
-struct FunctionCall : boost::equality_comparable<FunctionCall> {
+struct FunctionCall :
+		boost::less_than_comparable<FunctionCall,
+		boost::equality_comparable<FunctionCall>> {
 
 	FunctionCall();
 	FunctionCall(const FunctionCall& other);
@@ -28,6 +30,7 @@ struct FunctionCall : boost::equality_comparable<FunctionCall> {
 	FunctionCall& operator=(FunctionCall other);
 
 	bool operator==(const FunctionCall& other) const;
+	bool operator<(const FunctionCall& rhs) const;
 
 	Node& getFunction();
 	const Node& getFunction() const;

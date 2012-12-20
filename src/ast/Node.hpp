@@ -16,10 +16,13 @@
 
 namespace tungsten { namespace ast {
 
-class Node : boost::partially_ordered<Node> {
+class Node :
+		boost::less_than_comparable<Node,
+		boost::equality_comparable<Node>> {
 public:
 
-	enum class Type { Real, Rational, FunctionCall, String, Identifier };
+	//The ordering in this enum plays a role in operator<()
+	enum class Type { Rational, Real, String, Identifier, FunctionCall };
 
 	//TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class... Ts> static Node makeReal(const Ts&... args);
@@ -35,6 +38,9 @@ public:
 	bool isFunctionCall() const;
 	bool isString() const;
 	bool isIdentifier() const;
+
+	bool isNumeric() const; //isReal() || isRational()
+	math::Real getNumeric() const; //returns Real when isNumeric() is true
 
 	Type type() const;
 
@@ -59,11 +65,13 @@ public:
 	//string representation of an Node
 	std::string toString() const;
 
-	template<class Visitor>
-	typename Visitor::result_type applyVisitor(Visitor&& visitor) const;
-
 	//Totally arbitrary. default constructed Node should never be used
 	Node() : type_(Type::Rational) {}
+
+	template<class Visitor>
+	friend typename Visitor::result_type applyVisitor(const Node& node, Visitor&& visitor);
+	template<class Visitor>
+	friend typename Visitor::result_type applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor);
 
 private:
 
@@ -77,6 +85,17 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& os, const Node& node);
+
+template<class Visitor>
+typename Visitor::result_type applyVisitor(const Node& node, Visitor&& visitor) {
+	return boost::apply_visitor(std::forward<Visitor>(visitor), node.storage);
+}
+
+template<class Visitor>
+typename Visitor::result_type applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
+	return boost::apply_visitor(std::forward<Visitor>(visitor), lhs.storage, rhs.storage);
+}
+
 
 //Template impl
 template<class... Ts>
@@ -134,11 +153,6 @@ Node Node::makeIdentifier(const Ts&... args) {
 	node.type_ = Type::Identifier;
 	node.storage = Identifier(args...);
 	return node;
-}
-
-template<class Visitor>
-typename Visitor::result_type Node::applyVisitor(Visitor&& visitor) const {
-	return boost::apply_visitor(std::forward<Visitor>(visitor), storage);
 }
 
 }} //namespace tungsten::ast

@@ -1,6 +1,8 @@
 
 #include <sstream>
 
+#include <boost/range/algorithm/lexicographical_compare.hpp>
+
 #include "FunctionCall.hpp"
 #include "Node.hpp"
 
@@ -32,6 +34,14 @@ FunctionCall& FunctionCall::operator=(FunctionCall other) {
 
 bool FunctionCall::operator==(const FunctionCall& other) const {
 	return *function == *other.function && operands == other.operands;
+}
+
+bool FunctionCall::operator<(const FunctionCall& rhs) const {
+	if ( *function != *rhs.function ) {
+		return *function < *rhs.function;
+	}
+
+	return boost::lexicographical_compare( operands, rhs.operands );
 }
 
 Node& FunctionCall::getFunction() {
