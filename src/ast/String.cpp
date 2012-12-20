@@ -8,27 +8,30 @@
 
 namespace tungsten { namespace ast {
 
-std::string String::toString() const {
+struct StringEscaper {
 
-	struct StringEscaper {
-		std::string operator()(char ch) const {
-			switch (ch) {
-			default:
-				return std::string(1, ch);
-			case '\\':
-				return "\\\\";
-			case '\"':
-				return "\\\"";
-			case '\'':
-				return "\\'";
-			case '\n':
-				return "\\n";
-			case '\t':
-				return "\\t";
-			//TODO make sure that's all
-			}
+	typedef std::string result_type;
+
+	std::string operator()(char ch) const {
+		switch (ch) {
+		default:
+			return std::string(1, ch);
+		case '\\':
+			return "\\\\";
+		case '\"':
+			return "\\\"";
+		case '\'':
+			return "\\'";
+		case '\n':
+			return "\\n";
+		case '\t':
+			return "\\t";
+		//TODO make sure that's all
 		}
-	};
+	}
+};
+
+std::string String::toString() const {
 
 	std::stringstream ss;
 	ss << '"';

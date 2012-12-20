@@ -106,50 +106,47 @@ template<> struct NodeTypeToInt<FunctionCall> {
 };
 
 
-bool Node::operator<(const Node& other) const {
+struct CompareVisitor : boost::static_visitor<bool> {
 
-	struct CompareVisitor : boost::static_visitor<bool> {
+	template<class T>
+	bool operator()(const T& lhs, const T& rhs) const {
+		return lhs < rhs;
+	}
 
-		template<class T>
-		bool operator()(const T& lhs, const T& rhs) const {
+	template<class T, class U>
+	bool operator()(const T& /*lhs*/, const U& /*rhs*/) const {
+		return NodeTypeToInt<T>::value < NodeTypeToInt<U>::value;
+	}
+
+	bool operator()(const math::Rational& lhs, const math::Real& rhs) const {
+		if ( lhs != rhs ) {
 			return lhs < rhs;
 		}
+		return operator()<math::Rational, math::Real>(lhs, rhs);
+	}
 
-		template<class T, class U>
-		bool operator()(const T& /*lhs*/, const U& /*rhs*/) const {
-			return NodeTypeToInt<T>::value < NodeTypeToInt<U>::value;
+	bool operator()(const math::Real& lhs, const math::Rational& rhs) const {
+		if ( lhs != rhs ) {
+			return lhs < rhs;
 		}
+		return operator()<math::Real, math::Rational>(lhs, rhs);
+	}
 
-		bool operator()(const math::Rational& lhs, const math::Real& rhs) const {
-			if ( lhs != rhs ) {
-				return lhs < rhs;
-			}
-			return operator()<math::Rational, math::Real>(lhs, rhs);
-		}
+};
 
-		bool operator()(const math::Real& lhs, const math::Rational& rhs) const {
-			if ( lhs != rhs ) {
-				return lhs < rhs;
-			}
-			return operator()<math::Real, math::Rational>(lhs, rhs);
-		}
-
-	};
-
-
+bool Node::operator<(const Node& other) const {
 	return applyVisitor( *this, other, CompareVisitor{} );
 }
 
-//TODO optimize this to use a single stream to stringize the whole tree
+
+
+struct ToStringVisitor : boost::static_visitor<std::string> {
+	template<class T>
+	std::string operator()(const T& t) const { return t.toString(); }
+};
+
 std::string Node::toString() const {
-
-	struct ToStringVisitor : boost::static_visitor<std::string> {
-		template<class T>
-		std::string operator()(const T& t) const { return t.toString(); }
-	};
-
 	return applyVisitor( *this, ToStringVisitor{} );
-
 }
 
 std::ostream& operator<<(std::ostream& os, const Node& node) {

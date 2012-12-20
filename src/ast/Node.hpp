@@ -21,8 +21,7 @@ class Node :
 		boost::equality_comparable<Node>> {
 public:
 
-	//The ordering in this enum plays a role in operator<()
-	enum class Type { Rational, Real, String, Identifier, FunctionCall };
+	enum class Type { Real, Rational, FunctionCall, String, Identifier };
 
 	//TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class... Ts> static Node makeReal(const Ts&... args);
