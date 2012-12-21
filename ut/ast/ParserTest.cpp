@@ -319,6 +319,107 @@ BOOST_AUTO_TEST_CASE( empty_brackets_not_parsed ) {
 	BOOST_CHECK( !tree );
 }
 
+BOOST_AUTO_TEST_CASE( unary_minus_parsed_correctly_with_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("-a");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeIdentifier("a")}) );
+}
+
+BOOST_AUTO_TEST_CASE( unary_plus_parsed_correctly_with_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("+a");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("a") );
+}
+
+BOOST_AUTO_TEST_CASE( unary_minus_parsed_correctly_with_Identifier_in_parentheses ) {
+	boost::optional<ast::Node> tree = ast::parseInput("-(a)");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeIdentifier("a")}) );
+}
+
+BOOST_AUTO_TEST_CASE( unary_plus_parsed_correctly_with_Identifier_in_parentheses ) {
+	boost::optional<ast::Node> tree = ast::parseInput("+(a)");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("a") );
+}
+
+BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("--a");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1),
+			ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeIdentifier("a")}) } ) );
+}
+
+BOOST_AUTO_TEST_CASE( two_unary_pluses_parsed_correctly_with_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("++a");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("a") );
+}
+
+BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Integer ) {
+	boost::optional<ast::Node> tree = ast::parseInput("--3");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeRational(-3)}) );
+}
+
+BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Real ) {
+	boost::optional<ast::Node> tree = ast::parseInput("--3.2");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeReal(-3.2)}) );
+}
+
+BOOST_AUTO_TEST_CASE( unary_minus_has_lower_precedence_than_Plus ) {
+	boost::optional<ast::Node> tree = ast::parseInput("-a+b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(),
+			ast::Node::makeFunctionCall("Plus", {
+					ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeIdentifier("a")}),
+					ast::Node::makeIdentifier("b")
+			}) );
+}
+
+BOOST_AUTO_TEST_CASE( unary_minus_has_lower_precedence_than_Times ) {
+	boost::optional<ast::Node> tree = ast::parseInput("-a*b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(),
+			ast::Node::makeFunctionCall("Times", {
+					ast::Node::makeFunctionCall("Times", {ast::Node::makeRational(-1), ast::Node::makeIdentifier("a")}),
+					ast::Node::makeIdentifier("b")
+			}) );
+}
+
+BOOST_AUTO_TEST_CASE( unary_minus_has_higher_precedence_than_Power ) {
+	boost::optional<ast::Node> tree = ast::parseInput("-a^b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(),
+			ast::Node::makeFunctionCall("Times", {
+					ast::Node::makeRational(-1),
+					ast::Node::makeFunctionCall("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")})
+			}) );
+}
+
 BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_2_arguments ) {
 	boost::optional<ast::Node> tree = ast::parseInput("a+b");
 

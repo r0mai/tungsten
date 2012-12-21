@@ -96,11 +96,6 @@ void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( "Power", result, rhs );
 }
 
-void operatorUnaryMinus(Node& result, const Node& operand) {
-	result = Node::makeRational(-1);
-	operatorTimes(result, operand);
-}
-
 void operatorParentheses(Node& result, const Node& expression) {
 	//Don't do anything for multiple, paralell parentheses
 	if ( expression.isFunctionCall() && expression.getFunctionCall().getFunction() == Node::makeIdentifier(parenthesesIdentityFunction) ) {
@@ -108,6 +103,12 @@ void operatorParentheses(Node& result, const Node& expression) {
 	} else {
 		result = Node::makeFunctionCall( parenthesesIdentityFunction, {expression} );
 	}
+}
+
+void operatorUnaryMinus(Node& result, const Node& operand) {
+	result = Node::makeRational(-1);
+	operatorTimes(result, operand);
+	operatorParentheses(result, result);
 }
 
 void createFunctionCall(Node& result, const std::vector<char>& name) {
@@ -176,8 +177,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				']')/*[phx::bind(&operatorParentheses, _val, _1)]*/;
 
 		unaryOperator =
-				'-' >> expression[phx::bind(&operatorUnaryMinus, _val, _1)] |
-				'+' >> expression[_val = _1];
+				'-' >> powerExpression[phx::bind(&operatorUnaryMinus, _val, _1)] |
+				'+' >> powerExpression[_val = _1];
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
