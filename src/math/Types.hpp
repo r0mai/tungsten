@@ -8,6 +8,7 @@
 #include "Integer.hpp"
 #include "Rational.hpp"
 #include "Real.hpp"
+#include "Complex.hpp"
 #include "Precision.hpp"
 
 #endif /* MATH_TYPES_HPP_ */

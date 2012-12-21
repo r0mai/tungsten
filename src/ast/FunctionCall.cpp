@@ -1,12 +1,13 @@
 
 #include <sstream>
 
+#include <boost/bind/mem_fn.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/lexicographical_compare.hpp>
 
 #include "FunctionCall.hpp"
 #include "Node.hpp"
-
-#include "util/rangeToString.hpp"
 
 namespace tungsten { namespace ast {
 
@@ -66,9 +67,10 @@ void swap(FunctionCall& fc1, FunctionCall& fc2) {
 }
 
 std::string FunctionCall::toString() const {
+
 	std::stringstream ss;
 	ss << function->toString() << '[';
-	util::rangeToStream(ss, operands, [](const Node& node) { return node.toString(); }, ", " );
+	ss << boost::join( operands | boost::adaptors::transformed( boost::mem_fn(&Node::toString) ), ", " );
 	ss << ']';
 	return ss.str();
 }

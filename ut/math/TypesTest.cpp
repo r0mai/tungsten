@@ -65,9 +65,11 @@ BOOST_AUTO_TEST_CASE( Integer_asSI_works_for_negative ) {
 BOOST_AUTO_TEST_CASE( Rational_isInteger_works ) {
 	math::Rational q(1,2);
 	math::Rational z(2,1);
+	math::Rational y(0,2);
 
 	BOOST_CHECK( !q.isInteger() );
 	BOOST_CHECK( z.isInteger() );
+	BOOST_CHECK( y.isInteger() );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_asInteger_works ) {

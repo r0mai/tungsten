@@ -24,8 +24,12 @@ struct StringEscaper {
 			return "\\'";
 		case '\n':
 			return "\\n";
+		case '\f':
+			return "\\f";
 		case '\t':
 			return "\\t";
+		case '\v':
+			return "\\v";
 		//TODO make sure that's all
 		}
 	}
