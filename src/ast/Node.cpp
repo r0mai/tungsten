@@ -4,8 +4,6 @@
 #include <cassert>
 #include <sstream>
 
-#include "util/rangeToString.hpp"
-
 namespace tungsten { namespace ast {
 
 bool Node::isReal() const { return type_ == Type::Real; }
