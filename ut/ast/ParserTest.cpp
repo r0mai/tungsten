@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE( real_with_no_fraction_part_parsed_correctly ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-3.) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(3.) );
 }
 
 BOOST_AUTO_TEST_CASE( real_with_no_integer_part_parsed_correctly ) {
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE( real_with_no_integer_part_parsed_correctly ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-.5) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(.5) );
 }
 
 BOOST_AUTO_TEST_CASE( negative_real_with_no_integer_part_parsed_correctly ) {
@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE( negative_real_with_no_integer_part_parsed_correctly ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(-.5) );
 }
 
-BOOST_AUTO_TEST_CASE( positive_real_with_no_integer_part_parsed_correctly ) {
+BOOST_AUTO_TEST_CASE( explicit_positive_real_with_no_integer_part_parsed_correctly ) {
 	boost::optional<ast::Node> tree = ast::parseInput("+.5");
 
 	BOOST_REQUIRE( tree );
@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_CASE( function_with_single_parameter_with_spaces_parsed_correctl
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("f", {ast::Node::makeRational(1)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("foo", {ast::Node::makeRational(1)}) );
 }
 
 BOOST_AUTO_TEST_CASE( function_with_multiple_parameter_parsed_correctly ) {

@@ -67,6 +67,8 @@ BOOST_AUTO_TEST_CASE( Rational_isInteger_works ) {
 	math::Rational z(2,1);
 	math::Rational y(0,2);
 
+	y.canonicalize();
+
 	BOOST_CHECK( !q.isInteger() );
 	BOOST_CHECK( z.isInteger() );
 	BOOST_CHECK( y.isInteger() );
