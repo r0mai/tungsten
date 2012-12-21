@@ -36,10 +36,11 @@ void removeParenthesesIdentityFunction(Node& node) {
 	assert( node.getFunctionCall().getFunction().getIdentifier() == parenthesesIdentityFunction );
 	assert( node.getFunctionCall().getOperands().size() == 1 );
 
-	node = node.getFunctionCall().getOperands().front();
+	node = Node(node.getFunctionCall().getOperands().front());
 }
 
 void removeIfParenthesesIdentityFunction(Node& node) {
+
 	if ( 	node.isFunctionCall() &&
 			node.getFunctionCall().getFunction().isIdentifier() &&
 			node.getFunctionCall().getFunction().getIdentifier() == parenthesesIdentityFunction )
@@ -95,6 +96,10 @@ void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( "Power", result, rhs );
 }
 
+void operatorUnaryMinus(Node& result, const Node& operand) {
+	result = Node::makeRational(-1);
+	operatorTimes(result, operand);
+}
 
 void operatorParentheses(Node& result, const Node& expression) {
 	//Don't do anything for multiple, paralell parentheses
@@ -131,6 +136,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::_val;
 		using qi::alpha;
 		using qi::alnum;
+		using qi::char_;
 
 		start %= expression.alias();
 
@@ -146,7 +152,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		multiplicativeExpression =
 				powerExpression[_val = _1] >>
 				*(  '*' >> powerExpression[phx::bind(&operatorTimes, _val, _1)] |
-					'/' >> powerExpression[phx::bind(&operatorDivide, _val, _1)] );
+					'/' >> powerExpression[phx::bind(&operatorDivide, _val, _1)] |
+					!(char_('+') | char_('-')) >> powerExpression[phx::bind(&operatorTimes, _val, _1)] ); //TODO all unrary operators are required here
 
 		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
@@ -162,19 +169,24 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		functionCallArgumentList %= -(expression % ',');
 
-		functionCall = variable[phx::bind(&createFunctionCall, _val, _1)] >>
+		functionCall =
+				(variable[phx::bind(&createFunctionCall, _val, _1)] >>
 				'[' >>
 				functionCallArgumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
-				']';
+				']')/*[phx::bind(&operatorParentheses, _val, _1)]*/;
+
+		unaryOperator =
+				'-' >> expression[phx::bind(&operatorUnaryMinus, _val, _1)] |
+				'+' >> expression[_val = _1];
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= parenthesizedExpression | functionCall | identifier | real | integer;
+		primary %= real | integer | unaryOperator | parenthesizedExpression | functionCall | identifier;
 
 	}
 
-	qi::uint_parser< math::Integer > integerParser;
-	qi::real_parser< double, qi::strict_ureal_policies<double> > realParser;
+	qi::int_parser< math::Integer > integerParser;
+	qi::real_parser< double, qi::strict_real_policies<double> > realParser;
 
 
 	qi::rule<Iterator, Node(), delimiter> start;
@@ -191,6 +203,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> integer;
 	qi::rule<Iterator, Node(), delimiter> real;
 	qi::rule<Iterator, Node(), delimiter> functionCall;
+	qi::rule<Iterator, Node(), delimiter> unaryOperator;
 	qi::rule<Iterator, Node(), delimiter> parenthesizedExpression;
 	qi::rule<Iterator, Node(), delimiter> primary;
 

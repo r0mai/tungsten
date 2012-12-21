@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE( negative_integer_parsed_correctly ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(42) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(-42) );
 }
 
 BOOST_AUTO_TEST_CASE( positive_integer_parsed_correctly ) {
@@ -480,6 +480,14 @@ BOOST_AUTO_TEST_CASE( right_to_left_associativity_works_with_exponentation ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Power", {ast::Node::makeIdentifier("a"), ast::Node::makeFunctionCall("Power", {ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")})}) );
 }
 
+BOOST_AUTO_TEST_CASE( parentheses_around_the_whole_expression_makes_no_difference ) {
+	boost::optional<ast::Node> tree = ast::parseInput("(a)");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("a") );
+}
+
 BOOST_AUTO_TEST_CASE( plus_has_higher_precedence_than_multiplication_1 ) {
 	boost::optional<ast::Node> tree = ast::parseInput("a + b * c");
 
@@ -496,7 +504,7 @@ BOOST_AUTO_TEST_CASE( plus_has_higher_precedence_than_multiplication_2 ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeFunctionCall("Times", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("c")}) );
 }
 
-BOOST_AUTO_TEST_CASE( parenthesis_modifies_precedence ) {
+BOOST_AUTO_TEST_CASE( parenthesis_modifies_precedence_with_Plus_and_Times ) {
 	boost::optional<ast::Node> tree = ast::parseInput("(a + b) * c");
 
 	BOOST_REQUIRE( tree );
