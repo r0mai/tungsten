@@ -80,7 +80,8 @@ void operatorPlus(Node& result, const Node& rhs) {
 	leftAssociativeListableOperator( "Plus", result, rhs );
 }
 
-void operatorMinus(Node& result, const Node& rhs) {
+void operatorMinus(Node& result, Node rhs) {
+	removeIfParenthesesIdentityFunction(rhs);
 	operatorPlus( result, Node::makeFunctionCall("Times", {Node::makeRational(-1), rhs}) );
 }
 
@@ -88,7 +89,8 @@ void operatorTimes(Node& result, const Node& rhs) {
 	leftAssociativeListableOperator( "Times", result, rhs );
 }
 
-void operatorDivide(Node& result, const Node& rhs) {
+void operatorDivide(Node& result, Node rhs) {
+	removeIfParenthesesIdentityFunction(rhs);
 	operatorTimes( result, Node::makeFunctionCall("Power", {rhs, Node::makeRational(-1)}) );
 }
 
@@ -106,7 +108,7 @@ void operatorParentheses(Node& result, const Node& expression) {
 }
 
 void operatorUnaryMinus(Node& result, const Node& operand) {
-	//TODO "- 1" should be parsed az -1 directly (and not Times[-1, 1] (low priority)
+	//TODO "- 1" should be parsed as -1 directly (and not Times[-1, 1] (low priority)
 	result = Node::makeRational(-1);
 	operatorTimes(result, operand);
 	operatorParentheses(result, result);

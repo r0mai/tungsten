@@ -452,6 +452,33 @@ BOOST_AUTO_TEST_CASE( addition_parsed_correctly_with_3_arguments_with_spaces ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b"), ast::Node::makeIdentifier("c")}) );
 }
 
+BOOST_AUTO_TEST_CASE( binary_Minus_Parentheses_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a-(b)");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus", {
+			ast::Node::makeIdentifier("a"),
+			ast::Node::makeFunctionCall("Times", {
+					ast::Node::makeRational(-1),
+					ast::Node::makeIdentifier("b")
+			})
+	}) );
+}
+
+BOOST_AUTO_TEST_CASE( Divide_Parentheses_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a/(b)");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {
+			ast::Node::makeIdentifier("a"),
+			ast::Node::makeFunctionCall("Power", {
+					ast::Node::makeIdentifier("b"),
+					ast::Node::makeRational(-1)
+			})
+	}) );
+}
 
 BOOST_AUTO_TEST_CASE( multiplication_parsed_correctly_with_2_arguments ) {
 	boost::optional<ast::Node> tree = ast::parseInput("a*b");
