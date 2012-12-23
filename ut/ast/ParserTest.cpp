@@ -148,19 +148,19 @@ BOOST_AUTO_TEST_CASE( String_parsed_correctly ) {
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_spaces_inside ) {
-	boost::optional<ast::Node> tree = ast::parseInput("\"a b\t c\"");
+	boost::optional<ast::Node> tree = ast::parseInput("\"a b  c\"");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a b\tc") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a b  c") );
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_spaces_outside ) {
-	boost::optional<ast::Node> tree = ast::parseInput("  \"a b\t c\" ");
+	boost::optional<ast::Node> tree = ast::parseInput("  \"a b c\" ");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a b\tc") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a b c") );
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_new_line ) {
@@ -169,6 +169,54 @@ BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_new_line ) {
 	BOOST_REQUIRE( tree );
 
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\nb") );
+}
+
+BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_carrige_return ) {
+	boost::optional<ast::Node> tree = ast::parseInput("\"a\\rb\"");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\rb") );
+}
+
+BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_bell ) {
+	boost::optional<ast::Node> tree = ast::parseInput("\"a\\ac\"");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\ac") );
+}
+
+BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_backspace ) {
+	boost::optional<ast::Node> tree = ast::parseInput("\"a\\bc\"");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\bc") );
+}
+
+BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_formfeed ) {
+	boost::optional<ast::Node> tree = ast::parseInput("\"a\\fc\"");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\fc") );
+}
+
+BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_horizontal_tab ) {
+	boost::optional<ast::Node> tree = ast::parseInput("\"a\\tc\"");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\tc") );
+}
+
+BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_vertical_tab ) {
+	boost::optional<ast::Node> tree = ast::parseInput("\"a\\vc\"");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("a\vc") );
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_quotation_mark ) {
@@ -196,11 +244,11 @@ BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_escaped_tabulator ) {
 }
 
 BOOST_AUTO_TEST_CASE( String_parsed_correctly_with_multiple_escaped_characters ) {
-	boost::optional<ast::Node> tree = ast::parseInput("\\\"\\t\\\\\\n\\\"");
+	boost::optional<ast::Node> tree = ast::parseInput("\"\\\"\\n\\\\\"");
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("\"\t\\n\"") );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeString("\"\n\\") );
 }
 
 BOOST_AUTO_TEST_CASE( function_without_parameters_parsed_correctly ) {

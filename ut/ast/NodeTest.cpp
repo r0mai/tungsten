@@ -104,6 +104,61 @@ BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_normal_characte
 	BOOST_CHECK_EQUAL(node.toString(), "\"abc d efg\"");
 }
 
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_bell ) {
+	ast::Node node = ast::Node::makeString("abc\a");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\a\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_backspace ) {
+	ast::Node node = ast::Node::makeString("abc\b");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\b\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_formfeed ) {
+	ast::Node node = ast::Node::makeString("abc\f");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\f\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_newline ) {
+	ast::Node node = ast::Node::makeString("abc\n");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\n\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_carrige_return ) {
+	ast::Node node = ast::Node::makeString("abc\r");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\r\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_horizontal_tab ) {
+	ast::Node node = ast::Node::makeString("abc\t");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\t\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_vertical_tab ) {
+	ast::Node node = ast::Node::makeString("abc\v");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\v\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_backslash ) {
+	ast::Node node = ast::Node::makeString("abc\\");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\\\\"");
+}
+
+BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_double_quote ) {
+	ast::Node node = ast::Node::makeString("abc\"");
+
+	BOOST_CHECK_EQUAL(node.toString(), "\"abc\\\"\"");
+}
+
+
 BOOST_AUTO_TEST_CASE( toString_output_is_correct_for_string_with_escaped_characters ) {
 	ast::Node node = ast::Node::makeString("\tc\n \"d");
 

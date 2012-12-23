@@ -5,7 +5,6 @@
 
 #include <cassert>
 
-//#include <boost/phoenix/function.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 
@@ -28,6 +27,10 @@ void makeInteger(Node& result, const math::Integer& number) {
 
 void makeReal(Node& result, const math::Real& number) {
 	result = Node::makeReal(number);
+}
+
+void makeString(Node& result, const String& string) {
+	result = Node::makeString(string);
 }
 
 void removeParenthesesIdentityFunction(Node& node) {
@@ -144,8 +147,10 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::_val;
 		using qi::alpha;
 		using qi::alnum;
+		using qi::print;
 		using qi::char_;
 		using qi::eps;
+		using qi::lit;
 
 		start %= expression.alias();
 
@@ -176,13 +181,24 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		variable %= alpha >> *alnum;
 		identifier = variable[phx::bind(&makeIdentifier, _val, _1)];
 
+		unescapedCharacters.add("\\a", '\a')("\\b", '\b')("\\f", '\f')("\\n", '\n')
+                              ("\\r", '\r')("\\t", '\t')("\\v", '\v')
+                              ("\\\\", '\\')/*("\\\'", '\'')*/("\\\"", '\"');
+
+		unescapedString %=
+				lit('"') >>
+				*(unescapedCharacters | (print - '"')) >>
+				lit('"');
+
+		string = unescapedString[phx::bind(&makeString, _val, _1)];
+
 		argumentList %= -(expression % ',');
 
 		functionCall =
 				(variable[phx::bind(&createFunctionCallFromVector, _val, _1)] >>
 				'[' >>
 				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
-				']')/*[phx::bind(&operatorParentheses, _val, _1)]*/;
+				']');
 
 		list =
 				eps[phx::bind(&createFunctionCallFromString, _val, "List")] >>
@@ -196,7 +212,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | integer | unaryOperator | parenthesizedExpression | list | functionCall | identifier;
+		primary %= real | integer | string | unaryOperator | parenthesizedExpression | list | functionCall | identifier;
 
 	}
 
@@ -213,6 +229,10 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 	qi::rule<Iterator, std::vector<char>()> variable;
 	qi::rule<Iterator, std::vector<Node>(), delimiter> argumentList;
+
+	qi::symbols<String::value_type, String::value_type> unescapedCharacters;
+	qi::rule<Iterator, String()> unescapedString;
+	qi::rule<Iterator, Node(), delimiter> string;
 
 	qi::rule<Iterator, Node(), delimiter> identifier;
 	qi::rule<Iterator, Node(), delimiter> integer;
