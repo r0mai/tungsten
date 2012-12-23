@@ -352,7 +352,7 @@ BOOST_AUTO_TEST_CASE( unary_plus_parsed_correctly_with_Identifier_in_parentheses
 }
 
 BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Identifier ) {
-	boost::optional<ast::Node> tree = ast::parseInput("--a");
+	boost::optional<ast::Node> tree = ast::parseInput("- -a"); //--a is predecrement
 
 	BOOST_REQUIRE( tree );
 
@@ -361,7 +361,7 @@ BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Identifier ) {
 }
 
 BOOST_AUTO_TEST_CASE( two_unary_pluses_parsed_correctly_with_Identifier ) {
-	boost::optional<ast::Node> tree = ast::parseInput("++a");
+	boost::optional<ast::Node> tree = ast::parseInput("+ +a"); //++a is preincrement
 
 	BOOST_REQUIRE( tree );
 
@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE( two_unary_pluses_parsed_correctly_with_Identifier ) {
 }
 
 BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Integer ) {
-	boost::optional<ast::Node> tree = ast::parseInput("--3");
+	boost::optional<ast::Node> tree = ast::parseInput("- -3");
 
 	BOOST_REQUIRE( tree );
 
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Integer ) {
 }
 
 BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Real ) {
-	boost::optional<ast::Node> tree = ast::parseInput("--3.2");
+	boost::optional<ast::Node> tree = ast::parseInput("- -3.2");
 
 	BOOST_REQUIRE( tree );
 
@@ -611,6 +611,40 @@ BOOST_AUTO_TEST_CASE( parenthesis_modifies_precedence_with_Plus_and_Times ) {
 	BOOST_REQUIRE( tree );
 
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Times", {ast::Node::makeFunctionCall("Plus", {ast::Node::makeIdentifier("a"), ast::Node::makeIdentifier("b")}), ast::Node::makeIdentifier("c")}) );
+}
+
+BOOST_AUTO_TEST_CASE( empty_List_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("{}");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("List") );
+}
+
+BOOST_AUTO_TEST_CASE( one_argument_List_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("{x}");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("List", {ast::Node::makeIdentifier("x")}) );
+}
+
+BOOST_AUTO_TEST_CASE( two_argument_List_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("{x, y}");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("List", {ast::Node::makeIdentifier("x"), ast::Node::makeIdentifier("y")}) );
+}
+
+BOOST_AUTO_TEST_CASE( Lists_can_take_part_in_expressions ) {
+	boost::optional<ast::Node> tree = ast::parseInput("{x} + {}");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeFunctionCall("Plus",
+			{ast::Node::makeFunctionCall("List", {ast::Node::makeIdentifier("x")}),
+			ast::Node::makeFunctionCall("List")}) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

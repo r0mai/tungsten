@@ -106,13 +106,18 @@ void operatorParentheses(Node& result, const Node& expression) {
 }
 
 void operatorUnaryMinus(Node& result, const Node& operand) {
+	//TODO "- 1" should be parsed az -1 directly (and not Times[-1, 1] (low priority)
 	result = Node::makeRational(-1);
 	operatorTimes(result, operand);
 	operatorParentheses(result, result);
 }
 
-void createFunctionCall(Node& result, const std::vector<char>& name) {
-	result = Node::makeFunctionCall( Node::makeIdentifier(name.begin(), name.end()) );
+void createFunctionCallFromString(Node& result, const std::string& name) {
+	result = Node::makeFunctionCall( Node::makeIdentifier(name) );
+}
+
+void createFunctionCallFromVector(Node& result, const std::vector<char>& name) {
+	createFunctionCallFromString(result, std::string(name.begin(), name.end()));
 }
 
 void fillFunctionCall(Node& result, const std::vector<Node>& operands) {
@@ -138,6 +143,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::alpha;
 		using qi::alnum;
 		using qi::char_;
+		using qi::eps;
 
 		start %= expression.alias();
 
@@ -154,7 +160,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				powerExpression[_val = _1] >>
 				*(  '*' >> powerExpression[phx::bind(&operatorTimes, _val, _1)] |
 					'/' >> powerExpression[phx::bind(&operatorDivide, _val, _1)] |
-					!(char_('+') | char_('-')) >> powerExpression[phx::bind(&operatorTimes, _val, _1)] ); //TODO all unrary operators are required here
+					!(char_('+') | char_('-')) >> powerExpression[phx::bind(&operatorTimes, _val, _1)] ); //TODO all unrary operators which can be binary operators are required here
 
 		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
@@ -168,13 +174,19 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		variable %= alpha >> *alnum;
 		identifier = variable[phx::bind(&makeIdentifier, _val, _1)];
 
-		functionCallArgumentList %= -(expression % ',');
+		argumentList %= -(expression % ',');
 
 		functionCall =
-				(variable[phx::bind(&createFunctionCall, _val, _1)] >>
+				(variable[phx::bind(&createFunctionCallFromVector, _val, _1)] >>
 				'[' >>
-				functionCallArgumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
+				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
 				']')/*[phx::bind(&operatorParentheses, _val, _1)]*/;
+
+		list =
+				eps[phx::bind(&createFunctionCallFromString, _val, "List")] >>
+				'{' >>
+				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
+				'}';
 
 		unaryOperator =
 				'-' >> powerExpression[phx::bind(&operatorUnaryMinus, _val, _1)] |
@@ -182,7 +194,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | integer | unaryOperator | parenthesizedExpression | functionCall | identifier;
+		primary %= real | integer | unaryOperator | parenthesizedExpression | list | functionCall | identifier;
 
 	}
 
@@ -198,12 +210,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
-	qi::rule<Iterator, std::vector<Node>(), delimiter> functionCallArgumentList;
+	qi::rule<Iterator, std::vector<Node>(), delimiter> argumentList;
 
 	qi::rule<Iterator, Node(), delimiter> identifier;
 	qi::rule<Iterator, Node(), delimiter> integer;
 	qi::rule<Iterator, Node(), delimiter> real;
 	qi::rule<Iterator, Node(), delimiter> functionCall;
+	qi::rule<Iterator, Node(), delimiter> list;
 	qi::rule<Iterator, Node(), delimiter> unaryOperator;
 	qi::rule<Iterator, Node(), delimiter> parenthesizedExpression;
 	qi::rule<Iterator, Node(), delimiter> primary;
