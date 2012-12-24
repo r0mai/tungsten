@@ -178,7 +178,10 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		integer = integerParser[phx::bind(&makeInteger, _val, _1)];
 		real = realParser[phx::bind(&makeReal, _val, _1)];
 
-		variable %= alpha >> *alnum;
+		variable %=
+				(alpha | char_('$') | char_('_') ) >>
+				*(alnum | char_('$') | char_('_'));
+
 		identifier = variable[phx::bind(&makeIdentifier, _val, _1)];
 
 		unescapedCharacters.add("\\a", '\a')("\\b", '\b')("\\f", '\f')("\\n", '\n')

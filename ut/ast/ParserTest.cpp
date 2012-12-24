@@ -139,6 +139,38 @@ BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly_with_spaces ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("Pi") );
 }
 
+BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly_with_starting_dollar_sign ) {
+	boost::optional<ast::Node> tree = ast::parseInput("$abc ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("$abc") );
+}
+
+BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly_with_dollarsign ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a$bc ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("a$bc") );
+}
+
+BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly_with_starting_underscore ) {
+	boost::optional<ast::Node> tree = ast::parseInput("_abc ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("_abc") );
+}
+
+BOOST_AUTO_TEST_CASE( Identifier_parsed_correctly_with_underscore ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a_bc ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeIdentifier("a_bc") );
+}
+
 BOOST_AUTO_TEST_CASE( String_parsed_correctly ) {
 	boost::optional<ast::Node> tree = ast::parseInput("\"abc\"");
 
