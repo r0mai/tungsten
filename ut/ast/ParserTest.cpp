@@ -27,6 +27,14 @@ BOOST_AUTO_TEST_CASE( integer_parsed_correctly ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational(42) );
 }
 
+BOOST_AUTO_TEST_CASE( huge_integer_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("123456789987654321123456789987654321");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeRational("123456789987654321123456789987654321") );
+}
+
 BOOST_AUTO_TEST_CASE( integer_with_spaces_parsed_correctly ) {
 	boost::optional<ast::Node> tree = ast::parseInput(" 42\t");
 
@@ -57,6 +65,14 @@ BOOST_AUTO_TEST_CASE( real_parsed_correctly ) {
 	BOOST_REQUIRE( tree );
 
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal(1.5) );
+}
+
+BOOST_AUTO_TEST_CASE( huge_real_parsed_correctly ) {
+	boost::optional<ast::Node> tree = ast::parseInput("1283618212498721056128561248126489126811.5");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::makeReal("1283618212498721056128561248126489126811.5") );
 }
 
 BOOST_AUTO_TEST_CASE( negative_real_parsed_correctly ) {
