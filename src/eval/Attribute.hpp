@@ -13,6 +13,8 @@ typedef ast::Identifier Attribute;
 typedef std::vector<Attribute> AttributeVector;
 typedef std::map<ast::Identifier, AttributeVector> AttributeMap;
 
+AttributeMap createDefaultAttributeMap();
+
 }} //namespace tungsten::eval
 
 #endif /* EVAL_ATTRIBUTE_HPP_ */

@@ -23,15 +23,13 @@ protected:
 
 	AttributeMap attributeMap;
 
-	//FIXME maybe this shouldn't be static
-	static const builtin::Functions builtinFunctions;
-
-
+	const builtin::Functions builtinFunctions;
 
 	//History
 
 private:
 	struct EvaluateVisitor;
+
 };
 
 }} //namespace tungsten::eval

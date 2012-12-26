@@ -66,7 +66,7 @@ public:
 	std::string toString() const;
 
 	//Totally arbitrary. default constructed Node should never be used
-	Node() : type_(Type::Rational) {}
+	Node() : type_(Type::Identifier), storage(Identifier("???")) {}
 
 	template<class Visitor>
 	friend typename std::remove_reference<Visitor>::type::result_type

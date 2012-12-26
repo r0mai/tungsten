@@ -10,9 +10,7 @@
 
 namespace tungsten { namespace eval {
 
-const builtin::Functions Environment::builtinFunctions(builtin::createFunctions());
-
-Environment::Environment() {}
+Environment::Environment() : attributeMap(createDefaultAttributeMap()), builtinFunctions(builtin::createFunctions()) {}
 
 Environment::~Environment() {}
 
@@ -43,15 +41,13 @@ struct Environment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				boost::bind(&Environment::recursiveEvaluate, boost::ref(environment), _1) );
 
 		if ( function.isIdentifier() ) {
-			builtin::Functions::const_iterator it = builtinFunctions.find(function.getIdentifier());
-			if ( it != builtinFunctions.end() ) {
+			builtin::Functions::const_iterator it = environment.builtinFunctions.find(function.getIdentifier());
+			if ( it != environment.builtinFunctions.end() ) {
 				return (it->second)(operands, environment);
 			}
 		}
 
 		return ast::Node::makeFunctionCall(function, operands);
-
-
 
 	}
 
