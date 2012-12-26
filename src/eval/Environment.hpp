@@ -4,6 +4,9 @@
 
 #include "ast/Node.hpp"
 #include "Message.hpp"
+#include "builtin/functions.hpp"
+#include "EnvironmentFwd.hpp"
+#include "Attribute.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -16,11 +19,19 @@ public:
 protected:
 	virtual void handleMessage(const Message& /*message*/) {}
 
+	ast::Node recursiveEvaluate(const ast::Node& node);
+
+	AttributeMap attributeMap;
+
+	//FIXME maybe this shouldn't be static
+	static const builtin::Functions builtinFunctions;
+
+
 
 	//History
-	//Symbols
-	//builtin functions
 
+private:
+	struct EvaluateVisitor;
 };
 
 }} //namespace tungsten::eval

@@ -5,6 +5,7 @@
 #include <cassert>
 #include <initializer_list>
 #include <memory>
+#include <type_traits>
 
 #include <boost/variant.hpp>
 #include <boost/operators.hpp>
@@ -68,9 +69,12 @@ public:
 	Node() : type_(Type::Rational) {}
 
 	template<class Visitor>
-	friend typename Visitor::result_type applyVisitor(const Node& node, Visitor&& visitor);
+	friend typename std::remove_reference<Visitor>::type::result_type
+	applyVisitor(const Node& node, Visitor&& visitor);
+
 	template<class Visitor>
-	friend typename Visitor::result_type applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor);
+	friend typename std::remove_reference<Visitor>::type::result_type
+	applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor);
 
 private:
 
@@ -86,13 +90,20 @@ private:
 std::ostream& operator<<(std::ostream& os, const Node& node);
 
 template<class Visitor>
-typename Visitor::result_type applyVisitor(const Node& node, Visitor&& visitor) {
-	return boost::apply_visitor(std::forward<Visitor>(visitor), node.storage);
+typename std::remove_reference<Visitor>::type::result_type
+applyVisitor(const Node& node, Visitor&& visitor) {
+	return boost::apply_visitor(
+			std::forward<Visitor>(visitor),
+			node.storage);
 }
 
 template<class Visitor>
-typename Visitor::result_type applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
-	return boost::apply_visitor(std::forward<Visitor>(visitor), lhs.storage, rhs.storage);
+typename std::remove_reference<Visitor>::type::result_type
+applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
+	return boost::apply_visitor(
+			std::forward<Visitor>(visitor),
+			lhs.storage,
+			rhs.storage);
 }
 
 
