@@ -1,7 +1,7 @@
 
-#include "eval/CLIEnvironment.hpp"
+#include "eval/CLISessionEnvironment.hpp"
 
 int main() {
-	tungsten::eval::CLIEnvironment environment;
+	tungsten::eval::CLISessionEnvironment environment;
 	environment.run();
 }

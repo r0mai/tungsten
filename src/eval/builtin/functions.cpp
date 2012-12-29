@@ -3,9 +3,12 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
+BuiltinFunctionPair::BuiltinFunctionPair(FunctionPtr regular, FunctionPtr numeric) :
+		regular(regular), numeric(numeric) {}
+
 Functions createFunctions() {
 	Functions result;
-	result["Plus"] = &Plus;
+	result["Plus"] = BuiltinFunctionPair(&Plus, &Plus_N);
 	return result;
 }
 

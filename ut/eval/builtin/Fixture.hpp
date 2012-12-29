@@ -8,7 +8,7 @@
 #include <boost/optional.hpp>
 
 #include "ast/Parser.hpp"
-#include "../UnitTestEnvironment.hpp"
+#include "../UnitTestSessionEnvironment.hpp"
 
 class BuiltinFunctionFixture {
 public:

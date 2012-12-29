@@ -12,8 +12,7 @@ BOOST_FIXTURE_TEST_CASE( one_plus_two_is_three, BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_REQUIRE( result->isRational() );
-	BOOST_CHECK_EQUAL( result->getRational(), 3 );
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeRational(3) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

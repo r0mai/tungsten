@@ -1,5 +1,5 @@
 
-#include "CLIEnvironment.hpp"
+#include "CLISessionEnvironment.hpp"
 
 #include <iostream>
 #include <string>
@@ -8,11 +8,11 @@
 
 namespace tungsten { namespace eval {
 
-CLIEnvironment::CLIEnvironment() {}
+CLISessionEnvironment::CLISessionEnvironment() {}
 
-CLIEnvironment::~CLIEnvironment() {}
+CLISessionEnvironment::~CLISessionEnvironment() {}
 
-void CLIEnvironment::run() {
+void CLISessionEnvironment::run() {
 
 	std::string line;
 	while ( std::getline(std::cin, line) ) {
