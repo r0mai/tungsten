@@ -7,16 +7,20 @@ BOOST_AUTO_TEST_SUITE( AstParserTest )
 
 using namespace tungsten;
 
-BOOST_AUTO_TEST_CASE( empty_input_fails ) {
+BOOST_AUTO_TEST_CASE( empty_input_results_in_Null ) {
 	boost::optional<ast::Node> tree = ast::parseInput("");
 
-	BOOST_CHECK( !tree );
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::makeIdentifier("Null") );
 }
 
-BOOST_AUTO_TEST_CASE( empty_input_with_spaces_fails ) {
+BOOST_AUTO_TEST_CASE( empty_input_with_spaces_fails_results_in_Null ) {
 	boost::optional<ast::Node> tree = ast::parseInput(" \t");
 
-	BOOST_CHECK( !tree );
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::makeIdentifier("Null") );
 }
 
 BOOST_AUTO_TEST_CASE( integer_parsed_correctly ) {
