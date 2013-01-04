@@ -9,6 +9,10 @@
 #include <boost/spirit/include/phoenix.hpp>
 
 namespace tungsten { namespace ast {
+/** 
+\brief Main Namespace for Abstract Syntax Tree Building
+
+**/
 
 namespace spirit = boost::spirit;
 namespace qi = spirit::qi;
@@ -140,7 +144,22 @@ typedef boost::spirit::ascii::blank_type delimiter;
 
 template<class Iterator>
 struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter> {
+/**
+\brief Main grammar for parsing.
 
+
+
+  \f[
+    |I_2|=\left| \int_{0}^T \psi(t) 
+             \left\{ 
+                u(a,t)-
+                \int_{\gamma(t)}^a 
+                \frac{d\theta}{k(\theta,t)}
+                \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
+             \right\} dt
+          \right|
+  \f]
+**/
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 
 		using qi::_1;
