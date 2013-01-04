@@ -7,7 +7,7 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment, eval::EvaluationEnvironment& evaluationEnvironment) {
+ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( operands.size() == 0 ) {
 		return ast::Node::makeRational(0);
 	}
@@ -15,10 +15,8 @@ ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionE
 	if ( operands.size() == 1 ) {
 		return operands[0];
 	}
-}
 
-ast::Node Plus_N(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment, eval::EvaluationEnvironment& evaluationEnvironment) {
-	return Plus(operands, sessionEnvironment, evaluationEnvironment);
+	return ast::Node::makeFunctionCall("Plus", operands);
 }
 
 }}} //namespace tungsten::eval::builtin

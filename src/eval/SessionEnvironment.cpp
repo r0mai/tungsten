@@ -10,21 +10,20 @@
 
 namespace tungsten { namespace eval {
 
-SessionEnvironment::SessionEnvironment() : attributeMap(createDefaultAttributeMap()), builtinFunctions(builtin::createFunctions()) {}
+SessionEnvironment::SessionEnvironment() :
+		attributeMap(AttributeMap::makeDefault()), builtinFunctions(builtin::createFunctions()) {}
 
 SessionEnvironment::~SessionEnvironment() {}
 
 ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
 	//TODO update history
-	EvaluationEnvironment evaluationEnvironment;
-	return recursiveEvaluate(node, evaluationEnvironment);
+	return recursiveEvaluate(node);
 }
 
 struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
-	EvaluateVisitor(SessionEnvironment& sessionEnvironment, EvaluationEnvironment& evaluationEnvironment) :
-		sessionEnvironment(sessionEnvironment),
-		evaluationEnvironment(evaluationEnvironment) {}
+	EvaluateVisitor(SessionEnvironment& sessionEnvironment) :
+		sessionEnvironment(sessionEnvironment) {}
 
 	ast::Node operator()(const math::Real& real) {
 		return ast::Node::makeReal(real);
@@ -35,18 +34,18 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
-		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction(), evaluationEnvironment);
-		ast::Operands operands;
+		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction());
+		ast::Operands operands(functionCall.getOperands().size());
 
 		boost::transform(
 				functionCall.getOperands(),
-				std::back_inserter(operands),
-				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1, boost::ref(evaluationEnvironment)) );
+				operands.begin(),
+				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
 
 		if ( function.isIdentifier() ) {
 			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.getIdentifier());
 			if ( it != sessionEnvironment.builtinFunctions.end() ) {
-				return (it->second.regular)(operands, sessionEnvironment, evaluationEnvironment);
+				return (it->second)(operands, sessionEnvironment);
 			}
 		}
 
@@ -64,11 +63,10 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 private:
 	SessionEnvironment& sessionEnvironment;
-	EvaluationEnvironment& evaluationEnvironment;
 };
 
-ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node, EvaluationEnvironment& evaluationEnvironment) {
-	EvaluateVisitor evaluateVisitor{*this, evaluationEnvironment};
+ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
+	EvaluateVisitor evaluateVisitor{*this};
 	return ast::applyVisitor(node, evaluateVisitor);
 }
 

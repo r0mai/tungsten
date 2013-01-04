@@ -7,7 +7,6 @@
 #include "builtin/functions.hpp"
 #include "SessionEnvironmentFwd.hpp"
 #include "Attribute.hpp"
-#include "EvaluationEnvironment.hpp"
 
 //TODO maybe this stuff should be moved outside to a session directory
 
@@ -22,7 +21,7 @@ public:
 protected:
 	virtual void handleMessage(const Message& /*message*/) {}
 
-	ast::Node recursiveEvaluate(const ast::Node& node, EvaluationEnvironment& evaluationEnvironment);
+	ast::Node recursiveEvaluate(const ast::Node& node);
 
 	AttributeMap attributeMap;
 
