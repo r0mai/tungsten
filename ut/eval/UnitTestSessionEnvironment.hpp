@@ -7,7 +7,10 @@
 
 class UnitTestEnvironment : public tungsten::eval::SessionEnvironment {
 public:
-//TODO
+	//Expose this for unit testing purposes
+	void addAttribute(const tungsten::ast::Identifier& identifier, const tungsten::eval::Attribute& attribute) {
+		attributeMap.addAttribute(identifier, attribute);
+	}
 };
 
 #endif /* UT_EVAL_UNITTESTSESSIONENVIRONMENT_HPP_ */

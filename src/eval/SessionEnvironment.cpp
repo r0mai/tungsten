@@ -37,10 +37,14 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction());
 		ast::Operands operands(functionCall.getOperands().size());
 
+		//TODO Hold*
+
 		boost::transform(
 				functionCall.getOperands(),
 				operands.begin(),
 				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
+
+		//TODO Listable
 
 		if ( function.isIdentifier() ) {
 			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.getIdentifier());
@@ -58,6 +62,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const ast::Identifier& identifier) {
+		//TODO
 		return ast::Node::makeIdentifier(identifier);
 	}
 
@@ -67,7 +72,20 @@ private:
 
 ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 	EvaluateVisitor evaluateVisitor{*this};
-	return ast::applyVisitor(node, evaluateVisitor);
+	ast::Node result = ast::applyVisitor(node, evaluateVisitor);
+
+	//Sort if the result is Orderless function
+	//Maybe this should be in FunctionCall branch of the Visitor
+	if (
+			result.isFunctionCall() &&
+			result.getFunctionCall().getFunction().isIdentifier() &&
+			attributeMap.hasAttribute(result.getFunctionCall().getFunction().getIdentifier(), "Orderless") )
+	{
+		ast::Operands& operands = result.getFunctionCall().getOperands();
+		std::sort( operands.begin(), operands.end() );
+	}
+
+	return result;
 }
 
 }} //namespace tungsten::eval
