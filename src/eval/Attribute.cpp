@@ -15,7 +15,7 @@ AttributeMap AttributeMap::makeDefault() {
 
 AttributeMap::AttributeMap() {}
 
-AttributeMap::AttributeMap(const std::map<ast::Identifier, AttributeSet>& attributeStorage) :
+AttributeMap::AttributeMap(const AttributeStorage& attributeStorage) :
 		attributeStorage(attributeStorage) {}
 
 bool AttributeMap::hasAttribute(const ast::Identifier& identifier, const Attribute& attribute) const {
