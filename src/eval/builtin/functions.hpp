@@ -10,6 +10,7 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
+//TODO make this an std::function
 typedef ast::Node(*FunctionPtr)(
 		const ast::Operands& node,
 		eval::SessionEnvironment& sessionEnvironment);
