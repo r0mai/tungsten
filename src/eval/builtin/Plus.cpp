@@ -23,27 +23,25 @@ struct PlusVisitor : boost::static_visitor<void> {
 	PlusVisitor(eval::SessionEnvironment& sessionEnvironment) : sessionEnvironment(sessionEnvironment) {}
 
 	void operator()(const math::Real& real) {
-		constant = RealRationalNumber::doOperation( constant, real, rationalPlus, realPlus );
+		doAddition(constant, real);
 	}
 
 	void operator()(const math::Rational& rational) {
-		constant = RealRationalNumber::doOperation( constant, rational, rationalPlus, realPlus );
+		doAddition(constant, rational);
 	}
 
 	void operator()(const ast::String& string) {
-		coefficientMap[ast::Node::makeString(string)] =
-				RealRationalNumber::doOperation( coefficientMap[ast::Node::makeString(string)], ast::Node::makeRational(1), rationalPlus, realPlus );
+		doAddition(coefficientMap[ast::Node::makeString(string)], math::Rational(1));
 	}
 
 	void operator()(const ast::Identifier& identifier) {
-		coefficientMap[ast::Node::makeIdentifier(identifier)] =
-				RealRationalNumber::doOperation( coefficientMap[ast::Node::makeIdentifier(identifier)], ast::Node::makeRational(1), rationalPlus, realPlus );
+		doAddition(coefficientMap[ast::Node::makeIdentifier(identifier)], math::Rational(1));
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
 		assert( functionCall.getFunction() != ast::Node::makeIdentifier("Plus") );
 
-		ast::Node key = ast::Node::makeFunctionCall(functionCall);
+		ast::Node term = ast::Node::makeFunctionCall(functionCall);
 		RealRationalNumber coefficient = math::Rational(1);
 
 		if ( functionCall.getFunction() == ast::Node::makeIdentifier("Times") ) {
@@ -66,16 +64,20 @@ struct PlusVisitor : boost::static_visitor<void> {
 				assert( !toMultiply.empty() );
 
 				if ( toMultiply.size() == 1 ) {
-					key = toMultiply[0];
+					term = toMultiply[0];
 				} else {
-					key = ast::Node::makeFunctionCall("Times", toMultiply);
+					term = ast::Node::makeFunctionCall("Times", toMultiply);
 				}
 			}
 		}
-		coefficientMap[key] =
-				RealRationalNumber::doOperation( coefficientMap[key], coefficient, rationalPlus, realPlus );
+		doAddition(coefficientMap[term], coefficient);
 	}
 
+	void doAddition(RealRationalNumber& value, const RealRationalNumber& toAdd) {
+		value = RealRationalNumber::doOperation( value, toAdd,
+						[](const math::Rational& x, const math::Rational& y) { return x+y; },
+						[](const math::Real& x, const math::Real& y) { return x+y; } );
+	}
 
 	ast::Node resultToNode() const {
 
@@ -119,14 +121,8 @@ struct PlusVisitor : boost::static_visitor<void> {
 	typedef std::map<ast::Node, RealRationalNumber> CoefficientMap;
 	CoefficientMap coefficientMap;
 
-	static const RealRationalNumber::RationalOperation rationalPlus;
-	static const RealRationalNumber::RealOperation realPlus;
-
 	eval::SessionEnvironment& sessionEnvironment;
 };
-
-const RealRationalNumber::RationalOperation PlusVisitor::rationalPlus = [](const math::Rational& x, const math::Rational& y) { return x+y; };
-const RealRationalNumber::RealOperation PlusVisitor::realPlus = [](const math::Real& x, const math::Real& y) { return x+y; };
 
 ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
