@@ -107,6 +107,14 @@ BOOST_FIXTURE_TEST_CASE( x_minus_x_minus_3_test, BuiltinFunctionFixture ) {
 }
 
 BOOST_FIXTURE_TEST_CASE( y_plus_x_minus_x_plus_3_test, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("y+x-x+3");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeFunctionCall("Plus", {ast::Node::makeRational(3), ast::Node::makeIdentifier("y")}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( y_plus_2x_minus_2x_plus_3_test, BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("y+2x-2x+3");
 
 	BOOST_REQUIRE( result );
@@ -147,7 +155,7 @@ BOOST_FIXTURE_TEST_CASE( mixed_Numeric_identifier_coefficients_is_Real, BuiltinF
 }
 
 BOOST_FIXTURE_TEST_CASE( real_coefficient_doesnt_alter_other_coefficients, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("1.5x+2x+3y");
+	boost::optional<ast::Node> result = parseAndEvaluate("1.5x+x*2+3y");
 
 	BOOST_REQUIRE( result );
 

@@ -18,11 +18,12 @@ public:
 	virtual ~SessionEnvironment();
 
 	ast::Node evaluate(const ast::Node& node);
-protected:
+
 	virtual void handleMessage(const Message& /*message*/) {}
 
 	ast::Node recursiveEvaluate(const ast::Node& node);
 
+protected:
 	AttributeMap attributeMap;
 
 	const builtin::Functions builtinFunctions;
