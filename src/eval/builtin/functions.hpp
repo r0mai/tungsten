@@ -7,14 +7,11 @@
 #include "eval/SessionEnvironmentFwd.hpp"
 
 #include <map>
+#include <functional>
 
 namespace tungsten { namespace eval { namespace builtin {
 
-//TODO make this an std::function
-typedef ast::Node(*FunctionPtr)(
-		const ast::Operands& node,
-		eval::SessionEnvironment& sessionEnvironment);
-
+typedef std::function<ast::Node(const ast::Operands&, eval::SessionEnvironment&)> FunctionPtr;
 
 typedef std::map<ast::Identifier, FunctionPtr> Functions;
 
