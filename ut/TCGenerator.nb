@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[      4847,        120]
-NotebookOptionsPosition[      4565,        106]
-NotebookOutlinePosition[      4908,        121]
-CellTagsIndexPosition[      4865,        118]
+NotebookDataLength[      7713,        190]
+NotebookOptionsPosition[      7391,        175]
+NotebookOutlinePosition[      7733,        190]
+CellTagsIndexPosition[      7690,        187]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -75,7 +75,7 @@ Cell[BoxData[
   3.566495944472665*^9, 3.566495964465808*^9}, {3.5664962503601604`*^9, 
   3.5664963138237906`*^9}, {3.566496377619439*^9, 3.56649637780145*^9}, {
   3.566496416287651*^9, 3.5664964172217045`*^9}, {3.566496468080613*^9, 
-  3.566496541212796*^9}}],
+  3.566496541212796*^9}, {3.5665037666110654`*^9, 3.5665037867652183`*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -97,14 +97,83 @@ Cell[BoxData[
     "<>", "\"\<\\\");\\n\\n\>\"", "<>", "\[IndentingNewLine]", 
     "\"\<\\tBOOST_REQUIRE( result );\\n\\n\>\"", "<>", "\[IndentingNewLine]", 
     "\"\<\\tBOOST_CHECK_EQUAL( *result,\>\"", "<>", 
-    RowBox[{"toCodeForm", "[", 
-     RowBox[{"Unevaluated", "[", "x", "]"}], "]"}], "<>", "\"\<);\\n\>\"", "<>",
-     "\[IndentingNewLine]", "\"\<}\>\""}]}]}]], "Input",
+    RowBox[{"toCodeForm", "[", "x", "]"}], "<>", "\"\<);\\n\>\"", "<>", 
+    "\[IndentingNewLine]", "\"\<}\>\""}]}]}]], "Input",
  CellChangeTimes->{{3.566496906401684*^9, 3.566496921036521*^9}, {
   3.566496954341426*^9, 3.5664970377721977`*^9}, {3.5664971216069927`*^9, 
-  3.566497360269644*^9}}]
+  3.566497360269644*^9}, {3.566503789258361*^9, 3.5665037901954145`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetAttributes", "[", 
+   RowBox[{"generateOrderingTC", ",", 
+    RowBox[{"{", "HoldRest", "}"}]}], "]"}], ";", 
+  RowBox[{
+   RowBox[{"generateOrderingTC", "[", 
+    RowBox[{"name_String", ",", "x_", ",", "y_"}], "]"}], ":=", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+   "\"\<BOOST_AUTO_TEST_CASE(\>\"", "<>", "name", "<>", "\"\<) {\\n\>\"", "<>",
+     "\[IndentingNewLine]", "\"\<\\tast::Node x = \>\"", "<>", 
+    RowBox[{"toCodeForm", "[", 
+     RowBox[{"Unevaluated", "[", "x", "]"}], "]"}], " ", "<>", "\"\<;\\n\>\"",
+     " ", "<>", "\[IndentingNewLine]", "\"\<\\tast::Node y = \>\"", "<>", 
+    RowBox[{"toCodeForm", "[", 
+     RowBox[{"Unevaluated", "[", "y", "]"}], "]"}], " ", "<>", "\"\<;\\n\>\"",
+     " ", "<>", "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"OrderedQ", "[", 
+       RowBox[{"{", 
+        RowBox[{"x", ",", "y"}], "}"}], "]"}], ",", 
+      "\"\<\\tBOOST_CHECK_LE(x,y);\\n\>\"", ",", "\"\<\>\""}], "]"}], "<>", 
+    "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"OrderedQ", "[", 
+       RowBox[{"{", 
+        RowBox[{"y", ",", "x"}], "}"}], "]"}], ",", 
+      "\"\<\\tBOOST_CHECK_LE(y,x);\\n\>\"", ",", "\"\<\>\""}], "]"}], "<>", 
+    "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"SameQ", "[", 
+       RowBox[{"x", ",", "y"}], "]"}], ",", 
+      "\"\<\\tBOOST_CHECK_EQUAL(x,y);\\n\>\"", ",", "\"\<\>\""}], "]"}], "<>",
+     "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"UnsameQ", "[", 
+       RowBox[{"x", ",", "y"}], "]"}], ",", 
+      "\"\<\\tBOOST_CHECK_NE(x,y);\\n\>\"", ",", "\"\<\>\""}], "]"}], "<>", 
+    "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"OrderedQ", "[", 
+        RowBox[{"{", 
+         RowBox[{"x", ",", "y"}], "}"}], "]"}], "&&", 
+       RowBox[{"UnsameQ", "[", 
+        RowBox[{"x", ",", "y"}], "]"}]}], ",", 
+      "\"\<\\tBOOST_CHECK_LT(x,y);\\n\>\"", ",", "\"\<\>\""}], "]"}], "<>", 
+    "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"OrderedQ", "[", 
+        RowBox[{"{", 
+         RowBox[{"y", ",", "x"}], "}"}], "]"}], "&&", 
+       RowBox[{"UnsameQ", "[", 
+        RowBox[{"x", ",", "y"}], "]"}]}], ",", 
+      "\"\<\\tBOOST_CHECK_LT(y,x);\\n\>\"", ",", "\"\<\>\""}], "]"}], "<>", 
+    "\[IndentingNewLine]", "\"\<}\>\""}]}]}]], "Input",
+ CellChangeTimes->{{3.5665023173701735`*^9, 3.566502344788742*^9}, {
+  3.5665024081213646`*^9, 3.5665025188526974`*^9}, {3.566503963414322*^9, 
+  3.566503979223226*^9}, {3.5665040120831056`*^9, 3.5665040607458887`*^9}, {
+  3.5665040950148487`*^9, 3.5665041804617367`*^9}, {3.566504224598261*^9, 
+  3.5665042474125657`*^9}}]
 },
-WindowSize->{1269, 797},
+WindowSize->{921, 797},
 WindowMargins->{{0, Automatic}, {Automatic, 43}},
 FrontEndVersion->"8.0 for Microsoft Windows (64-bit) (October 6, 2011)",
 StyleDefinitions->"Default.nb"
@@ -120,11 +189,11 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 2828, 57, 172, "Input"],
-Cell[3388, 79, 1173, 25, 132, "Input"]
+Cell[557, 20, 2878, 57, 212, "Input"],
+Cell[3438, 79, 1180, 24, 152, "Input"],
+Cell[4621, 105, 2766, 68, 232, "Input"]
 }
 ]
 *)
 
 (* End of internal cache information *)
-
