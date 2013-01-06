@@ -8,6 +8,8 @@
 #include <boost/bind.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
+#include "flattenOperands.hpp"
+
 namespace tungsten { namespace eval {
 
 SessionEnvironment::SessionEnvironment() :
@@ -43,6 +45,16 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				functionCall.getOperands(),
 				operands.begin(),
 				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
+
+
+		//Attribute Flat:
+		if (
+			function.isIdentifier() &&
+			sessionEnvironment.attributeMap.hasAttribute(function.getIdentifier(), "Flat") )
+		{
+			operands = flattenOperands( function.getIdentifier(), operands );
+		}
+
 
 		//TODO Listable
 

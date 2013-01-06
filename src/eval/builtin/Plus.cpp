@@ -126,10 +126,8 @@ struct PlusVisitor : boost::static_visitor<void> {
 
 ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
-	ast::Operands flatOperands = flattenOperands("Plus", operands);
-
 	PlusVisitor plusVisitor(sessionEnvironment);
-	for ( const ast::Node& node : flatOperands ) {
+	for ( const ast::Node& node : operands ) {
 		ast::applyVisitor( node, plusVisitor );
 	}
 
