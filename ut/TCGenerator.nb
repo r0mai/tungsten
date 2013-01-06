@@ -1,0 +1,130 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      4847,        120]
+NotebookOptionsPosition[      4565,        106]
+NotebookOutlinePosition[      4908,        121]
+CellTagsIndexPosition[      4865,        118]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetAttributes", "[", 
+   RowBox[{"toCodeForm", ",", 
+    RowBox[{"{", "HoldAll", "}"}]}], "]"}], ";", 
+  RowBox[{
+   RowBox[{"toCodeForm", "[", "x_", "]"}], ":=", 
+   RowBox[{"Switch", "[", 
+    RowBox[{
+     RowBox[{"Head", "[", 
+      RowBox[{"Unevaluated", "[", "x", "]"}], "]"}], ",", 
+     "\[IndentingNewLine]", "Integer", ",", 
+     RowBox[{"\"\<ast::Node::makeRational(\>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"x", ",", "InputForm"}], "]"}], "<>", "\"\<)\>\""}], ",", 
+     "\[IndentingNewLine]", "Rational", ",", 
+     RowBox[{"\"\<ast::Node::makeRational(\>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"Numerator", "[", "x", "]"}], ",", "InputForm"}], "]"}], 
+      "<>", "\"\<,\>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"Denominator", "[", "x", "]"}], ",", "InputForm"}], "]"}], 
+      "<>", "\"\<)\>\""}], ",", "\[IndentingNewLine]", "Real", ",", 
+     RowBox[{"\"\<ast::Node::makeReal(\>\"", "<>", 
+      RowBox[{"ToString", "[", "x", "]"}], "<>", "\"\<)\>\""}], ",", 
+     "\[IndentingNewLine]", "Symbol", ",", 
+     RowBox[{"\"\<ast::Node::makeIdentifier(\\\"\>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"x", ",", "InputForm"}], "]"}], "<>", "\"\<\\\")\>\""}], ",", 
+     "\[IndentingNewLine]", "String", ",", 
+     RowBox[{"\"\<ast::Node::makeString(\>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"x", ",", "InputForm"}], "]"}], "<>", "\"\<)\>\""}], ",", 
+     "\[IndentingNewLine]", "_", ",", 
+     RowBox[{"\"\<ast::Node::makeFunctionCall(\\\"\>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"Head", "[", 
+         RowBox[{"Unevaluated", "[", "x", "]"}], "]"}], ",", "InputForm"}], 
+       "]"}], "<>", "\"\<\\\", \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"List", "@@", 
+        RowBox[{"toCodeForm", "/@", 
+         RowBox[{"Unevaluated", "[", "x", "]"}]}]}], "]"}], "<>", 
+      "\"\<)\>\""}]}], "\[IndentingNewLine]", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.5664941509210796`*^9, 3.5664941659259377`*^9}, {
+  3.5664942024680276`*^9, 3.5664942299846015`*^9}, {3.566494267872769*^9, 
+  3.566494331521409*^9}, {3.5664943908538027`*^9, 3.5664944380044994`*^9}, {
+  3.5664944712744026`*^9, 3.5664945466707153`*^9}, {3.566494875538525*^9, 
+  3.56649487701961*^9}, {3.566495268461999*^9, 3.5664953796683598`*^9}, {
+  3.5664956484157314`*^9, 3.566495649302782*^9}, {3.566495679392503*^9, 
+  3.5664956796305165`*^9}, {3.5664957382518697`*^9, 3.5664958844492316`*^9}, {
+  3.566495944472665*^9, 3.566495964465808*^9}, {3.5664962503601604`*^9, 
+  3.5664963138237906`*^9}, {3.566496377619439*^9, 3.56649637780145*^9}, {
+  3.566496416287651*^9, 3.5664964172217045`*^9}, {3.566496468080613*^9, 
+  3.566496541212796*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetAttributes", "[", 
+   RowBox[{"generateTC", ",", 
+    RowBox[{"{", "HoldRest", "}"}]}], "]"}], ";", 
+  RowBox[{
+   RowBox[{"generateTC", "[", 
+    RowBox[{"name_String", ",", "x_"}], "]"}], ":=", "\[IndentingNewLine]", 
+   RowBox[{
+   "\"\<BOOST_FIXTURE_TEST_CASE( \>\"", " ", "<>", "name", "<>", " ", 
+    "\"\< , BuiltinFunctionFixture ) {\\n\>\"", " ", "<>", 
+    "\[IndentingNewLine]", 
+    "\"\<\\tboost::optional<ast::Node> result = parseAndEvaluate(\\\"\>\"", 
+    " ", "<>", 
+    RowBox[{"ToString", "[", 
+     RowBox[{
+      RowBox[{"Unevaluated", "[", "x", "]"}], ",", "InputForm"}], "]"}], 
+    "<>", "\"\<\\\");\\n\\n\>\"", "<>", "\[IndentingNewLine]", 
+    "\"\<\\tBOOST_REQUIRE( result );\\n\\n\>\"", "<>", "\[IndentingNewLine]", 
+    "\"\<\\tBOOST_CHECK_EQUAL( *result,\>\"", "<>", 
+    RowBox[{"toCodeForm", "[", 
+     RowBox[{"Unevaluated", "[", "x", "]"}], "]"}], "<>", "\"\<);\\n\>\"", "<>",
+     "\[IndentingNewLine]", "\"\<}\>\""}]}]}]], "Input",
+ CellChangeTimes->{{3.566496906401684*^9, 3.566496921036521*^9}, {
+  3.566496954341426*^9, 3.5664970377721977`*^9}, {3.5664971216069927`*^9, 
+  3.566497360269644*^9}}]
+},
+WindowSize->{1269, 797},
+WindowMargins->{{0, Automatic}, {Automatic, 43}},
+FrontEndVersion->"8.0 for Microsoft Windows (64-bit) (October 6, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 2828, 57, 172, "Input"],
+Cell[3388, 79, 1173, 25, 132, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
+
