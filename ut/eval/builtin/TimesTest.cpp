@@ -185,5 +185,18 @@ BOOST_FIXTURE_TEST_CASE( Rational_zero_Times_Real_Times_Identifier_is_Real_zero,
 	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(0) );
 }
 
+BOOST_FIXTURE_TEST_CASE( Real_exponent_doesnt_alter_other_Rational_exponents, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("x^2 * x^2.5 * y^2 * y^2");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeFunctionCall("Times", {
+		ast::Node::makeFunctionCall( "Power", {ast::Node::makeIdentifier("x"), ast::Node::makeReal(4.5)} ),
+		ast::Node::makeFunctionCall( "Power", {ast::Node::makeIdentifier("y"), ast::Node::makeRational(4)} )
+	}) );
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
