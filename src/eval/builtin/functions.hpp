@@ -18,6 +18,7 @@ typedef std::map<ast::Identifier, FunctionPtr> Functions;
 Functions createFunctions();
 
 ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+ast::Node Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 

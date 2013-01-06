@@ -13,29 +13,28 @@
 #include <boost/range/algorithm/find_if.hpp>
 
 #include "eval/RealRationalNumber.hpp"
-#include "eval/flattenOperands.hpp"
 #include "eval/SessionEnvironment.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
 struct PlusVisitor : boost::static_visitor<void> {
 
-	PlusVisitor(eval::SessionEnvironment& sessionEnvironment) : sessionEnvironment(sessionEnvironment) {}
+	PlusVisitor(eval::SessionEnvironment& sessionEnvironment) : constantTerm(math::Rational(0)), sessionEnvironment(sessionEnvironment) {}
 
 	void operator()(const math::Real& real) {
-		doAddition(constant, real);
+		doAddition(constantTerm, real);
 	}
 
 	void operator()(const math::Rational& rational) {
-		doAddition(constant, rational);
+		doAddition(constantTerm, rational);
 	}
 
 	void operator()(const ast::String& string) {
-		doAddition(coefficientMap[ast::Node::makeString(string)], math::Rational(1));
+		insertOrAddInMap(ast::Node::makeString(string), math::Rational(1));
 	}
 
 	void operator()(const ast::Identifier& identifier) {
-		doAddition(coefficientMap[ast::Node::makeIdentifier(identifier)], math::Rational(1));
+		insertOrAddInMap(ast::Node::makeIdentifier(identifier), math::Rational(1));
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
@@ -70,7 +69,17 @@ struct PlusVisitor : boost::static_visitor<void> {
 				}
 			}
 		}
-		doAddition(coefficientMap[term], coefficient);
+
+		insertOrAddInMap(term, coefficient);
+	}
+
+	//TODO optimalization
+	void insertOrAddInMap(const ast::Node& key, const RealRationalNumber& toAdd) {
+		CoefficientMap::iterator it = coefficientMap.find(key);
+		if ( it == coefficientMap.end() ) {
+			coefficientMap[key] = ast::Node::makeRational(0);
+		}
+		doAddition( coefficientMap[key], toAdd );
 	}
 
 	void doAddition(RealRationalNumber& value, const RealRationalNumber& toAdd) {
@@ -99,9 +108,9 @@ struct PlusVisitor : boost::static_visitor<void> {
 			}
 		}
 
-		ast::Node constantTerm = constant.toNode();
-		if ( constantTerm != ast::Node::makeRational(0) ) {
-			operands.push_back( constantTerm );
+		ast::Node constantTermNode = constantTerm.toNode();
+		if ( constantTermNode != ast::Node::makeRational(0) ) {
+			operands.push_back( constantTermNode );
 		}
 
 		if ( operands.empty() ) {
@@ -116,7 +125,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 
 	}
 
-	RealRationalNumber constant;
+	RealRationalNumber constantTerm;
 
 	typedef std::map<ast::Node, RealRationalNumber> CoefficientMap;
 	CoefficientMap coefficientMap;
