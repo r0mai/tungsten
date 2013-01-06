@@ -8,6 +8,7 @@
 
 namespace tungsten { namespace ast {
 
+
 struct StringEscaper {
 
 	typedef std::string result_type;
