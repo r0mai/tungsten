@@ -121,6 +121,69 @@ BOOST_FIXTURE_TEST_CASE( x_squared_Times_x_Times_y_test, BuiltinFunctionFixture 
 			ast::Node::makeIdentifier("y")}));
 }
 
+BOOST_FIXTURE_TEST_CASE( Rational_Times_Rational_is_Rational, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("3*5");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeRational(15) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Rational_Times_Real_is_Real, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("3*5.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(15) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Real_Times_Rational_is_Real, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("3.0*5");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(15) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Real_Times_Real_is_Real, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("3.0*5.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(15) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Rational_zero_Times_Identifier_is_Rational_zero, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0*x");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeRational(0) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Real_zero_Times_Identifier_is_Real_zero, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0.0*x");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(0) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Real_zero_Times_Rational_Times_Identifier_is_Real_zero, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0.0*3*x");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(0) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Rational_zero_Times_Real_Times_Identifier_is_Real_zero, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0*3.0*x");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::makeReal(0) );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

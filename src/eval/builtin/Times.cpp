@@ -90,8 +90,8 @@ struct TimesVisitor : boost::static_visitor<void> {
 
 		//TODO this could be moved to operator()(const math::Rational& rational) when rational == 0
 		ast::Node constantFactorNode = constantFactor.toNode();
-		if ( constantFactorNode == ast::Node::makeRational(0) ) {
-			return ast::Node::makeRational( 0 );
+		if ( constantFactorNode == ast::Node::makeRational(0) || constantFactorNode == ast::Node::makeReal(0) ) {
+			return constantFactorNode;
 		}
 
 		if ( constantFactorNode != ast::Node::makeRational(1) ) {
