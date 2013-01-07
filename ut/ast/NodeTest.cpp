@@ -360,17 +360,30 @@ BOOST_AUTO_TEST_CASE( different_Identifier_ordering_test ) {
 
 }
 
-BOOST_AUTO_TEST_CASE( same_Identifier_ordering_test ) {
-	ast::Node a1 = ast::Node::makeIdentifier( "a" );
-	ast::Node a2 = ast::Node::makeIdentifier( "a" );
+// Phil does not know how to use the TCGenerator.nb :S
 
-	BOOST_CHECK_EQUAL(a1, a2);
+BOOST_AUTO_TEST_CASE( same_Function_ordering_test ) {
+	ast::Node a1 = ast::Node::makeFunctionCall( "Pow" );
+	ast::Node a2 = ast::Node::makeFunctionCall( "Pow" );
+
 	BOOST_CHECK_LE(a1, a2);
 	BOOST_CHECK_GE(a1, a2);
 
 	BOOST_CHECK( !(a1 < a2) );
 	BOOST_CHECK( !(a2 < a1) );
 }
+BOOST_AUTO_TEST_CASE( different_Function_ordering_test ) {
+	ast::Node a1 = ast::Node::makeFunctionCall( "Pow" );
+	ast::Node a2 = ast::Node::makeFunctionCall( "Times" );
+
+	BOOST_CHECK_NE(a1, a2);
+	BOOST_CHECK_GE(a1, a2);
+	
+	BOOST_CHECK( !(a1 < a2) );
+
+
+}
+
 
 BOOST_AUTO_TEST_CASE( Strings_compares_lexicographically_a_b ) {
 	ast::Node a = ast::Node::makeString( "a" );

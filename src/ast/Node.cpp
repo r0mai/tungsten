@@ -129,6 +129,22 @@ struct CompareVisitor : boost::static_visitor<bool> {
 		}
 		return operator()<math::Real, math::Rational>(lhs, rhs);
 	}
+	
+	bool operator()(const FunctionCall& lhs, const Identifier& rhs) const {
+		/** Ordering relation
+		
+		When Pow[x, 3] encounters a regular x, place x in front.
+		**/		
+		return false;
+	}
+	
+	bool operator()(const Identifier& lhs, const FunctionCall& rhs) const {
+		/** Ordering relation
+		
+		When regular x encounters a Pow[x, 3], leave x in front.
+		**/		
+		return true;
+	}
 
 };
 
