@@ -73,7 +73,7 @@ if(this->getFunction().getIdentifier() == rhs.getFunction().getIdentifier()) {
 // Functions are of different name (and different objects) now.
 // Handle the special cases now. Hopefully no more will arise
 
-if(this->getFunction().getIdentifier() == "Pow") { 
+if(this->getFunction().getIdentifier() == "Power") {
 // I hope that's what it's called. :S
 	if(rhs.getFunction().getIdentifier() == "Times") {
 	// left pow, right times example: (x^3) * 5. Verdict: Swap.
@@ -82,7 +82,7 @@ if(this->getFunction().getIdentifier() == "Pow") {
 }
 
 if(this->getFunction().getIdentifier() == "Times") {
-	if(rhs.getFunction().getIdentifier() == "Pow") {
+	if(rhs.getFunction().getIdentifier() == "Power") {
 	// right pow, left times example: 5 * (x^3) . Verdict: Do not swap.
 		return true;
 	}
