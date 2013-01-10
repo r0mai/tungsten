@@ -8,7 +8,8 @@ namespace tungsten { namespace eval {
 AttributeMap AttributeMap::makeDefault() {
 	AttributeStorage attributeStorage = boost::assign::map_list_of
 				("Plus", AttributeSet({"Flat", "Listable", "NumericFunction", "OneIdentity", "Orderless", "Protected"}) )
-				("Times", AttributeSet({"Flat", "Listable", "NumericFunction", "OneIdentity", "Orderless", "Protected"}) );
+				("Times", AttributeSet({"Flat", "Listable", "NumericFunction", "OneIdentity", "Orderless", "Protected"}) )
+				("Power", AttributeSet({"Listable", "NumericFunction", "OneIdentity", "Protected"}) );
 
 	return AttributeMap(attributeStorage);
 }

@@ -7,6 +7,7 @@ Functions createFunctions() {
 	Functions result;
 	result["Plus"] = &Plus;
 	result["Times"] = &Times;
+	result["Power"] = &Power;
 	return result;
 }
 

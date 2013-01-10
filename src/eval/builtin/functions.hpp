@@ -19,6 +19,7 @@ Functions createFunctions();
 
 ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 
