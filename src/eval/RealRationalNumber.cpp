@@ -12,10 +12,10 @@ RealRationalNumber::RealRationalNumber(const math::Rational& rational) : number(
 RealRationalNumber::RealRationalNumber(const ast::Node& node) {
 	assert(node.isNumeric());
 	//TODO we could put this out into a visitor
-	if ( node.isRational() ) {
-		number = node.getRational();
+	if ( node.is<math::Rational>() ) {
+		number = node.get<math::Rational>();
 	} else {
-		number = node.getReal();
+		number = node.get<math::Real>();
 	}
 }
 
@@ -50,10 +50,10 @@ RealRationalNumber RealRationalNumber::doOperation(
 
 struct ToNodeVisitor : boost::static_visitor<ast::Node> {
 	ast::Node operator()(const math::Rational& rational) const {
-		return ast::Node::makeRational(rational);
+		return ast::Node::make<math::Rational>(rational);
 	}
 	ast::Node operator()(const math::Real& real) const {
-		return ast::Node::makeReal(real);
+		return ast::Node::make<math::Real>(real);
 	}
 };
 

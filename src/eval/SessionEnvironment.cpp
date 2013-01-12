@@ -28,11 +28,11 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		sessionEnvironment(sessionEnvironment) {}
 
 	ast::Node operator()(const math::Real& real) {
-		return ast::Node::makeReal(real);
+		return ast::Node::make<math::Real>(real);
 	}
 
 	ast::Node operator()(const math::Rational& rational) {
-		return ast::Node::makeRational(rational);
+		return ast::Node::make<math::Rational>(rational);
 	}
 
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
@@ -49,33 +49,33 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 		//Attribute Flat:
 		if (
-			function.isIdentifier() &&
-			sessionEnvironment.attributeMap.hasAttribute(function.getIdentifier(), "Flat") )
+			function.is<ast::Identifier>() &&
+			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), "Flat") )
 		{
-			operands = flattenOperands( function.getIdentifier(), operands );
+			operands = flattenOperands( function.get<ast::Identifier>(), operands );
 		}
 
 
 		//TODO Listable
 
-		if ( function.isIdentifier() ) {
-			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.getIdentifier());
+		if ( function.is<ast::Identifier>() ) {
+			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.get<ast::Identifier>());
 			if ( it != sessionEnvironment.builtinFunctions.end() ) {
 				return (it->second)(operands, sessionEnvironment);
 			}
 		}
 
-		return ast::Node::makeFunctionCall(function, operands);
+		return ast::Node::make<ast::FunctionCall>(function, operands);
 
 	}
 
 	ast::Node operator()(const ast::String& string) {
-		return ast::Node::makeString(string);
+		return ast::Node::make<ast::String>(string);
 	}
 
 	ast::Node operator()(const ast::Identifier& identifier) {
 		//TODO
-		return ast::Node::makeIdentifier(identifier);
+		return ast::Node::make<ast::Identifier>(identifier);
 	}
 
 private:
@@ -89,11 +89,11 @@ ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 	//Sort if the result is Orderless function
 	//Maybe this should be in FunctionCall branch of the Visitor
 	if (
-			result.isFunctionCall() &&
-			result.getFunctionCall().getFunction().isIdentifier() &&
-			attributeMap.hasAttribute(result.getFunctionCall().getFunction().getIdentifier(), "Orderless") )
+			result.is<ast::FunctionCall>() &&
+			result.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() &&
+			attributeMap.hasAttribute(result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), "Orderless") )
 	{
-		ast::Operands& operands = result.getFunctionCall().getOperands();
+		ast::Operands& operands = result.get<ast::FunctionCall>().getOperands();
 		std::sort( operands.begin(), operands.end() );
 	}
 

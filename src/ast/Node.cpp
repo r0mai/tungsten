@@ -7,70 +7,14 @@
 
 namespace tungsten { namespace ast {
 
-bool Node::isReal() const { return is<math::Real>(); }
-bool Node::isRational() const { return is<math::Rational>(); }
-bool Node::isFunctionCall() const { return is<FunctionCall>(); }
-bool Node::isString() const { return is<String>(); }
-bool Node::isIdentifier() const { return is<Identifier>(); }
-
 bool Node::isNumeric() const { return is<math::Real>() || is<math::Rational>(); }
 
 math::Real Node::getNumeric() const {
 	assert( isNumeric() );
 	if ( is<math::Real>() ) {
-		return getReal();
+		return get<math::Real>();
 	}
-	return getRational();
-}
-
-math::Real& Node::getReal() {
-	assert( is<math::Real>() );
-	return boost::get<math::Real>(storage);
-}
-
-const math::Real& Node::getReal() const {
-	assert( is<math::Real>() );
-	return boost::get<math::Real>(storage);
-}
-
-math::Rational& Node::getRational() {
-	assert( is<math::Rational>() );
-	return boost::get<math::Rational>(storage);
-}
-
-const math::Rational& Node::getRational() const {
-	assert( is<math::Rational>() );
-	return boost::get<math::Rational>(storage);
-}
-
-FunctionCall& Node::getFunctionCall() {
-	assert( is<FunctionCall>() );
-	return boost::get<FunctionCall>(storage);
-}
-
-const FunctionCall& Node::getFunctionCall() const {
-	assert( is<FunctionCall>() );
-	return boost::get<FunctionCall>(storage);
-}
-
-String& Node::getString() {
-	assert( is<String>() );
-	return boost::get<String>(storage);
-}
-
-const String& Node::getString() const {
-	assert( is<String>() );
-	return boost::get<String>(storage);
-}
-
-Identifier& Node::getIdentifier() {
-	assert( is<Identifier>() );
-	return boost::get<Identifier>(storage);
-}
-
-const Identifier& Node::getIdentifier() const {
-	assert( is<Identifier>() );
-	return boost::get<Identifier>(storage);
+	return get<math::Rational>();
 }
 
 bool Node::operator==(const Node& other) const {

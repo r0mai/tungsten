@@ -28,7 +28,7 @@ public:
 	RealRationalNumber(const math::Rational& rational);
 
 	/**
-	 * node.isNumeric() must be true (<=> node.isReal() || node.isRational())
+	 * node.isNumeric() must be true (<=> node.is<math::Real>() || node.is<math::Rational>())
 	 */
 	RealRationalNumber(const ast::Node& node);
 

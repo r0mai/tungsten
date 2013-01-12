@@ -11,7 +11,6 @@ BOOST_AUTO_TEST_CASE( makeReal_creates_Real ) {
 	ast::Node node = ast::Node::make<math::Real>(1.5);
 
 	BOOST_REQUIRE( node.is<math::Real>() );
-	BOOST_REQUIRE( node.is<math::Real>() );
 
 	BOOST_CHECK_EQUAL( node.get<math::Real>(), 1.5 );
 }
@@ -19,7 +18,6 @@ BOOST_AUTO_TEST_CASE( makeReal_creates_Real ) {
 BOOST_AUTO_TEST_CASE( makeRational_creates_Rational ) {
 	ast::Node node = ast::Node::make<math::Rational>(1, 3);
 
-	BOOST_REQUIRE( node.is<math::Rational>() );
 	BOOST_REQUIRE( node.is<math::Rational>() );
 
 	BOOST_CHECK_EQUAL( node.get<math::Rational>(), math::Rational(1,3) );
@@ -29,12 +27,9 @@ BOOST_AUTO_TEST_CASE( makeFunctionCall_creates_FunctionCall_with_paramters ) {
 	ast::Node node = ast::Node::make<ast::FunctionCall>( "abc", { ast::Node::make<math::Rational>(1, 3), ast::Node::make<math::Rational>(2, 3) } );
 
 	BOOST_REQUIRE( node.is<ast::FunctionCall>() );
-	BOOST_REQUIRE( node.is<ast::FunctionCall>() );
 
 	BOOST_REQUIRE( node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() );
-	BOOST_REQUIRE( node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() );
 
-	BOOST_CHECK_EQUAL( node.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), "abc" );
 	BOOST_CHECK_EQUAL( node.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), "abc" );
 
 	BOOST_REQUIRE_EQUAL( node.get<ast::FunctionCall>().getOperands().size(), 2 );

@@ -30,20 +30,20 @@ struct PlusVisitor : boost::static_visitor<void> {
 	}
 
 	void operator()(const ast::String& string) {
-		insertOrAddInMap(ast::Node::makeString(string), math::Rational(1));
+		insertOrAddInMap(ast::Node::make<ast::String>(string), math::Rational(1));
 	}
 
 	void operator()(const ast::Identifier& identifier) {
-		insertOrAddInMap(ast::Node::makeIdentifier(identifier), math::Rational(1));
+		insertOrAddInMap(ast::Node::make<ast::Identifier>(identifier), math::Rational(1));
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
-		assert( functionCall.getFunction() != ast::Node::makeIdentifier("Plus") );
+		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>("Plus") );
 
-		ast::Node term = ast::Node::makeFunctionCall(functionCall);
+		ast::Node term = ast::Node::make<ast::FunctionCall>(functionCall);
 		RealRationalNumber coefficient = math::Rational(1);
 
-		if ( functionCall.getFunction() == ast::Node::makeIdentifier("Times") ) {
+		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>("Times") ) {
 
 			auto isNodeNumeric = [](const ast::Node& node) { return node.isNumeric(); };
 			auto notIsNodeNumeric = [](const ast::Node& node) { return !node.isNumeric(); };
@@ -65,7 +65,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 				if ( toMultiply.size() == 1 ) {
 					term = toMultiply[0];
 				} else {
-					term = ast::Node::makeFunctionCall("Times", toMultiply);
+					term = ast::Node::make<ast::FunctionCall>("Times", toMultiply);
 				}
 			}
 		}
@@ -77,7 +77,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 	void insertOrAddInMap(const ast::Node& key, const RealRationalNumber& toAdd) {
 		CoefficientMap::iterator it = coefficientMap.find(key);
 		if ( it == coefficientMap.end() ) {
-			coefficientMap[key] = ast::Node::makeRational(0);
+			coefficientMap[key] = ast::Node::make<math::Rational>(0);
 		}
 		doAddition( coefficientMap[key], toAdd );
 	}
@@ -99,29 +99,29 @@ struct PlusVisitor : boost::static_visitor<void> {
 
 		for ( const std::pair<ast::Node, RealRationalNumber>& term : coefficientMap ) {
 			ast::Node coefficient = term.second.toNode();
-			if ( coefficient == ast::Node::makeRational(0) ) {
+			if ( coefficient == ast::Node::make<math::Rational>(0) ) {
 				/*this space is intentionally left blank*/
-			} else if ( coefficient == ast::Node::makeRational(1) ) {
+			} else if ( coefficient == ast::Node::make<math::Rational>(1) ) {
 				operands.push_back( term.first );
 			} else {
-				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::makeFunctionCall("Times", {coefficient, term.first})) );
+				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>("Times", {coefficient, term.first})) );
 			}
 		}
 
 		ast::Node constantTermNode = constantTerm.toNode();
-		if ( constantTermNode != ast::Node::makeRational(0) ) {
+		if ( constantTermNode != ast::Node::make<math::Rational>(0) ) {
 			operands.push_back( constantTermNode );
 		}
 
 		if ( operands.empty() ) {
-			return ast::Node::makeRational(0);
+			return ast::Node::make<math::Rational>(0);
 		}
 
 		if ( operands.size() == 1 ) {
 			return operands[0];
 		}
 
-		return ast::Node::makeFunctionCall("Plus", operands);
+		return ast::Node::make<ast::FunctionCall>("Plus", operands);
 
 	}
 

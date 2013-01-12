@@ -22,15 +22,7 @@ class Node :
 		boost::equality_comparable<Node>> {
 public:
 
-	//TODO Make these use perfect forwarding, this requires partially template specializing constructors
-	template<class... Ts> static Node makeReal(const Ts&... args);
-	template<class... Ts> static Node makeRational(const Ts&... args);
-	template<class... Ts> static Node makeFunctionCall(const Ts&... args);
-	static Node makeFunctionCall(const Identifier& name, std::initializer_list<Operands::value_type> init_list);
-	static Node makeFunctionCall(const Node& function, std::initializer_list<Operands::value_type> init_list);
-	template<class... Ts> static Node makeString(const Ts&... args);
-	template<class... Ts> static Node makeIdentifier(const Ts&... args);
-
+	//partially obsolete: TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class T, class... Args>
 	static Node make(const Args&... args);
 
@@ -38,32 +30,11 @@ public:
 	template<class T, class U>
 	static Node make(const U& arg, std::initializer_list<Node> initializerList);
 
-	bool isReal() const;
-	bool isRational() const;
-	bool isFunctionCall() const;
-	bool isString() const;
-	bool isIdentifier() const;
-
 	template<class T>
 	bool is() const;
 
 	bool isNumeric() const; //isReal() || isRational()
 	math::Real getNumeric() const; //returns Real when isNumeric() is true
-
-	math::Real& getReal();
-	const math::Real& getReal() const;
-
-	math::Rational& getRational();
-	const math::Rational& getRational() const;
-
-	FunctionCall& getFunctionCall();
-	const FunctionCall& getFunctionCall() const;
-
-	String& getString();
-	const String& getString() const;
-
-	Identifier& getIdentifier();
-	const Identifier& getIdentifier() const;
 
 	template<class T>
 	T& get();
@@ -116,58 +87,6 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 			rhs.storage);
 }
 
-
-//Template impl
-template<class... Ts>
-Node Node::makeReal(const Ts&... args) {
-	Node node;
-	node.storage = math::Real(args...);
-	return node;
-}
-
-template<class... Ts>
-Node Node::makeRational(const Ts&... args) {
-	Node node;
-	node.storage = math::Rational(args...);
-	return node;
-}
-
-template<class... Ts>
-Node Node::makeFunctionCall(const Ts&... args) {
-	Node node;
-	node.storage = FunctionCall(args...);
-	return node;
-}
-
-inline
-Node Node::makeFunctionCall(const Identifier& name, std::initializer_list<Operands::value_type> init_list) {
-	Node node;
-	node.storage = FunctionCall(name, Operands(init_list));
-	return node;
-
-}
-
-inline
-Node Node::makeFunctionCall(const Node& function, std::initializer_list<Operands::value_type> init_list) {
-	Node node;
-	node.storage = FunctionCall(function, Operands(init_list));
-	return node;
-}
-
-template<class... Ts>
-Node Node::makeString(const Ts&... args) {
-	Node node;
-	node.storage = String(args...);
-	return node;
-}
-
-template<class... Ts>
-Node Node::makeIdentifier(const Ts&... args) {
-	Node node;
-	node.storage = Identifier(args...);
-	return node;
-}
-
 template<class T, class... Args>
 Node Node::make(const Args&... args) {
 	Node node;
@@ -175,6 +94,7 @@ Node Node::make(const Args&... args) {
 	return node;
 }
 
+//Template implementation:
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
 	Node node;

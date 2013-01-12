@@ -22,35 +22,35 @@ namespace phx = boost::phoenix;
 static const Identifier parenthesesIdentityFunction("#");
 
 void makeIdentifier(Node& result, const std::vector<char>& name) {
-	result = Node::makeIdentifier(name.begin(), name.end());
+	result = Node::make<Identifier>(name.begin(), name.end());
 }
 
 void makeInteger(Node& result, const math::Integer& number) {
-	result = Node::makeRational(number);
+	result = Node::make<math::Rational>(number);
 }
 
 void makeReal(Node& result, const math::Real& number) {
-	result = Node::makeReal(number);
+	result = Node::make<math::Real>(number);
 }
 
 void makeString(Node& result, const String& string) {
-	result = Node::makeString(string);
+	result = Node::make<String>(string);
 }
 
 void removeParenthesesIdentityFunction(Node& node) {
-	assert( node.isFunctionCall() );
-	assert( node.getFunctionCall().getFunction().isIdentifier() );
-	assert( node.getFunctionCall().getFunction().getIdentifier() == parenthesesIdentityFunction );
-	assert( node.getFunctionCall().getOperands().size() == 1 );
+	assert( node.is<FunctionCall>() );
+	assert( node.get<FunctionCall>().getFunction().is<Identifier>() );
+	assert( node.get<FunctionCall>().getFunction().get<Identifier>() == parenthesesIdentityFunction );
+	assert( node.get<FunctionCall>().getOperands().size() == 1 );
 
-	node = Node(node.getFunctionCall().getOperands().front());
+	node = Node(node.get<FunctionCall>().getOperands().front());
 }
 
 void removeIfParenthesesIdentityFunction(Node& node) {
 
-	if ( 	node.isFunctionCall() &&
-			node.getFunctionCall().getFunction().isIdentifier() &&
-			node.getFunctionCall().getFunction().getIdentifier() == parenthesesIdentityFunction )
+	if ( 	node.is<FunctionCall>() &&
+			node.get<FunctionCall>().getFunction().is<Identifier>() &&
+			node.get<FunctionCall>().getFunction().get<Identifier>() == parenthesesIdentityFunction )
 	{
 		removeParenthesesIdentityFunction(node);
 	}
@@ -61,11 +61,11 @@ void leftAssociativeListableOperator(const Identifier& functionName, Node& resul
 
 	removeIfParenthesesIdentityFunction(rhs);
 
-	if ( result.isFunctionCall() && result.getFunctionCall().getFunction().isIdentifier() ) {
-		const Identifier& functionIdentifier = result.getFunctionCall().getFunction().getIdentifier();
+	if ( result.is<FunctionCall>() && result.get<FunctionCall>().getFunction().is<Identifier>() ) {
+		const Identifier& functionIdentifier = result.get<FunctionCall>().getFunction().get<Identifier>();
 
 		if ( functionIdentifier == functionName ) {
-			result.getFunctionCall().getOperands().push_back(rhs);
+			result.get<FunctionCall>().getOperands().push_back(rhs);
 			return;
 		} else if ( functionIdentifier == parenthesesIdentityFunction ) {
 			removeParenthesesIdentityFunction( result );
@@ -73,14 +73,14 @@ void leftAssociativeListableOperator(const Identifier& functionName, Node& resul
 		}
 
 	}
-	result = Node::makeFunctionCall( functionName, {result, rhs} );
+	result = Node::make<FunctionCall>( functionName, {result, rhs} );
 }
 
 void rightAssociativeOperator(const Identifier& functionName, Node& result, Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
 
-	result = Node::makeFunctionCall( functionName, {result, rhs} );
+	result = Node::make<FunctionCall>( functionName, {result, rhs} );
 }
 
 void operatorPlus(Node& result, const Node& rhs) {
@@ -89,7 +89,7 @@ void operatorPlus(Node& result, const Node& rhs) {
 
 void operatorMinus(Node& result, Node rhs) {
 	removeIfParenthesesIdentityFunction(rhs);
-	operatorPlus( result, Node::makeFunctionCall("Times", {Node::makeRational(-1), rhs}) );
+	operatorPlus( result, Node::make<FunctionCall>("Times", {Node::make<math::Rational>(-1), rhs}) );
 }
 
 void operatorTimes(Node& result, const Node& rhs) {
@@ -98,7 +98,7 @@ void operatorTimes(Node& result, const Node& rhs) {
 
 void operatorDivide(Node& result, Node rhs) {
 	removeIfParenthesesIdentityFunction(rhs);
-	operatorTimes( result, Node::makeFunctionCall("Power", {rhs, Node::makeRational(-1)}) );
+	operatorTimes( result, Node::make<FunctionCall>("Power", {rhs, Node::make<math::Rational>(-1)}) );
 }
 
 void operatorPower(Node& result, const Node& rhs) {
@@ -107,22 +107,22 @@ void operatorPower(Node& result, const Node& rhs) {
 
 void operatorParentheses(Node& result, const Node& expression) {
 	//Don't do anything for multiple, paralell parentheses
-	if ( expression.isFunctionCall() && expression.getFunctionCall().getFunction() == Node::makeIdentifier(parenthesesIdentityFunction) ) {
+	if ( expression.is<FunctionCall>() && expression.get<FunctionCall>().getFunction() == Node::make<Identifier>(parenthesesIdentityFunction) ) {
 		result = expression;
 	} else {
-		result = Node::makeFunctionCall( parenthesesIdentityFunction, {expression} );
+		result = Node::make<FunctionCall>( parenthesesIdentityFunction, {expression} );
 	}
 }
 
 void operatorUnaryMinus(Node& result, const Node& operand) {
 	//TODO "- 1" should be parsed as -1 directly (and not Times[-1, 1] (low priority)
-	result = Node::makeRational(-1);
+	result = Node::make<math::Rational>(-1);
 	operatorTimes(result, operand);
 	operatorParentheses(result, result);
 }
 
 void createFunctionCallFromString(Node& result, const std::string& name) {
-	result = Node::makeFunctionCall( Node::makeIdentifier(name) );
+	result = Node::make<FunctionCall>( Node::make<Identifier>(name) );
 }
 
 void createFunctionCallFromVector(Node& result, const std::vector<char>& name) {
@@ -130,9 +130,9 @@ void createFunctionCallFromVector(Node& result, const std::vector<char>& name) {
 }
 
 void fillFunctionCall(Node& result, const std::vector<Node>& operands) {
-	assert( result.isFunctionCall() );
-	assert( result.getFunctionCall().getOperands().empty() );
-	result.getFunctionCall().getOperands() = operands;
+	assert( result.is<FunctionCall>() );
+	assert( result.get<FunctionCall>().getOperands().empty() );
+	result.get<FunctionCall>().getOperands() = operands;
 }
 
 void finishingTouches(Node& result, const Node& wholeExpression) {

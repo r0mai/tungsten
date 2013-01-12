@@ -17,8 +17,8 @@ BOOST_AUTO_TEST_CASE( constructing_from_Real_works ) {
 
 	ast::Node node = x.toNode();
 
-	BOOST_REQUIRE( node.isReal() );
-	BOOST_CHECK_EQUAL( node.getReal(), 3.5 );
+	BOOST_REQUIRE( node.is<math::Real>() );
+	BOOST_CHECK_EQUAL( node.get<math::Real>(), 3.5 );
 }
 
 BOOST_AUTO_TEST_CASE( constructing_from_Rational_works ) {
@@ -29,8 +29,8 @@ BOOST_AUTO_TEST_CASE( constructing_from_Rational_works ) {
 
 	ast::Node node = x.toNode();
 
-	BOOST_REQUIRE( node.isRational() );
-	BOOST_CHECK_EQUAL( node.getRational(), 5 );
+	BOOST_REQUIRE( node.is<math::Rational>() );
+	BOOST_CHECK_EQUAL( node.get<math::Rational>(), 5 );
 }
 
 BOOST_AUTO_TEST_CASE( default_constructing_works ) {
@@ -41,37 +41,37 @@ BOOST_AUTO_TEST_CASE( default_constructing_works ) {
 
 	ast::Node node = x.toNode();
 
-	BOOST_REQUIRE( node.isRational() );
-	BOOST_CHECK_EQUAL( node.getRational(), 0 );
+	BOOST_REQUIRE( node.is<math::Rational>() );
+	BOOST_CHECK_EQUAL( node.get<math::Rational>(), 0 );
 }
 
 BOOST_AUTO_TEST_CASE( constructing_from_Rational_Node_works ) {
-	eval::RealRationalNumber x(ast::Node::makeRational(5));
+	eval::RealRationalNumber x(ast::Node::make<math::Rational>(5));
 
 	BOOST_CHECK( x.is<math::Rational>() );
 	BOOST_CHECK( !x.is<math::Real>() );
 
 	ast::Node node = x.toNode();
 
-	BOOST_REQUIRE( node.isRational() );
-	BOOST_CHECK_EQUAL( node.getRational(), 5 );
+	BOOST_REQUIRE( node.is<math::Rational>() );
+	BOOST_CHECK_EQUAL( node.get<math::Rational>(), 5 );
 }
 
 BOOST_AUTO_TEST_CASE( constructing_from_Real_Node_works ) {
-	eval::RealRationalNumber x(ast::Node::makeReal(3.5));
+	eval::RealRationalNumber x(ast::Node::make<math::Real>(3.5));
 
 	BOOST_CHECK( !x.is<math::Rational>() );
 	BOOST_CHECK( x.is<math::Real>() );
 
 	ast::Node node = x.toNode();
 
-	BOOST_REQUIRE( node.isReal() );
-	BOOST_CHECK_EQUAL( node.getReal(), 3.5 );
+	BOOST_REQUIRE( node.is<math::Real>() );
+	BOOST_CHECK_EQUAL( node.get<math::Real>(), 3.5 );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_Rational_doOperation_results_in_Rational ) {
-	eval::RealRationalNumber x(ast::Node::makeRational(5));
-	eval::RealRationalNumber y(ast::Node::makeRational(10));
+	eval::RealRationalNumber x(ast::Node::make<math::Rational>(5));
+	eval::RealRationalNumber y(ast::Node::make<math::Rational>(10));
 
 	eval::RealRationalNumber z = eval::RealRationalNumber::doOperation(x, y,
 			[](const math::Rational& x, const math::Rational& y) { return x+y; },
@@ -81,13 +81,13 @@ BOOST_AUTO_TEST_CASE( Rational_Rational_doOperation_results_in_Rational ) {
 
 	ast::Node node = z.toNode();
 
-	BOOST_REQUIRE( node.isRational() );
-	BOOST_CHECK_EQUAL( node.getRational(), 15 );
+	BOOST_REQUIRE( node.is<math::Rational>() );
+	BOOST_CHECK_EQUAL( node.get<math::Rational>(), 15 );
 }
 
 BOOST_AUTO_TEST_CASE( Real_Rational_doOperation_results_in_Real ) {
-	eval::RealRationalNumber x(ast::Node::makeReal(5));
-	eval::RealRationalNumber y(ast::Node::makeRational(10));
+	eval::RealRationalNumber x(ast::Node::make<math::Real>(5));
+	eval::RealRationalNumber y(ast::Node::make<math::Rational>(10));
 
 	eval::RealRationalNumber z = eval::RealRationalNumber::doOperation(x, y,
 			[](const math::Rational& x, const math::Rational& y) { return x+y; },
@@ -97,13 +97,13 @@ BOOST_AUTO_TEST_CASE( Real_Rational_doOperation_results_in_Real ) {
 
 	ast::Node node = z.toNode();
 
-	BOOST_REQUIRE( node.isReal() );
-	BOOST_CHECK_EQUAL( node.getReal(), 15 );
+	BOOST_REQUIRE( node.is<math::Real>() );
+	BOOST_CHECK_EQUAL( node.get<math::Real>(), 15 );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_Real_doOperation_results_in_Real ) {
-	eval::RealRationalNumber x(ast::Node::makeRational(5));
-	eval::RealRationalNumber y(ast::Node::makeReal(10));
+	eval::RealRationalNumber x(ast::Node::make<math::Rational>(5));
+	eval::RealRationalNumber y(ast::Node::make<math::Real>(10));
 
 	eval::RealRationalNumber z = eval::RealRationalNumber::doOperation(x, y,
 			[](const math::Rational& x, const math::Rational& y) { return x+y; },
@@ -113,13 +113,13 @@ BOOST_AUTO_TEST_CASE( Rational_Real_doOperation_results_in_Real ) {
 
 	ast::Node node = z.toNode();
 
-	BOOST_REQUIRE( node.isReal() );
-	BOOST_CHECK_EQUAL( node.getReal(), 15 );
+	BOOST_REQUIRE( node.is<math::Real>() );
+	BOOST_CHECK_EQUAL( node.get<math::Real>(), 15 );
 }
 
 BOOST_AUTO_TEST_CASE( Real_Real_doOperation_results_in_Real ) {
-	eval::RealRationalNumber x(ast::Node::makeReal(5));
-	eval::RealRationalNumber y(ast::Node::makeReal(10));
+	eval::RealRationalNumber x(ast::Node::make<math::Real>(5));
+	eval::RealRationalNumber y(ast::Node::make<math::Real>(10));
 
 	eval::RealRationalNumber z = eval::RealRationalNumber::doOperation(x, y,
 			[](const math::Rational& x, const math::Rational& y) { return x+y; },
@@ -129,8 +129,8 @@ BOOST_AUTO_TEST_CASE( Real_Real_doOperation_results_in_Real ) {
 
 	ast::Node node = z.toNode();
 
-	BOOST_REQUIRE( node.isReal() );
-	BOOST_CHECK_EQUAL( node.getReal(), 15 );
+	BOOST_REQUIRE( node.is<math::Real>() );
+	BOOST_CHECK_EQUAL( node.get<math::Real>(), 15 );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

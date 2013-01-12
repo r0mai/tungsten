@@ -30,20 +30,20 @@ struct TimesVisitor : boost::static_visitor<void> {
 	}
 
 	void operator()(const ast::String& string) {
-		insertOrMultiplyInMap(ast::Node::makeString(string), math::Rational(1));
+		insertOrMultiplyInMap(ast::Node::make<ast::String>(string), math::Rational(1));
 	}
 
 	void operator()(const ast::Identifier& identifier) {
-		insertOrMultiplyInMap(ast::Node::makeIdentifier(identifier), math::Rational(1));
+		insertOrMultiplyInMap(ast::Node::make<ast::Identifier>(identifier), math::Rational(1));
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
-		assert( functionCall.getFunction() != ast::Node::makeIdentifier("Times") );
+		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>("Times") );
 
-		ast::Node factor = ast::Node::makeFunctionCall(functionCall);
+		ast::Node factor = ast::Node::make<ast::FunctionCall>(functionCall);
 		RealRationalNumber exponent = math::Rational(1);
 
-		if ( functionCall.getFunction() == ast::Node::makeIdentifier("Power") ) {
+		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>("Power") ) {
 
 			assert( functionCall.getOperands().size() == 2 );
 
@@ -63,7 +63,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 	void insertOrMultiplyInMap(const ast::Node& key, const RealRationalNumber& toMultiply) {
 		ExponentMap::iterator it = exponentMap.find(key);
 		if ( it == exponentMap.end() ) {
-			exponentMap[key] = ast::Node::makeRational(0);
+			exponentMap[key] = ast::Node::make<math::Rational>(0);
 		}
 		doAddition( exponentMap[key], toMultiply );
 	}
@@ -90,35 +90,35 @@ struct TimesVisitor : boost::static_visitor<void> {
 
 		//TODO this could be moved to operator()(const math::Rational& rational) when rational == 0
 		ast::Node constantFactorNode = constantFactor.toNode();
-		if ( constantFactorNode == ast::Node::makeRational(0) || constantFactorNode == ast::Node::makeReal(0) ) {
+		if ( constantFactorNode == ast::Node::make<math::Rational>(0) || constantFactorNode == ast::Node::make<math::Real>(0) ) {
 			return constantFactorNode;
 		}
 
-		if ( constantFactorNode != ast::Node::makeRational(1) ) {
+		if ( constantFactorNode != ast::Node::make<math::Rational>(1) ) {
 			operands.push_back( constantFactorNode );
 		}
 
 
 		for ( const std::pair<ast::Node, RealRationalNumber>& factor : exponentMap ) {
 			ast::Node exponent = factor.second.toNode();
-			if ( exponent == ast::Node::makeRational(0) ) {
+			if ( exponent == ast::Node::make<math::Rational>(0) ) {
 				/*this space is intentionally left blank*/
-			} else if ( exponent == ast::Node::makeRational(1) ) {
+			} else if ( exponent == ast::Node::make<math::Rational>(1) ) {
 				operands.push_back( factor.first );
 			} else {
-				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::makeFunctionCall("Power", {factor.first, exponent})) );
+				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>("Power", {factor.first, exponent})) );
 			}
 		}
 
 		if ( operands.empty() ) {
-			return ast::Node::makeRational(1);
+			return ast::Node::make<math::Rational>(1);
 		}
 
 		if ( operands.size() == 1 ) {
 			return operands[0];
 		}
 
-		return ast::Node::makeFunctionCall("Times", operands);
+		return ast::Node::make<ast::FunctionCall>("Times", operands);
 
 	}
 

@@ -17,13 +17,13 @@ FunctionCall::FunctionCall(const FunctionCall& other) :
 		function( new Node(*other.function) ), operands(other.operands) {}
 
 FunctionCall::FunctionCall(const Identifier& name) :
-		function( new Node(Node::makeIdentifier(name)) ) {}
+		function( new Node(Node::make<Identifier>(name)) ) {}
 
 FunctionCall::FunctionCall(const Identifier& name, const Operands& operands) :
-		function( new Node(Node::makeIdentifier(name)) ), operands(operands) {}
+		function( new Node(Node::make<Identifier>(name)) ), operands(operands) {}
 
 FunctionCall::FunctionCall(const Identifier& name, std::initializer_list<Node> operands) :
-		function( new Node(Node::makeIdentifier(name)) ), operands(operands) {}
+		function( new Node(Node::make<Identifier>(name)) ), operands(operands) {}
 
 FunctionCall::FunctionCall(const Node& function) :
 		function( new Node(function) ) {}
@@ -67,7 +67,7 @@ bool FunctionCall::operator<(const FunctionCall& rhs) const {
 	**/
 
 
-	if(this->getFunction().getIdentifier() == rhs.getFunction().getIdentifier()) {
+	if(this->getFunction().get<ast::Identifier>() == rhs.getFunction().get<ast::Identifier>()) {
 		// if functions have same name, one with less parameters is smaller (4)
 		if(this->getOperands().size() < rhs.getOperands().size()){ return true; }
 		if(this->getOperands().size() > rhs.getOperands().size()){ return false; }
@@ -79,16 +79,16 @@ bool FunctionCall::operator<(const FunctionCall& rhs) const {
 	// Functions are of different name (and different objects) now.
 	// Handle the special cases now. Hopefully no more will arise
 
-	if(this->getFunction().getIdentifier() == "Power") {
+	if(this->getFunction().get<Identifier>() == "Power") {
 	// I hope that's what it's called. :S
-		if(rhs.getFunction().getIdentifier() == "Times") {
+		if(rhs.getFunction().get<Identifier>() == "Times") {
 		// left pow, right times example: (x^3) * 5. Verdict: Swap.
 			return false;
 		}
 	}
 
-	if(this->getFunction().getIdentifier() == "Times") {
-		if(rhs.getFunction().getIdentifier() == "Power") {
+	if(this->getFunction().get<Identifier>() == "Times") {
+		if(rhs.getFunction().get<Identifier>() == "Power") {
 		// right pow, left times example: 5 * (x^3) . Verdict: Do not swap.
 			return true;
 		}
