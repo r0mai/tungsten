@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include <ostream>
+#include <initializer_list>
 
 #include <boost/operators.hpp>
 
@@ -24,8 +25,10 @@ struct FunctionCall :
 	FunctionCall(const FunctionCall& other);
 	FunctionCall(const Identifier& name);
 	FunctionCall(const Identifier& name, const Operands& operands);
+	FunctionCall(const Identifier& name, std::initializer_list<Node> operands);
 	FunctionCall(const Node& function);
 	FunctionCall(const Node& function, const Operands& operands);
+	FunctionCall(const Node& name, std::initializer_list<Node> operands);
 
 	FunctionCall& operator=(FunctionCall other);
 

@@ -6,82 +6,74 @@
 
 namespace tungsten { namespace ast {
 
-bool Node::isReal() const { return type_ == Type::Real; }
-bool Node::isRational() const { return type_ == Type::Rational; }
-bool Node::isFunctionCall() const { return type_ == Type::FunctionCall; }
-bool Node::isString() const { return type_ == Type::String; }
-bool Node::isIdentifier() const { return type_ == Type::Identifier; }
+bool Node::isReal() const { return is<math::Real>(); }
+bool Node::isRational() const { return is<math::Rational>(); }
+bool Node::isFunctionCall() const { return is<FunctionCall>(); }
+bool Node::isString() const { return is<String>(); }
+bool Node::isIdentifier() const { return is<Identifier>(); }
 
-bool Node::isNumeric() const { return type_ == Type::Real || type_ == Type::Rational; }
+bool Node::isNumeric() const { return is<math::Real>() || is<math::Rational>(); }
 
 math::Real Node::getNumeric() const {
 	assert( isNumeric() );
-	if ( type_ == Type::Real ) {
+	if ( is<math::Real>() ) {
 		return getReal();
 	}
 	return getRational();
 }
 
-Node::Type Node::type() const {
-	return type_;
-}
-
 math::Real& Node::getReal() {
-	assert( type_ == Type::Real );
+	assert( is<math::Real>() );
 	return boost::get<math::Real>(storage);
 }
 
 const math::Real& Node::getReal() const {
-	assert( type_ == Type::Real );
+	assert( is<math::Real>() );
 	return boost::get<math::Real>(storage);
 }
 
 math::Rational& Node::getRational() {
-	assert( type_ == Type::Rational );
+	assert( is<math::Rational>() );
 	return boost::get<math::Rational>(storage);
 }
 
 const math::Rational& Node::getRational() const {
-	assert( type_ == Type::Rational );
+	assert( is<math::Rational>() );
 	return boost::get<math::Rational>(storage);
 }
 
 FunctionCall& Node::getFunctionCall() {
-	assert( type_ == Type::FunctionCall );
+	assert( is<FunctionCall>() );
 	return boost::get<FunctionCall>(storage);
 }
 
 const FunctionCall& Node::getFunctionCall() const {
-	assert( type_ == Type::FunctionCall );
+	assert( is<FunctionCall>() );
 	return boost::get<FunctionCall>(storage);
 }
 
 String& Node::getString() {
-	assert( type_ == Type::String );
+	assert( is<String>() );
 	return boost::get<String>(storage);
 }
 
 const String& Node::getString() const {
-	assert( type_ == Type::String );
+	assert( is<String>() );
 	return boost::get<String>(storage);
 }
 
 Identifier& Node::getIdentifier() {
-	assert( type_ == Type::Identifier );
+	assert( is<Identifier>() );
 	return boost::get<Identifier>(storage);
 }
 
 const Identifier& Node::getIdentifier() const {
-	assert( type_ == Type::Identifier );
+	assert( is<Identifier>() );
 	return boost::get<Identifier>(storage);
 }
 
 bool Node::operator==(const Node& other) const {
-	bool result = storage == other.storage;
-	if ( result ) {
-		assert( type_ == other.type_ );
-	}
-	return result;
+	return storage == other.storage;
 }
 
 //These are used by operator<

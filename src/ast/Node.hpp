@@ -22,8 +22,6 @@ class Node :
 		boost::equality_comparable<Node>> {
 public:
 
-	enum class Type { Real, Rational, FunctionCall, String, Identifier };
-
 	//TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class... Ts> static Node makeReal(const Ts&... args);
 	template<class... Ts> static Node makeRational(const Ts&... args);
@@ -33,16 +31,24 @@ public:
 	template<class... Ts> static Node makeString(const Ts&... args);
 	template<class... Ts> static Node makeIdentifier(const Ts&... args);
 
+	template<class T, class... Args>
+	static Node make(const Args&... args);
+
+	//Workaround to accept syntax Node::make<FunctionCall>("f", {...});
+	template<class T, class U>
+	static Node make(const U& arg, std::initializer_list<Node> initializerList);
+
 	bool isReal() const;
 	bool isRational() const;
 	bool isFunctionCall() const;
 	bool isString() const;
 	bool isIdentifier() const;
 
+	template<class T>
+	bool is() const;
+
 	bool isNumeric() const; //isReal() || isRational()
 	math::Real getNumeric() const; //returns Real when isNumeric() is true
-
-	Type type() const;
 
 	math::Real& getReal();
 	const math::Real& getReal() const;
@@ -59,6 +65,12 @@ public:
 	Identifier& getIdentifier();
 	const Identifier& getIdentifier() const;
 
+	template<class T>
+	T& get();
+
+	template<class T>
+	const T& get() const;
+
 	bool operator==(const Node& other) const;
 	bool operator<(const Node& other) const;
 
@@ -66,7 +78,7 @@ public:
 	std::string toString() const;
 
 	//Totally arbitrary. default constructed Node should never be used
-	Node() : type_(Type::Identifier), storage(Identifier("???")) {}
+	Node() : storage(Identifier("???")) {}
 
 	template<class Visitor>
 	friend typename std::remove_reference<Visitor>::type::result_type
@@ -77,8 +89,6 @@ public:
 	applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor);
 
 private:
-
-	Type type_;
 
 	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
 
@@ -111,7 +121,6 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 template<class... Ts>
 Node Node::makeReal(const Ts&... args) {
 	Node node;
-	node.type_ = Type::Real;
 	node.storage = math::Real(args...);
 	return node;
 }
@@ -119,7 +128,6 @@ Node Node::makeReal(const Ts&... args) {
 template<class... Ts>
 Node Node::makeRational(const Ts&... args) {
 	Node node;
-	node.type_ = Type::Rational;
 	node.storage = math::Rational(args...);
 	return node;
 }
@@ -127,7 +135,6 @@ Node Node::makeRational(const Ts&... args) {
 template<class... Ts>
 Node Node::makeFunctionCall(const Ts&... args) {
 	Node node;
-	node.type_ = Type::FunctionCall;
 	node.storage = FunctionCall(args...);
 	return node;
 }
@@ -135,7 +142,6 @@ Node Node::makeFunctionCall(const Ts&... args) {
 inline
 Node Node::makeFunctionCall(const Identifier& name, std::initializer_list<Operands::value_type> init_list) {
 	Node node;
-	node.type_ = Type::FunctionCall;
 	node.storage = FunctionCall(name, Operands(init_list));
 	return node;
 
@@ -144,7 +150,6 @@ Node Node::makeFunctionCall(const Identifier& name, std::initializer_list<Operan
 inline
 Node Node::makeFunctionCall(const Node& function, std::initializer_list<Operands::value_type> init_list) {
 	Node node;
-	node.type_ = Type::FunctionCall;
 	node.storage = FunctionCall(function, Operands(init_list));
 	return node;
 }
@@ -152,7 +157,6 @@ Node Node::makeFunctionCall(const Node& function, std::initializer_list<Operands
 template<class... Ts>
 Node Node::makeString(const Ts&... args) {
 	Node node;
-	node.type_ = Type::String;
 	node.storage = String(args...);
 	return node;
 }
@@ -160,9 +164,39 @@ Node Node::makeString(const Ts&... args) {
 template<class... Ts>
 Node Node::makeIdentifier(const Ts&... args) {
 	Node node;
-	node.type_ = Type::Identifier;
 	node.storage = Identifier(args...);
 	return node;
+}
+
+template<class T, class... Args>
+Node Node::make(const Args&... args) {
+	Node node;
+	node.storage = T(args...);
+	return node;
+}
+
+template<class T, class U>
+Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
+	Node node;
+	node.storage = T(arg, initializerList);
+	return node;
+}
+
+template<class T>
+bool Node::is() const {
+	return boost::get<T>(&storage) != nullptr;
+}
+
+template<class T>
+T& Node::get() {
+	assert( is<T>() );
+	return boost::get<T>(storage);
+}
+
+template<class T>
+const T& Node::get() const {
+	assert( is<T>() );
+	return boost::get<T>(storage);
 }
 
 }} //namespace tungsten::ast

@@ -22,10 +22,16 @@ FunctionCall::FunctionCall(const Identifier& name) :
 FunctionCall::FunctionCall(const Identifier& name, const Operands& operands) :
 		function( new Node(Node::makeIdentifier(name)) ), operands(operands) {}
 
+FunctionCall::FunctionCall(const Identifier& name, std::initializer_list<Node> operands) :
+		function( new Node(Node::makeIdentifier(name)) ), operands(operands) {}
+
 FunctionCall::FunctionCall(const Node& function) :
 		function( new Node(function) ) {}
 
 FunctionCall::FunctionCall(const Node& function, const Operands& operands) :
+		function( new Node(function) ), operands(operands) {}
+
+FunctionCall::FunctionCall(const Node& function, std::initializer_list<Node> operands) :
 		function( new Node(function) ), operands(operands) {}
 
 FunctionCall& FunctionCall::operator=(FunctionCall other) {
