@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <sstream>
+#include <algorithm>
 
 namespace tungsten { namespace ast {
 
@@ -101,6 +102,32 @@ template<> struct NodeTypeToInt<Identifier> {
 };
 template<> struct NodeTypeToInt<FunctionCall> {
 	static const int value = 5;
+};
+
+struct LengthVisitor : boost::static_visitor<unsigned> {
+	unsigned operator()(const math::Rational& /*r*/) const {
+		return 1;
+	}
+	
+	unsigned operator()(const math::Real& /*r*/) const {
+		return 1;
+	}
+	
+	unsigned operator()(const String& s) const {
+		return s.length();
+	}
+	
+	unsigned operator()(const Identifier& i) const {
+		return i.length();
+	}
+	
+	unsigned operator()(const FunctionCall& f) const {
+		return 1+
+		std::accumulate(f.getOperands().begin(), f.getOperands().end(), 
+		0u, [](unsigned& u, const Node& n) 
+		{return u+applyVisitor(n, LengthVisitor{});});
+	}
+	
 };
 
 

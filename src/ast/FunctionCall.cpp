@@ -38,57 +38,57 @@ bool FunctionCall::operator==(const FunctionCall& other) const {
 }
 
 bool FunctionCall::operator<(const FunctionCall& rhs) const {
-/* Default behaviour by r0
-	if ( *function != *rhs.function ) {
-		return *function < *rhs.function;
-	}
+	/* Default behaviour by r0
+		if ( *function != *rhs.function ) {
+			return *function < *rhs.function;
+		}
 
-	return boost::lexicographical_compare( operands, rhs.operands );
-*/ // End default behaviour by r0
-// Start new behaviour by ph
-/**
-Canonical-like ordering
+		return boost::lexicographical_compare( operands, rhs.operands );
+	*/ // End default behaviour by r0
+	// Start new behaviour by ph
+	/**
+	Canonical-like ordering
 
-Special ordering relation to mimic WM like output (for eg. Polynomials)
-Please see http://reference.wolfram.com/mathematica/ref/Sort.html
-for more details on how/why. This operator deals with case 4-5:
-	(...)
-	4: Sort usually orders expressions by putting shorter ones first, and then
-	comparing parts in a depth-first manner. 
-	5: Sort treats powers and products specially, ordering them to correspond 
-	to terms in a polynomial.
-	(...)
-**/
+	Special ordering relation to mimic WM like output (for eg. Polynomials)
+	Please see http://reference.wolfram.com/mathematica/ref/Sort.html
+	for more details on how/why. This operator deals with case 4-5:
+		(...)
+		4: Sort usually orders expressions by putting shorter ones first, and then
+		comparing parts in a depth-first manner. 
+		5: Sort treats powers and products specially, ordering them to correspond 
+		to terms in a polynomial.
+		(...)
+	**/
 
 
-if(this->getFunction().getIdentifier() == rhs.getFunction().getIdentifier()) {
-	// if functions have same name, one with less parameters is smaller (4)
-	if(this->getOperands().size() < rhs.getOperands().size()){ return true; }
-	if(this->getOperands().size() > rhs.getOperands().size()){ return false; }
+	if(this->getFunction().getIdentifier() == rhs.getFunction().getIdentifier()) {
+		// if functions have same name, one with less parameters is smaller (4)
+		if(this->getOperands().size() < rhs.getOperands().size()){ return true; }
+		if(this->getOperands().size() > rhs.getOperands().size()){ return false; }
 	
-	return boost::lexicographical_compare(this->getOperands(), rhs.getOperands());
-	// depth based lexicographical compare.
+		return boost::lexicographical_compare(this->getOperands(), rhs.getOperands());
+		// depth based lexicographical compare.
 	
-}
-// Functions are of different name (and different objects) now.
-// Handle the special cases now. Hopefully no more will arise
-
-if(this->getFunction().getIdentifier() == "Power") {
-// I hope that's what it's called. :S
-	if(rhs.getFunction().getIdentifier() == "Times") {
-	// left pow, right times example: (x^3) * 5. Verdict: Swap.
-		return false;
 	}
-}
+	// Functions are of different name (and different objects) now.
+	// Handle the special cases now. Hopefully no more will arise
 
-if(this->getFunction().getIdentifier() == "Times") {
-	if(rhs.getFunction().getIdentifier() == "Power") {
-	// right pow, left times example: 5 * (x^3) . Verdict: Do not swap.
-		return true;
+	if(this->getFunction().getIdentifier() == "Power") {
+	// I hope that's what it's called. :S
+		if(rhs.getFunction().getIdentifier() == "Times") {
+		// left pow, right times example: (x^3) * 5. Verdict: Swap.
+			return false;
+		}
 	}
-}
 
-return this->getOperands().size() <= rhs.getOperands().size(); // as above.
+	if(this->getFunction().getIdentifier() == "Times") {
+		if(rhs.getFunction().getIdentifier() == "Power") {
+		// right pow, left times example: 5 * (x^3) . Verdict: Do not swap.
+			return true;
+		}
+	}
+
+	return this->getOperands().size() <= rhs.getOperands().size(); // as above.
 }
 
 Node& FunctionCall::getFunction() {
