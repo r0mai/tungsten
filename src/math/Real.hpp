@@ -16,6 +16,8 @@ public:
 	Real(Ts&&... args) : mpf_class(std::forward<Ts>(args)...) {}
 
 	std::string toString() const;
+
+	Real toThePower(const Real& exponent) const;
 };
 
 }} //namespace tungsten::math

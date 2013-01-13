@@ -3,11 +3,15 @@
 
 #include <cassert>
 
+#include <boost/range/algorithm/transform.hpp>
+
 #include "eval/SessionEnvironment.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
 struct PowerVisitor : boost::static_visitor<ast::Node> {
+
+	PowerVisitor(SessionEnvironment& sessionEnvironenment) : sessionEnvironenment(sessionEnvironenment) {}
 
 	//Base case: we can't do any simplifications
 	template<class T, class U>
@@ -17,11 +21,81 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 				ast::Node::make<U>(exponent)});
 	}
 
-//	template<class T>
-//	ast::Node operator()(const T& base, const math::Rational& exponent) {
-//
-//	}
+	ast::Node operator()(const math::Rational& base, const math::Rational& exponent) {
 
+
+		if ( base < 0 && !exponent.isInteger() ) {
+			//result is Complex TODO
+			return operator()<>(base, exponent);
+		}
+
+		if ( base < 0 && exponent.isInteger() ) {
+
+			math::Integer exponentInteger = exponent.asInteger();
+
+			if ( !exponentInteger.fitsSL() ) {
+				//TODO issue General::ovfl
+				return ast::Node::make<ast::FunctionCall>("Overflow");
+			}
+
+			return ast::Node::make<math::Rational>( base.toThePower(exponentInteger.asSL()) );
+		}
+
+		assert( base > 0 );
+
+		math::Integer exponentNumerator = exponent.numerator();
+		math::Integer exponentDenominator = exponent.denominator();
+
+
+		/*
+		 * goal:
+		 *
+		 *  baseNumerator^exponentNumerator
+		 * (---------------------------------)^(1/exponentDenominator)
+		 *  baseDenominator^exponentNumerator
+		 *
+		 * <=>
+		 *
+		 * (base^exponentNumerator)^(1/exponentDenominator)
+		 *
+		 */
+
+
+		if ( !exponentNumerator.fitsSL() ) {
+			//TODO issue General::ovfl
+			return ast::Node::make<ast::FunctionCall>("Overflow");
+		}
+
+		math::Rational baseExponentation = base.toThePower( exponentNumerator.asSL() );
+
+		math::Rational newExponent(1, exponentDenominator);
+
+		if ( newExponent == 1 ) {
+			return ast::Node::make<math::Rational>(baseExponentation);
+		}
+
+		return ast::Node::make<ast::FunctionCall>("Power", {
+				ast::Node::make<math::Rational>(baseExponentation),
+				ast::Node::make<math::Rational>(newExponent)});
+
+	}
+
+	ast::Node operator()(const math::Real& base, const math::Real& exponent) {
+		//TODO implement math::Real::toThePower()
+		return ast::Node::make<ast::FunctionCall>("Power", {
+				ast::Node::make<math::Real>(base),
+				ast::Node::make<math::Real>(exponent)});
+	}
+
+	ast::Node operator()(const math::Real& base, const math::Rational& exponent) {
+		return operator()(base, math::Real(exponent));
+	}
+
+	ast::Node operator()(const math::Rational& base, const math::Real& exponent) {
+		return operator()(math::Real(base), exponent);
+	}
+
+	SessionEnvironment& sessionEnvironenment;
 };
 
 ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
@@ -46,6 +120,21 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 	}
 
 	//Special cases:
+	//c.isInteger() : (a*b)^c => a^c * b^c
+	if ( exponent.is<math::Rational>() && exponent.get<math::Rational>().isInteger() &&
+			base.is<ast::FunctionCall>() && base.get<ast::FunctionCall>().getFunction().is<ast::Identifier>("Times") )
+	{
+		const ast::Operands& baseTimesOperands = base.get<ast::FunctionCall>().getOperands();
+
+		ast::Operands resultTimesOperands( baseTimesOperands.size() );
+
+		boost::transform(baseTimesOperands, resultTimesOperands.begin(),
+				[&](const ast::Node& node) {
+					return ast::Node::make<ast::FunctionCall>( "Power", {node, exponent} );
+				});
+
+		return sessionEnvironment.evaluate(ast::Node::make<ast::FunctionCall>( "Times", resultTimesOperands ));
+	}
 
 
 	//c.isInteger() : (a^b)^c => (a^(b*c))
@@ -79,7 +168,7 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 	}
 
 
-	PowerVisitor powerVisitor;
+	PowerVisitor powerVisitor{sessionEnvironment};
 	return ast::applyVisitor( base, exponent, powerVisitor );
 }
 

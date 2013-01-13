@@ -19,12 +19,18 @@ public:
 	template<class... Ts>
 	Rational(Ts&&... args) : mpq_class(std::forward<Ts>(args)...) {}
 
-	bool isInteger() const { return get_den() == 1; }
+	Integer numerator() const { return get_num(); }
+	Integer denominator() const { return get_den(); }
+
+	bool isInteger() const { return denominator() == 1; }
 
 	Integer asInteger() const {
 		assert( isInteger() );
 		return get_num();
 	}
+
+	Rational reciprocal() const;
+	Rational toThePower(long exponent) const;
 
 	std::string toString() const;
 

@@ -27,6 +27,7 @@ BOOST_FIXTURE_TEST_CASE( test_Power_of_x , BuiltinFunctionFixture ) {
 BOOST_FIXTURE_TEST_CASE( test_0_to_the_power_of_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0^0");
 
+	//TODO add check for message
 	BOOST_REQUIRE( result );
 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
@@ -35,6 +36,7 @@ BOOST_FIXTURE_TEST_CASE( test_0_to_the_power_of_0 , BuiltinFunctionFixture ) {
 BOOST_FIXTURE_TEST_CASE( test_0_0_to_the_power_of_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0.0^0");
 
+	//TODO add check for message
 	BOOST_REQUIRE( result );
 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
@@ -43,6 +45,7 @@ BOOST_FIXTURE_TEST_CASE( test_0_0_to_the_power_of_0 , BuiltinFunctionFixture ) {
 BOOST_FIXTURE_TEST_CASE( test_0_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0^0.0");
 
+	//TODO add check for message
 	BOOST_REQUIRE( result );
 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
@@ -51,9 +54,19 @@ BOOST_FIXTURE_TEST_CASE( test_0_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
 BOOST_FIXTURE_TEST_CASE( test_0_0_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0.0^0.0");
 
+	//TODO add check for message
 	BOOST_REQUIRE( result );
 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_big_exponent_overflow , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("2^999999999999999999");
+
+	//TODO add check for message
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Overflow") );
 }
 
 BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_0 , BuiltinFunctionFixture ) {
@@ -169,6 +182,31 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_x_to_the_power_of_y_to_the_power_of_5
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>("5"), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_a_times_b_times_c_cubed , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(a*b*c)^3");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times",
+			{
+					ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<math::Rational>(3)}),
+					ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<math::Rational>(3)}),
+					ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(3)})
+			}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_2_times_c_cubed , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(2*c)^3");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times",
+			{
+					ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(3)}),
+					ast::Node::make<math::Rational>(8)
+			}) );
+}
+
 BOOST_FIXTURE_TEST_CASE( test_3_to_the_power_of_1_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("3^1.");
 
@@ -201,7 +239,7 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_a_to_the_power_of_b_to_the_5th_power 
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<math::Rational>(5)})}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(5), ast::Node::make<ast::Identifier>("b")})}) );
 }
 
 
