@@ -7,7 +7,13 @@
 
 namespace tungsten { namespace ast {
 
-bool Node::isNumeric() const { return is<math::Real>() || is<math::Rational>(); }
+bool Node::isNumeric() const {
+	return is<math::Real>() || is<math::Rational>();
+}
+
+bool Node::isNumeric(const math::Real& test) {
+	return isNumeric() && getNumeric() == test;
+}
 
 math::Real Node::getNumeric() const {
 	assert( isNumeric() );

@@ -24,6 +24,53 @@ BOOST_FIXTURE_TEST_CASE( test_Power_of_x , BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("x") );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_0_to_the_power_of_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0^0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_0_0_to_the_power_of_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0.0^0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_0_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0^0.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_0_0_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0.0^0.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("x^0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(1) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("x^0.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Real>(1) );
+}
 
 BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_y , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x^y");
@@ -114,6 +161,13 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_x_to_the_power_of_y_to_the_power_of_z
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::Identifier>("z")}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_x_to_the_power_of_y_to_the_power_of_5 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(x^y)^5");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>("5"), ast::Node::make<ast::Identifier>("y")})}) );
+}
 
 BOOST_FIXTURE_TEST_CASE( test_3_to_the_power_of_1_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("3^1.");

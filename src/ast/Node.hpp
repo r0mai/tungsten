@@ -33,7 +33,11 @@ public:
 	template<class T>
 	bool is() const;
 
+	template<class T>
+	bool is(const T& test) const;
+
 	bool isNumeric() const; //isReal() || isRational()
+	bool isNumeric(const math::Real& test);
 	math::Real getNumeric() const; //returns Real when isNumeric() is true
 
 	template<class T>
@@ -105,6 +109,11 @@ Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
 template<class T>
 bool Node::is() const {
 	return boost::get<T>(&storage) != nullptr;
+}
+
+template<class T>
+bool Node::is(const T& test) const {
+	return is<T>() && get<T>() == test;
 }
 
 template<class T>
