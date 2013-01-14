@@ -8,6 +8,7 @@
 #include <boost/bind.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
+#include "threadListableOperands.hpp"
 #include "flattenOperands.hpp"
 
 namespace tungsten { namespace eval {
@@ -63,7 +64,23 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		}
 
 
-		//TODO Listable
+		if ( function.is<ast::Identifier>() &&
+			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), "Listable") )
+		{
+
+			ast::Operands listOperands;
+
+			ThreadListableOperandsReturnType returnValue = threadListableOperands( functionCall, listOperands );
+			if ( returnValue == ThreadListableOperandsReturnType::UNSUCCESSFUL ) {
+				std::cout << "Thread::tdlen UNSUCCESSFUL" << std::endl;
+				//TODO issue Thread::tdlen
+			} else if ( returnValue == ThreadListableOperandsReturnType::NOT_APPLICABLE ) {
+				//Fallthrough
+			} else {
+				assert( returnValue == ThreadListableOperandsReturnType::SUCCESSFUL );
+				return sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>("List", listOperands) );
+			}
+		}
 
 		if ( function.is<ast::Identifier>() ) {
 			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.get<ast::Identifier>());
