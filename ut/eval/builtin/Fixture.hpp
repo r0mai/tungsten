@@ -26,6 +26,10 @@ public:
 		return evaluate(*parsed);
 	}
 
+	void addAttribute(const tungsten::ast::Identifier& identifier, const tungsten::eval::Attribute& attribute) {
+		environment.addAttribute(identifier, attribute);
+	}
+
 private:
 	UnitTestEnvironment environment;
 };

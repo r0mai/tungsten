@@ -29,19 +29,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 			return operator()<>(base, exponent);
 		}
 
-		if ( base < 0 && exponent.isInteger() ) {
-
-			math::Integer exponentInteger = exponent.asInteger();
-
-			if ( !exponentInteger.fitsSL() ) {
-				//TODO issue General::ovfl
-				return ast::Node::make<ast::FunctionCall>("Overflow");
-			}
-
-			return ast::Node::make<math::Rational>( math::power(base, exponentInteger.asSL()) );
-		}
-
-		assert( base > 0 );
+		assert( (base < 0 && exponent.isInteger()) || base > 0 );
 
 		math::Integer exponentNumerator = exponent.numerator();
 		math::Integer exponentDenominator = exponent.denominator();

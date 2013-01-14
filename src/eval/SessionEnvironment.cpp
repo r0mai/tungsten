@@ -22,6 +22,13 @@ ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
 	return recursiveEvaluate(node);
 }
 
+/*
+ * This Visitor in the future will probably work like this:
+ * Try matching the input Node, with the symbol (pattern) table
+ * if we found a match, replace it with the key for the match,
+ * otherwise return the original node
+ */
+
 struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 	EvaluateVisitor(SessionEnvironment& sessionEnvironment) :
