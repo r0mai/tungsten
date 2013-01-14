@@ -81,10 +81,8 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Real& base, const math::Real& exponent) {
-		//TODO implement math::Real::toThePower()
-		return ast::Node::make<ast::FunctionCall>("Power", {
-				ast::Node::make<math::Real>(base),
-				ast::Node::make<math::Real>(exponent)});
+		//TODO complex case needs to be handled here
+		return ast::Node::make<math::Real>(base.toThePower(exponent));
 	}
 
 	ast::Node operator()(const math::Real& base, const math::Rational& exponent) {

@@ -16,12 +16,15 @@ png_lib_statement = -L $(png_lib_dir)
 gmp_lib_dir = /usr/local/lib
 gmp_lib_statement = -L $(gmp_lib_dir)
 
+mpfr_lib_dir = /usr/local/lib
+mpfr_lib_statement = -L $(mpfr_lib_dir)
+
 
 source_dir = $(TUP_CWD)/src
 
 INCLUDE_DIRS += $(source_dir)
 
-LIB_DIRS += $(boost_lib_statement) $(png_lib_statement) $(gmp_lib_statement)
+LIB_DIRS += $(boost_lib_statement) $(png_lib_statement) $(gmp_lib_statement) $(mpfr_lib_statement)
 
 BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 	$(boost_lib_dir)/libboost_system.a \
@@ -33,6 +36,8 @@ PNG_LIBS = $(png_lib_dir)/libpng.a
 
 GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a 
 
+MPFR_LIBS = $(mpfr_lib_dir)/libmpfr.a
+
 !cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
-!linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) $(PNG_LIBS) $(GMP_LIBS) -o %o |>
+!linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS) -o %o |>
  
