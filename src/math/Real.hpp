@@ -17,8 +17,9 @@ public:
 
 	std::string toString() const;
 
-	Real toThePower(const Real& exponent) const;
 };
+
+Real power(const Real& base, const Real& exponent);
 
 }} //namespace tungsten::math
 

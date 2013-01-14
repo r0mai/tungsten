@@ -38,7 +38,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 				return ast::Node::make<ast::FunctionCall>("Overflow");
 			}
 
-			return ast::Node::make<math::Rational>( base.toThePower(exponentInteger.asSL()) );
+			return ast::Node::make<math::Rational>( math::power(base, exponentInteger.asSL()) );
 		}
 
 		assert( base > 0 );
@@ -66,7 +66,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 			return ast::Node::make<ast::FunctionCall>("Overflow");
 		}
 
-		math::Rational baseExponentation = base.toThePower( exponentNumerator.asSL() );
+		math::Rational baseExponentation = math::power(base, exponentNumerator.asSL());
 
 		math::Rational newExponent(1, exponentDenominator);
 
@@ -82,7 +82,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 
 	ast::Node operator()(const math::Real& base, const math::Real& exponent) {
 		//TODO complex case needs to be handled here
-		return ast::Node::make<math::Real>(base.toThePower(exponent));
+		return ast::Node::make<math::Real>(math::power(base, exponent));
 	}
 
 	ast::Node operator()(const math::Real& base, const math::Rational& exponent) {

@@ -22,11 +22,11 @@ public:
 	unsigned long asUL() const { assert( fitsUL() ); return get_ui(); }
 	signed long asSL() const { assert( fitsSL() ); return get_si(); }
 
-	Integer toThePower(unsigned long exponent) const;
-
 	std::string toString() const;
 
 };
+
+Integer power(const Integer& base, unsigned long exponent);
 
 }} //namespace tungsten::math
 

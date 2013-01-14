@@ -13,26 +13,28 @@ Rational Rational::reciprocal() const {
 	return result;
 }
 
-Rational Rational::toThePower(long exponent) const {
+std::string Rational::toString() const {
+	std::stringstream ss;
+	ss << *this;
+	return ss.str();
+}
 
-	Integer numerator = this->numerator();
-	Integer denominator = this->denominator();
+Rational power(const Rational& base, long exponent) {
+	Integer numerator = base.numerator();
+	Integer denominator = base.denominator();
 
 	if ( exponent < 0 ) {
 		std::swap( numerator, denominator );
 		exponent = -exponent;
 	}
 
-	Rational result(numerator.toThePower(exponent), denominator.toThePower(exponent));
+	Rational result(
+			power(numerator, static_cast<unsigned long>(exponent)),
+			power(denominator, static_cast<unsigned long>(exponent))
+			);
 	result.canonicalize();
 
 	return result;
-}
-
-std::string Rational::toString() const {
-	std::stringstream ss;
-	ss << *this;
-	return ss.str();
 }
 
 }} //namespace tungsten::math

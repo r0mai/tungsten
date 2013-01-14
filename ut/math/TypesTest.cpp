@@ -62,24 +62,6 @@ BOOST_AUTO_TEST_CASE( Integer_asSI_works_for_negative ) {
 	BOOST_CHECK_EQUAL( n.asSL(), -123L );
 }
 
-BOOST_AUTO_TEST_CASE( Integer_2_toThePower_6 ) {
-	math::Integer n = 2;
-
-	BOOST_CHECK_EQUAL( n.toThePower(6), 64 );
-}
-
-BOOST_AUTO_TEST_CASE( Integer_minus_2_toThePower_6 ) {
-	math::Integer n = -2;
-
-	BOOST_CHECK_EQUAL( n.toThePower(6), 64 );
-}
-
-BOOST_AUTO_TEST_CASE( Integer_minus_2_toThePower_5 ) {
-	math::Integer n = -2;
-
-	BOOST_CHECK_EQUAL( n.toThePower(5), -32 );
-}
-
 BOOST_AUTO_TEST_CASE( Rational_isInteger_works ) {
 	math::Rational q(1,2);
 	math::Rational z(2,1);
@@ -100,34 +82,29 @@ BOOST_AUTO_TEST_CASE( Rational_asInteger_works ) {
 	BOOST_CHECK_EQUAL( z.asInteger(), math::Integer(2) );
 }
 
-BOOST_AUTO_TEST_CASE( Rational_2_3_toThePower_3 ) {
-	math::Rational n(2, 3);
-
-	BOOST_CHECK_EQUAL( n.toThePower(3), math::Rational(8, 27) );
-}
-
-BOOST_AUTO_TEST_CASE( Rational_2_3_toThePower_minus_3 ) {
-	math::Rational n(2, 3);
-
-	BOOST_CHECK_EQUAL( n.toThePower(-3), math::Rational(27, 8) );
-}
-
-BOOST_AUTO_TEST_CASE( Rational_minus_2_3_toThePower_3 ) {
-	math::Rational n(-2, 3);
-
-	BOOST_CHECK_EQUAL( n.toThePower(3), math::Rational(-8, 27) );
-}
-
-BOOST_AUTO_TEST_CASE( Rational_minus_2_3_toThePower_minus_3 ) {
-	math::Rational n(-2, 3);
-
-	BOOST_CHECK_EQUAL( n.toThePower(-3), math::Rational(-27, 8) );
-}
-
 BOOST_AUTO_TEST_CASE( Rational_reciprocal_works ) {
 	math::Rational n(2, 3);
 
 	BOOST_CHECK_EQUAL( n.reciprocal(), math::Rational(3, 2) );
+}
+
+
+
+BOOST_AUTO_TEST_CASE( Integer_power_test ) {
+	BOOST_CHECK_EQUAL( math::power(math::Integer(2), math::Integer(6)), 64 );
+	BOOST_CHECK_EQUAL( math::power(math::Integer(-2), math::Integer(6)), 64 );
+	BOOST_CHECK_EQUAL( math::power(math::Integer(-2), math::Integer(5)), -32 );
+}
+
+BOOST_AUTO_TEST_CASE( Rational_power_test ) {
+	BOOST_CHECK_EQUAL( math::power(math::Rational(2, 3), 3), math::Rational(8, 27) );
+	BOOST_CHECK_EQUAL( math::power(math::Rational(2, 3), -3), math::Rational(27, 8) );
+	BOOST_CHECK_EQUAL( math::power(math::Rational(-2, 3), 3), math::Rational(-8, 27) );
+	BOOST_CHECK_EQUAL( math::power(math::Rational(-2, 3), -3), math::Rational(-27, 8) );
+}
+
+BOOST_AUTO_TEST_CASE( Real_power_test ) {
+	BOOST_CHECK_EQUAL( math::power(math::Real(2), math::Real(3)), 8.0 );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

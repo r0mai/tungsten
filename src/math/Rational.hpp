@@ -30,11 +30,12 @@ public:
 	}
 
 	Rational reciprocal() const;
-	Rational toThePower(long exponent) const;
 
 	std::string toString() const;
 
 };
+
+Rational power(const Rational& base, long exponent);
 
 }} //namespace tungsten::math
 

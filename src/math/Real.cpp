@@ -14,8 +14,7 @@ std::string Real::toString() const {
 	return ss.str();
 }
 
-Real Real::toThePower(const Real& exponent) const {
-	const Real& base = *this;
+Real power(const Real& base, const Real& exponent) {
 
 	mpfr_t mpfrBase, mpfrExponent, mpfrResult;
 	mpfr_init_set_f(mpfrBase, base.get_mpf_t(), MPFR_RNDN);
