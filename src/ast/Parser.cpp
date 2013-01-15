@@ -2,6 +2,7 @@
 #include "Parser.hpp"
 #include "math/Rational.hpp"
 #include "math/Real.hpp"
+#include "eval/Identifiers.hpp"
 
 #include <cassert>
 
@@ -13,6 +14,7 @@ namespace tungsten { namespace ast {
 \brief Main Namespace for Abstract Syntax Tree Building
 
 **/
+namespace ids = eval::ids;
 
 namespace spirit = boost::spirit;
 namespace qi = spirit::qi;
@@ -84,25 +86,25 @@ void rightAssociativeOperator(const Identifier& functionName, Node& result, Node
 }
 
 void operatorPlus(Node& result, const Node& rhs) {
-	leftAssociativeListableOperator( "Plus", result, rhs );
+	leftAssociativeListableOperator( ids::Plus, result, rhs );
 }
 
 void operatorMinus(Node& result, Node rhs) {
 	removeIfParenthesesIdentityFunction(rhs);
-	operatorPlus( result, Node::make<FunctionCall>("Times", {Node::make<math::Rational>(-1), rhs}) );
+	operatorPlus( result, Node::make<FunctionCall>(ids::Times, {Node::make<math::Rational>(-1), rhs}) );
 }
 
 void operatorTimes(Node& result, const Node& rhs) {
-	leftAssociativeListableOperator( "Times", result, rhs );
+	leftAssociativeListableOperator( ids::Times, result, rhs );
 }
 
 void operatorDivide(Node& result, Node rhs) {
 	removeIfParenthesesIdentityFunction(rhs);
-	operatorTimes( result, Node::make<FunctionCall>("Power", {rhs, Node::make<math::Rational>(-1)}) );
+	operatorTimes( result, Node::make<FunctionCall>(ids::Power, {rhs, Node::make<math::Rational>(-1)}) );
 }
 
 void operatorPower(Node& result, const Node& rhs) {
-	rightAssociativeOperator( "Power", result, rhs );
+	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
 void operatorParentheses(Node& result, const Node& expression) {
@@ -223,7 +225,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				']');
 
 		list =
-				eps[phx::bind(&createFunctionCallFromString, _val, "List")] >>
+				eps[phx::bind(&createFunctionCallFromString, _val, ids::List)] >>
 				'{' >>
 				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
 				'}';

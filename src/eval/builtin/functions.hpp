@@ -5,6 +5,7 @@
 
 #include "ast/Node.hpp"
 #include "eval/SessionEnvironmentFwd.hpp"
+#include "eval/Identifiers.hpp"
 
 #include <map>
 #include <functional>

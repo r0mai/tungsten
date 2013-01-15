@@ -5,9 +5,9 @@ namespace tungsten { namespace eval { namespace builtin {
 
 Functions createFunctions() {
 	Functions result;
-	result["Plus"] = &Plus;
-	result["Times"] = &Times;
-	result["Power"] = &Power;
+	result[ids::Plus] = &Plus;
+	result[ids::Times] = &Times;
+	result[ids::Power] = &Power;
 	return result;
 }
 

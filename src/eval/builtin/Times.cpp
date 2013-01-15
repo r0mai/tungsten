@@ -38,12 +38,12 @@ struct TimesVisitor : boost::static_visitor<void> {
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
-		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>("Times") );
+		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>(ids::Times) );
 
 		ast::Node factor = ast::Node::make<ast::FunctionCall>(functionCall);
 		RealRationalNumber exponent = math::Rational(1);
 
-		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>("Power") ) {
+		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>(ids::Power) ) {
 
 			assert( functionCall.getOperands().size() == 2 );
 
@@ -106,7 +106,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 			} else if ( exponent == ast::Node::make<math::Rational>(1) ) {
 				operands.push_back( factor.first );
 			} else {
-				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>("Power", {factor.first, exponent})) );
+				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>(ids::Power, {factor.first, exponent})) );
 			}
 		}
 
@@ -118,7 +118,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 			return operands[0];
 		}
 
-		return ast::Node::make<ast::FunctionCall>("Times", operands);
+		return ast::Node::make<ast::FunctionCall>(ids::Times, operands);
 
 	}
 

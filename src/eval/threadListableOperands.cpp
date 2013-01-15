@@ -1,8 +1,10 @@
 
 #include "threadListableOperands.hpp"
-#include "ast/Node.hpp"
 
 #include <boost/range/algorithm/find_if.hpp>
+
+#include "Identifiers.hpp"
+#include "ast/Node.hpp"
 
 namespace tungsten { namespace eval {
 

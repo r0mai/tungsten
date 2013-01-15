@@ -6,10 +6,13 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/lexicographical_compare.hpp>
 
+#include "eval/Identifiers.hpp"
 #include "FunctionCall.hpp"
 #include "Node.hpp"
 
 namespace tungsten { namespace ast {
+
+namespace ids = eval::ids;
 
 FunctionCall::FunctionCall() {}
 
@@ -79,16 +82,16 @@ bool FunctionCall::operator<(const FunctionCall& rhs) const {
 	// Functions are of different name (and different objects) now.
 	// Handle the special cases now. Hopefully no more will arise
 
-	if(this->getFunction().get<Identifier>() == "Power") {
+	if(this->getFunction().get<Identifier>() == ids::Power) {
 	// I hope that's what it's called. :S
-		if(rhs.getFunction().get<Identifier>() == "Times") {
+		if(rhs.getFunction().get<Identifier>() == ids::Times) {
 		// left pow, right times example: (x^3) * 5. Verdict: Swap.
 			return false;
 		}
 	}
 
-	if(this->getFunction().get<Identifier>() == "Times") {
-		if(rhs.getFunction().get<Identifier>() == "Power") {
+	if(this->getFunction().get<Identifier>() == ids::Times) {
+		if(rhs.getFunction().get<Identifier>() == ids::Power) {
 		// right pow, left times example: 5 * (x^3) . Verdict: Do not swap.
 			return true;
 		}

@@ -38,6 +38,6 @@ GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a
 
 MPFR_LIBS = $(mpfr_lib_dir)/libmpfr.a
 
-!cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
+!cxx = |> $(CXX)  $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS) -o %o |>
  
