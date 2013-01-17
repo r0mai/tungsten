@@ -251,4 +251,61 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_a_to_the_power_of_b_to_the_power_of_5
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")}), ast::Node::make<math::Real>(5.)}) );
 }
 
+//These tests functionality in Times as well
+BOOST_FIXTURE_TEST_CASE( test_0_over_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0/0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_5_over_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("5/0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("DirectedInfinity", {}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_a_over_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("a/0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("DirectedInfinity", {}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_a_over_0_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("a/0.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("DirectedInfinity", {}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_0_0_over_0_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0.0/0.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_0_over_0_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0/0.0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_0_0_over_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("0.0/0");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
+}
+
 BOOST_AUTO_TEST_SUITE_END()

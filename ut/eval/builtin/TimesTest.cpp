@@ -196,7 +196,5 @@ BOOST_FIXTURE_TEST_CASE( Real_exponent_doesnt_alter_other_Rational_exponents, Bu
 	}) );
 }
 
-
-
 BOOST_AUTO_TEST_SUITE_END()
 

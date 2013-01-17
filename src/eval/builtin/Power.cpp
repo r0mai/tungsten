@@ -138,9 +138,16 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 	}
 
 	//0^0 => Indeterminate
-	if ( base.isNumeric(0) && exponent.isNumeric(0) ) {
-		//TODO raise Power::indet
-		return ast::Node::make<ast::Identifier>("Indeterminate");
+	if ( base.isNumeric(0) && exponent.isNumeric() ) {
+
+		math::Real exponentReal = exponent.getNumeric();
+		if ( exponentReal == 0 ) {
+			//TODO raise Power::indet
+			return ast::Node::make<ast::Identifier>("Indeterminate");
+		} else if ( exponentReal < 0 ) {
+			//TODO raise Power::infy
+			return ast::Node::make<ast::FunctionCall>("DirectedInfinity");
+		}
 	}
 
 	//x^0 => 1
