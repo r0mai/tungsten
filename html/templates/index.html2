@@ -1,0 +1,6 @@
+$def with (form)
+
+$if form:
+    $form
+$else:
+    <em>missing form!</em>
