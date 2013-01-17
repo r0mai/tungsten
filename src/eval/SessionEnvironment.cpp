@@ -6,8 +6,10 @@
 #include <functional>
 
 #include <boost/bind.hpp>
+#include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
+#include "Identifiers.hpp"
 #include "threadListableOperands.hpp"
 #include "flattenOperands.hpp"
 
@@ -58,14 +60,14 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		//Attribute Flat:
 		if (
 			function.is<ast::Identifier>() &&
-			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), "Flat") )
+			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::Flat) )
 		{
 			operands = flattenOperands( function.get<ast::Identifier>(), operands );
 		}
 
 
 		if ( function.is<ast::Identifier>() &&
-			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), "Listable") )
+			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::Listable) )
 		{
 
 			ast::Operands listOperands;
@@ -78,10 +80,17 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				//Fallthrough
 			} else {
 				assert( returnValue == ThreadListableOperandsReturnType::SUCCESSFUL );
-				return sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>("List", listOperands) );
+				return sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>(ids::List, listOperands) );
 			}
 		}
 
+		//If it is a numeric function and it has at least one Indeterminate argument, then the result is Indeterminate
+		if ( function.is<ast::Identifier>() &&
+				boost::find(operands, ast::Node::make<ast::Identifier>(ids::Indeterminate)) != operands.end() ) {
+			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
+		}
+
+		//If it is a builtin function => evaulate
 		if ( function.is<ast::Identifier>() ) {
 			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.get<ast::Identifier>());
 			if ( it != sessionEnvironment.builtinFunctions.end() ) {
@@ -115,7 +124,7 @@ ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 	if (
 			result.is<ast::FunctionCall>() &&
 			result.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() &&
-			attributeMap.hasAttribute(result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), "Orderless") )
+			attributeMap.hasAttribute(result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), ids::Orderless) )
 	{
 		ast::Operands& operands = result.get<ast::FunctionCall>().getOperands();
 		std::sort( operands.begin(), operands.end() );
