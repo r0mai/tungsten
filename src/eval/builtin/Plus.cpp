@@ -38,12 +38,12 @@ struct PlusVisitor : boost::static_visitor<void> {
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
-		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>("Plus") );
+		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>(ids::Plus) );
 
 		ast::Node term = ast::Node::make<ast::FunctionCall>(functionCall);
 		RealRationalNumber coefficient = math::Rational(1);
 
-		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>("Times") ) {
+		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>(ids::Times) ) {
 
 			auto isNodeNumeric = [](const ast::Node& node) { return node.isNumeric(); };
 			auto notIsNodeNumeric = [](const ast::Node& node) { return !node.isNumeric(); };
@@ -65,7 +65,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 				if ( toMultiply.size() == 1 ) {
 					term = toMultiply[0];
 				} else {
-					term = ast::Node::make<ast::FunctionCall>("Times", toMultiply);
+					term = ast::Node::make<ast::FunctionCall>(ids::Times, toMultiply);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 			} else if ( coefficient == ast::Node::make<math::Rational>(1) ) {
 				operands.push_back( term.first );
 			} else {
-				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>("Times", {coefficient, term.first})) );
+				operands.push_back( sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>(ids::Times, {coefficient, term.first})) );
 			}
 		}
 
@@ -121,7 +121,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 			return operands[0];
 		}
 
-		return ast::Node::make<ast::FunctionCall>("Plus", operands);
+		return ast::Node::make<ast::FunctionCall>(ids::Plus, operands);
 
 	}
 
