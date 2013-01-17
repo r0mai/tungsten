@@ -15,29 +15,28 @@ myform = form.Form(
 
 
 class index: 
-    def GET(self,name): 
-        form = myform()
-        # make sure you create a copy of the form by calling it (line above)
-        # Otherwise changes will appear globally
-	cmd = ''
-        if name:
-		cmd = tungsten + name
-	p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
-	output = p.stdout.read()
-	return render.formtest(form, name, output)
+	def getLog(self): 
+		p = Popen("tail log.txt", shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+		return p.stdout.read().replace(' ', r'<br>')
+	
+	def GET(self,name): 
+		form = myform()
+		cmd = ''
+		if name:
+			cmd = tungsten + '"' +name.replace('"', r'\"')+ '"'
+		p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+		output = p.stdout.read()
+		with open("log.txt", "a") as myfile:
+			myfile.write(name+'\n')
+		return render.formtest(form, name, output, self.getLog())
 
 
-    def POST(self, name): 
-        form = myform() 
-        if not form.validates() and not name: 
-            return render.formtest(form, name,'Invalid input')
-        else:
-            # form.d.boe and form['boe'].value are equivalent ways of
-            # extracting the validated arguments from the form.
-            cmd = tungsten + form.d.input
-            p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
-            output = p.stdout.read()
-            return render.formtest(form, name, output)
+	def POST(self, name): 
+		form = myform() 
+		if not form.validates() and not name: 
+			return render.formtest(form, name,'Invalid input', self.getLog())
+		else:
+			return render.redir(form.d.input)
 
 if __name__=="__main__":
     web.internalerror = web.debugerror

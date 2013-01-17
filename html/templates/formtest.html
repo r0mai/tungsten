@@ -1,7 +1,25 @@
-$def with (form, name, output)
+$def with (form, name, output, log)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<!-- header info used to contain extra information about
+   this document, not displayed on the page -->
+<title>Tungsten|Alpha</title>
+</head>
+
+<body>
 
 <form name="main" method="post"> 
 $output
 $:form.render()
 <input type="submit" />    </form>
+
+
+Last 10 inputs: <br>
+$log
+
+</body>
+</html>
+
+
 
