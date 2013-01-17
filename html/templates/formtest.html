@@ -4,10 +4,23 @@ $def with (form, name, output, log)
 <head>
 <!-- header info used to contain extra information about
    this document, not displayed on the page -->
+   
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$$','$$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 <title>Tungsten|Alpha</title>
 </head>
 
 <body>
+<div align="center">
+$if name:
+	Your Input: \$\$ $name \$\$ 
+$else:
+	Try me!
 
 <form name="main" method="post"> 
 $output
@@ -17,7 +30,7 @@ $:form.render()
 
 Last 10 inputs: <br>
 $log
-
+</div> 
 </body>
 </html>
 

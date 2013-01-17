@@ -15,8 +15,16 @@ BOOST_AUTO_TEST_CASE( empty_input_results_in_Null ) {
 	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::Identifier>("Null") );
 }
 
-BOOST_AUTO_TEST_CASE( empty_input_with_spaces_fails_results_in_Null ) {
+BOOST_AUTO_TEST_CASE( empty_input_with_spaces_results_in_Null ) {
 	boost::optional<ast::Node> tree = ast::parseInput(" \t");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::Identifier>("Null") );
+}
+
+BOOST_AUTO_TEST_CASE( empty_input_with_newlines_results_in_Null ) {
+	boost::optional<ast::Node> tree = ast::parseInput(" \n\n");
 
 	BOOST_REQUIRE( tree );
 
