@@ -1,5 +1,7 @@
 from subprocess import Popen, PIPE, STDOUT
 import web
+import string
+from django.utils.encoding import smart_str, smart_unicode
 from web import form
 
 render = web.template.render('templates/')
@@ -10,7 +12,8 @@ urls = ('/(.*)', 'index')
 app = web.application(urls, globals())
 
 myform = form.Form( 
-    form.Textbox("input")
+    form.Textbox("input", size="56", maxlength="128",
+    validators = [form.Validator("Only ASCII chars please.", lambda s: all(ord(smart_str(c))<128 for c in s) )])
 )
 
 
@@ -22,12 +25,12 @@ class index:
 	def GET(self,name): 
 		form = myform()
 		cmd = ''
-		if name:
+		if name and (name is not "favicon.ico"):
 			cmd = tungsten + '"' +name.replace('"', r'\"')+ '"'
 		p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
 		output = p.stdout.read()
 		with open("log.txt", "a") as myfile:
-			myfile.write(name+'\n')
+			myfile.write(smart_str(name)+'\n')
 		return render.formtest(form, name, output, self.getLog())
 
 
