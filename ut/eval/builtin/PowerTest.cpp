@@ -61,7 +61,7 @@ BOOST_FIXTURE_TEST_CASE( test_0_0_to_the_power_of_0_0 , BuiltinFunctionFixture )
 }
 
 BOOST_FIXTURE_TEST_CASE( test_big_exponent_overflow , BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("2^999999999999999999");
+	boost::optional<ast::Node> result = parseAndEvaluate("2^9999999999999999999999999");
 
 	//TODO add check for message
 	BOOST_REQUIRE( result );
