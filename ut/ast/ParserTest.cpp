@@ -766,4 +766,28 @@ BOOST_AUTO_TEST_CASE( Lists_can_take_part_in_expressions ) {
 			ast::Node::make<ast::FunctionCall>("List")}) );
 }
 
+BOOST_AUTO_TEST_CASE( Infinity_parsed_as_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("Infinity");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::Identifier>("Infinity") );
+}
+
+BOOST_AUTO_TEST_CASE( Inf_parsed_as_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("Inf");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::Identifier>("Inf") );
+}
+
+BOOST_AUTO_TEST_CASE( nan_parsed_as_Identifier ) {
+	boost::optional<ast::Node> tree = ast::parseInput("nan");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::Identifier>("nan") );
+}
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -142,6 +142,31 @@ void finishingTouches(Node& result, const Node& wholeExpression) {
 	removeIfParenthesesIdentityFunction(result);
 }
 
+template<class T>
+struct OnlyNumericRealPolicies : qi::strict_real_policies<T> {
+
+    template<class Iterator>
+    static bool parse_exp(Iterator& /*first*/, const Iterator& /*last*/) {
+        return false;
+    }
+
+    template<class Iterator, class Attribute>
+    static bool parse_exp_n(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
+        return false;
+    }
+
+    template<class Iterator, class Attribute>
+    static bool parse_inf(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
+        return false;
+    }
+
+    template<class Iterator, class Attribute>
+    static bool parse_nan(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
+        return false;
+    }
+
+};
+
 typedef boost::spirit::ascii::blank_type delimiter;
 
 template<class Iterator>
@@ -241,7 +266,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	}
 
 	qi::int_parser< math::Integer > integerParser;
-	qi::real_parser< double, qi::strict_real_policies<double> > realParser;
+	qi::real_parser< double, OnlyNumericRealPolicies<double> > realParser;
 
 
 	qi::rule<Iterator, Node(), delimiter> start;
