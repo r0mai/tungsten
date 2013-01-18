@@ -86,6 +86,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 		//If it is a numeric function and it has at least one Indeterminate argument, then the result is Indeterminate
 		if ( function.is<ast::Identifier>() &&
+				sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::NumericFunction) &&
 				boost::find(operands, ast::Node::make<ast::Identifier>(ids::Indeterminate)) != operands.end() ) {
 			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
 		}
