@@ -25,12 +25,13 @@ class index:
 	def GET(self,name): 
 		form = myform()
 		cmd = ''
-		if name and (name is not "favicon.ico"):
+		if name:
 			cmd = tungsten + '"' +name.replace('"', r'\"')+ '"'
 		p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
 		output = p.stdout.read()
 		with open("log.txt", "a") as myfile:
-			myfile.write(smart_str(name)+'\n')
+			if name is not "favicon.ico": 
+				myfile.write(smart_str(name)+'\n')
 		return render.formtest(form, name, output, self.getLog())
 
 
