@@ -14,7 +14,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_no_arguments , BuiltinFunctionFixture 
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("listable", {}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("listable", {});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -26,7 +26,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_x , BuiltinFunctionFixture ) {
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -38,7 +38,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_x_and_y , BuiltinFunctionFixture ) {
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -50,7 +50,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_x__y_and_z , BuiltinFunctionFixture ) 
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -62,7 +62,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_an_empty_list , BuiltinFunctionFixture
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -74,7 +74,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_the_list_x , BuiltinFunctionFixture ) 
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -86,7 +86,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_the_list_x__y , BuiltinFunctionFixture
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("y")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("y")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -98,7 +98,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_the_list_x__y_and_z , BuiltinFunctionF
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::Identifier>("z")}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("z")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("z")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -110,7 +110,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_x_and_the_list_y__z , BuiltinFunctionF
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("z")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("z")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -134,7 +134,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_the_list_a__b_and_the_list_x__y , Buil
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("y")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("y")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -146,7 +146,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_the_list_a__b__g_and_the_list_x__y , B
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")}), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("y")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("y")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -158,7 +158,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_a__the_list_g__f_and_the_list_x__y , B
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("f")}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("f"), ast::Node::make<ast::Identifier>("y")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("f"), ast::Node::make<ast::Identifier>("y")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
@@ -170,7 +170,7 @@ BOOST_FIXTURE_TEST_CASE( test_listable_of_the_list_a__b__c__the_list_f__g__h_and
 
 	ast::Node result = evaluate(ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("c")}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("f"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("h")}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y"), ast::Node::make<ast::Identifier>("z")})}));
 
-	ast::Node expected = evaluate(ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("f"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<ast::Identifier>("h"), ast::Node::make<ast::Identifier>("z")})}));
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("f"), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("b"), ast::Node::make<ast::Identifier>("g"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::FunctionCall>("listable", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<ast::Identifier>("h"), ast::Node::make<ast::Identifier>("z")})});
 
 	BOOST_CHECK_EQUAL( result, expected );
 }
