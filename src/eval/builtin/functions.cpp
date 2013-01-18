@@ -8,6 +8,7 @@ Functions createFunctions() {
 	result[ids::Plus] = &Plus;
 	result[ids::Times] = &Times;
 	result[ids::Power] = &Power;
+	result[ids::Abs] = &Abs;
 	return result;
 }
 
