@@ -4,8 +4,12 @@
 
 CXX = clang++
 #CXX = g++-4.7
+
+#DEGUD CPPFLAGS
 CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g
 
+#RELEASE CPPFLAGS
+#CPPFLAGS = -std=c++0x -Wall -Wextra -O2
 
 boost_lib_dir = /usr/local/lib
 boost_lib_statement = -L $(boost_lib_dir)
