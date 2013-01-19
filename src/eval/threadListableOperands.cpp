@@ -3,18 +3,17 @@
 
 #include <boost/range/algorithm/find_if.hpp>
 
-#include "Identifiers.hpp"
 #include "ast/Node.hpp"
 
 namespace tungsten { namespace eval {
 
-ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall, ast::Operands& resultOperands) {
+ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall, ast::Operands& resultOperands, const ast::Node& head) {
 
 	const ast::Node& function = functionCall.getFunction();
 	const ast::Operands& operands = functionCall.getOperands();
 
-	ast::Operands::const_iterator firstListIt = boost::find_if(operands, [](const ast::Node& node) {
-		return node.is<ast::FunctionCall>() && node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>("List");
+	ast::Operands::const_iterator firstListIt = boost::find_if(operands, [&head](const ast::Node& node) {
+		return node.is<ast::FunctionCall>() && node.get<ast::FunctionCall>().getFunction() == head;
 	});
 
 	if ( firstListIt == operands.end() ) {
@@ -23,14 +22,12 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 
 	std::size_t targetListSize = firstListIt->get<ast::FunctionCall>().getOperands().size();
 
-	ast::Operands::const_iterator errorneousListIt = boost::find_if(operands, [targetListSize](const ast::Node& node) -> bool {
+	ast::Operands::const_iterator errorneousListIt = boost::find_if(operands, [&targetListSize, &head](const ast::Node& node) -> bool {
 
-		const bool isList = node.is<ast::FunctionCall>() && node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>("List");
+		return (node.is<ast::FunctionCall>() &&
+				node.get<ast::FunctionCall>().getFunction() == head &&
+				node.get<ast::FunctionCall>().getOperands().size() != targetListSize);
 
-		return (isList && node.get<ast::FunctionCall>().getOperands().size() != targetListSize);
-
-//		return !(node.is<ast::FunctionCall>() && node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>("List")) ||
-//				node.get<ast::FunctionCall>().getOperands().size() != targetListSize;
 	});
 
 	if ( errorneousListIt != operands.end() ) {
@@ -47,9 +44,8 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 
 			const ast::Node& node = operands[j];
 
-			if ( node.is<ast::FunctionCall>() &&
-					node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>("List") )
-			{
+			if ( node.is<ast::FunctionCall>() && node.get<ast::FunctionCall>().getFunction() == head ) {
+
 				const ast::Operands& listOperands = node.get<ast::FunctionCall>().getOperands();
 
 				assert( listOperands.size() == targetListSize );

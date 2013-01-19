@@ -3,7 +3,8 @@
 #ifndef EVAL_THREADLISTABLEOPERANDS_HPP_
 #define EVAL_THREADLISTABLEOPERANDS_HPP_
 
-#include "ast/FunctionCall.hpp"
+#include "ast/Node.hpp"
+#include "Identifiers.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -13,10 +14,11 @@ enum class ThreadListableOperandsReturnType {
 	NOT_APPLICABLE //Returned when there are no lists in functionCall's arguments
 };
 
-//Tests are in ut/eval/ListableTest.cpp
-//Returns empty optional if threading is unsuccessful
-//Otherwise the result ast::Operands should be put into a FunctionCall("List")
-ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall, ast::Operands& resultOperands);
+//Tests are in ut/eval/ListableTest.cpp and ut/eval/threadListableOperandsTest.cpp
+//Otherwise the result ast::Operands should be put into a FunctionCall(head)
+ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall,
+		ast::Operands& resultOperands,
+		const ast::Node& head = ast::Node::make<ast::Identifier>(ids::List));
 
 }} //namespace tungsten::eval
 
