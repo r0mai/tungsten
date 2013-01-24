@@ -5,6 +5,8 @@
 #include <sstream>
 #include <algorithm>
 
+#include "io/NodeToInputForm.hpp"
+
 namespace tungsten { namespace ast {
 
 bool Node::isNumeric() const {
@@ -113,6 +115,7 @@ struct ToStringVisitor : boost::static_visitor<std::string> {
 };
 
 std::string Node::toString() const {
+	return io::NodeToInputForm( *this );
 	return applyVisitor( *this, ToStringVisitor{} );
 }
 

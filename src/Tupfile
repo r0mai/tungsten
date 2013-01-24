@@ -2,5 +2,5 @@
 
 include_rules
 
-: foreach ast/*.cpp eval/*.cpp eval/builtin/*.cpp math/*.cpp util/*.cpp *.cpp |> !cxx |>
+: foreach ast/*.cpp eval/*.cpp eval/builtin/*.cpp io/*.cpp math/*.cpp util/*.cpp *.cpp |> !cxx |>
 
