@@ -9,6 +9,8 @@ Functions createFunctions() {
 	result[ids::Times] = &Times;
 	result[ids::Power] = &Power;
 	result[ids::Abs] = &Abs;
+	result[ids::Numerator] = &Numerator;
+	result[ids::Denominator] = &Denominator;
 	return result;
 }
 

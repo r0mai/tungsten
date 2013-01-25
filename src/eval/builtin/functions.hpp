@@ -22,6 +22,8 @@ ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionE
 ast::Node Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+ast::Node Numerator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+ast::Node Denominator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 
