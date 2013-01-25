@@ -160,6 +160,10 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 		return ast::Node::make<math::Real>(1);
 	}
 
+	//x^1 => x
+	if ( exponent.is<math::Rational>(1) ) {
+		return base;
+	}
 
 	PowerVisitor powerVisitor{sessionEnvironment};
 	return ast::applyVisitor( base, exponent, powerVisitor );

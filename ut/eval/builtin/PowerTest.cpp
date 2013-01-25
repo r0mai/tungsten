@@ -77,6 +77,14 @@ BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_0 , BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(1) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_1 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("x^1");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("x") );
+}
+
 BOOST_FIXTURE_TEST_CASE( test_x_to_the_power_of_0_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x^0.0");
 
