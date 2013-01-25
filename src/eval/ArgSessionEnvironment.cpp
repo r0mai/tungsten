@@ -2,6 +2,7 @@
 #include "ArgSessionEnvironment.hpp"
 
 #include "ast/Parser.hpp"
+#include "io/NodeToTeXForm.hpp"
 
 #include <boost/optional.hpp>
 
@@ -17,7 +18,7 @@ std::string ArgSessionEnvironment::evaulateArg(const std::string& input) {
 		return "Some error occured";
 	} else {
 		ast::Node result = evaluate(*expression);
-		return result.toString();
+		return io::NodeToTeXForm(result, *this);
 	}
 }
 

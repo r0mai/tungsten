@@ -29,7 +29,7 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 
 		if ( function.is<ast::Identifier>( ids::Times ) ) {
 			ast::Operands numeratorOperands;
-
+			//TODO fix x/3 -> Numerator = 1/3 * x, should be x
 			boost::copy(
 					operands |
 					boost::adaptors::filtered([](const ast::Node& node) {
