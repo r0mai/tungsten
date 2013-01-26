@@ -30,7 +30,7 @@ struct IsSuperficiallyNegativeVisitor : boost::static_visitor<bool> {
 		const ast::Operands& operands = functionCall.getOperands();
 
 		return boost::find_if(operands, [](const ast::Node& node) {
-			return ast::applyVisitor(node, IsSuperficiallyNegativeVisitor{});
+			return isSuperficiallyNegative(node);
 		}) != operands.end();
 	}
 
