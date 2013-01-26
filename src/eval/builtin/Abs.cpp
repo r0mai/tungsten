@@ -19,30 +19,20 @@ struct AbsVisitor : boost::static_visitor<ast::Node> {
 	}
 	
 	ast::Node operator()(const math::Real& r) {
-		if(r>0)
-			return ast::Node::make<math::Real>(r);
-		else
-			return sessionEnvironment.evaluate(
-			ast::Node::make<ast::FunctionCall>(ids::Times, {
-				ast::Node::make<math::Real>(r),
-				ast::Node::make<math::Real>(-1)
-			}));
+		return ast::Node::make<math::Real>( abs(r) );
 	}
 	
 	ast::Node operator()(const math::Rational& r) {
-		if(r>0)
-			return ast::Node::make<math::Rational>(r);
-		else
-			return sessionEnvironment.evaluate(
-			ast::Node::make<ast::FunctionCall>(ids::Times, {
-				ast::Node::make<math::Rational>(r),
-				ast::Node::make<math::Rational>(-1)
-			}));
+		return ast::Node::make<math::Rational>( abs(r) );
 	}
 	
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
 		if ( functionCall.getFunction().is<ast::Identifier>( ids::Abs ) ) {
 			return ast::Node::make<ast::FunctionCall>( ids::Abs, functionCall.getOperands() );
+		} else if ( functionCall.getFunction().is<ast::Identifier>( ids::DirectedInfinity ) &&
+				functionCall.getOperands().size() <= 1 )
+		{
+			return ast::Node::make<ast::FunctionCall>( ids::DirectedInfinity, {ast::Node::make<math::Rational>(1)} );
 		}
 		return operator()<>(functionCall);
 	}
@@ -54,7 +44,8 @@ struct AbsVisitor : boost::static_visitor<ast::Node> {
 ast::Node Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	AbsVisitor absVisitor {sessionEnvironment};
 	if(operands.size()==1){ return ast::applyVisitor(operands[0], absVisitor); }
-	else { return ast::Node::make<ast::FunctionCall>(ids::Abs, operands); }
+	else { //TODO issue error message
+		return ast::Node::make<ast::FunctionCall>(ids::Abs, operands); }
 	
 
 
