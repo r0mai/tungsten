@@ -80,9 +80,9 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 			//TODO 3 is good here?
 			result += NodeToTeXFormRecursive(functionCall.getFunction(), sessionEnvironment, 3) +
-					"\\left \\(" +
+					"(" +
 					boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), -1 ) ), ", " ) +
-					"\\right \\)";
+					")";
 
 		}
 

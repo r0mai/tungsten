@@ -88,4 +88,13 @@ BOOST_FIXTURE_TEST_CASE( test_Numerator_of_the_quantity_x_over_y_squared , Built
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("x") );
 }
 
+
+BOOST_FIXTURE_TEST_CASE( test_Numerator_of_the_quantity_1_over_3_times_x , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Numerator[(1/3)*x]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("x") );
+}
+
 BOOST_AUTO_TEST_SUITE_END()

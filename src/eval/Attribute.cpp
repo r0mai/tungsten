@@ -11,7 +11,9 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Abs, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Plus, AttributeSet({ids::Flat, ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Orderless, ids::Protected}) )
 				(ids::Times, AttributeSet({ids::Flat, ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Orderless, ids::Protected}) )
-				(ids::Power, AttributeSet({ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Protected}) );
+				(ids::Power, AttributeSet({ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Protected}) )
+				(ids::Numerator, AttributeSet({ids::Listable, ids::Protected}) )
+				(ids::Denominator, AttributeSet({ids::Listable, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

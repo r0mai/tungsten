@@ -4,6 +4,7 @@
 #include <iterator>
 
 #include <boost/range/algorithm/copy.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 
 #include "eval/isSuperficiallyNegative.hpp"
@@ -37,6 +38,11 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 								!node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>( ids::Power ) ||
 								node.get<ast::FunctionCall>().getOperands().size() != 2 ||
 								!isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]);
+					}) | boost::adaptors::transformed([](const ast::Node& node) -> ast::Node { //extra care must be taken for Rationals
+						if ( node.is<math::Rational>() ) {
+							return ast::Node::make<math::Rational>(node.get<math::Rational>().numerator());
+						}
+						return node;
 					}),
 					std::back_inserter(numeratorOperands) );
 

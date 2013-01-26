@@ -86,4 +86,14 @@ BOOST_FIXTURE_TEST_CASE( test_Denominator_of_the_quantity_1_over_x_squared , Bui
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(2)}) );
 }
 
+
+BOOST_FIXTURE_TEST_CASE( test_Denominator_of_the_quantity_1_over_3_times_x , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Denominator[(1/3)*x]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(3) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

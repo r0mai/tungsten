@@ -31,25 +31,28 @@ struct GetNodeDenominatorVisitor : boost::static_visitor<ast::Node> {
 		if ( function.is<ast::Identifier>( ids::Times ) ) {
 			ast::Operands numeratorOperands;
 
-			boost::copy(
-					operands |
-					boost::adaptors::filtered([](const ast::Node& node) {
-						return node.is<ast::FunctionCall>() &&
-								node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>( ids::Power ) &&
-								node.get<ast::FunctionCall>().getOperands().size() == 2 &&
-								isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]);
-					}) |
-					boost::adaptors::transformed([this](const ast::Node& node) {
-						return sessionEnvironment.recursiveEvaluate(
-								ast::Node::make<ast::FunctionCall>(ids::Power, {
-										node.get<ast::FunctionCall>().getOperands()[0],
-										ast::Node::make<ast::FunctionCall>(ids::Times, {
-												ast::Node::make<math::Rational>(-1),
-												node.get<ast::FunctionCall>().getOperands()[1]
-										})
-								}));
-					}),
-					std::back_inserter(numeratorOperands) );
+			for ( const ast::Node& node : operands ) {
+				if ( node.is<ast::FunctionCall>() &&
+						node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>( ids::Power ) &&
+						node.get<ast::FunctionCall>().getOperands().size() == 2 &&
+						isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]) )
+				{
+					numeratorOperands.push_back(
+						sessionEnvironment.recursiveEvaluate(
+							ast::Node::make<ast::FunctionCall>(ids::Power, {
+									node.get<ast::FunctionCall>().getOperands()[0],
+									ast::Node::make<ast::FunctionCall>(ids::Times, {
+											ast::Node::make<math::Rational>(-1),
+											node.get<ast::FunctionCall>().getOperands()[1]
+									})
+							}))
+						);
+				} else if ( node.is<math::Rational>() ) {
+					numeratorOperands.push_back(
+						ast::Node::make<math::Rational>(node.get<math::Rational>().denominator())
+					);
+				}
+			}
 
 			return sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( ids::Times, numeratorOperands )); //shouldn't need eval
 
