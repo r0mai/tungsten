@@ -40,7 +40,12 @@ struct AbsVisitor : boost::static_visitor<ast::Node> {
 			}));
 	}
 	
-	
+	ast::Node operator()(const ast::FunctionCall& functionCall) {
+		if ( functionCall.getFunction().is<ast::Identifier>( ids::Abs ) ) {
+			return ast::Node::make<ast::FunctionCall>( ids::Abs, functionCall.getOperands() );
+		}
+		return operator()<>(functionCall);
+	}
 	
 	SessionEnvironment& sessionEnvironment;
 };

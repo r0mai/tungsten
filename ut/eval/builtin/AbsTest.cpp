@@ -27,7 +27,7 @@ BOOST_FIXTURE_TEST_CASE( minusone_Abs_is_minusone, BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Rational>(-1) );
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Rational>(1) );
 }
 
 BOOST_FIXTURE_TEST_CASE( test_the_absolute_value_of_x , BuiltinFunctionFixture ) {
