@@ -13,7 +13,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Times, AttributeSet({ids::Flat, ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Orderless, ids::Protected}) )
 				(ids::Power, AttributeSet({ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Protected}) )
 				(ids::Numerator, AttributeSet({ids::Listable, ids::Protected}) )
-				(ids::Denominator, AttributeSet({ids::Listable, ids::Protected}) );
+				(ids::Denominator, AttributeSet({ids::Listable, ids::Protected}) )
+				(ids::Replace, AttributeSet({ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

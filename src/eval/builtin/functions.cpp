@@ -11,6 +11,7 @@ Functions createFunctions() {
 	result[ids::Abs] = &Abs;
 	result[ids::Numerator] = &Numerator;
 	result[ids::Denominator] = &Denominator;
+	result[ids::Replace] = &Replace;
 	return result;
 }
 

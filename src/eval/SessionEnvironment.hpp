@@ -7,6 +7,7 @@
 #include "builtin/functions.hpp"
 #include "SessionEnvironmentFwd.hpp"
 #include "Attribute.hpp"
+#include "PatternMap.hpp"
 
 //TODO maybe this stuff should be moved outside to a session directory
 
@@ -25,10 +26,8 @@ public:
 
 protected:
 	AttributeMap attributeMap;
-
 	const builtin::Functions builtinFunctions;
-
-	//History
+	PatternMap patternMap;
 
 private:
 	struct EvaluateVisitor;

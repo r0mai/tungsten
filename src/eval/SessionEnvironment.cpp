@@ -16,7 +16,7 @@
 namespace tungsten { namespace eval {
 
 SessionEnvironment::SessionEnvironment() :
-		attributeMap(AttributeMap::makeDefault()), builtinFunctions(builtin::createFunctions()) {}
+		attributeMap(AttributeMap::makeDefault()), builtinFunctions(builtin::createFunctions()), patternMap(PatternMap::makeDefault()) {}
 
 SessionEnvironment::~SessionEnvironment() {}
 
@@ -108,8 +108,8 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const ast::Identifier& identifier) {
-		//TODO
-		return ast::Node::make<ast::Identifier>(identifier);
+		//TODO this should go to FunctionCall-s branch as well
+		return sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::Identifier>(identifier));
 	}
 
 private:
