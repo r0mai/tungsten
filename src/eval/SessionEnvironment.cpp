@@ -25,6 +25,10 @@ ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
 	return recursiveEvaluate(node);
 }
 
+void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& replacement) {
+	patternMap.addPattern(pattern, replacement);
+}
+
 /*
  * This Visitor in the future will probably work like this:
  * Try matching the input Node, with the symbol (pattern) table

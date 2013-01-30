@@ -14,7 +14,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Power, AttributeSet({ids::Listable, ids::NumericFunction, ids::OneIdentity, ids::Protected}) )
 				(ids::Numerator, AttributeSet({ids::Listable, ids::Protected}) )
 				(ids::Denominator, AttributeSet({ids::Listable, ids::Protected}) )
-				(ids::Replace, AttributeSet({ids::Protected}) );
+				(ids::Replace, AttributeSet({ids::Protected}) )
+				(ids::Set, AttributeSet({ids::HoldFirst, ids::Protected, ids::SequenceHold}) );
 
 	return AttributeMap(attributeStorage);
 }

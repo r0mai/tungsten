@@ -85,6 +85,10 @@ void rightAssociativeOperator(const Identifier& functionName, Node& result, Node
 	result = Node::make<FunctionCall>( functionName, {result, rhs} );
 }
 
+void operatorSet(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Set, result, rhs );
+}
+
 void operatorPlus(Node& result, const Node& rhs) {
 	leftAssociativeListableOperator( ids::Plus, result, rhs );
 }
@@ -200,9 +204,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		start %= expression.alias();
 
-		expression = additiveExpression[phx::bind(&finishingTouches, _val, _1)];
+		expression = equalsToExpression[phx::bind(&finishingTouches, _val, _1)];
 
 		//Tree : ---
+
+		equalsToExpression =
+				additiveExpression[_val = _1] >>
+				*(  '=' >> additiveExpression[phx::bind(&operatorSet, _val, _1)] );
 
 		additiveExpression =
 				multiplicativeExpression[_val = _1] >>
@@ -272,6 +280,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> start;
 	qi::rule<Iterator, Node(), delimiter> expression;
 
+	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;

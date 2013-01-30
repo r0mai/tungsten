@@ -18,6 +18,7 @@ void CLISessionEnvironment::run() {
 	while ( std::getline(std::cin, line) ) {
 		boost::optional<ast::Node> expression = ast::parseInput(line);
 		if ( !expression ) {
+			std::cout << "Parse error" << std::endl;
 			handleMessage(Message{}); //TODO
 		} else {
 			std::cout << "Input : " << *expression << std::endl;

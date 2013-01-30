@@ -22,6 +22,8 @@ public:
 
 	virtual void handleMessage(const Message& /*message*/) {}
 
+	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
+
 	ast::Node recursiveEvaluate(const ast::Node& node);
 
 protected:

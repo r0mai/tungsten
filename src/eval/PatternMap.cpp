@@ -11,7 +11,7 @@ PatternMap PatternMap::makeDefault() {
 	PatternMap patternMap;
 	patternMap.addPattern(
 			ast::Node::make<ast::Identifier>( ids::Infinity ),
-			ast::Node::make<ast::FunctionCall>( ids::DirectedInfinity, {ast::Node::make<math::Rational>(1) } ) );
+			ast::Node::make<ast::FunctionCall>( ids::DirectedInfinity, {ast::Node::make<math::Rational>(1)} ) );
 	return patternMap;
 }
 

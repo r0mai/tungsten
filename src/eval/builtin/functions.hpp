@@ -25,6 +25,7 @@ ast::Node Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEn
 ast::Node Numerator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node Denominator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+ast::Node Set(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 
