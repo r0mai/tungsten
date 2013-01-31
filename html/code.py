@@ -8,7 +8,7 @@ import ctypes
 import unicodedata
 
 render = web.template.render('templates/')
-
+t = pytungsten.tungsten()
 
 urls = ('/(.*)', 'index')
 app = web.application(urls, globals())
@@ -27,7 +27,7 @@ class index:
 	def GET(self,name): 
 		form = myform
 		if name:
-			output = pytungsten.evaluate(name.encode('ascii', 'ignore'))
+			output = t.evaluate(0,name.encode('ascii', 'ignore')).getOutputString()
 		else:
 			output = ""
 		with open("log.txt", "a") as myfile:
