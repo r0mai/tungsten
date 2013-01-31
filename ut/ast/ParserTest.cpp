@@ -766,6 +766,57 @@ BOOST_AUTO_TEST_CASE( Lists_can_take_part_in_expressions ) {
 			ast::Node::make<ast::FunctionCall>("List")}) );
 }
 
+BOOST_AUTO_TEST_CASE( equalsTo_operator_basic_test ) {
+	boost::optional<ast::Node> tree = ast::parseInput("x=3");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Set",
+			{ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(3)}) );
+}
+
+BOOST_AUTO_TEST_CASE( nested_equalsTo_operator_test ) {
+	boost::optional<ast::Node> tree = ast::parseInput("x=y=3");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Set", {
+			ast::Node::make<ast::FunctionCall>("Set",
+					{ast::Node::make<ast::Identifier>("x"),
+							ast::Node::make<ast::Identifier>("y")}),
+					ast::Node::make<math::Rational>(3)}) );
+}
+
+BOOST_AUTO_TEST_CASE( equalsTo_operator_has_lower_precedence_than_Plus ) {
+	boost::optional<ast::Node> tree = ast::parseInput("x=a+b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Set",
+			{ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Plus",
+					{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")})}) );
+}
+
+BOOST_AUTO_TEST_CASE( equalsTo_operator_has_lower_precedence_than_Times ) {
+	boost::optional<ast::Node> tree = ast::parseInput("x=a*b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Set",
+			{ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Times",
+					{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")})}) );
+}
+
+BOOST_AUTO_TEST_CASE( equalsTo_operator_has_lower_precedence_than_Power ) {
+	boost::optional<ast::Node> tree = ast::parseInput("x=a^b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Set",
+			{ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Power",
+					{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")})}) );
+}
+
 BOOST_AUTO_TEST_CASE( Infinity_parsed_as_Identifier ) {
 	boost::optional<ast::Node> tree = ast::parseInput("Infinity");
 
