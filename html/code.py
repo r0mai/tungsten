@@ -6,12 +6,15 @@ from web import form
 import pytungsten
 import ctypes
 import unicodedata
+import uuid
 
+web.config.debug = False
 render = web.template.render('templates/')
 t = pytungsten.tungsten()
 
 urls = ('/(.*)', 'index')
 app = web.application(urls, globals())
+session = web.session.Session(app, web.session.DiskStore('sessions'))
 
 myform = form.Form( 
     form.Textbox("input", size="56", maxlength="128",
@@ -27,7 +30,8 @@ class index:
 	def GET(self,name): 
 		form = myform
 		if name:
-			output = t.evaluate(0,name.encode('ascii', 'ignore')).getOutputString()
+			uid = long(session.session_id[0:7], 16) # hopefully this should be enough.
+			output = t.evaluate(uid,name.encode('ascii', 'ignore')).getOutputString()
 		else:
 			output = ""
 		with open("log.txt", "a") as myfile:
@@ -44,5 +48,4 @@ class index:
 			return render.redir(form.d.input)
 
 if __name__=="__main__":
-    web.internalerror = web.debugerror
     app.run()
