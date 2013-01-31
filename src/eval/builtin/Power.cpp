@@ -141,12 +141,14 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 	if ( base.isNumeric(0) && exponent.isNumeric() ) {
 
 		math::Real exponentReal = exponent.getNumeric();
-		if ( exponentReal == 0 ) {
-			//TODO raise Power::indet
-			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
+		if ( exponentReal > 0 ) {
+			return ast::Node::make<math::Rational>(0);
 		} else if ( exponentReal < 0 ) {
 			//TODO raise Power::infy
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity);
+		} else { //exponentReal == 0
+			//TODO raise Power::indet
+			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
 		}
 	}
 
