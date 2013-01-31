@@ -6,6 +6,7 @@
 #include <functional>
 
 #include <boost/bind.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
@@ -51,13 +52,35 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
 		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction());
-		ast::Operands operands(functionCall.getOperands().size());
+		ast::Operands operands(functionCall.getOperands());
+
+		bool hasHoldFirst = false;
+		bool hasHoldRest = false;
+		bool hasHoldAll = false;
 
 		//TODO Hold*
+		if ( function.is<ast::Identifier>() ) {
+			hasHoldFirst = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldFirst);
+			hasHoldRest = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldRest);
+			hasHoldAll = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldAll);
+		}
+
+		//Do we evaluate
+		bool doHoldFirst = hasHoldFirst || hasHoldAll;
+		bool doHoldRest = hasHoldRest || hasHoldAll;
+
+		boost::iterator_range<ast::Operands::iterator> evaluationRange(operands);
+
+		if ( doHoldRest ) {
+			evaluationRange.advance_end( std::min(0, -(evaluationRange.size() - 1)) ); //Don't want to advance anywhere if the range is empty
+		}
+		if ( doHoldFirst && !evaluationRange.empty() ) {
+			evaluationRange.advance_begin( 1 );
+		}
 
 		boost::transform(
-				functionCall.getOperands(),
-				operands.begin(),
+				evaluationRange,
+				evaluationRange.begin(),
 				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
 
 
