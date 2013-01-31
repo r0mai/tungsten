@@ -3,10 +3,12 @@ import web
 import string
 from django.utils.encoding import smart_str, smart_unicode
 from web import form
+import pytungsten
+import ctypes
+import unicodedata
 
 render = web.template.render('templates/')
 
-tungsten = '../bin/tungsten --eval '
 
 urls = ('/(.*)', 'index')
 app = web.application(urls, globals())
@@ -23,12 +25,11 @@ class index:
 		return p.stdout.read().replace('\n', r'<br>')
 	
 	def GET(self,name): 
-		form = myform()
-		cmd = ''
+		form = myform
 		if name:
-			cmd = tungsten + '"' +name.replace('"', r'\"')+ '"'
-		p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
-		output = p.stdout.read()
+			output = pytungsten.evaluate(name.encode('ascii', 'ignore'))
+		else:
+			output = ""
 		with open("log.txt", "a") as myfile:
 			if not (name == 'favicon.ico'): 
 				myfile.write(smart_str(name)+'\n')
