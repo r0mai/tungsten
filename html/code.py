@@ -20,7 +20,7 @@ myform = form.Form(
 class index: 
 	def getLog(self): 
 		p = Popen("tail log.txt", shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
-		return p.stdout.read().replace(' ', r'<br>')
+		return p.stdout.read().replace('\n', r'<br>')
 	
 	def GET(self,name): 
 		form = myform()
@@ -30,7 +30,7 @@ class index:
 		p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
 		output = p.stdout.read()
 		with open("log.txt", "a") as myfile:
-			if name is not "favicon.ico": 
+			if not (name == 'favicon.ico'): 
 				myfile.write(smart_str(name)+'\n')
 		return render.formtest(form, name, output, self.getLog())
 

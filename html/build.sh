@@ -1,0 +1,2 @@
+#!/bin/bash
+clang++ -fPIC -std=c++0x -I../src -I/usr/include/python2.7 -c pytungsten.cpp -o pytungsten.o && clang++ -shared -Wl,-soname,pytungsten.so -o pytungsten.so pytungsten.o ../src/*.o -lpython2.7 -lboost_python /usr/local/lib/libboost_thread.a   /usr/local/lib/libboost_system.a  /usr/local/lib/libboost_filesystem.a   /usr/local/lib/libboost_regex.a   /usr/local/lib/libboost_program_options.a /usr/local/lib/libpng.a /usr/local/lib/libmpfr.so /usr/local/lib/libgmpxx.so /usr/local/lib/libgmp.so
