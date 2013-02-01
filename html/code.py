@@ -30,14 +30,18 @@ class index:
 	def GET(self,name): 
 		form = myform
 		if name:
-			uid = long(session.session_id[0:7], 16) # hopefully this should be enough.
-			output = t.evaluate(uid,name.encode('ascii', 'ignore')).getOutputString()
+			uid = session.session_id
+			o = t.evaluate(uid,name.encode('ascii', 'ignore'))
+			output = o.getOutputString()
+			input = o.getInputString()
+			errors = o.getErrors()
 		else:
+			input = name
 			output = ""
 		with open("log.txt", "a") as myfile:
 			if not (name == 'favicon.ico'): 
 				myfile.write(smart_str(name)+'\n')
-		return render.formtest(form, name, output, self.getLog())
+		return render.formtest(form, input, output, errors, self.getLog())
 
 
 	def POST(self, name): 
