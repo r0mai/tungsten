@@ -38,6 +38,7 @@ class index:
 		else:
 			input = name
 			output = ""
+			errors = ""
 		with open("log.txt", "a") as myfile:
 			if not (name == 'favicon.ico'): 
 				myfile.write(smart_str(name)+'\n')
