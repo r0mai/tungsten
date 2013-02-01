@@ -58,7 +58,6 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		bool hasHoldRest = false;
 		bool hasHoldAll = false;
 
-		//TODO Hold*
 		if ( function.is<ast::Identifier>() ) {
 			hasHoldFirst = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldFirst);
 			hasHoldRest = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldRest);
@@ -71,8 +70,8 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 		boost::iterator_range<ast::Operands::iterator> evaluationRange(operands);
 
-		if ( doHoldRest ) {
-			evaluationRange.advance_end( std::min(0, -(evaluationRange.size() - 1)) ); //Don't want to advance anywhere if the range is empty
+		if ( doHoldRest && !evaluationRange.empty() ) {
+			evaluationRange.advance_end( -(evaluationRange.size() - 1) ); //Don't want to advance anywhere if the range is empty
 		}
 		if ( doHoldFirst && !evaluationRange.empty() ) {
 			evaluationRange.advance_begin( 1 );
