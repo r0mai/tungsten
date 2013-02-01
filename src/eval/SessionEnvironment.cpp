@@ -54,6 +54,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction());
 		ast::Operands operands(functionCall.getOperands());
 
+		//Attribute Hold*
 		bool hasHoldFirst = false;
 		bool hasHoldRest = false;
 		bool hasHoldAll = false;
@@ -71,7 +72,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		boost::iterator_range<ast::Operands::iterator> evaluationRange(operands);
 
 		if ( doHoldRest && !evaluationRange.empty() ) {
-			evaluationRange.advance_end( -(evaluationRange.size() - 1) ); //Don't want to advance anywhere if the range is empty
+			evaluationRange.advance_end( -(evaluationRange.size() - 1) );
 		}
 		if ( doHoldFirst && !evaluationRange.empty() ) {
 			evaluationRange.advance_begin( 1 );
