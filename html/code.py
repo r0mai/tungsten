@@ -6,12 +6,15 @@ from web import form
 import pytungsten
 import ctypes
 import unicodedata
+import uuid
 
+web.config.debug = False
 render = web.template.render('templates/')
-
+t = pytungsten.tungsten()
 
 urls = ('/(.*)', 'index')
 app = web.application(urls, globals())
+session = web.session.Session(app, web.session.DiskStore('sessions'))
 
 myform = form.Form( 
     form.Textbox("input", size="56", maxlength="128",
@@ -27,13 +30,19 @@ class index:
 	def GET(self,name): 
 		form = myform
 		if name:
-			output = pytungsten.evaluate(name.encode('ascii', 'ignore'))
+			uid = session.session_id
+			o = t.evaluate(uid,name.encode('ascii', 'ignore'))
+			output = o.getOutputString()
+			input = o.getInputString()
+			errors = o.getErrors()
 		else:
+			input = name
 			output = ""
+			errors = ""
 		with open("log.txt", "a") as myfile:
 			if not (name == 'favicon.ico'): 
 				myfile.write(smart_str(name)+'\n')
-		return render.formtest(form, name, output, self.getLog())
+		return render.formtest(form, input, output, errors, self.getLog())
 
 
 	def POST(self, name): 
@@ -44,5 +53,4 @@ class index:
 			return render.redir(form.d.input)
 
 if __name__=="__main__":
-    web.internalerror = web.debugerror
     app.run()

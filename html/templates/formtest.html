@@ -1,4 +1,4 @@
-$def with (form, name, output, log)
+$def with (form, name, output, errors, log)
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
@@ -22,8 +22,11 @@ $if name:
 $else:
 	Try me!
 
-<form name="main" method="post"> 
+$if errors:
+	$errors
+	<br>
 \$\$ $output \$\$
+<form name="main" method="post">
 $:form.render()
 <input type="submit" />    </form>
 
