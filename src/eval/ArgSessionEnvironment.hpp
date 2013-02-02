@@ -14,7 +14,7 @@ public:
 	ArgSessionEnvironment();
 	virtual ~ArgSessionEnvironment() override;
 
-	std::string evaulateArg(const std::string& input);
+	std::string evaluateArg(const std::string& input);
 };
 
 }} //namespace tungsten::eval

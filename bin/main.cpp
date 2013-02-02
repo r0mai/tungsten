@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
 	if (vm.count("eval")) {
 		tungsten::eval::ArgSessionEnvironment argSessionEnvironment;
-		std::cout << argSessionEnvironment.evaulateArg(vm["eval"].as<std::string>()) << std::endl;
+		std::cout << argSessionEnvironment.evaluateArg(vm["eval"].as<std::string>()) << std::endl;
 	} else {
 		tungsten::eval::CLISessionEnvironment environment;
 		environment.run();

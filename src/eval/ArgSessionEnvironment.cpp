@@ -11,7 +11,7 @@ namespace tungsten { namespace eval {
 ArgSessionEnvironment::ArgSessionEnvironment() {}
 ArgSessionEnvironment::~ArgSessionEnvironment() {}
 
-std::string ArgSessionEnvironment::evaulateArg(const std::string& input) {
+std::string ArgSessionEnvironment::evaluateArg(const std::string& input) {
 	boost::optional<ast::Node> expression = ast::parseInput(input);
 	if ( !expression ) {
 		handleMessage(Message{}); //TODO

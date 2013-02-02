@@ -19,7 +19,7 @@ class WebOutput{
 public:
 	WebOutput() : output() {};
 	WebOutput(const std::string& input, const std::string& output, const std::string& errors) :
-					input(input), output(output), errors(errors) { };
+		input(input), output(output), errors(errors) { };
 
 	WebOutput(std::string&& output) : output(std::move(output)) { };
 
@@ -58,7 +58,7 @@ public:
 	WebOutput evaluate(const std::string& input) {
 		time(&lastAccess);
 		boost::optional<tungsten::ast::Node> expression = tungsten::ast::parseInput(input);
-		std::string output = evaulateArg(input);
+		std::string output = evaluateArg(input);
 		std::string TexInput = expression?tungsten::io::NodeToTeXForm(*expression, *this):input;
 		return WebOutput(std::move(TexInput), std::move(output), "");
 	};
