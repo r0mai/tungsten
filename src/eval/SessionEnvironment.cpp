@@ -21,9 +21,9 @@ SessionEnvironment::SessionEnvironment() :
 
 SessionEnvironment::~SessionEnvironment() {}
 
-ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
-	//TODO update history
-	return recursiveEvaluate(node);
+void SessionEnvironment::raiseMessage(const Message& message) {
+	//TODO add to list
+	handleMessageString( message.getSymbol() + "::" + message.getTag() );
 }
 
 void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& replacement) {
@@ -32,6 +32,11 @@ void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& r
 
 RandomEngine& SessionEnvironment::getRandomEngine() {
 	return randomEngine;
+}
+
+ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
+	//TODO update history
+	return recursiveEvaluate(node);
 }
 
 /*

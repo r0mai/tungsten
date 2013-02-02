@@ -3,6 +3,7 @@
 #define EVAL_IDENTIFIERS_HPP_
 
 #include "ast/Identifier.hpp"
+#include "ast/String.hpp"
 #include "Attribute.hpp"
 
 //This namespace contains all the used builtin Identifier names as costant Identifers.
@@ -11,6 +12,7 @@ namespace tungsten { namespace eval { namespace ids {
 
 #define TUNGSTEN_DEFINE_CONSTANT_IDENTIFIER(x) const ast::Identifier x = #x
 #define TUNGSTEN_DEFINE_CONSTANT_ATTRIBUTE(x) const Attribute x = #x
+#define TUNGSTEN_DEFINE_CONSTANT_STRING(x) const ast::String x = #x
 
 //Builtin Functions
 TUNGSTEN_DEFINE_CONSTANT_IDENTIFIER(List);
@@ -46,8 +48,12 @@ TUNGSTEN_DEFINE_CONSTANT_ATTRIBUTE(HoldFirst);
 TUNGSTEN_DEFINE_CONSTANT_ATTRIBUTE(HoldRest);
 TUNGSTEN_DEFINE_CONSTANT_ATTRIBUTE(HoldAll);
 
+TUNGSTEN_DEFINE_CONSTANT_STRING(infy);
+TUNGSTEN_DEFINE_CONSTANT_STRING(indet);
+
 #undef TUNGSTEN_DEFINE_CONSTANT_ATTRIBUTE
 #undef TUNGSTEN_DEFINE_CONSTANT_IDENTIFIER
+#undef TUNGSTEN_DEFINE_CONSTANT_STRING
 
 }}} //namespace tungsten::eval::ids
 

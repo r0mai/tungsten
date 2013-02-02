@@ -14,7 +14,7 @@ ArgSessionEnvironment::~ArgSessionEnvironment() {}
 std::string ArgSessionEnvironment::evaluateArg(const std::string& input) {
 	boost::optional<ast::Node> expression = ast::parseInput(input);
 	if ( !expression ) {
-		handleMessage(Message{}); //TODO
+		//handleMessage(Message{}); //TODO
 		return "Some error occured";
 	} else {
 		ast::Node result = evaluate(*expression);

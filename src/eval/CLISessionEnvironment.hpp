@@ -12,6 +12,8 @@ public:
 	CLISessionEnvironment();
 	virtual ~CLISessionEnvironment() override;
 
+	virtual void handleMessageString(const ast::String& /*messageString*/) override;
+
 	void run();
 
 private:

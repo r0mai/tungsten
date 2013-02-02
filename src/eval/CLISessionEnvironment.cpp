@@ -12,6 +12,10 @@ CLISessionEnvironment::CLISessionEnvironment() {}
 
 CLISessionEnvironment::~CLISessionEnvironment() {}
 
+void CLISessionEnvironment::handleMessageString(const ast::String& messageString) {
+	std::cout << messageString << std::endl;
+}
+
 void CLISessionEnvironment::run() {
 
 	std::string line;
@@ -19,7 +23,7 @@ void CLISessionEnvironment::run() {
 		boost::optional<ast::Node> expression = ast::parseInput(line);
 		if ( !expression ) {
 			std::cout << "Parse error" << std::endl;
-			handleMessage(Message{}); //TODO
+			//handleMessage(Message{}); //TODO
 		} else {
 			std::cout << "Input : " << *expression << std::endl;
 			ast::Node result = evaluate(*expression);

@@ -19,13 +19,13 @@ public:
 	SessionEnvironment();
 	virtual ~SessionEnvironment();
 
-	ast::Node evaluate(const ast::Node& node);
-
-	virtual void handleMessage(const Message& /*message*/) {}
+	void raiseMessage(const Message& message);
+	virtual void handleMessageString(const ast::String& /*messageString*/) {}
 
 	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
 	RandomEngine& getRandomEngine();
 
+	ast::Node evaluate(const ast::Node& node);
 	ast::Node recursiveEvaluate(const ast::Node& node);
 
 protected:

@@ -144,10 +144,12 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 		if ( exponentReal > 0 ) {
 			return ast::Node::make<math::Rational>(0);
 		} else if ( exponentReal < 0 ) {
-			//TODO raise Power::infy
+			//TODO raise Power::infy argument
+			sessionEnvironment.raiseMessage( Message(ids::Power, ids::infy, {}) );
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity);
 		} else { //exponentReal == 0
 			//TODO raise Power::indet
+			sessionEnvironment.raiseMessage( Message(ids::Power, ids::indet, {}) );
 			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
 		}
 	}
