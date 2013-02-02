@@ -781,10 +781,9 @@ BOOST_AUTO_TEST_CASE( nested_equalsTo_operator_test ) {
 	BOOST_REQUIRE( tree );
 
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Set", {
-			ast::Node::make<ast::FunctionCall>("Set",
-					{ast::Node::make<ast::Identifier>("x"),
-							ast::Node::make<ast::Identifier>("y")}),
-					ast::Node::make<math::Rational>(3)}) );
+			ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Set", {
+							ast::Node::make<ast::Identifier>("y"),
+					ast::Node::make<math::Rational>(3)})}) );
 }
 
 BOOST_AUTO_TEST_CASE( equalsTo_operator_has_lower_precedence_than_Plus ) {

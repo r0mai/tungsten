@@ -209,8 +209,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		//Tree : ---
 
 		equalsToExpression =
-				additiveExpression[_val = _1] >>
-				*(  '=' >> additiveExpression[phx::bind(&operatorSet, _val, _1)] );
+				additiveExpression[_val = _1] >> '=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
+				additiveExpression[_val = _1];
 
 		additiveExpression =
 				multiplicativeExpression[_val = _1] >>
