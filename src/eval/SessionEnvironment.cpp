@@ -108,10 +108,13 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 			ast::Operands listOperands;
 
-			ThreadListableOperandsReturnType returnValue = threadListableOperands( functionCall, listOperands );
+			ThreadListableOperandsReturnType returnValue = threadListableOperands(
+					ast::FunctionCall(function, operands),
+					listOperands
+				);
+
 			if ( returnValue == ThreadListableOperandsReturnType::UNSUCCESSFUL ) {
-				std::cout << "Thread::tdlen UNSUCCESSFUL" << std::endl;
-				//TODO issue Thread::tdlen
+				sessionEnvironment.raiseMessage( Message(ids::Thread, ids::tdlen, {ast::Node::make<ast::FunctionCall>(functionCall)}) );
 			} else if ( returnValue == ThreadListableOperandsReturnType::NOT_APPLICABLE ) {
 				//Fallthrough
 			} else {

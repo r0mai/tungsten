@@ -11,7 +11,7 @@ namespace tungsten { namespace eval { namespace builtin {
 
 struct PowerVisitor : boost::static_visitor<ast::Node> {
 
-	PowerVisitor(SessionEnvironment& sessionEnvironenment) : sessionEnvironenment(sessionEnvironenment) {}
+	PowerVisitor(SessionEnvironment& sessionEnvironment) : sessionEnvironment(sessionEnvironment) {}
 
 	//Base case: we can't do any simplifications
 	template<class T, class U>
@@ -50,7 +50,8 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 
 
 		if ( !exponentNumerator.fitsSL() ) {
-			//TODO issue General::ovfl
+			sessionEnvironment.raiseMessage( Message(ids::General, ids::ovfl, {}) );
+
 			return ast::Node::make<ast::FunctionCall>(ids::Overflow);
 		}
 
@@ -81,7 +82,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		return operator()(math::Real(base), exponent);
 	}
 
-	SessionEnvironment& sessionEnvironenment;
+	SessionEnvironment& sessionEnvironment;
 };
 
 ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
@@ -138,18 +139,25 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 	}
 
 	//0^0 => Indeterminate
+	//0^x && x < 0 => DirectedInfinity[]
 	if ( base.isNumeric(0) && exponent.isNumeric() ) {
 
 		math::Real exponentReal = exponent.getNumeric();
 		if ( exponentReal > 0 ) {
 			return ast::Node::make<math::Rational>(0);
 		} else if ( exponentReal < 0 ) {
-			//TODO raise Power::infy argument
-			sessionEnvironment.raiseMessage( Message(ids::Power, ids::infy, {}) );
+
+			sessionEnvironment.raiseMessage( Message(ids::Power, ids::infy, {
+					ast::Node::make<ast::FunctionCall>(ids::Power, {base, exponent})
+			}) );
+
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity);
 		} else { //exponentReal == 0
-			//TODO raise Power::indet
-			sessionEnvironment.raiseMessage( Message(ids::Power, ids::indet, {}) );
+
+			sessionEnvironment.raiseMessage( Message(ids::Power, ids::indet, {
+					ast::Node::make<ast::FunctionCall>(ids::Power, {base, exponent})
+			}) );
+
 			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
 		}
 	}
