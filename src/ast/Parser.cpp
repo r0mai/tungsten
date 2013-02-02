@@ -89,6 +89,10 @@ void operatorSet(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Set, result, rhs );
 }
 
+void operatorDelayedSet(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::SetDelayed, result, rhs );
+}
+
 void operatorPlus(Node& result, const Node& rhs) {
 	leftAssociativeListableOperator( ids::Plus, result, rhs );
 }
@@ -210,6 +214,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		equalsToExpression =
 				additiveExpression[_val = _1] >> '=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
+				additiveExpression[_val = _1] >> ":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
 				additiveExpression[_val = _1];
 
 		additiveExpression =
