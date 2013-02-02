@@ -16,7 +16,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Denominator, AttributeSet({ids::Listable, ids::Protected}) )
 				(ids::Replace, AttributeSet({ids::Protected}) )
 				(ids::Set, AttributeSet({ids::HoldFirst, ids::Protected, ids::SequenceHold}) )
-				(ids::SetDelayed, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}) );
+				(ids::SetDelayed, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}) )
+				(ids::RandomReal, AttributeSet({ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

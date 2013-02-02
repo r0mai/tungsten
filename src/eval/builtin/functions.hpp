@@ -27,6 +27,7 @@ ast::Node Denominator(const ast::Operands& operands, eval::SessionEnvironment& s
 ast::Node Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node Set(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 ast::Node SetDelayed(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+ast::Node RandomReal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 

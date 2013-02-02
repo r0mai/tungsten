@@ -30,6 +30,10 @@ void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& r
 	patternMap.addPattern(pattern, replacement);
 }
 
+RandomEngine& SessionEnvironment::getRandomEngine() {
+	return randomEngine;
+}
+
 /*
  * This Visitor in the future will probably work like this:
  * Try matching the input Node, with the symbol (pattern) table

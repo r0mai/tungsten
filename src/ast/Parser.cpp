@@ -45,6 +45,7 @@ void removeParenthesesIdentityFunction(Node& node) {
 	assert( node.get<FunctionCall>().getFunction().get<Identifier>() == parenthesesIdentityFunction );
 	assert( node.get<FunctionCall>().getOperands().size() == 1 );
 
+	//We want a copy here of the front() reference
 	node = Node(node.get<FunctionCall>().getOperands().front());
 }
 
