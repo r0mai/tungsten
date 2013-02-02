@@ -13,6 +13,7 @@ Functions createFunctions() {
 	result[ids::Denominator] = &Denominator;
 	result[ids::Replace] = &Replace;
 	result[ids::Set] = &Set;
+	result[ids::SetDelayed] = &SetDelayed;
 	return result;
 }
 

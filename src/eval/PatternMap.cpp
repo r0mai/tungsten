@@ -19,13 +19,15 @@ void PatternMap::addPattern(const ast::Node& pattern, const ast::Node& replaceme
 	storage[pattern] = replacement;
 }
 
-ast::Node PatternMap::applyPatterns(const ast::Node& node) const {
+bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result) const {
 	Storage::const_iterator it = storage.find(node);
 
 	if ( it != storage.cend() ) {
-		return it->second;
+		result = it->second;
+		return true;
 	}
-	return node;
+	result = node;
+	return false;
 }
 
 }} //namespace tungsten::eval

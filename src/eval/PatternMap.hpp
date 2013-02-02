@@ -18,7 +18,9 @@ public:
 
 	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
 
-	ast::Node applyPatterns(const ast::Node& node) const;
+	//Returns true, if a patterns matches node; result will be set to it's new value
+	//Otherwise, result == node
+	bool applyPatterns(const ast::Node& node, ast::Node& result) const;
 private:
 	typedef std::map<ast::Node, ast::Node> Storage;
 	Storage storage;

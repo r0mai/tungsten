@@ -136,7 +136,12 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 	ast::Node operator()(const ast::Identifier& identifier) {
 		//TODO this should go to FunctionCall-s branch as well
-		return sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::Identifier>(identifier));
+
+		ast::Node result;
+		if (sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::Identifier>(identifier), result)) {
+			return sessionEnvironment.recursiveEvaluate(result);
+		}
+		return result;
 	}
 
 private:
