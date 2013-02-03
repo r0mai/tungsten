@@ -891,4 +891,57 @@ BOOST_AUTO_TEST_CASE( nan_parsed_as_Identifier ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::Identifier>("nan") );
 }
 
+BOOST_AUTO_TEST_CASE( parsing_blank ) {
+	boost::optional<ast::Node>tree = ast::parseInput("_");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Blank"));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x_");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Pattern",
+			{ast::Node::make<ast::Identifier>("x"),
+			ast::Node::make<ast::FunctionCall>("Blank", {})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank_with_colon ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x:_");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Pattern",
+			{ast::Node::make<ast::Identifier>("x"),
+			ast::Node::make<ast::FunctionCall>("Blank", {})}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank_in_function_f ) {
+	boost::optional<ast::Node>tree = ast::parseInput("f[x_]");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("f", \
+			{ast::Node::make<ast::FunctionCall>("Pattern", \
+			{ast::Node::make<ast::Identifier>("x"), \
+			ast::Node::make<ast::FunctionCall>("Blank", {})})}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank_with_colon_in_function_f ) {
+	boost::optional<ast::Node>tree = ast::parseInput("f[x:_]");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("f", \
+			{ast::Node::make<ast::FunctionCall>("Pattern", \
+			{ast::Node::make<ast::Identifier>("x"), \
+			ast::Node::make<ast::FunctionCall>("Blank", {})})}));
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

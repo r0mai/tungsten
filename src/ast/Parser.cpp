@@ -94,6 +94,11 @@ void operatorDelayedSet(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::SetDelayed, result, rhs );
 }
 
+void operatorPattern(Node& result, const Node& rhs) {
+	assert(result.is<Identifier>());
+	result = Node::make<FunctionCall>( ids::Pattern, {result, rhs} );
+}
+
 void operatorPlus(Node& result, const Node& rhs) {
 	leftAssociativeListableOperator( ids::Plus, result, rhs );
 }
@@ -130,6 +135,15 @@ void operatorUnaryMinus(Node& result, const Node& operand) {
 	result = Node::make<math::Rational>(-1);
 	operatorTimes(result, operand);
 	operatorParentheses(result, result);
+}
+
+void makeBlankPattern(Node& result, const boost::optional<Node>& name) {
+	if ( name ) {
+		assert(name->is<Identifier>());
+		result = Node::make<FunctionCall>( ids::Pattern, {*name, Node::make<FunctionCall>( ids::Blank )} );
+	} else {
+		result = Node::make<FunctionCall>( ids::Blank );
+	}
 }
 
 void createFunctionCallFromString(Node& result, const std::string& name) {
@@ -214,8 +228,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		//Tree : ---
 
 		equalsToExpression =
-				additiveExpression[_val = _1] >> '=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
-				additiveExpression[_val = _1] >> ":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
+				patternExpression[_val = _1] >> '=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
+				patternExpression[_val = _1] >> ":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
+				patternExpression[_val = _1];
+
+		patternExpression =
+				identifier[_val = _1] >> ':' >> additiveExpression[phx::bind(&operatorPattern, _val, _1)] |
 				additiveExpression[_val = _1];
 
 		additiveExpression =
@@ -269,13 +287,17 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
 				'}';
 
-		unaryOperator =
+		blankPattern =
+				(-identifier)[phx::bind(&makeBlankPattern, _val, _1)] >>
+				'_';
+
+		unaryPlusMinusOperator =
 				'-' >> powerExpression[phx::bind(&operatorUnaryMinus, _val, _1)] |
 				'+' >> powerExpression[_val = _1];
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | integer | string | unaryOperator | parenthesizedExpression | list | functionCall | identifier;
+		primary %= real | integer | string | unaryPlusMinusOperator | blankPattern | parenthesizedExpression | list | functionCall | identifier;
 
 	}
 
@@ -287,9 +309,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> expression;
 
 	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
+	qi::rule<Iterator, Node(), delimiter> patternExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
+
+	qi::rule<Iterator, Node(), delimiter> blankPattern;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
 	qi::rule<Iterator, std::vector<Node>(), delimiter> argumentList;
@@ -303,7 +328,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> real;
 	qi::rule<Iterator, Node(), delimiter> functionCall;
 	qi::rule<Iterator, Node(), delimiter> list;
-	qi::rule<Iterator, Node(), delimiter> unaryOperator;
+	qi::rule<Iterator, Node(), delimiter> unaryPlusMinusOperator;
 	qi::rule<Iterator, Node(), delimiter> parenthesizedExpression;
 	qi::rule<Iterator, Node(), delimiter> primary;
 
