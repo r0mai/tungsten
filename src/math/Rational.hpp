@@ -3,39 +3,27 @@
 #ifndef MATH_RATIONAL_HPP_
 #define MATH_RATIONAL_HPP_
 
-#include <gmpxx.h>
-
 #include <cassert>
-#include <utility>
 #include <string>
+
+#include <boost/multiprecision/gmp.hpp>
 
 #include "Integer.hpp"
 
 namespace tungsten { namespace math {
 
-class Rational : public mpq_class {
-public:
+typedef boost::multiprecision::mpq_rational Rational;
 
-	template<class... Ts>
-	Rational(Ts&&... args) : mpq_class(std::forward<Ts>(args)...) {}
+Integer numerator(const Rational& rational);
+Integer denominator(const Rational& rational);
 
-	Integer numerator() const { return get_num(); }
-	Integer denominator() const { return get_den(); }
+bool isInteger(const Rational& rational);
+Integer asInteger(const Rational& rational);
 
-	bool isInteger() const { return denominator() == 1; }
-
-	Integer asInteger() const {
-		assert( isInteger() );
-		return get_num();
-	}
-
-	Rational reciprocal() const;
-
-	std::string toString() const;
-
-};
-
+Rational reciprocal(const Rational& rational);
 Rational power(const Rational& base, long exponent);
+
+std::string toString(const Rational& rational);
 
 }} //namespace tungsten::math
 

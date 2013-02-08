@@ -3,21 +3,13 @@
 #ifndef MATH_REAL_HPP_
 #define MATH_REAL_HPP_
 
-#include <gmpxx.h>
-
-#include <utility>
+#include <boost/multiprecision/mpfr.hpp>
 
 namespace tungsten { namespace math {
 
-class Real : public mpf_class {
-public:
+typedef boost::multiprecision::mpfr_float Real;
 
-	template<class... Ts>
-	Real(Ts&&... args) : mpf_class(std::forward<Ts>(args)...) {}
-
-	std::string toString() const;
-
-};
+std::string toString(const Real& real);
 
 Real power(const Real& base, const Real& exponent);
 

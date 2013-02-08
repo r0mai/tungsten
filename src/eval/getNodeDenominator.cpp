@@ -21,7 +21,7 @@ struct GetNodeDenominatorVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Rational& rational) {
-		return ast::Node::make<math::Rational>(rational.denominator());
+		return ast::Node::make<math::Rational>(math::denominator(rational));
 	}
 
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
@@ -49,7 +49,7 @@ struct GetNodeDenominatorVisitor : boost::static_visitor<ast::Node> {
 						);
 				} else if ( node.is<math::Rational>() ) {
 					numeratorOperands.push_back(
-						ast::Node::make<math::Rational>(node.get<math::Rational>().denominator())
+						ast::Node::make<math::Rational>(math::denominator(node.get<math::Rational>()))
 					);
 				}
 			}

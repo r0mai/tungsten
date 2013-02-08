@@ -21,7 +21,7 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Rational& rational) {
-		return ast::Node::make<math::Rational>(rational.numerator());
+		return ast::Node::make<math::Rational>(math::numerator(rational));
 	}
 
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
@@ -30,7 +30,7 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 
 		if ( function.is<ast::Identifier>( ids::Times ) ) {
 			ast::Operands numeratorOperands;
-			//TODO fix x/3 -> Numerator = 1/3 * x, should be x
+
 			boost::copy(
 					operands |
 					boost::adaptors::filtered([](const ast::Node& node) {
@@ -40,7 +40,7 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 								!isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]);
 					}) | boost::adaptors::transformed([](const ast::Node& node) -> ast::Node { //extra care must be taken for Rationals
 						if ( node.is<math::Rational>() ) {
-							return ast::Node::make<math::Rational>(node.get<math::Rational>().numerator());
+							return ast::Node::make<math::Rational>(math::numerator(node.get<math::Rational>()));
 						}
 						return node;
 					}),

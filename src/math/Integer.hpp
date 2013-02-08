@@ -3,30 +3,24 @@
 #ifndef MATH_INTEGER_HPP_
 #define MATH_INTEGER_HPP_
 
-#include <gmpxx.h>
-
 #include <cassert>
 #include <string>
 
+#include <boost/multiprecision/gmp.hpp>
+
 namespace tungsten { namespace math {
 
-class Integer : public mpz_class {
-public:
+typedef boost::multiprecision::mpz_int Integer;
 
-	template<class... Ts>
-	Integer(Ts&&... args) : mpz_class(std::forward<Ts>(args)...) {}
+bool fitsUL(const Integer& integer);
+bool fitsSL(const Integer& integer);
 
-	bool fitsUL() const { return fits_ulong_p(); }
-	bool fitsSL() const { return fits_slong_p(); }
-
-	unsigned long asUL() const { assert( fitsUL() ); return get_ui(); }
-	signed long asSL() const { assert( fitsSL() ); return get_si(); }
-
-	std::string toString() const;
-
-};
+unsigned long asUL(const Integer& integer);
+signed long asSL(const Integer& integer);
 
 Integer power(const Integer& base, unsigned long exponent);
+
+std::string toString(const Integer& integer);
 
 }} //namespace tungsten::math
 

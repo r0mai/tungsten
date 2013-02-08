@@ -24,15 +24,15 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	ast::Node operator()(const math::Rational& base, const math::Rational& exponent) {
 
 
-		if ( base < 0 && !exponent.isInteger() ) {
+		if ( base < 0 && !math::isInteger(exponent) ) {
 			//result is Complex TODO
 			return operator()<>(base, exponent);
 		}
 
-		assert( (base < 0 && exponent.isInteger()) || base > 0 );
+		assert( (base < 0 && math::isInteger(exponent)) || base > 0 );
 
-		math::Integer exponentNumerator = exponent.numerator();
-		math::Integer exponentDenominator = exponent.denominator();
+		math::Integer exponentNumerator = math::numerator(exponent);
+		math::Integer exponentDenominator = math::denominator(exponent);
 
 
 		/*
@@ -49,15 +49,15 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		 */
 
 
-		if ( !exponentNumerator.fitsSL() ) {
+		if ( !math::fitsSL(exponentNumerator) ) {
 			sessionEnvironment.raiseMessage( Message(ids::General, ids::ovfl, {}) );
 
 			return ast::Node::make<ast::FunctionCall>(ids::Overflow);
 		}
 
-		math::Rational baseExponentation = math::power(base, exponentNumerator.asSL());
+		math::Rational baseExponentation = math::power(base, math::asSL(exponentNumerator));
 
-		math::Rational newExponent(1, exponentDenominator);
+		math::Rational newExponent(math::Integer(1), exponentDenominator);
 
 		if ( newExponent == 1 ) {
 			return ast::Node::make<math::Rational>(baseExponentation);
@@ -108,7 +108,7 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 
 	//Special cases:
 	//c.isInteger() : (a*b)^c => a^c * b^c
-	if ( exponent.is<math::Rational>() && exponent.get<math::Rational>().isInteger() &&
+	if ( exponent.is<math::Rational>() && math::isInteger(exponent.get<math::Rational>()) &&
 			base.is<ast::FunctionCall>() && base.get<ast::FunctionCall>().getFunction().is<ast::Identifier>(ids::Times) )
 	{
 		const ast::Operands& baseTimesOperands = base.get<ast::FunctionCall>().getOperands();
@@ -125,7 +125,7 @@ ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& session
 
 
 	//c.isInteger() : (a^b)^c => (a^(b*c))
-	if ( exponent.is<math::Rational>() && exponent.get<math::Rational>().isInteger() &&
+	if ( exponent.is<math::Rational>() && math::isInteger(exponent.get<math::Rational>()) &&
 			base.is<ast::FunctionCall>() && base.get<ast::FunctionCall>().getFunction().is<ast::Identifier>(ids::Power) )
 	{
 		assert( base.get<ast::FunctionCall>().getOperands().size() == 2 );

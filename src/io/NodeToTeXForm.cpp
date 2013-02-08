@@ -25,12 +25,12 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 	}
 
 	TeXFormString operator()(const math::Real& real) {
-		return real.toString();
+		return math::toString(real);
 	}
 
 	TeXFormString operator()(const math::Rational& rational) {
-		assert(rational.isInteger());
-		return rational.toString();
+		assert(math::isInteger(rational));
+		return math::toString(rational);
 	}
 
 	TeXFormString operator()(const ast::Identifier& identifier) {

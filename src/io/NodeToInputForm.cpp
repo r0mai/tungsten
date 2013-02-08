@@ -22,14 +22,14 @@ struct NodeToInputFormVisitor : boost::static_visitor<InputFormString> {
 	}
 
 	InputFormString operator()(const math::Real& real) const {
-		return real.toString();
+		return math::toString(real);
 	}
 
 	InputFormString operator()(const math::Rational& rational) const {
-		if ( rational.isInteger() || precedence < 1 ) {
-			return rational.toString();
+		if ( math::isInteger(rational) || precedence < 1 ) {
+			return math::toString(rational);
 		} else {
-			return InputFormString(1, '(') + rational.toString() + InputFormString(1, ')');
+			return InputFormString(1, '(') + math::toString(rational) + InputFormString(1, ')');
 		}
 	}
 

@@ -112,6 +112,9 @@ bool Node::operator<(const Node& other) const {
 struct ToStringVisitor : boost::static_visitor<std::string> {
 	template<class T>
 	std::string operator()(const T& t) const { return t.toString(); }
+
+	std::string operator()(const math::Rational& rational) const { return math::toString(rational); }
+	std::string operator()(const math::Real& real) const { return math::toString(real); }
 };
 
 std::string Node::toString() const {

@@ -6,35 +6,46 @@
 
 namespace tungsten { namespace math {
 
-Rational Rational::reciprocal() const {
-	assert( numerator() != 0 );
-	Rational result;
-	mpq_inv(result.get_mpq_t(), this->get_mpq_t());
-	return result;
+Integer numerator(const Rational& rational) {
+	return boost::multiprecision::numerator(rational);
 }
 
-std::string Rational::toString() const {
-	std::stringstream ss;
-	ss << *this;
-	return ss.str();
+Integer denominator(const Rational& rational) {
+	return boost::multiprecision::denominator(rational);
+}
+
+bool isInteger(const Rational& rational) {
+	return denominator(rational) == 1;
+}
+
+Integer asInteger(const Rational& rational) {
+	assert( isInteger(rational) );
+	return numerator(rational);
+}
+
+Rational reciprocal(const Rational& rational) {
+	//TODO optimize
+	return 1/rational;
 }
 
 Rational power(const Rational& base, long exponent) {
-	Integer numerator = base.numerator();
-	Integer denominator = base.denominator();
+	Integer baseNumerator = numerator(base);
+	Integer baseDenominator = denominator(base);
 
 	if ( exponent < 0 ) {
-		std::swap( numerator, denominator );
+		std::swap( baseNumerator, baseDenominator );
 		exponent = -exponent;
 	}
 
-	Rational result(
-			power(numerator, static_cast<unsigned long>(exponent)),
-			power(denominator, static_cast<unsigned long>(exponent))
+	return Rational(
+			power(baseNumerator, static_cast<unsigned long>(exponent)),
+			power(baseDenominator, static_cast<unsigned long>(exponent))
 			);
-	result.canonicalize();
+	//TOOD needs canonicalize?
+}
 
-	return result;
+std::string toString(const Rational& rational) {
+	return rational.str();
 }
 
 }} //namespace tungsten::math

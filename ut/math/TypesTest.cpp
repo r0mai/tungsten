@@ -16,11 +16,13 @@ BOOST_AUTO_TEST_CASE( Integer_fitsUL_works ) {
 	math::Integer overMaxUL = maxUL + 1;
 	math::Integer underMinUL = minUL - 1;
 
-	BOOST_CHECK( maxUL.fitsUL() );
-	BOOST_CHECK( !overMaxUL.fitsUL() );
+	BOOST_CHECK( math::fitsUL(maxUL) );
+	BOOST_CHECK_EQUAL(maxUL, math::asUL(maxUL));
+	BOOST_CHECK( !math::fitsUL(overMaxUL) );
 
-	BOOST_CHECK( minUL.fitsUL() );
-	BOOST_CHECK( !underMinUL.fitsUL() );
+	BOOST_CHECK( math::fitsUL(minUL) );
+	BOOST_CHECK_EQUAL(minUL, math::asUL(minUL));
+	BOOST_CHECK( !math::fitsUL(underMinUL) );
 
 }
 
@@ -30,36 +32,38 @@ BOOST_AUTO_TEST_CASE( Integer_fitsSL_works ) {
 	math::Integer overMaxSL = maxSL + 1;
 	math::Integer underMinSL = minSL - 1;
 
-	BOOST_CHECK( maxSL.fitsSL() );
-	BOOST_CHECK( !overMaxSL.fitsSL() );
+	BOOST_CHECK( math::fitsSL(maxSL) );
+	BOOST_CHECK_EQUAL(maxSL, math::asSL(maxSL));
+	BOOST_CHECK( !math::fitsSL(overMaxSL) );
 
-	BOOST_CHECK( minSL.fitsSL() );
-	BOOST_CHECK( !underMinSL.fitsSL() );
+	BOOST_CHECK( math::fitsSL(minSL) );
+	BOOST_CHECK_EQUAL(minSL, math::asSL(minSL));
+	BOOST_CHECK( !math::fitsSL(underMinSL) );
 
 }
 
 BOOST_AUTO_TEST_CASE( Integer_asUL_works ) {
 	math::Integer n = 123;
 
-	BOOST_REQUIRE( n.fitsUL() );
+	BOOST_REQUIRE( math::fitsUL(n) );
 
-	BOOST_CHECK_EQUAL( n.asUL(), 123UL );
+	BOOST_CHECK_EQUAL( math::asUL(n), 123UL );
 }
 
 BOOST_AUTO_TEST_CASE( Integer_asSI_works_for_positive ) {
 	math::Integer n = 123;
 
-	BOOST_REQUIRE( n.fitsSL() );
+	BOOST_REQUIRE( math::fitsSL(n) );
 
-	BOOST_CHECK_EQUAL( n.asSL(), 123UL );
+	BOOST_CHECK_EQUAL( math::asSL(n), 123UL );
 }
 
 BOOST_AUTO_TEST_CASE( Integer_asSI_works_for_negative ) {
 	math::Integer n = -123;
 
-	BOOST_REQUIRE( n.fitsSL() );
+	BOOST_REQUIRE( math::fitsSL(n) );
 
-	BOOST_CHECK_EQUAL( n.asSL(), -123L );
+	BOOST_CHECK_EQUAL( math::asSL(n), -123L );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_isInteger_works ) {
@@ -67,25 +71,23 @@ BOOST_AUTO_TEST_CASE( Rational_isInteger_works ) {
 	math::Rational z(2,1);
 	math::Rational y(0,2);
 
-	y.canonicalize();
-
-	BOOST_CHECK( !q.isInteger() );
-	BOOST_CHECK( z.isInteger() );
-	BOOST_CHECK( y.isInteger() );
+	BOOST_CHECK( !math::isInteger(q) );
+	BOOST_CHECK( math::isInteger(z) );
+	BOOST_CHECK( math::isInteger(y) );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_asInteger_works ) {
 	math::Rational z(2,1);
 
-	BOOST_REQUIRE( z.isInteger() );
+	BOOST_REQUIRE( math::isInteger(z) );
 
-	BOOST_CHECK_EQUAL( z.asInteger(), math::Integer(2) );
+	BOOST_CHECK_EQUAL( math::asInteger(z), math::Integer(2) );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_reciprocal_works ) {
 	math::Rational n(2, 3);
 
-	BOOST_CHECK_EQUAL( n.reciprocal(), math::Rational(3, 2) );
+	BOOST_CHECK_EQUAL( math::reciprocal(n), math::Rational(3, 2) );
 }
 
 

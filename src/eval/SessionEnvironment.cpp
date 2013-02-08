@@ -138,6 +138,14 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 			}
 		}
 
+		//Check for used defined rules in patternMap
+		ast::Node result;
+		if (sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::FunctionCall>(function, operands), result)) {
+			std::cout << "sesresult = " << result << std::endl;
+			return sessionEnvironment.recursiveEvaluate(result);
+		}
+
+		//If no rules are defined, simply return
 		return ast::Node::make<ast::FunctionCall>(function, operands);
 
 	}
@@ -148,7 +156,6 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 	ast::Node operator()(const ast::Identifier& identifier) {
 		//TODO this should go to FunctionCall-s branch as well
-
 		ast::Node result;
 		if (sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::Identifier>(identifier), result)) {
 			return sessionEnvironment.recursiveEvaluate(result);
