@@ -35,14 +35,16 @@ class index:
 			output = o.getOutputString()
 			input = o.getInputString()
 			errors = o.getErrors()
+			svg = o.getSVG()
 		else:
 			input = name
 			output = ""
 			errors = ""
+			svg = ""
 		with open("log.txt", "a") as myfile:
 			if not (name == 'favicon.ico'): 
 				myfile.write(smart_str(name)+'\n')
-		return render.formtest(form, input, output, errors.replace('\n', r'<br>'), self.getLog())
+		return render.formtest(form, input, output, svg, errors.replace('\n', r'<br>'), self.getLog())
 
 
 	def POST(self, name): 

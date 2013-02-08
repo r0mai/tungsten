@@ -1,4 +1,4 @@
-$def with (form, name, output, errors, log)
+$def with (form, name, output, svg, errors, log)
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
@@ -26,11 +26,16 @@ $if errors:
 	$:errors
 
 \$\$ $output \$\$
+$if svg:
+	$:svg
+
 <form name="main" method="post">
 $:form.render()
 <input type="submit" />    </form>
 
 
+<a href="http://code.google.com/p/tungsten">Source code on Google Code</a>
+<br>
 Last 10 inputs: <br>
 $:log
 </div> 

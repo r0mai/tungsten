@@ -11,16 +11,19 @@
 #include "io/NodeToTeXForm.hpp"
 #include "eval/ArgSessionEnvironment.hpp"
 #include "eval/CLISessionEnvironment.hpp"
+#include "io/Graphics.hpp"
+#include "ast/Identifier.hpp"
 
 
 class WebOutput{
 	std::string output;
+	std::string svg;
 	std::string input;
 	std::vector<std::string> errors;
 	public:
 	WebOutput() : output() {};
-	WebOutput(const std::string& input, const std::string& output, const std::vector<std::string>& errors) :
-		input(input), output(output), errors(errors) { };
+	WebOutput(const std::string& input, const std::string& output, const std::string& svg, const std::vector<std::string>& errors) :
+		input(input), output(output), svg(svg), errors(errors) { };
 
 	std::string getOutputString() const {
 		return output;
@@ -28,6 +31,10 @@ class WebOutput{
 
 	std::string getInputString() const {
 		return input;
+	}
+	
+	std::string getSVG() const {
+		return svg;
 	}
 
 	std::string getErrorMessages() const {
@@ -63,9 +70,31 @@ public:
 		time(&lastAccess);
 		errors.clear();
 		boost::optional<tungsten::ast::Node> expression = tungsten::ast::parseInput(input);
-		std::string output = evaluateArg(input);
-		std::string TexInput = expression?tungsten::io::NodeToTeXForm(*expression, *this):input;
-		return WebOutput(std::move(TexInput), std::move(output), errors);
+		std::string TeXInput;
+		std::string svg;
+		std::string output;
+		if(expression){
+			if(expression->is<tungsten::ast::FunctionCall>() && expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) { // dealing with Graphics
+				tungsten::io::Graphics graphics;
+				if(expression->get<tungsten::ast::FunctionCall>().getOperands().size() == 1 && expression->get<tungsten::ast::FunctionCall>().getOperands()[0].is<tungsten::ast::FunctionCall>() && expression->get<tungsten::ast::FunctionCall>().getOperands()[0].get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::List)) { // dirty hack, will fix later.
+					for(const auto& node : expression->get<tungsten::ast::FunctionCall>().getOperands()[0].get<tungsten::ast::FunctionCall>().getOperands()) {
+						if(node.is<tungsten::ast::FunctionCall>() && node.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Circle)) { // Create Circle
+							graphics.addShape(tungsten::io::Circle().center(5,5).radius(5)); // magic numbers.
+							break;
+						}
+						errors.push_back("Unknown primitve");
+					}
+					svg = graphics.toSVGString();
+				}			
+			} else { // no graphics
+				output = evaluateArg(input);
+			}
+			TeXInput = tungsten::io::NodeToTeXForm(*expression, *this); // create TeX
+		} else { // if input was bad.
+			TeXInput = input;
+		}
+		std::cout<<output<<std::endl;
+		return WebOutput(TeXInput, output, svg, errors);
 	};
 };
 
@@ -94,9 +123,9 @@ public:
 			// http://stackoverflow.com/questions/800955/
 			for(auto iter = storage.begin(); iter != storage.end(); ){
 					if(iter->second->isOld())
-							storage.erase(iter++);
+						storage.erase(iter++);
 					else
-							++iter;
+						++iter;
 					}
 					it=storage.insert(
 					std::make_pair(id, std::make_shared<WebSessionEnvironment>())
@@ -118,13 +147,14 @@ public:
 
 BOOST_PYTHON_MODULE(pytungsten){
 
-    using namespace boost::python;
-        class_<WebClassMonolith, boost::noncopyable>("tungsten")
+	using namespace boost::python;
+		class_<WebClassMonolith, boost::noncopyable>("tungsten")
 			.def("evaluate", &WebClassMonolith::evaluate)
-        ;
-        class_<WebOutput>("WebOutput")
+		;
+		class_<WebOutput>("WebOutput")
 			.def("getOutputString", &WebOutput::getOutputString)
 			.def("getInputString", &WebOutput::getInputString)
 			.def("getErrors", &WebOutput::getErrorMessages)
-        ;
+			.def("getSVG", &WebOutput::getSVG)
+		;
 }
