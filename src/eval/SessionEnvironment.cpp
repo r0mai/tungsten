@@ -47,7 +47,7 @@ ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 }
 
 ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
-	//TODO update history
+	//TODO history
 	return recursiveEvaluate(node);
 }
 
@@ -153,7 +153,6 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		//Check for used defined rules in patternMap
 		ast::Node result;
 		if (sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::FunctionCall>(function, operands), result)) {
-			std::cout << "sesresult = " << result << std::endl;
 			return sessionEnvironment.recursiveEvaluate(result);
 		}
 
