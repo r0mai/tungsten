@@ -15,6 +15,7 @@ Functions createFunctions() {
 	result[ids::Set] = &Set;
 	result[ids::SetDelayed] = &SetDelayed;
 	result[ids::RandomReal] = &RandomReal;
+	result[ids::Divide] = &Divide;
 	return result;
 }
 
