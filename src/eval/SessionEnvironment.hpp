@@ -25,7 +25,12 @@ public:
 	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
 	RandomEngine& getRandomEngine();
 
+	//Both can be called.
+	//std::string version will raise syntax error messages
+	ast::Node evaluate(const std::string& inputString);
 	ast::Node evaluate(const ast::Node& node);
+
+	//should not be called from the outside
 	ast::Node recursiveEvaluate(const ast::Node& node);
 
 protected:

@@ -10,6 +10,7 @@
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
+#include "ast/Parser.hpp"
 #include "Identifiers.hpp"
 #include "threadListableOperands.hpp"
 #include "flattenOperands.hpp"
@@ -32,6 +33,17 @@ void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& r
 
 RandomEngine& SessionEnvironment::getRandomEngine() {
 	return randomEngine;
+}
+
+ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
+
+	boost::optional<ast::Node> expression = ast::parseInput(inputString);
+	if ( !expression ) {
+		raiseMessage(Message(ids::Syntax, ids::Syntax, {}));
+		return ast::Node::make<ast::Identifier>(ids::Null);
+	}
+
+	return evaluate(*expression);
 }
 
 ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
