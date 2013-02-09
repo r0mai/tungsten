@@ -47,7 +47,7 @@ ast::Node Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEn
 		return ast::applyVisitor(operands[0], absVisitor); }
 	else {
 		sessionEnvironment.raiseMessage( Message(ids::Abs, ids::argx, {
-				ast::Node::make<ast::Identifier>( ids::Divide ),
+				ast::Node::make<ast::Identifier>( ids::Abs ),
 				ast::Node::make<math::Rational>( operands.size() )
 		} ));
 

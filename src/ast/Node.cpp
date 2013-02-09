@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "io/NodeToInputForm.hpp"
+#include "eval/Identifiers.hpp"
 
 namespace tungsten { namespace ast {
 

@@ -1,6 +1,5 @@
 
 #include "functions.hpp"
-#include "eval/getNodeNumerator.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
