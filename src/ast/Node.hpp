@@ -64,12 +64,10 @@ public:
 	applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor);
 
 private:
-
 	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
-
 	Storage storage;
 
-
+	Node(const Storage& storage) : storage(storage) {}
 };
 
 std::ostream& operator<<(std::ostream& os, const Node& node);
@@ -91,19 +89,16 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 			rhs.storage);
 }
 
+//Template implementation:
 template<class T, class... Args>
 Node Node::make(const Args&... args) {
-	Node node;
-	node.storage = T(args...);
-	return node;
+	return Node{T(args...)};
 }
 
-//Template implementation:
+
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
-	Node node;
-	node.storage = T(arg, initializerList);
-	return node;
+	return Node{T(arg, initializerList)};
 }
 
 template<class T>
