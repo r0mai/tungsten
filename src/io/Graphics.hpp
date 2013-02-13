@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include "math/Real.hpp"
+#include "ast/Node.hpp"
+#include "eval/SessionEnvironment.hpp"
+#include "eval/getHead.hpp"
 
 namespace tungsten { namespace io {
 
@@ -23,6 +26,14 @@ class GraphicsObject {
 	std::vector<std::unique_ptr<GraphicsPrimitive> > shapes; // polymorphism might not be enough
 public:
 	std::string toSVGString() const;
+	
+	GraphicsObject(const GraphicsObject& g) = delete;
+	GraphicsObject(GraphicsObject&& g) : shapes(std::move(g.shapes)) { }
+	GraphicsObject() = default;
+	GraphicsObject& operator=(GraphicsObject&& g) {
+		shapes = std::move(g.shapes);
+		return *this;
+	}
 	
 	template<class T, class... Ts>
 	void addShape(const T& shape, const Ts& ...shapes){
@@ -69,6 +80,8 @@ public:
 	
 	Ellipse& radius(const math::Real& x, const math::Real& y);
 };
+
+GraphicsObject makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject graphic=GraphicsObject());
 
 } } // tungsten::io
 

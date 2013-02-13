@@ -35,7 +35,6 @@ class index:
 			output = o.getOutputString()
 			input = o.getInputString()
 			errors = o.getErrors()
-			print errors
 			svg = o.getSVG()
 		else:
 			input = name

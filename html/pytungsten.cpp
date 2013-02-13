@@ -13,6 +13,8 @@
 #include "eval/CLISessionEnvironment.hpp"
 #include "io/Graphics.hpp"
 #include "ast/Identifier.hpp"
+#include "eval/getHead.hpp"
+#include "io/NodeToTeXForm.hpp"
 
 
 class WebOutput{
@@ -43,7 +45,7 @@ class WebOutput{
 };
 
 
-class WebSessionEnvironment : public tungsten::eval::ArgSessionEnvironment {
+class WebSessionEnvironment : public tungsten::eval::SessionEnvironment {
 private:
 	std::time_t lastAccess;
 	std::vector<std::string> errors;
@@ -74,20 +76,12 @@ public:
 		std::string svg;
 		std::string output;
 		if(expression){
-			if(expression->is<tungsten::ast::FunctionCall>() && expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) { // dealing with Graphics
-				tungsten::io::GraphicsObject graphics;
-				if(expression->get<tungsten::ast::FunctionCall>().getOperands().size() == 1 && expression->get<tungsten::ast::FunctionCall>().getOperands()[0].is<tungsten::ast::FunctionCall>() && expression->get<tungsten::ast::FunctionCall>().getOperands()[0].get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::List)) { // dirty hack, will fix later.
-					for(const auto& node : expression->get<tungsten::ast::FunctionCall>().getOperands()[0].get<tungsten::ast::FunctionCall>().getOperands()) {
-						if(node.is<tungsten::ast::FunctionCall>() && node.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Circle)) { // Create Circle
-							graphics.addShape(tungsten::io::Circle().center(5,5).radius(5)); // magic numbers.
-							continue;
-						}						
-						errors.push_back("Unknown primitve");
-					}
-					svg = graphics.toSVGString();
-				}			
+			if(expression->is<tungsten::ast::FunctionCall>() && 
+			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
+				// dealing with graphics
+				svg = tungsten::io::makeGraphics(*expression, *this).toSVGString();
 			} else { // no graphics
-				output = evaluateArg(input);
+				output = tungsten::io::NodeToTeXForm(tungsten::eval::SessionEnvironment::evaluate(input), *this);
 			}
 			TeXInput = tungsten::io::NodeToTeXForm(*expression, *this); // create TeX
 		} else { // if input was bad.

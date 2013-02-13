@@ -19,7 +19,7 @@ GraphicsPrimitive& GraphicsPrimitive::translate(const std::string& trans) {
 std::string GraphicsObject::toSVGString() const {
 	std::stringstream _output;
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">"; // svg header in.
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" height=\"500\">"; // svg header in.
 	for(const auto& shape : shapes){
 		_output<<shape->toSVGString()<<std::endl;
 	}		
@@ -29,7 +29,7 @@ std::string GraphicsObject::toSVGString() const {
 
 	
 std::string Circle::toSVGString() const {	
-	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %_y %_r %_formatString).str();
+	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% >)ro") %_translation %_x %_y %_r %_formatString).str();
 }
 		
 Circle& Circle::radius(const math::Real& arg) {
@@ -44,7 +44,7 @@ Circle& Circle::center(const math::Real& arg1, const math::Real& arg2) {
 }
 
 std::string Rectangle::toSVGString() const {
-	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5" %6%/>)ro") 
+	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6%>)ro") 
 			% _translation
 			% _topLeftX
 			% _topLeftY
@@ -68,7 +68,7 @@ Rectangle& Rectangle::bottomRight(const math::Real& arg1, const math::Real& arg2
 }
 
 std::string Ellipse::toSVGString() const {
-	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%/>)ro")
+	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%>)ro")
 		% _translation
 		% _x
 		% _y
@@ -88,6 +88,32 @@ Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 	_xRadius = x;
 	_yRadius = y;
 	return *this;
+}
+
+GraphicsObject makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject graphic) {
+	// getHead(node) == Graphics[]
+	// Check if list, actual implementation lower.
+	if(eval::getHead(node) == ast::Node::make<ast::Identifier>(eval::ids::Graphics)) {
+		// Graphics[] should have exactly 1 parameter.
+		if(node.get<ast::FunctionCall>().getOperands().size()!=1){
+			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
+			return graphic;
+		}
+		ast::Node actualNode = node.get<ast::FunctionCall>().getOperands()[0];
+		if(eval::getHead(actualNode) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
+			// iterator version.
+		}
+		if(eval::getHead(actualNode) == ast::Node::make<ast::Identifier>(eval::ids::Circle)) {
+			graphic.addShape(Circle().center(50,50).radius(20));
+			return graphic;
+		}
+		if(eval::getHead(actualNode) == ast::Node::make<ast::Identifier>(eval::ids::Rectangle)) {
+			graphic.addShape(Rectangle().topLeft(0,0).bottomRight(60,60));
+			return graphic;
+		}
+		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
+	}
+	return graphic;
 }
 
 } } // tungsten::io
