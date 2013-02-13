@@ -16,29 +16,30 @@ $def with (form, name, output, svg, errors, log)
 </head>
 
 <body>
-<div align="center">
-$if name:
-	Your Input: \$\$ $name \$\$ 
-$else:
-	Try me!
+	<div align="center">
+		$if name:
+			Your Input: \$\$ $name \$\$ 
+		$else:
+			Try me!
 
-$if errors:
-	$:errors
+		$if errors:
+			$:errors
 
-\$\$ $output \$\$
-$if svg:
-	$:svg
+		\$\$ $output \$\$
+		$if svg:
+			$:svg
 
-<form name="main" method="post">
-$:form.render()
-<input type="submit" />    </form>
+		<form name="main" method="post">
+			$:form.render()
+			<input type="submit" />
+		</form>
 
 
-<a href="http://code.google.com/p/tungsten">Source code on Google Code</a>
-<br>
-Last 10 inputs: <br>
-$:log
-</div> 
+		<a href="http://code.google.com/p/tungsten">Source code on Google Code</a>
+		<br>
+		Last 10 inputs: <br>
+		$:log
+	</div> 
 </body>
 </html>
 

@@ -75,13 +75,13 @@ public:
 		std::string output;
 		if(expression){
 			if(expression->is<tungsten::ast::FunctionCall>() && expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) { // dealing with Graphics
-				tungsten::io::Graphics graphics;
+				tungsten::io::GraphicsObject graphics;
 				if(expression->get<tungsten::ast::FunctionCall>().getOperands().size() == 1 && expression->get<tungsten::ast::FunctionCall>().getOperands()[0].is<tungsten::ast::FunctionCall>() && expression->get<tungsten::ast::FunctionCall>().getOperands()[0].get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::List)) { // dirty hack, will fix later.
 					for(const auto& node : expression->get<tungsten::ast::FunctionCall>().getOperands()[0].get<tungsten::ast::FunctionCall>().getOperands()) {
 						if(node.is<tungsten::ast::FunctionCall>() && node.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Circle)) { // Create Circle
 							graphics.addShape(tungsten::io::Circle().center(5,5).radius(5)); // magic numbers.
-							break;
-						}
+							continue;
+						}						
 						errors.push_back("Unknown primitve");
 					}
 					svg = graphics.toSVGString();
