@@ -4,10 +4,15 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-ast::Node RandomReal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode RandomReal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( !operands.empty() ) {
-		//TODO issue error
-		return ast::Node::make<ast::FunctionCall>( ids::RandomReal, operands );
+
+		sessionEnvironment.raiseMessage( Message(ids::RandomReal, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::RandomReal ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+
+		return EvaluationFailure();
 	}
 
 	//TODO We should make it work with math::Real as well

@@ -85,7 +85,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	SessionEnvironment& sessionEnvironment;
 };
 
-ast::Node Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
 	if ( operands.empty() ) {
 		return ast::Node::make<math::Rational>(1);

@@ -130,7 +130,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 	eval::SessionEnvironment& sessionEnvironment;
 };
 
-ast::Node Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	TimesVisitor timesVisitor(sessionEnvironment);
 	for ( const ast::Node& node : operands ) {
 		ast::applyVisitor( node, timesVisitor );

@@ -41,7 +41,7 @@ struct AbsVisitor : boost::static_visitor<ast::Node> {
 };
 
 
-ast::Node Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	AbsVisitor absVisitor {sessionEnvironment};
 	if(operands.size()==1){
 		return ast::applyVisitor(operands[0], absVisitor); }
@@ -51,7 +51,8 @@ ast::Node Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEn
 				ast::Node::make<math::Rational>( operands.size() )
 		} ));
 
-		return ast::Node::make<ast::FunctionCall>(ids::Abs, operands); }
+		return EvaluationFailure();
+	}
 	
 
 

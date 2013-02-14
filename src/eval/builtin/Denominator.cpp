@@ -4,10 +4,15 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-ast::Node Denominator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Denominator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( operands.size() != 1 ) {
-		//TODO issue warning
-		return ast::Node::make<ast::FunctionCall>( ids::Denominator, operands );
+
+		sessionEnvironment.raiseMessage( Message(ids::Denominator, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Denominator ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+
+		return EvaluationFailure();
 	}
 
 	return getNodeDenominator(operands[0], sessionEnvironment);

@@ -4,10 +4,14 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-ast::Node Numerator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Numerator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( operands.size() != 1 ) {
-		//TODO issue warning
-		return ast::Node::make<ast::FunctionCall>( ids::Numerator, operands );
+		sessionEnvironment.raiseMessage( Message(ids::Numerator, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Numerator ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+
+		return EvaluationFailure();
 	}
 
 	return getNodeNumerator(operands[0], sessionEnvironment);

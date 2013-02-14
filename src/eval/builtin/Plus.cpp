@@ -133,7 +133,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 	eval::SessionEnvironment& sessionEnvironment;
 };
 
-ast::Node Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
 	PlusVisitor plusVisitor(sessionEnvironment);
 	for ( const ast::Node& node : operands ) {

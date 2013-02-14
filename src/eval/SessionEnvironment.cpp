@@ -146,7 +146,11 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		if ( function.is<ast::Identifier>() ) {
 			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.get<ast::Identifier>());
 			if ( it != sessionEnvironment.builtinFunctions.end() ) {
-				return (it->second)(operands, sessionEnvironment);
+				builtin::OptionalNode evaluationResult = (it->second)(operands, sessionEnvironment);
+				if ( !evaluationResult ) { //Evaluation failed => return the expression untouched
+					return ast::Node::make<ast::FunctionCall>(function, operands);
+				}
+				return *evaluationResult;
 			}
 		}
 

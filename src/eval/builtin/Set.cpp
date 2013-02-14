@@ -4,10 +4,15 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-ast::Node Set(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode Set(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( operands.size() != 2 ) {
-		//TODO issue error
-		return ast::Node::make<ast::FunctionCall>( ids::Set, operands );
+
+		sessionEnvironment.raiseMessage( Message(ids::Set, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Set ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+
+		return EvaluationFailure();
 	}
 
 	sessionEnvironment.addPattern(operands[0], operands[1]);

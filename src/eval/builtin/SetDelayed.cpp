@@ -4,10 +4,15 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-ast::Node SetDelayed(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode SetDelayed(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( operands.size() != 2 ) {
-		//TODO issue error
-		return ast::Node::make<ast::FunctionCall>( ids::SetDelayed, operands );
+
+		sessionEnvironment.raiseMessage( Message(ids::SetDelayed, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::SetDelayed ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+
+		return EvaluationFailure();
 	}
 
 	sessionEnvironment.addPattern(operands[0], operands[1]);
