@@ -302,7 +302,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	}
 
 	qi::int_parser< math::Integer > integerParser;
-	qi::real_parser< double, OnlyNumericRealPolicies<double> > realParser;
+	qi::real_parser< math::Real, OnlyNumericRealPolicies<math::Real> > realParser;
 
 
 	qi::rule<Iterator, Node(), delimiter> start;
