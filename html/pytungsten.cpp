@@ -18,9 +18,9 @@
 
 
 class WebOutput{
+	std::string input;
 	std::string output;
 	std::string svg;
-	std::string input;
 	std::vector<std::string> errors;
 	public:
 	WebOutput() : output() {};
@@ -53,7 +53,7 @@ public:
 	WebSessionEnvironment() : lastAccess(std::time(nullptr)), errors() {
 	};
 
-	WebSessionEnvironment(WebSessionEnvironment&& we) {
+	WebSessionEnvironment(WebSessionEnvironment&& we) : lastAccess(we.lastAccess), errors(we.errors) {
 	};
 
 	virtual ~WebSessionEnvironment() noexcept override {
@@ -79,7 +79,9 @@ public:
 			if(expression->is<tungsten::ast::FunctionCall>() && 
 			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
 				// dealing with graphics
-				svg = tungsten::io::makeGraphics(*expression, *this).toSVGString();
+				tungsten::io::GraphicsObject graphics;
+				makeGraphics(*expression, *this, graphics);
+				svg = graphics.toSVGString();
 			} else { // no graphics
 				output = tungsten::io::NodeToTeXForm(tungsten::eval::SessionEnvironment::evaluate(input), *this);
 			}

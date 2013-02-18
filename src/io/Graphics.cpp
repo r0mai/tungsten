@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <boost/format.hpp>
 #include "Graphics.hpp"
 
@@ -19,7 +20,7 @@ GraphicsPrimitive& GraphicsPrimitive::translate(const std::string& trans) {
 std::string GraphicsObject::toSVGString() const {
 	std::stringstream _output;
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" height=\"500\">"; // svg header in.
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" height=\"500\">"<<std::endl; // svg header in.
 	for(const auto& shape : shapes){
 		_output<<shape->toSVGString()<<std::endl;
 	}		
@@ -90,30 +91,48 @@ Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 	return *this;
 }
 
-GraphicsObject makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject graphic) {
-	// getHead(node) == Graphics[]
-	// Check if list, actual implementation lower.
+void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics) {
 	if(eval::getHead(node) == ast::Node::make<ast::Identifier>(eval::ids::Graphics)) {
-		// Graphics[] should have exactly 1 parameter.
+	// Graphics[] should have exactly 1 parameter.
 		if(node.get<ast::FunctionCall>().getOperands().size()!=1){
 			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
-			return graphic;
 		}
-		ast::Node actualNode = node.get<ast::FunctionCall>().getOperands()[0];
-		if(eval::getHead(actualNode) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
-			// iterator version.
+		else if (eval::getHead(node.get<ast::FunctionCall>().getOperands()[0]) != ast::Node::make<ast::Identifier>(eval::ids::List) ) {
+			// 1 param, but its not a list.
+			// call respective graphic object maker here.
+			addGraphics(node.get<ast::FunctionCall>().getOperands()[0], e, graphics);
 		}
-		if(eval::getHead(actualNode) == ast::Node::make<ast::Identifier>(eval::ids::Circle)) {
-			graphic.addShape(Circle().center(50,50).radius(20));
-			return graphic;
+		else {
+			// 1 param, and its a list.
+			// do iterative work here.
+			const ast::Node listNode = node.get<ast::FunctionCall>().getOperands()[0];
+			for(const auto& primitive : listNode.get<ast::FunctionCall>().getOperands()){
+				// iterate over primitves here.
+				addGraphics(primitive, e, graphics);
+
+			} // end for loop
 		}
-		if(eval::getHead(actualNode) == ast::Node::make<ast::Identifier>(eval::ids::Rectangle)) {
-			graphic.addShape(Rectangle().topLeft(0,0).bottomRight(60,60));
-			return graphic;
-		}
-		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
-	}
-	return graphic;
+	}	
 }
+
+void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, GraphicsObject& graphics) {
+	using eval::getHead;
+	// TODO: add support for parametrisation.
+	if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Circle)) {
+		graphics.addShape(Circle().radius(10).center(15,20));
+	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Rectangle)) {
+		graphics.addShape(Rectangle().topLeft(10,20).bottomRight(40,35));
+	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
+		graphics.addShape(Ellipse().center(35,40).radius(60,12));
+	}
+	else {
+		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
+		std::cout<<"Invalid graphics primitive occured!"<<std::endl;
+	}
+}
+
+
 
 } } // tungsten::io

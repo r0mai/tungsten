@@ -1,0 +1,7 @@
+.gitignore
+
+include_rules
+CPPFLAGS += -fPIC -I../src -I/usr/include/python2.7
+
+: foreach *.cpp |> !cxx |>
+

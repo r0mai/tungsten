@@ -31,7 +31,8 @@ public:
 	GraphicsObject(GraphicsObject&& g) : shapes(std::move(g.shapes)) { }
 	GraphicsObject() = default;
 	GraphicsObject& operator=(GraphicsObject&& g) {
-		shapes = std::move(g.shapes);
+		if ( &g != this)
+			shapes = std::move(g.shapes);
 		return *this;
 	}
 	
@@ -81,7 +82,8 @@ public:
 	Ellipse& radius(const math::Real& x, const math::Real& y);
 };
 
-GraphicsObject makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject graphic=GraphicsObject());
+void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics);
+void addGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics);
 
 } } // tungsten::io
 
