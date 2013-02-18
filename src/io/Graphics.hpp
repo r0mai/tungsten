@@ -20,6 +20,8 @@ public:
 	
 	virtual GraphicsPrimitive& formatString(const std::string& format);
 	virtual GraphicsPrimitive& translate(const std::string& trans);
+	virtual GraphicsPrimitive& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) = 0;
+	virtual void raise(eval::SessionEnvironment& environment) const;
 };
 
 class GraphicsObject {
@@ -58,6 +60,8 @@ public:
 	Circle& radius(const math::Real& arg);
 	
 	Circle& center(const math::Real& arg1, const math::Real& arg2);
+	
+	virtual Circle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 };
 
 class Rectangle : public GraphicsPrimitive {
@@ -69,6 +73,8 @@ public:
 	Rectangle& topLeft(const math::Real& arg1, const math::Real& arg2);
 	
 	Rectangle& bottomRight(const math::Real& arg1, const math::Real& arg2);
+	
+	virtual Rectangle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 };
 
 class Ellipse : public GraphicsPrimitive {
@@ -80,6 +86,8 @@ public:
 	Ellipse& center(const math::Real& x, const math::Real& y);
 	
 	Ellipse& radius(const math::Real& x, const math::Real& y);
+	
+	virtual Ellipse& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 };
 
 void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics);

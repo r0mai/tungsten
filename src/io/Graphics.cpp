@@ -16,6 +16,10 @@ GraphicsPrimitive& GraphicsPrimitive::translate(const std::string& trans) {
 	return *this;
 }
 
+void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
+	environment.raiseMessage(eval::Message(eval::ids::General, eval::ids::Graphics, {} ));
+}
+
 
 std::string GraphicsObject::toSVGString() const {
 	std::stringstream _output;
@@ -44,6 +48,34 @@ Circle& Circle::center(const math::Real& arg1, const math::Real& arg2) {
 	return *this;
 }
 
+Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+	switch (operands.size()) {
+		case 0:
+			this->center(0,0).radius(1);
+			break;
+		case 2:
+		{
+			ast::Operands center;
+			math::Real radius;
+			if (eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
+			( center = operands[0].get<ast::FunctionCall>().getOperands()/*!!!*/,/*!!!*/ operands[1].isNumeric() ) &&
+			( radius = operands[1].getNumeric()/*!!!*/,/*!!!*/center.size() == 2  ) &&
+			center[0].isNumeric() && center[1].isNumeric() ) 
+			{
+				this->center(center[0].getNumeric(), center[1].getNumeric()).radius(radius);
+				
+			} else {
+				raise(environment);
+			}
+			break;
+		}
+		default:
+			raise(environment);	
+			break;
+	}
+	return *this;
+}
+
 std::string Rectangle::toSVGString() const {
 	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6%>)ro") 
 			% _translation
@@ -68,6 +100,49 @@ Rectangle& Rectangle::bottomRight(const math::Real& arg1, const math::Real& arg2
 	return *this;
 }
 
+Rectangle& Rectangle::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+	switch (operands.size()) {
+		case 0:
+			this->bottomRight(1,1).topLeft(0,0);
+			break;
+		case 1:
+		{	
+			ast::Operands topLeft;
+			if(eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
+				((topLeft = operands[0].get<ast::FunctionCall>().getOperands())/*!!!*/,/*!!!*/ topLeft.size() == 2 )&&
+				topLeft[0].isNumeric() && topLeft[1].isNumeric() )
+			{
+				this->topLeft(topLeft[0].getNumeric(), topLeft[1].getNumeric())
+					.bottomRight(topLeft[0].getNumeric()+1, topLeft[1].getNumeric()+1);
+			} else {
+				raise(environment);
+			}
+			break;
+		}
+		case 2:
+		{	
+			ast::Operands topLeft, bottomRight;
+			if(eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
+				eval::getHead(operands[1]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
+				((topLeft = operands[0].get<ast::FunctionCall>().getOperands())/*!!!*/,/*!!!*/ topLeft.size() == 2) &&
+				((bottomRight = operands[1].get<ast::FunctionCall>().getOperands())/*!!!*/,/*!!!*/ bottomRight.size() == 2) &&
+				topLeft[0].isNumeric() && topLeft[1].isNumeric() &&
+				bottomRight[0].isNumeric() && bottomRight[1].isNumeric() )
+			{
+				this->topLeft(topLeft[0].getNumeric(), topLeft[1].getNumeric())
+					.bottomRight(bottomRight[0].getNumeric(), bottomRight[1].getNumeric());
+			} else {
+				raise(environment);
+			}
+			break;
+		}
+		default:
+			raise(environment);
+			break;
+	}
+	return *this;
+}
+
 std::string Ellipse::toSVGString() const {
 	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%>)ro")
 		% _translation
@@ -88,6 +163,10 @@ Ellipse& Ellipse::center(const math::Real& x, const math::Real& y) {
 Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 	_xRadius = x;
 	_yRadius = y;
+	return *this;
+}
+
+Ellipse& Ellipse::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
 	return *this;
 }
 
@@ -119,10 +198,10 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	using eval::getHead;
 	// TODO: add support for parametrisation.
 	if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Circle)) {
-		graphics.addShape(Circle().radius(10).center(15,20));
+		graphics.addShape(Circle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Rectangle)) {
-		graphics.addShape(Rectangle().topLeft(10,20).bottomRight(40,35));
+		graphics.addShape(Rectangle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
 		graphics.addShape(Ellipse().center(35,40).radius(60,12));
@@ -132,7 +211,5 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		std::cout<<"Invalid graphics primitive occured!"<<std::endl;
 	}
 }
-
-
 
 } } // tungsten::io
