@@ -34,7 +34,7 @@ std::string GraphicsObject::toSVGString() const {
 
 	
 std::string Circle::toSVGString() const {	
-	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% >)ro") %_translation %_x %_y %_r %_formatString).str();
+	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %_y %_r %_formatString).str();
 }
 		
 Circle& Circle::radius(const math::Real& arg) {
@@ -77,7 +77,7 @@ Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnviron
 }
 
 std::string Rectangle::toSVGString() const {
-	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6%>)ro") 
+	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6% />)ro") 
 			% _translation
 			% _topLeftX
 			% _topLeftY
@@ -144,7 +144,7 @@ Rectangle& Rectangle::fromOperands(const ast::Operands& operands, eval::SessionE
 }
 
 std::string Ellipse::toSVGString() const {
-	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%>)ro")
+	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%/ >)ro")
 		% _translation
 		% _x
 		% _y

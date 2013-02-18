@@ -7,7 +7,7 @@ CXX = clang++
 #CXX = g++-4.6
 
 #DEGUD CPPFLAGS
-CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g
+CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC
 
 #RELEASE CPPFLAGS
 #CPPFLAGS = -std=c++0x -Wall -Wextra -O2
