@@ -1,7 +1,13 @@
 .gitignore
 
 include_rules
-CPPFLAGS += -fPIC -I../src -I/usr/include/python2.7
+CPPFLAGS += -fPIC -I  ../src -I/usr/include/python2.7
+LINKER_FLAGS = -lpython2.7 -lboost_python  /usr/local/lib/libboost_thread.so  /usr/local/lib/libboost_system.so  /usr/local/lib/libboost_filesystem.so   /usr/local/lib/libboost_regex.so   /usr/local/lib/libboost_program_options.so /usr/local/lib/libpng.so /usr/local/lib/libmpfr.so /usr/local/lib/libgmpxx.so /usr/local/lib/libgmp.so
+
+!htmllinker = |> $(CXX) -shared -Wl, -o %o %f $(LINKER_FLAGS) |> pytungsten.so
+
 
 : foreach *.cpp |> !cxx |>
+: *.o ../src/*.o |> !htmllinker |>
+
 
