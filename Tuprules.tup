@@ -4,12 +4,15 @@
 
 CXX = clang++
 #CXX = g++-4.7
+#CXX = g++-4.6
 
 #DEGUD CPPFLAGS
 CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC
 
 #RELEASE CPPFLAGS
 #CPPFLAGS = -std=c++0x -Wall -Wextra -O2
+
+PRECOMPILEFLAGS = $(CPPFLAGS) -x c++-header
 
 boost_lib_dir = /usr/local/lib
 boost_lib_statement = -L $(boost_lib_dir)
@@ -23,25 +26,34 @@ gmp_lib_statement = -L $(gmp_lib_dir)
 mpfr_lib_dir = /usr/local/lib
 mpfr_lib_statement = -L $(mpfr_lib_dir)
 
-
 source_dir = $(TUP_CWD)/src
 
 INCLUDE_DIRS += $(source_dir)
-
-LIB_DIRS += $(boost_lib_statement) $(png_lib_statement) $(gmp_lib_statement) $(mpfr_lib_statement)
 
 BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 	$(boost_lib_dir)/libboost_system.a \
 	$(boost_lib_dir)/libboost_filesystem.a \
 	$(boost_lib_dir)/libboost_regex.a \
-	$(boost_lib_dir)/libboost_program_options.a
+	$(boost_lib_dir)/libboost_program_options.a	
+BOOST_SHARED_LIBS = $(boost_lib_dir)/libboost_thread.so \
+	$(boost_lib_dir)/libboost_system.so \
+	$(boost_lib_dir)/libboost_filesystem.so \
+	$(boost_lib_dir)/libboost_regex.so \
+	$(boost_lib_dir)/libboost_program_options.so
 
 PNG_LIBS = $(png_lib_dir)/libpng.a
+PNG_SHARED_LIBS = $(png_lib_dir)/libpng.so
 
-GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a 
+GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a
+GMP_SHARED_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.so
 
 MPFR_LIBS = $(mpfr_lib_dir)/libmpfr.a
+MPFR_SHARED_LIBS = $(mpfr_lib_dir)/libmpfr.so
+
+LIBS = $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS)
+SHARED_LIBS = $(BOOST_SHARED_LIBS) $(PNG_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS)
 
 !cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
-!linker = |> $(CXX) %f $(LIB_DIRS) $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS) -o %o |>
+!linker = |> $(CXX) %f $(LIBS) -o %o |>
+!preCompile = |> $(CXX) %f $(PRECOMPILEFLAGS) -I $(INCLUDE_DIRS) -o %o |> %b.pch
  
