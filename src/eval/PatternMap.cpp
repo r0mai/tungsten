@@ -23,6 +23,18 @@ void PatternMap::addPattern(const ast::Node& pattern, const ast::Node& replaceme
 	storage[pattern] = replacement;
 }
 
+boost::optional<ast::Node> PatternMap::getPatternReplacement(const ast::Node& pattern) const {
+	Storage::const_iterator location = storage.find(pattern);
+	if ( location == storage.end() ) {
+		return boost::none_t();
+	}
+	return location->second;
+}
+
+void PatternMap::removePattern(const ast::Node& pattern) {
+	storage.erase(pattern);
+}
+
 bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result) const {
 #if 0
 

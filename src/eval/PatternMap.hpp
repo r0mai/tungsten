@@ -18,6 +18,8 @@ public:
 	PatternMap();
 
 	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
+	boost::optional<ast::Node> getPatternReplacement(const ast::Node& pattern) const;
+	void removePattern(const ast::Node& pattern);
 
 	//Returns true, if a patterns matches node; result will be set to it's new value
 	//Otherwise, result == node

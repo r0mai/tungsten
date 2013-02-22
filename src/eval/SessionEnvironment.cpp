@@ -31,6 +31,14 @@ void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& r
 	patternMap.addPattern(pattern, replacement);
 }
 
+boost::optional<ast::Node> SessionEnvironment::getPatternReplacement(const ast::Node& pattern) {
+	return patternMap.getPatternReplacement(pattern);
+}
+
+void SessionEnvironment::removePattern(const ast::Node& pattern) {
+	patternMap.removePattern(pattern);
+}
+
 RandomEngine& SessionEnvironment::getRandomEngine() {
 	return randomEngine;
 }

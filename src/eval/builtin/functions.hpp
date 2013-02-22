@@ -35,6 +35,7 @@ OptionalNode SetDelayed(const ast::Operands& operands, eval::SessionEnvironment&
 OptionalNode RandomReal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Divide(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Head(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 

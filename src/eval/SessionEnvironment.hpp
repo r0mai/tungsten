@@ -23,6 +23,9 @@ public:
 	virtual void handleMessageString(const ast::String& /*messageString*/) {}
 
 	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
+	boost::optional<ast::Node> getPatternReplacement(const ast::Node& pattern);
+	void removePattern(const ast::Node& pattern);
+
 	RandomEngine& getRandomEngine();
 
 	//Both can be called.

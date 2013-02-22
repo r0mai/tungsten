@@ -17,6 +17,7 @@ Functions createFunctions() {
 	result[ids::RandomReal] = &RandomReal;
 	result[ids::Divide] = &Divide;
 	result[ids::Head] = &Head;
+	result[ids::Table] = &Table;
 	return result;
 }
 

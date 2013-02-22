@@ -19,7 +19,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::SetDelayed, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}) )
 				(ids::RandomReal, AttributeSet({ids::Protected}) )
 				(ids::Divide, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
-				(ids::Head, AttributeSet({ids::Protected}) );
+				(ids::Head, AttributeSet({ids::Protected}) )
+				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
