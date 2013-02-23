@@ -76,14 +76,15 @@ public:
 		std::string svg;
 		std::string output;
 		if(expression){
+			auto evaluated = tungsten::eval::SessionEnvironment::evaluate(input);
 			if(expression->is<tungsten::ast::FunctionCall>() && 
 			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
 				// dealing with graphics
 				tungsten::io::GraphicsObject graphics;
-				makeGraphics(*expression, *this, graphics);
+				makeGraphics(evaluated, *this, graphics);
 				svg = graphics.toSVGString();
 			} else { // no graphics
-				output = tungsten::io::NodeToTeXForm(tungsten::eval::SessionEnvironment::evaluate(input), *this);
+				output = tungsten::io::NodeToTeXForm(evaluated, *this);
 			}
 			TeXInput = tungsten::io::NodeToTeXForm(*expression, *this); // create TeX
 		} else { // if input was bad.
