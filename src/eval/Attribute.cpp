@@ -20,7 +20,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::RandomReal, AttributeSet({ids::Protected}) )
 				(ids::Divide, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Head, AttributeSet({ids::Protected}) )
-				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected}) );
+				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected}) )
+				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected, ids::ReadProtected}) );
 
 	return AttributeMap(attributeStorage);
 }

@@ -18,6 +18,7 @@ Functions createFunctions() {
 	result[ids::Divide] = &Divide;
 	result[ids::Head] = &Head;
 	result[ids::Table] = &Table;
+	result[ids::CompoundExpression] = &CompoundExpression;
 	return result;
 }
 

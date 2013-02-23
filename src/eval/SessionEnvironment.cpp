@@ -46,6 +46,7 @@ RandomEngine& SessionEnvironment::getRandomEngine() {
 ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 
 	boost::optional<ast::Node> expression = ast::parseInput(inputString);
+
 	if ( !expression ) {
 		raiseMessage(Message(ids::Syntax, ids::Syntax, {}));
 		return ast::Node::make<ast::Identifier>(ids::Null);

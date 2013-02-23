@@ -36,6 +36,7 @@ OptionalNode RandomReal(const ast::Operands& operands, eval::SessionEnvironment&
 OptionalNode Divide(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Head(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode CompoundExpression(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 

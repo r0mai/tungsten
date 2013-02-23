@@ -31,6 +31,57 @@ BOOST_AUTO_TEST_CASE( empty_input_with_newlines_results_in_Null ) {
 	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::Identifier>("Null") );
 }
 
+BOOST_AUTO_TEST_CASE( compoundExpression_test_trailing_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("Null")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_separating_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_separating_and_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;b;");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"),
+					ast::Node::make<ast::Identifier>("b"),
+					ast::Node::make<ast::Identifier>("Null")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_two_separating_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;b;c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"),
+					ast::Node::make<ast::Identifier>("b"),
+					ast::Node::make<ast::Identifier>("c")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_separating_and_trailing_with_parentheses_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("(a;);");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"),
+					ast::Node::make<ast::Identifier>("Null")}), ast::Node::make<ast::Identifier>("Null")})  );
+}
+
 BOOST_AUTO_TEST_CASE( integer_parsed_correctly ) {
 	boost::optional<ast::Node> tree = ast::parseInput("42");
 
