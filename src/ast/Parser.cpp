@@ -244,7 +244,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::eps;
 		using qi::lit;
 
-		start %= expression.alias();
+		start = expression[_val = _1] | qi::eoi[_val = Node::make<Identifier>(ids::Null)];
 
 		expression = compoundExpression[phx::bind(&finishingTouches, _val, _1)];
 
