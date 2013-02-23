@@ -19,6 +19,7 @@ Functions createFunctions() {
 	result[ids::Head] = &Head;
 	result[ids::Table] = &Table;
 	result[ids::CompoundExpression] = &CompoundExpression;
+	result[ids::Minus] = &Minus;
 	return result;
 }
 
