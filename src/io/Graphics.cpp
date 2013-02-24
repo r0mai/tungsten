@@ -175,6 +175,7 @@ void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsOb
 	// Graphics[] should have exactly 1 parameter.
 		if(node.get<ast::FunctionCall>().getOperands().size()!=1){
 			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
+			std::cout<<"Invalid number of operands in Graphics"<<std::endl;
 		}
 		else if (eval::getHead(node.get<ast::FunctionCall>().getOperands()[0]) != ast::Node::make<ast::Identifier>(eval::ids::List) ) {
 			// 1 param, but its not a list.
