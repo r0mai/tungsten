@@ -48,8 +48,6 @@ public:
 
 	static boost::optional<IterationSpecifier> fromNode(const ast::Node& node, SessionEnvironment& sessionEnvironment);
 
-
-
 	bool hasVariable() const;
 	ast::Identifier getVariable() const;
 

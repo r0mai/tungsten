@@ -54,7 +54,6 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 				operands[1],
 				ast::Node::make<math::Rational>( 2 )
 		} ));
-		std::cout << iterationSpecifierNode << std::endl;
 		return EvaluationFailure();
 	}
 

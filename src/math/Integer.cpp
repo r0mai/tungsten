@@ -2,7 +2,6 @@
 #include "Integer.hpp"
 
 #include <sstream>
-#include <limits>
 
 namespace tungsten { namespace math {
 
