@@ -21,6 +21,7 @@ Functions createFunctions() {
 	result[ids::CompoundExpression] = &CompoundExpression;
 	result[ids::Minus] = &Minus;
 	result[ids::Subtract] = &Subtract;
+	result[ids::Apply] = &Apply;
 	return result;
 }
 

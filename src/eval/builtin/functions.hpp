@@ -39,6 +39,7 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode CompoundExpression(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 
