@@ -20,6 +20,7 @@ Functions createFunctions() {
 	result[ids::Table] = &Table;
 	result[ids::CompoundExpression] = &CompoundExpression;
 	result[ids::Minus] = &Minus;
+	result[ids::Subtract] = &Subtract;
 	return result;
 }
 

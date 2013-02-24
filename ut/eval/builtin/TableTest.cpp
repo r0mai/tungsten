@@ -96,5 +96,13 @@ BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_plus_y_for_y_ranging_from_1
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(4), ast::Node::make<math::Rational>(5), ast::Node::make<math::Rational>(6)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(4), ast::Node::make<math::Rational>(5), ast::Node::make<math::Rational>(6), ast::Node::make<math::Rational>(7)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(4), ast::Node::make<math::Rational>(5), ast::Node::make<math::Rational>(6), ast::Node::make<math::Rational>(7), ast::Node::make<math::Rational>(8)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(5), ast::Node::make<math::Rational>(6), ast::Node::make<math::Rational>(7), ast::Node::make<math::Rational>(8), ast::Node::make<math::Rational>(9)})}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_the_list_a__b_for_b_ranging_from_0_to_1__then_for_a_ranging_from_0_to_2 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Table[{a, b}, {a, 0, 2}, {b, 0, 1}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(0), ast::Node::make<math::Rational>(0)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(0), ast::Node::make<math::Rational>(1)})}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(0)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(1)})}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(0)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(1)})})}) );
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
