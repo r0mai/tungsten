@@ -158,6 +158,10 @@ void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
+void operatorApply(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Apply, result, rhs );
+}
+
 void operatorParentheses(Node& result, const Node& expression) {
 	//Don't do anything for multiple, paralell parentheses
 	if ( expression.is<FunctionCall>() && expression.get<FunctionCall>().getFunction() == Node::make<Identifier>(parenthesesIdentityFunction) ) {
@@ -250,31 +254,6 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		//Tree : ---
 
-//		compoundExpression =
-//				(-equalsToExpression)[phx::bind(&handleEmptyInput, _val, _1)] |
-//				(equalsToExpression[phx::bind(&setUpCompoundExpression, _val, _1)] >>
-//						+(';' >> (-equalsToExpression)[phx::bind(&operatorCompoundExpressionOptional, _val, _1)]));
-//
-//		compoundExpression = (equalsToExpression[phx::bind(&setUpCompoundExpression, _val, _1)] >>
-//				*(';' >> (-equalsToExpression)[phx::bind(&operatorCompoundExpressionOptional, _val, _1)]));
-//
-//		compoundExpression = eps[_val = Node::make<FunctionCall>(ids::CompoundExpression)] >>
-//				+( (equalsToExpression >> ';')[phx::bind(&operatorCompoundExpression, _val, _1)] ) >>
-//				(-equalsToExpression)[phx::bind(&operatorCompoundExpressionOptional, _val, _1)];
-
-		//		compoundExpression = equalsToExpression.alias();
-
-		//C = E >> ';' >> C | E >> ';' | E
-		//C = E >> -(';' >> -C)
-		//C = E >> (';' >> C | ';' | epszilon)
-//		compoundExpression =
-//				equalsToExpression[_val = _1] >> ';' >> compoundExpression[phx::bind(&operatorCompoundExpressionSequence, _val, _1)] |
-//				(equalsToExpression >> ';')[phx::bind(&operatorCompoundExpressionNullEnd, _val, _1)] |
-//				equalsToExpression[_val = _1];
-//
-//		compoundExpression = equalsToExpression[_val = _1] >>
-//				(-(';' | ';' >> compoundExpression))[phx::bind(&operatorCompoundExpressionOptionalOptional, _val, _1)];
-
 		compoundExpression =
 				equalsToExpression[_val = _1] >> (
 					';' >> compoundExpression[phx::bind(&operatorCompoundExpressionSequence, _val, _1)] |
@@ -304,7 +283,11 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
-				primary[_val = _1] >> '^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
+				applyExpression[_val = _1] >> '^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
+				applyExpression[_val = _1];
+
+		applyExpression =
+				primary[_val = _1] >> "@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
 				primary[_val = _1];
 
 		//Primaries : ---
@@ -368,6 +351,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
+	qi::rule<Iterator, Node(), delimiter> applyExpression;
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
 
