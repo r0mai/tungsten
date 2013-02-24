@@ -283,12 +283,14 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
-				applyExpression[_val = _1] >> '^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
-				applyExpression[_val = _1];
+				applyExpression[_val = _1] >> (
+						'^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
+						eps);
 
 		applyExpression =
-				primary[_val = _1] >> "@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
-				primary[_val = _1];
+				primary[_val = _1] >> (
+				"@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
+				eps);
 
 		//Primaries : ---
 		integer = integerParser[phx::bind(&makeInteger, _val, _1)];
