@@ -38,8 +38,8 @@ public:
 
 	//These returns true, if this is a FunctionCall, and it's function is 'head'
 	//Doesn't to anything with the operands
-	bool isFunctionCall(const Identifier& head);
-	bool isFunctionCall(const Node& head);
+	bool isFunctionCall(const Identifier& head) const;
+	bool isFunctionCall(const Node& head) const;
 
 	bool isNumeric() const; //isReal() || isRational()
 	bool isNumeric(const math::Real& test);

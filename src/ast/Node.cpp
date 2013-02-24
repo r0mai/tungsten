@@ -10,13 +10,13 @@
 
 namespace tungsten { namespace ast {
 
-bool Node::isFunctionCall(const Identifier& head) {
+bool Node::isFunctionCall(const Identifier& head) const {
 	return is<FunctionCall>() &&
 			get<FunctionCall>().getFunction().is<Identifier>() &&
 			get<FunctionCall>().getFunction().get<Identifier>() == head;
 }
 
-bool Node::isFunctionCall(const Node& head) {
+bool Node::isFunctionCall(const Node& head) const {
 	return is<FunctionCall>() &&
 			get<FunctionCall>().getFunction() == head;
 }
