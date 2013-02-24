@@ -53,7 +53,7 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		return boost::none_t(); //failure
 	}
 
-	const ast::Operands& listOperands = node.get<ast::FunctionCall>().getOperands();
+	ast::Operands listOperands = node.get<ast::FunctionCall>().getOperands();
 
 	IterationSpecifier iterationSpecifier;
 
@@ -62,6 +62,7 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		return boost::none_t();
 
 	case 1:
+		listOperands[0] = sessionEnvironment.recursiveEvaluate(listOperands[0]); //min
 		if ( getHead(listOperands[0]) == ast::Node::make<ast::Identifier>(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[0].get<ast::FunctionCall>().getOperands() );
 		} else if ( listOperands[0].isNumeric() ) {
@@ -79,6 +80,9 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 			return boost::none_t();
 		}
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
+
+		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //max
+
 		if ( getHead(listOperands[1]) == ast::Node::make<ast::Identifier>(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[1].get<ast::FunctionCall>().getOperands() );
 		} else if ( listOperands[1].isNumeric() ) {
@@ -94,6 +98,8 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		break;
 
 	case 3:
+		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //min
+		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); //max
 		if ( !listOperands[0].is<ast::Identifier>() ||
 				!listOperands[1].isNumeric() ||
 				!listOperands[2].isNumeric() )
@@ -102,12 +108,15 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		}
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
 		iterationSpecifier.iteration = detail::MinMaxIteration(
-				sessionEnvironment.recursiveEvaluate(listOperands[1]), //min
-				sessionEnvironment.recursiveEvaluate(listOperands[2]), //max
+				listOperands[1], //min
+				listOperands[2], //max
 			ast::Node::make<math::Rational>(1) //step
 		);
 		break;
 	case 4:
+		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //min
+		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); //max
+		listOperands[3] = sessionEnvironment.recursiveEvaluate(listOperands[3]); //step
 		if ( !listOperands[0].is<ast::Identifier>() ||
 				!listOperands[1].isNumeric() ||
 				!listOperands[2].isNumeric() ||
@@ -117,9 +126,9 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		}
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
 		iterationSpecifier.iteration = detail::MinMaxIteration(
-			sessionEnvironment.recursiveEvaluate(listOperands[1]), //min
-			sessionEnvironment.recursiveEvaluate(listOperands[2]), //max
-			sessionEnvironment.recursiveEvaluate(listOperands[3]) //step
+			listOperands[1], //min
+			listOperands[2], //max
+			listOperands[3] //step
 		);
 		break;
 	}
