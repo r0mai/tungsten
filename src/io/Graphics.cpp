@@ -2,7 +2,8 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include "Graphics.hpp"
-
+#include <algorithm>
+#include <cmath>
 namespace tungsten { namespace io {
 
 
@@ -16,16 +17,24 @@ GraphicsPrimitive& GraphicsPrimitive::translate(const std::string& trans) {
 	return *this;
 }
 
+GraphicsPrimitive& GraphicsPrimitive::translate(const Translation& trans) {
+	return this->translate(trans.toSVGString());
+}
+
 void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
 	environment.raiseMessage(eval::Message(eval::ids::General, eval::ids::Graphics, {} ));
 }
 
 void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
+	const auto box = this->getBoundingBox();
+	const auto diffX = box.maxX-box.minX;
+	const auto diffY = box.maxY-box.maxY;
+	double strokeWidth = 0.001 * sqrt(diffX*diffX+diffY*diffY);
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	if(colorDirective){
 		//formatString("style=\"stroke:rgb(255,0,0)\"");
 		std::cout<<colorDirective->r()<<std::endl;
-		_formatString = (boost::format(R"fd(style="fill:none; stroke-width:1; stroke:rgb(%1%, %2%, %3%)")fd") %(colorDirective->r()) %(colorDirective->g()) %(colorDirective->b())).str();
+		_formatString = (boost::format(R"fd(style="fill:none; stroke-width:%4%; stroke:rgb(%1%, %2%, %3%)")fd") %(colorDirective->r()) %(colorDirective->g()) %(colorDirective->b()) %strokeWidth ).str();
 		std::cout<<_formatString<<std::endl;
 	}
 }
@@ -45,20 +54,46 @@ ColorDirective::PixelType ColorDirective::b() const {
 
 std::string GraphicsObject::toSVGString() const {
 	std::stringstream _output;
+
+		// calulate scale for ACS
+	const auto box = getBoundingBox();
+	const auto diffX = box.maxX - box.minX;
+	const auto diffY = box.maxY - box.minY;
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" height=\"500\">"<<std::endl; // svg header in.
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"500\" height=\"500\" viewbox=\""
+	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" >"<<std::endl; // svg header in.
+
+	// assume graph is 500px wide.
+
 	for(const auto& shape : shapes){
 		_output<<shape->toSVGString()<<std::endl;
-	}		
+	}
 	_output<<"</svg>";
 	return _output.str();
 }
 
-	
-std::string Circle::toSVGString() const {	
+BoundingBox GraphicsObject::getBoundingBox() const {
+	if(!shapes.empty()){
+		return std::accumulate(shapes.begin(), shapes.end(), shapes.front()->getBoundingBox(), 
+		[](BoundingBox& out, const std::unique_ptr<GraphicsPrimitive>& ptr) {
+			BoundingBox box = ptr->getBoundingBox();
+			out.minX = std::min(out.minX, box.minX);
+			out.minY = std::min(out.minY, box.minY);
+			out.maxX = std::max(out.maxX, box.maxX);
+			out.maxY = std::max(out.maxY, box.maxY);
+			return out;
+		});
+	} else {
+
+	return { 0.0, 0.0, 500.0, 500.0 };
+}
+}
+
+
+std::string Circle::toSVGString() const {
 	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %_y %_r %_formatString).str();
 }
-		
+
 Circle& Circle::radius(const math::Real& arg) {
 	_r = arg;
 	return *this;
@@ -85,7 +120,7 @@ Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnviron
 			center[0].isNumeric() && center[1].isNumeric() ) 
 			{
 				this->center(center[0].getNumeric(), center[1].getNumeric()).radius(radius);
-				
+
 			} else {
 				raise(environment);
 			}
@@ -98,6 +133,14 @@ Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnviron
 	return *this;
 }
 
+BoundingBox Circle::getBoundingBox() const {
+	double minX = math::Real(_x-_r).convert_to<double>();
+	double minY = math::Real(_y-_r).convert_to<double>();
+	double maxX = math::Real(_x+_r).convert_to<double>();
+	double maxY = math::Real(_y+_r).convert_to<double>();
+	return {minX, minY, maxX, maxY};
+}
+
 std::string Rectangle::toSVGString() const {
 	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6% />)ro") 
 			% _translation
@@ -107,15 +150,15 @@ std::string Rectangle::toSVGString() const {
 			% (_bottomRightX-_topLeftX)
 			% _formatString
 			).str();
-	
+
 }
-	
+
 Rectangle& Rectangle::topLeft(const math::Real& arg1, const math::Real& arg2) {
 	_topLeftX = arg1;
 	_topLeftY = arg2;
 	return *this;
 }
-	
+
 Rectangle& Rectangle::bottomRight(const math::Real& arg1, const math::Real& arg2) {
 	_bottomRightX = arg1;
 	_bottomRightY = arg2;
@@ -165,6 +208,14 @@ Rectangle& Rectangle::fromOperands(const ast::Operands& operands, eval::SessionE
 	return *this;
 }
 
+BoundingBox Rectangle::getBoundingBox() const {
+	double minX = math::Real(_topLeftX).convert_to<double>();
+	double minY = math::Real(_topLeftY).convert_to<double>();
+	double maxX = math::Real(_bottomRightX).convert_to<double>();
+	double maxY = math::Real(_bottomRightY).convert_to<double>();
+	return {minX, minY, maxX, maxY};
+}
+
 std::string Ellipse::toSVGString() const {
 	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%/ >)ro")
 		% _translation
@@ -175,13 +226,13 @@ std::string Ellipse::toSVGString() const {
 		% _formatString
 	).str();
 }
-	
+
 Ellipse& Ellipse::center(const math::Real& x, const math::Real& y) {
 	_x = x;
 	_y = y;
 	return *this;
 }
-	
+
 Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 	_xRadius = x;
 	_yRadius = y;
@@ -190,6 +241,14 @@ Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 
 Ellipse& Ellipse::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
 	return *this;
+}
+
+BoundingBox Ellipse::getBoundingBox() const {
+	double minX = math::Real(_x-_xRadius).convert_to<double>();
+	double minY = math::Real(_y-_yRadius).convert_to<double>();
+	double maxX = math::Real(_x+_xRadius).convert_to<double>();
+	double maxY = math::Real(_y+_yRadius).convert_to<double>();
+	return {minX, minY, maxX, maxY};
 }
 
 void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics) {
