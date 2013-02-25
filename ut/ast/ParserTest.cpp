@@ -450,9 +450,7 @@ BOOST_AUTO_TEST_CASE( identifier_function_parsed_correctly_with_parentheses ) {
 	BOOST_REQUIRE( tree );
 
 	BOOST_CHECK_EQUAL( tree.get(),
-			ast::Node::make<ast::FunctionCall>(
-					ast::Node::make<ast::FunctionCall>("f")
-			)
+			ast::Node::make<ast::FunctionCall>("f")
 	);
 }
 
@@ -524,7 +522,7 @@ BOOST_AUTO_TEST_CASE( two_unary_minuses_parsed_correctly_with_Real ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<math::Real>(-3.2)}) );
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<math::Real>("-3.2")}) );
 }
 
 BOOST_AUTO_TEST_CASE( unary_minus_has_lower_precedence_than_Plus ) {

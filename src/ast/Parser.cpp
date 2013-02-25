@@ -59,6 +59,13 @@ void removeIfParenthesesIdentityFunction(Node& node) {
 	}
 }
 
+
+void createFunctionCall(Node& result, const std::vector<ast::Node>& arguments) {
+	removeIfParenthesesIdentityFunction(result);
+	result = ast::Node::make<ast::FunctionCall>(result, arguments);
+}
+
+
 //rhs by value, so removeIfParenthesesIdentityFunction can manipulate it
 void leftAssociativeListableOperator(const Identifier& functionName, Node& result, Node rhs) {
 
@@ -85,15 +92,6 @@ void rightAssociativeOperator(const Identifier& functionName, Node& result, Node
 
 	result = Node::make<FunctionCall>( functionName, {result, rhs} );
 }
-
-void handleEmptyInput(Node& result, const boost::optional<Node>& optionalNode) {
-	if ( optionalNode ) {
-		result = *optionalNode;
-	} else {
-		result = Node::make<Identifier>( ids::Null );
-	}
-}
-
 
 void operatorCompoundExpressionSequence(Node& result, Node rhs) {
 
@@ -187,12 +185,12 @@ void makeBlankPattern(Node& result, const boost::optional<Node>& name) {
 	}
 }
 
-void createFunctionCallFromString(Node& result, const std::string& name) {
-	result = Node::make<FunctionCall>( Node::make<Identifier>(name) );
+void createFunctionCallFromNode(Node& result, const Node& function) {
+	result = Node::make<FunctionCall>( function );
 }
 
-void createFunctionCallFromVector(Node& result, const std::vector<char>& name) {
-	createFunctionCallFromString(result, std::string(name.begin(), name.end()));
+void createFunctionCallFromString(Node& result, const std::string& name) {
+	result = Node::make<FunctionCall>( Node::make<Identifier>(name) );
 }
 
 void fillFunctionCall(Node& result, const std::vector<Node>& operands) {
@@ -231,7 +229,7 @@ struct OnlyNumericRealPolicies : qi::strict_real_policies<T> {
 
 };
 
-typedef boost::spirit::ascii::blank_type delimiter;
+typedef boost::spirit::ascii::space_type delimiter;
 
 template<class Iterator>
 struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter> {
@@ -289,9 +287,16 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 						eps);
 
 		applyExpression =
-				primary[_val = _1] >> (
+				functionCall[_val = _1] >> (
 				"@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
 				eps);
+
+		functionCall =
+				primary[_val = _1] >> (
+					*('[' >>
+					argumentList[phx::bind(&createFunctionCall, _val, _1)] >>
+					']')
+				);
 
 		//Primaries : ---
 		integer = integerParser[phx::bind(&makeInteger, _val, _1)];
@@ -316,12 +321,6 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		argumentList %= -(expression % ',');
 
-		functionCall =
-				(variable[phx::bind(&createFunctionCallFromVector, _val, _1)] >>
-				'[' >>
-				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
-				']');
-
 		list =
 				eps[phx::bind(&createFunctionCallFromString, _val, ids::List)] >>
 				'{' >>
@@ -338,7 +337,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | integer | string | unaryPlusMinusOperator | blankPattern | parenthesizedExpression | list | functionCall | identifier;
+		primary %= real | integer | string | unaryPlusMinusOperator | blankPattern | parenthesizedExpression | list | identifier;
 
 	}
 
@@ -387,7 +386,7 @@ boost::optional<Node> parseInput(const std::string& input) {
 	bool success = qi::phrase_parse(
 		begin, end,
 		grammar,
-		spirit::ascii::blank,
+		delimiter(),
 		result);
 	if(success && begin == end){
 		return result;
