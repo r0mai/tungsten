@@ -262,9 +262,10 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				);
 
 		equalsToExpression =
-				patternExpression[_val = _1] >> '=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
-				patternExpression[_val = _1] >> ":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
-				patternExpression[_val = _1];
+				patternExpression[_val = _1] >>
+				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
+				":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
+				eps);
 
 		patternExpression =
 				identifier[_val = _1] >> ':' >> additiveExpression[phx::bind(&operatorPattern, _val, _1)] |
