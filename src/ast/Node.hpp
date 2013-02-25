@@ -36,6 +36,11 @@ public:
 	template<class T>
 	bool is(const T& test) const;
 
+	//These returns true, if this is a FunctionCall, and it's function is 'head'
+	//Doesn't to anything with the operands
+	bool isFunctionCall(const Identifier& head) const;
+	bool isFunctionCall(const Node& head) const;
+
 	bool isNumeric() const; //isReal() || isRational()
 	bool isNumeric(const math::Real& test);
 	math::Real getNumeric() const; //returns Real when isNumeric() is true

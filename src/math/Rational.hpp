@@ -6,6 +6,7 @@
 #include <cassert>
 #include <string>
 
+#include <boost/optional.hpp>
 #include <boost/multiprecision/gmp.hpp>
 
 #include "Integer.hpp"
@@ -24,6 +25,14 @@ Rational reciprocal(const Rational& rational);
 Rational power(const Rational& base, long exponent);
 
 std::string toString(const Rational& rational);
+
+template<class T>
+boost::optional<T> rationalToBuiltinInteger(const Rational& rational) {
+	if ( isInteger(rational) && fits<T>( asInteger(rational) ) ) {
+		return as<T>( asInteger(rational) );
+	}
+	return boost::none_t();
+}
 
 }} //namespace tungsten::math
 

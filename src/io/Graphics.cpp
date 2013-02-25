@@ -190,7 +190,7 @@ Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 	return *this;
 }
 
-Ellipse& Ellipse::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+Ellipse& Ellipse::fromOperands(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*environment*/) {
 	return *this;
 }
 

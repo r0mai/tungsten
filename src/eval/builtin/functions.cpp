@@ -17,6 +17,11 @@ Functions createFunctions() {
 	result[ids::RandomReal] = &RandomReal;
 	result[ids::Divide] = &Divide;
 	result[ids::Head] = &Head;
+	result[ids::Table] = &Table;
+	result[ids::CompoundExpression] = &CompoundExpression;
+	result[ids::Minus] = &Minus;
+	result[ids::Subtract] = &Subtract;
+	result[ids::Apply] = &Apply;
 	return result;
 }
 

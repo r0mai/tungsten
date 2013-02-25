@@ -86,6 +86,43 @@ void rightAssociativeOperator(const Identifier& functionName, Node& result, Node
 	result = Node::make<FunctionCall>( functionName, {result, rhs} );
 }
 
+void handleEmptyInput(Node& result, const boost::optional<Node>& optionalNode) {
+	if ( optionalNode ) {
+		result = *optionalNode;
+	} else {
+		result = Node::make<Identifier>( ids::Null );
+	}
+}
+
+
+void operatorCompoundExpressionSequence(Node& result, Node rhs) {
+
+	//This would basically be rightAssociativeListableOperator
+	removeIfParenthesesIdentityFunction(result);
+
+	if ( rhs.is<ast::FunctionCall>() && rhs.get<FunctionCall>().getFunction().is<Identifier>() ) {
+		const Identifier& functionIdentifier = rhs.get<FunctionCall>().getFunction().get<Identifier>();
+
+		if ( functionIdentifier == ids::CompoundExpression ) {
+
+			Operands newOperands = rhs.get<FunctionCall>().getOperands();
+			newOperands.insert( newOperands.begin(), result );
+			result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, newOperands);
+			return;
+		} else if ( functionIdentifier == parenthesesIdentityFunction ) {
+			removeParenthesesIdentityFunction(rhs);
+			//Fallthrough
+		}
+
+	}
+	result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, {result, rhs});
+}
+
+void operatorCompoundExpressionNullEnd(Node& result) {
+	operatorCompoundExpressionSequence(result, ast::Node::make<ast::Identifier>(ids::Null));
+//	result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, {result, ast::Node::make<ast::Identifier>(ids::Null)});
+}
+
 void operatorSet(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Set, result, rhs );
 }
@@ -119,6 +156,10 @@ void operatorDivide(Node& result, Node rhs) {
 
 void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
+}
+
+void operatorApply(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Apply, result, rhs );
 }
 
 void operatorParentheses(Node& result, const Node& expression) {
@@ -194,25 +235,11 @@ typedef boost::spirit::ascii::blank_type delimiter;
 
 template<class Iterator>
 struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter> {
-/**
-\brief Main grammar for parsing.
 
-
-
-  \f[
-    |I_2|=\left| \int_{0}^T \psi(t) 
-             \left\{ 
-                u(a,t)-
-                \int_{\gamma(t)}^a 
-                \frac{d\theta}{k(\theta,t)}
-                \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
-             \right\} dt
-          \right|
-  \f]
-**/
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 
 		using qi::_1;
+		using qi::_2;
 		using qi::_val;
 		using qi::alpha;
 		using qi::alnum;
@@ -221,11 +248,18 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::eps;
 		using qi::lit;
 
-		start %= expression.alias();
+		start = expression[_val = _1] | qi::eoi[_val = Node::make<Identifier>(ids::Null)];
 
-		expression = equalsToExpression[phx::bind(&finishingTouches, _val, _1)];
+		expression = compoundExpression[phx::bind(&finishingTouches, _val, _1)];
 
 		//Tree : ---
+
+		compoundExpression =
+				equalsToExpression[_val = _1] >> (
+					';' >> compoundExpression[phx::bind(&operatorCompoundExpressionSequence, _val, _1)] |
+					char_(';')[phx::bind(&operatorCompoundExpressionNullEnd, _val)] |
+					eps
+				);
 
 		equalsToExpression =
 				patternExpression[_val = _1] >> '=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
@@ -249,8 +283,14 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
-				primary[_val = _1] >> '^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
-				primary[_val = _1];
+				applyExpression[_val = _1] >> (
+						'^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
+						eps);
+
+		applyExpression =
+				primary[_val = _1] >> (
+				"@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
+				eps);
 
 		//Primaries : ---
 		integer = integerParser[phx::bind(&makeInteger, _val, _1)];
@@ -307,12 +347,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 
 	qi::rule<Iterator, Node(), delimiter> start;
 	qi::rule<Iterator, Node(), delimiter> expression;
-
+	qi::rule<Iterator, Node(), delimiter> compoundExpression;
 	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
 	qi::rule<Iterator, Node(), delimiter> patternExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
+	qi::rule<Iterator, Node(), delimiter> applyExpression;
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
 

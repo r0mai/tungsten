@@ -19,7 +19,12 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::SetDelayed, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}) )
 				(ids::RandomReal, AttributeSet({ids::Protected}) )
 				(ids::Divide, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
-				(ids::Head, AttributeSet({ids::Protected}) );
+				(ids::Head, AttributeSet({ids::Protected}) )
+				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected}) )
+				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected, ids::ReadProtected}) )
+				(ids::Minus, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Subtract, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Apply, AttributeSet({ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

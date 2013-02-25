@@ -31,6 +31,57 @@ BOOST_AUTO_TEST_CASE( empty_input_with_newlines_results_in_Null ) {
 	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::Identifier>("Null") );
 }
 
+BOOST_AUTO_TEST_CASE( compoundExpression_test_trailing_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("Null")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_separating_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_separating_and_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;b;");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"),
+					ast::Node::make<ast::Identifier>("b"),
+					ast::Node::make<ast::Identifier>("Null")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_two_separating_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("a;b;c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"),
+					ast::Node::make<ast::Identifier>("b"),
+					ast::Node::make<ast::Identifier>("c")}) );
+}
+
+BOOST_AUTO_TEST_CASE( compoundExpression_test_separating_and_trailing_with_parentheses_semicolon ) {
+	boost::optional<ast::Node> tree = ast::parseInput("(a;);");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( *tree, ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::FunctionCall>("CompoundExpression",
+			{ast::Node::make<ast::Identifier>("a"),
+					ast::Node::make<ast::Identifier>("Null")}), ast::Node::make<ast::Identifier>("Null")})  );
+}
+
 BOOST_AUTO_TEST_CASE( integer_parsed_correctly ) {
 	boost::optional<ast::Node> tree = ast::parseInput("42");
 
@@ -943,5 +994,45 @@ BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank_with_colon_in_function_f ) {
 			ast::Node::make<ast::FunctionCall>("Blank", {})})}));
 }
 
+BOOST_AUTO_TEST_CASE( parsing_f_applied_to_list_of_x ) {
+	boost::optional<ast::Node>tree = ast::parseInput("f @@ {x}");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Apply", {
+		ast::Node::make<ast::Identifier>("f"),
+		ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x")})
+	}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_Apply_with_Plus ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x+y @@ a+b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Plus", {
+			ast::Node::make<ast::Identifier>("x"),
+			ast::Node::make<ast::FunctionCall>("Apply", {
+				ast::Node::make<ast::Identifier>("y"),
+				ast::Node::make<ast::Identifier>("a")
+			}),
+			ast::Node::make<ast::Identifier>("b")
+	}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_Apply_with_Times ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x*y @@ a*b");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {
+			ast::Node::make<ast::Identifier>("x"),
+			ast::Node::make<ast::FunctionCall>("Apply", {
+				ast::Node::make<ast::Identifier>("y"),
+				ast::Node::make<ast::Identifier>("a")
+			}),
+			ast::Node::make<ast::Identifier>("b")
+	}));
+}
 
 BOOST_AUTO_TEST_SUITE_END()

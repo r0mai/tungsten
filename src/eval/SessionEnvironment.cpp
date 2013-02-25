@@ -31,6 +31,14 @@ void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& r
 	patternMap.addPattern(pattern, replacement);
 }
 
+boost::optional<ast::Node> SessionEnvironment::getPatternReplacement(const ast::Node& pattern) {
+	return patternMap.getPatternReplacement(pattern);
+}
+
+void SessionEnvironment::removePattern(const ast::Node& pattern) {
+	patternMap.removePattern(pattern);
+}
+
 RandomEngine& SessionEnvironment::getRandomEngine() {
 	return randomEngine;
 }
@@ -38,6 +46,7 @@ RandomEngine& SessionEnvironment::getRandomEngine() {
 ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 
 	boost::optional<ast::Node> expression = ast::parseInput(inputString);
+
 	if ( !expression ) {
 		raiseMessage(Message(ids::Syntax, ids::Syntax, {}));
 		return ast::Node::make<ast::Identifier>(ids::Null);
