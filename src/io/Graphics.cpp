@@ -20,6 +20,28 @@ void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
 	environment.raiseMessage(eval::Message(eval::ids::General, eval::ids::Graphics, {} ));
 }
 
+void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
+	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
+	if(colorDirective){
+		//formatString("style=\"stroke:rgb(255,0,0)\"");
+		std::cout<<colorDirective->r()<<std::endl;
+		_formatString = (boost::format(R"fd(style="fill:none; stroke-width:1; stroke:rgb(%1%, %2%, %3%)")fd") %(colorDirective->r()) %(colorDirective->g()) %(colorDirective->b())).str();
+		std::cout<<_formatString<<std::endl;
+	}
+}
+
+ColorDirective::PixelType ColorDirective::r() const {
+	return _r;
+}
+
+ColorDirective::PixelType ColorDirective::g() const {
+	return _g;
+}
+
+ColorDirective::PixelType ColorDirective::b() const {
+	return _b;
+}
+
 
 std::string GraphicsObject::toSVGString() const {
 	std::stringstream _output;
@@ -166,7 +188,7 @@ Ellipse& Ellipse::radius(const math::Real& x, const math::Real& y) {
 	return *this;
 }
 
-Ellipse& Ellipse::fromOperands(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*environment*/) {
+Ellipse& Ellipse::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
 	return *this;
 }
 
@@ -206,6 +228,23 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
 		graphics.addShape(Ellipse().center(35,40).radius(60,12));
+	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
+		for(const auto& p : primitive.get<ast::FunctionCall>().getOperands() )
+			addGraphics(p, e, graphics);	
+	}
+	else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Red)) {
+		graphics.addModifier(ColorDirective(255,0,0));
+	
+	}
+	else if(primitive.isFunctionCall(eval::ids::RGBColor) ) {
+		if(primitive.get<ast::FunctionCall>().getOperands().size()==3){
+			const auto& ops = primitive.get<ast::FunctionCall>().getOperands();
+			typedef ColorDirective::PixelType PT;
+			if(ops[0].isNumeric() && ops[1].isNumeric() && ops[2].isNumeric())
+				graphics.addModifier(ColorDirective(math::Real(ops[0].getNumeric()*256).convert_to<PT>(), math::Real(ops[1].getNumeric()*256).convert_to<PT>(), math::Real(ops[2].getNumeric()*256).convert_to<PT>()));
+		}
+		
 	}
 	else {
 		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
