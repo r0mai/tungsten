@@ -233,6 +233,7 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
 		for(const auto& p : primitive.get<ast::FunctionCall>().getOperands() )
 			addGraphics(p, e, graphics);
+		std::cout<<"Table occured!"<<std::endl;
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Red)) {
 		graphics.addModifier(ColorDirective(255,0,0));
