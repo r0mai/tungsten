@@ -33,8 +33,9 @@ public:
 };
 
 class ColorDirective : public GraphicsDirective {
-private:
+public:
 	typedef unsigned short PixelType;
+private:
 	PixelType _r, _g, _b;
 public:
 	ColorDirective() = default;
@@ -58,7 +59,7 @@ public:
 
 class GraphicsObject {
 	std::vector<std::unique_ptr<GraphicsPrimitive> > shapes; // polymorphism might not be enough
-	std::vector<std::unique_ptr<ColorDirective> > modifiers;
+	std::vector<std::unique_ptr<GraphicsDirective> > modifiers;
 public:
 	std::string toSVGString() const;
 	
@@ -79,8 +80,10 @@ public:
 	}
 	
 	template <class T>
-	void addShape(const T& shape) {
+	void addShape(T shape) {
 		static_assert(std::is_base_of<GraphicsPrimitive, T>::value, "You can only add a GraphicsPrimitive");
+		for(const auto& modifier : modifiers)
+			shape.modify(*modifier);
 		shapes.emplace_back(new T(shape));
 	}
 
