@@ -22,6 +22,12 @@ Functions createFunctions() {
 	result[ids::Minus] = &Minus;
 	result[ids::Subtract] = &Subtract;
 	result[ids::Apply] = &Apply;
+	result[ids::Sin] = &Sin;
+	result[ids::Cos] = &Cos;
+	result[ids::Tan] = &Tan;
+	result[ids::Cot] = &Cot;
+	result[ids::Sec] = &Sec;
+	result[ids::Csc] = &Csc;
 	return result;
 }
 

@@ -24,7 +24,13 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Table, AttributeSet({ids::HoldAll, ids::Protected, ids::ReadProtected}) )
 				(ids::Minus, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Subtract, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
-				(ids::Apply, AttributeSet({ids::Protected}) );
+				(ids::Apply, AttributeSet({ids::Protected}) )
+				(ids::Sin, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Cos, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Tan, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Cot, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Sec, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Csc, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
