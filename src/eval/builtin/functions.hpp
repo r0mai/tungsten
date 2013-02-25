@@ -41,6 +41,14 @@ OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+//These are defined in trigonometricFunctions.cpp
+OptionalNode Sin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Cos(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Tan(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Cot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Sec(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Csc(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 }}} //namespace tungsten::eval::builtin
 
 #endif /* EVAL_BUILTIN_FUNCTIONS_HPP_ */
