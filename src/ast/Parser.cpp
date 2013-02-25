@@ -275,10 +275,15 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 					'-' >> multiplicativeExpression[phx::bind(&operatorMinus, _val, _1)] );
 
 		multiplicativeExpression =
-				powerExpression[_val = _1] >>
-				*(  '*' >> powerExpression[phx::bind(&operatorTimes, _val, _1)] |
-					'/' >> powerExpression[phx::bind(&operatorDivide, _val, _1)] |
-					!(char_('+') | char_('-')) >> powerExpression[phx::bind(&operatorTimes, _val, _1)] ); //TODO all unrary operators which can be binary operators are required here
+				unaryPlusMinusOperator[_val = _1] >>
+				*(  '*' >> unaryPlusMinusOperator[phx::bind(&operatorTimes, _val, _1)] |
+					'/' >> unaryPlusMinusOperator[phx::bind(&operatorDivide, _val, _1)] |
+					!(char_('+') | char_('-')) >> unaryPlusMinusOperator[phx::bind(&operatorTimes, _val, _1)] ); //TODO all unrary operators which can be binary operators are required here
+
+		unaryPlusMinusOperator =
+				powerExpression[_val = _1] |
+				'-' >> unaryPlusMinusOperator[phx::bind(&operatorUnaryMinus, _val, _1)] |
+				'+' >> unaryPlusMinusOperator[_val = _1];
 
 		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
@@ -331,13 +336,9 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				(-identifier)[phx::bind(&makeBlankPattern, _val, _1)] >>
 				'_';
 
-		unaryPlusMinusOperator =
-				'-' >> powerExpression[phx::bind(&operatorUnaryMinus, _val, _1)] |
-				'+' >> powerExpression[_val = _1];
-
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | integer | string | unaryPlusMinusOperator | blankPattern | parenthesizedExpression | list | identifier;
+		primary %= real | integer | string | blankPattern | parenthesizedExpression | list | identifier;
 
 	}
 
