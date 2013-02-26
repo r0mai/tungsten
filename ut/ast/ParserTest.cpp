@@ -1032,5 +1032,112 @@ BOOST_AUTO_TEST_CASE( parsing_Apply_with_Times ) {
 			ast::Node::make<ast::Identifier>("b")
 	}));
 }
+BOOST_AUTO_TEST_CASE( parsing_x_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::Identifier>("x")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_1_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("1!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<math::Rational>(1)}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_quote_abc_quote_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("\"abc\"!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::String>("abc")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_times_y_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x y!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::Identifier>("y")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_plus_y_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x + y!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::Identifier>("y")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_to_the_power_of_y_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x ^ y!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::Identifier>("y")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_double_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x!!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::Identifier>("x")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_times_y_double_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x y!!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::Identifier>("y")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_plus_y_double_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x + y!!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::Identifier>("y")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_to_the_power_of_y_double_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x ^ y!!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::Identifier>("y")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_double_factorial_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x!!!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::Identifier>("x")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_x_factorial_double_factorial ) {
+	boost::optional<ast::Node>tree = ast::parseInput("(x!)!!");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::Identifier>("x")})}));
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

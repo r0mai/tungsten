@@ -105,7 +105,7 @@ void operatorCompoundExpressionSequence(Node& result, Node rhs) {
 
 			Operands newOperands = rhs.get<FunctionCall>().getOperands();
 			newOperands.insert( newOperands.begin(), result );
-			result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, newOperands);
+			result = Node::make<FunctionCall>(ids::CompoundExpression, newOperands);
 			return;
 		} else if ( functionIdentifier == parenthesesIdentityFunction ) {
 			removeParenthesesIdentityFunction(rhs);
@@ -119,6 +119,19 @@ void operatorCompoundExpressionSequence(Node& result, Node rhs) {
 void operatorCompoundExpressionNullEnd(Node& result) {
 	operatorCompoundExpressionSequence(result, ast::Node::make<ast::Identifier>(ids::Null));
 //	result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, {result, ast::Node::make<ast::Identifier>(ids::Null)});
+}
+
+void applyPostFixOperator(Node& result, const Node& function) {
+	removeIfParenthesesIdentityFunction(result);
+	result = Node::make<FunctionCall>(function, {result});
+}
+
+void operatorFactorial2(Node& result) {
+	applyPostFixOperator( result, Node::make<Identifier>(ids::Factorial2) );
+}
+
+void operatorFactorial(Node& result) {
+	applyPostFixOperator( result, Node::make<Identifier>(ids::Factorial) );
 }
 
 void operatorSet(Node& result, const Node& rhs) {
@@ -286,9 +299,15 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				'+' >> unaryPlusMinusOperator[_val = _1];
 
 		powerExpression =
-				applyExpression[_val = _1] >> (
+				factorialExpression[_val = _1] >> (
 						'^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
 						eps);
+
+		factorialExpression =
+				applyExpression[_val = _1] >> *(
+						lit("!!")[phx::bind(&operatorFactorial2, _val)] |
+						lit("!")[phx::bind(&operatorFactorial, _val)]
+						);
 
 		applyExpression =
 				functionCall[_val = _1] >> (
@@ -354,6 +373,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
 	qi::rule<Iterator, Node(), delimiter> applyExpression;
+	qi::rule<Iterator, Node(), delimiter> factorialExpression;
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
 
