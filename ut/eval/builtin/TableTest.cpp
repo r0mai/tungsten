@@ -104,5 +104,49 @@ BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_the_list_a__b_for_b_ranging_f
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(0), ast::Node::make<math::Rational>(0)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(0), ast::Node::make<math::Rational>(1)})}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(0)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(1)})}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(0)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(1)})})}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_2_times_2_to_2_times_2_plus_2 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, 2*2, 2*2 + 2}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(4), ast::Node::make<math::Rational>(5), ast::Node::make<math::Rational>(6)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_1_to_2_times_2 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, 2*2}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(4)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_taking_the_values_2_times_2_and_3_times_3 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, {2*2, 3*3}}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(4), ast::Node::make<math::Rational>(9)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_iterated_1_plus_1_times , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {1 + 1}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("x")}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Table_of_x_and_the_list_the_list_1_plus_1__1_plus_1 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {{1 + 1, 1 + 1}}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("x")}) );
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
