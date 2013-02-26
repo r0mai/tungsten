@@ -285,7 +285,6 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				'-' >> unaryPlusMinusOperator[phx::bind(&operatorUnaryMinus, _val, _1)] |
 				'+' >> unaryPlusMinusOperator[_val = _1];
 
-		//right associative ( idea from : http://eli.thegreenplace.net/2009/03/14/some-problems-of-recursive-descent-parsers/ )
 		powerExpression =
 				applyExpression[_val = _1] >> (
 						'^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
