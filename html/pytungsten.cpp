@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
+#include <chrono>
 
 #include "ast/Parser.hpp"
 #include "io/NodeToTeXForm.hpp"
@@ -71,6 +72,8 @@ public:
 	WebOutput evaluate(const std::string& input) {
 		time(&lastAccess);
 		errors.clear();
+
+		auto start = std::chrono::high_resolution_clock::now();
 		boost::optional<tungsten::ast::Node> expression = tungsten::ast::parseInput(input);
 		std::string TeXInput;
 		std::string svg;
@@ -83,14 +86,19 @@ public:
 				tungsten::io::GraphicsObject graphics;
 				makeGraphics(evaluated, *this, graphics);
 				svg = graphics.toSVGString();
-			} else { // no graphics
+			} else if (expression->is<tungsten::ast::FunctionCall>() && false &&
+			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Table)) {
+				// todo table here (also remove false)
+			} else { // no graphics or tables
 				output = tungsten::io::NodeToTeXForm(evaluated, *this);
 			}
 			TeXInput = tungsten::io::NodeToTeXForm(*expression, *this); // create TeX
 		} else { // if input was bad.
 			TeXInput = input;
 		}
-		std::cout<<output<<std::endl;
+		auto end = std::chrono::high_resolution_clock::now();
+		auto elapsed = end - start;
+		std::cout<<elapsed.count()<<std::endl;
 		return WebOutput(TeXInput, output, svg, errors);
 	};
 };
@@ -119,14 +127,14 @@ public:
 			// Following solution from SO:
 			// http://stackoverflow.com/questions/800955/
 			for(auto iter = storage.begin(); iter != storage.end(); ){
-					if(iter->second->isOld())
-						storage.erase(iter++);
-					else
-						++iter;
-					}
-					it=storage.insert(
-					std::make_pair(id, std::make_shared<WebSessionEnvironment>())
-					).first;
+				if(iter->second->isOld())
+					storage.erase(iter++);
+				else
+					++iter;
+				}
+				it=storage.insert(
+				std::make_pair(id, std::make_shared<WebSessionEnvironment>())
+				).first;
 			access.unlock();
 			access.lock_shared(); // fall back to read access
 		}

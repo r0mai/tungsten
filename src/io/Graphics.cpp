@@ -29,7 +29,7 @@ void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 	const auto box = this->getBoundingBox();
 	const auto diffX = box.maxX-box.minX;
 	const auto diffY = box.maxY-box.maxY;
-	double strokeWidth = 0.001 * sqrt(diffX*diffX+diffY*diffY);
+	double strokeWidth = 0.01 * sqrt(diffX*diffX+diffY*diffY);
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	if(colorDirective){
 		//formatString("style=\"stroke:rgb(255,0,0)\"");
