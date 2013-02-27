@@ -4,9 +4,9 @@ include_rules
 
 CPPFLAGS += -fPIC -I ../src -I/usr/include/python2.7
 
-LINKER_FLAGS = -shared -lpython2.7 -lboost_python
+LDFLAGS += -shared -lpython2.7 -lboost_python
 
-!htmllinker = |> $(CXX) $(LINKER_FLAGS) $(SHARED_LIBS) -o %o %f |> pytungsten.so
+!htmllinker = |> $(LD) $(LDFLAGS) $(SHARED_LIBS) -o %o %f |> pytungsten.so
 
 : foreach *.cpp |> !cxx |>
 : *.o ../src/*.o |> !htmllinker |>
