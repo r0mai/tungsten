@@ -3,5 +3,5 @@
 include_rules
 
 #: foreach ast/*.hpp eval/*.hpp eval/builtin/*.hpp io/*.hpp math/*.hpp util/*.hpp *.hpp |> !preCompile |>
-: foreach ast/*.cpp eval/*.cpp eval/builtin/*.cpp io/*.cpp math/*.cpp util/*.cpp *.cpp |> !cxx |>
+: foreach ast/*.cpp eval/*.cpp eval/builtin/*.cpp io/*.cpp io/graphics/*.cpp math/*.cpp util/*.cpp *.cpp |> !cxx |>
 

@@ -12,7 +12,7 @@
 #include "io/NodeToTeXForm.hpp"
 #include "eval/ArgSessionEnvironment.hpp"
 #include "eval/CLISessionEnvironment.hpp"
-#include "io/Graphics.hpp"
+#include "io/graphics/Graphics.hpp"
 #include "ast/Identifier.hpp"
 #include "eval/getHead.hpp"
 #include "io/NodeToTeXForm.hpp"

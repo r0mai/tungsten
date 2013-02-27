@@ -7,6 +7,7 @@
 #include "ast/Node.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/getHead.hpp"
+#include "Format.hpp"
 
 namespace tungsten { namespace io {
 
@@ -14,7 +15,7 @@ class GraphicsDirective;
 class Translation;
 struct BoundingBox{
 	double minX, minY;
-	double maxX, maxY;	
+	double maxX, maxY;
 };
 
 class GraphicsPrimitive {
@@ -22,7 +23,7 @@ protected:
 	std::string _formatString;
 	std::string _translation;
 public:
-	
+
 	virtual std::string toSVGString() const = 0;
 	virtual BoundingBox getBoundingBox() const = 0;
 
@@ -77,35 +78,6 @@ public:
 		return *this;
 	}	
 };
-
-class GraphicsDirective {
-public:
-	virtual ~GraphicsDirective() { }	
-};
-
-class ColorDirective : public GraphicsDirective {
-public:
-	typedef unsigned short PixelType;
-private:
-	PixelType _r, _g, _b;
-public:
-	ColorDirective() = default;
-	ColorDirective(const ColorDirective& ) = default;
-	ColorDirective(ColorDirective&& c) : _r(std::move(c._r)), _g(std::move(_g)), _b(std::move(_b)) { }
-	ColorDirective& operator=(ColorDirective&& c) {
-		if(&c != this){
-			_r = std::move(c._r);
-			_g = std::move(c._g);
-			_b = std::move(c._b);
-		}
-		return *this;
-	}
-	ColorDirective(const PixelType& r, const PixelType& g, const PixelType& b) : _r(r), _g(g), _b(b) { }
-	PixelType r() const;
-	PixelType g() const;
-	PixelType b() const;
-};
-
 
 
 class GraphicsObject {
