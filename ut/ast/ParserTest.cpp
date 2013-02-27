@@ -1139,5 +1139,106 @@ BOOST_AUTO_TEST_CASE( parsing_x_factorial_double_factorial ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Factorial2", {ast::Node::make<ast::FunctionCall>("Factorial", {ast::Node::make<ast::Identifier>("x")})}));
 }
 
+BOOST_AUTO_TEST_CASE( parsing_y_of_x_postfix_no_paren ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x//y");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("y", {ast::Node::make<ast::Identifier>("x")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_z_of_y_of_x_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x//y//z");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("z", {ast::Node::make<ast::FunctionCall>("y", {ast::Node::make<ast::Identifier>("x")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_y_of_x_postfix_x_in_paren ) {
+	boost::optional<ast::Node>tree = ast::parseInput("(x)//y");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("y", {ast::Node::make<ast::Identifier>("x")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_y_of_x_postfix_y_in_paren ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x//(y)");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("y", {ast::Node::make<ast::Identifier>("x")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_of_the_quantity_a_plus_b_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a+b//c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_plus_d_of_a_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a//c+d");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>(ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<ast::Identifier>("d")}), {ast::Node::make<ast::Identifier>("a")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_of_the_quantity_a_times_b_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a b//c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_of_the_quantity_a_to_the_power_of_b_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a^b//c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_to_the_power_of_d_of_a_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a//c^d");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>(ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<ast::Identifier>("d")}), {ast::Node::make<ast::Identifier>("a")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_of_a_of_b_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a@b//c");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::FunctionCall>("a", {ast::Node::make<ast::Identifier>("b")})}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_c_of_d_of_a_postfix ) {
+	boost::optional<ast::Node>tree = ast::parseInput("a//c@d");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>(ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::Identifier>("d")}), {ast::Node::make<ast::Identifier>("a")}));
+}
+
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END()

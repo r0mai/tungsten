@@ -86,11 +86,15 @@ void leftAssociativeListableOperator(const Identifier& functionName, Node& resul
 	result = Node::make<FunctionCall>( functionName, {result, rhs} );
 }
 
-void rightAssociativeOperator(const Identifier& functionName, Node& result, Node rhs) {
+void rightAssociativeOperator(const Node& function, Node& result, Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
 
-	result = Node::make<FunctionCall>( functionName, {result, rhs} );
+	result = Node::make<FunctionCall>( function, {result, rhs} );
+}
+
+void rightAssociativeOperator(const Identifier& functionName, Node& result, const Node& rhs) {
+	rightAssociativeOperator(Node::make<Identifier>(functionName), result, rhs);
 }
 
 void operatorCompoundExpressionSequence(Node& result, Node rhs) {
@@ -171,6 +175,18 @@ void operatorPower(Node& result, const Node& rhs) {
 
 void operatorApply(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
+}
+
+void operatorPrefixAt(Node& result, Node rhs) {
+	removeIfParenthesesIdentityFunction(result);
+	removeIfParenthesesIdentityFunction(rhs);
+	result = Node::make<FunctionCall>(result, {rhs});
+}
+
+void operatorPostFixAt(Node& result, Node rhs) {
+	removeIfParenthesesIdentityFunction(result);
+	removeIfParenthesesIdentityFunction(rhs);
+	result = Node::make<FunctionCall>(rhs, {result});
 }
 
 void operatorParentheses(Node& result, const Node& expression) {
@@ -273,10 +289,15 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				);
 
 		equalsToExpression =
-				patternExpression[_val = _1] >>
+				postFixAtExpression[_val = _1] >>
 				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
 				":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
 				eps);
+
+		postFixAtExpression =
+				patternExpression[_val = _1] >>
+				*( "//" >> patternExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
+
 
 		patternExpression =
 				identifier[_val = _1] >> ':' >> additiveExpression[phx::bind(&operatorPattern, _val, _1)] |
@@ -310,8 +331,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 						);
 
 		applyExpression =
-				functionCall[_val = _1] >> (
+				prefixAtExpression[_val = _1] >> (
 				"@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
+				eps);
+
+		prefixAtExpression =
+				functionCall[_val = _1] >> (
+				"@" >> prefixAtExpression[phx::bind(&operatorPrefixAt, _val, _1)] |
 				eps);
 
 		functionCall =
@@ -368,11 +394,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> expression;
 	qi::rule<Iterator, Node(), delimiter> compoundExpression;
 	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
+	qi::rule<Iterator, Node(), delimiter> postFixAtExpression; // expr1 // expr2
 	qi::rule<Iterator, Node(), delimiter> patternExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
 	qi::rule<Iterator, Node(), delimiter> powerExpression;
 	qi::rule<Iterator, Node(), delimiter> applyExpression;
+	qi::rule<Iterator, Node(), delimiter> prefixAtExpression; // expr1 @ expr2
 	qi::rule<Iterator, Node(), delimiter> factorialExpression;
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
