@@ -5,12 +5,19 @@ $def with (form, name, output, svg, errors, log)
 <!-- header info used to contain extra information about
    this document, not displayed on the page -->
    
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$$','$$'], ['\\(','\\)']]}});
+ <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  "HTML-CSS": { linebreaks: { automatic: true } },
+         SVG: { linebreaks: { automatic: true } },
+		tex2jax: {inlineMath: [['$$','$$'], ['\\(','\\)']]}
+
+});
 </script>
 <script type="text/javascript"
 	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
 
 <title>Tungsten|Alpha</title>
 </head>
@@ -24,16 +31,15 @@ $def with (form, name, output, svg, errors, log)
 
 		$if errors:
 			$:errors
-
-		\$\$ $output \$\$
-		$if svg:
+		$if output:
+			\$\$ $output \$\$
+		$if svg and not output:
 			$:svg
 
 		<form name="main" method="post">
 			$:form.render()
 			<input type="submit" />
 		</form>
-
 
 		<a href="http://code.google.com/p/tungsten">Source code on Google Code</a>
 		<br>

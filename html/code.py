@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append('/var/www/tungsten')
+
 from subprocess import Popen, PIPE, STDOUT
 import web
 import string
@@ -9,17 +14,21 @@ import unicodedata
 import uuid
 
 web.config.debug = False
-render = web.template.render('templates/')
+render = web.template.render('/var/www/tungsten/templates/')
 t = pytungsten.tungsten()
 
 urls = ('/(.*)', 'index')
 app = web.application(urls, globals())
-session = web.session.Session(app, web.session.DiskStore('sessions'))
+curdir = os.path.dirname(__file__)
+session = web.session.Session(app, web.session.DiskStore(os.path.join(curdir,'sessions')),)
 
-myform = form.Form( 
-    form.Textbox("input", size="56", maxlength="128",
-    validators = [form.Validator("Only ASCII chars please.", lambda s: all(ord(smart_str(c))<128 for c in s) )])
-)
+application = app.wsgifunc()
+
+
+
+def myform(val):
+	return  form.Form( form.Textbox("input", size="56", maxlength="128", placeholder="Input here", value=val, 
+    	validators = [form.Validator("Only ASCII chars please.", lambda s: all(ord(smart_str(c))<128 for c in s) )]) )
 
 
 class index: 
@@ -28,7 +37,7 @@ class index:
 		return p.stdout.read().replace('\n', r'<br>')
 	
 	def GET(self,name): 
-		form = myform
+		form = myform(name)
 		if name:
 			uid = session.session_id
 			o = t.evaluate(uid,name.encode('ascii', 'ignore'))
@@ -41,14 +50,14 @@ class index:
 			output = ""
 			errors = ""
 			svg = ""
-		with open("log.txt", "a") as myfile:
-			if not (name == 'favicon.ico'): 
-				myfile.write(smart_str(name)+'\n')
+#		with open("log.txt", "a") as myfile:
+#			if not (name == 'favicon.ico'): 
+#				myfile.write(smart_str(name)+'\n')
 		return render.formtest(form, input, output, svg, errors.replace('\n', r'<br>'), self.getLog())
 
 
 	def POST(self, name): 
-		form = myform() 
+		form = myform("") 
 		if not form.validates() and not name: 
 			return render.formtest(form, name,'Invalid input', self.getLog())
 		else:

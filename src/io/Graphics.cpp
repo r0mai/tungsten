@@ -110,6 +110,17 @@ Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnviron
 		case 0:
 			this->center(0,0).radius(1);
 			break;
+		case 1:
+		{
+			ast::Operands center;
+			if(eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
+			( center = operands[0].get<ast::FunctionCall>().getOperands(), center.size() == 2)) {
+				this->center(center[0].getNumeric(), center[1].getNumeric()).radius(1);
+			} else {
+				raise(environment);
+			}
+			break;
+		}
 		case 2:
 		{
 			ast::Operands center;
