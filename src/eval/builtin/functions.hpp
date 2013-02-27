@@ -41,6 +41,10 @@ OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+//These are defined in Factorial.cpp
+OptionalNode Factorial(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Factorial2(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 //These are defined in trigonometricFunctions.cpp
 OptionalNode Sin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Cos(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);

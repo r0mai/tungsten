@@ -25,6 +25,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Minus, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Subtract, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Apply, AttributeSet({ids::Protected}) )
+				(ids::Factorial, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Factorial2, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Sin, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Cos, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Tan, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )

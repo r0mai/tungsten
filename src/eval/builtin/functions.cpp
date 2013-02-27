@@ -28,6 +28,8 @@ Functions createFunctions() {
 	result[ids::Cot] = &Cot;
 	result[ids::Sec] = &Sec;
 	result[ids::Csc] = &Csc;
+	result[ids::Factorial] = &Factorial;
+	result[ids::Factorial2] = &Factorial2;
 	return result;
 }
 
