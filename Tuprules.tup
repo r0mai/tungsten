@@ -9,7 +9,7 @@ LD = clang++
 
 #DEGUG CPPFLAGS
 CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC
-
+# conflict resolved here
 #RELEASE CPPFLAGS
 #CPPFLAGS = -std=c++0x -Wall -Wextra -O2
 
