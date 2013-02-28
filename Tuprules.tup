@@ -47,8 +47,8 @@ BOOST_SHARED_LIBS = $(boost_lib_dir)/libboost_thread.so \
 PNG_LIBS = $(png_lib_dir)/libpng.a
 PNG_SHARED_LIBS = $(png_lib_dir)/libpng.so
 
-GMP_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.a
-GMP_SHARED_LIBS = $(gmp_lib_dir)/libgmpxx.a $(gmp_lib_dir)/libgmp.so
+GMP_LIBS = $(gmp_lib_dir)/libgmp.a
+GMP_SHARED_LIBS = $(gmp_lib_dir)/libgmp.so
 
 MPFR_LIBS = $(mpfr_lib_dir)/libmpfr.a
 MPFR_SHARED_LIBS = $(mpfr_lib_dir)/libmpfr.so
