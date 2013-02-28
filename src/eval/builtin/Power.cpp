@@ -49,13 +49,13 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		 */
 
 
-		if ( !math::fitsSL(exponentNumerator) ) {
+		if ( !math::fits<long>(exponentNumerator) ) {
 			sessionEnvironment.raiseMessage( Message(ids::General, ids::ovfl, {}) );
 
 			return ast::Node::make<ast::FunctionCall>(ids::Overflow);
 		}
 
-		math::Rational baseExponentation = math::power(base, math::asSL(exponentNumerator));
+		math::Rational baseExponentation = math::power(base, math::as<long>(exponentNumerator));
 
 		math::Rational newExponent(math::Integer(1), exponentDenominator);
 
