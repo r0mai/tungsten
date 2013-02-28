@@ -41,10 +41,10 @@ struct FactorialVisitor : boost::static_visitor<ast::Node> {
 			math::Integer offset = (1+math::numerator(rational))/2;
 			if ( math::fits<long>(offset) ) {
 				math::Rational sqrtPiRatio = math::gammaForHalfsSqrtPiRatio( math::as<long>(offset) );
-				return ast::Node::make<ast::FunctionCall>(ids::Times, {
+				return sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>(ids::Times, {
 						ast::Node::make<math::Rational>(sqrtPiRatio),
 						ast::Node::make<ast::FunctionCall>(ids::Power, {ast::Node::make<ast::Identifier>(ids::Pi), ast::Node::make<math::Rational>(1,2)})
-				});
+				}));
 			}
 
 		}
