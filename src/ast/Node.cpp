@@ -10,6 +10,10 @@
 
 namespace tungsten { namespace ast {
 
+Node::Node(const Storage& storage) : storage(storage) {
+	assert(!is<math::Real>() || boost::math::isfinite(get<math::Real>()));
+}
+
 bool Node::isFunctionCall(const Identifier& head) const {
 	return is<FunctionCall>() &&
 			get<FunctionCall>().getFunction().is<Identifier>() &&

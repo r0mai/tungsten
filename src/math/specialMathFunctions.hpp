@@ -4,6 +4,7 @@
 
 #include "Integer.hpp"
 #include "Rational.hpp"
+#include "Real.hpp"
 
 namespace tungsten { namespace math {
 
@@ -12,6 +13,11 @@ namespace tungsten { namespace math {
  * this function returns a/b
  */
 Rational gammaForHalfsSqrtPiRatio(long n);
+
+/*
+ * Returns nan on negative integers
+ */
+Real gamma(const Real& arg);
 
 }} //namespace tungsten::math
 

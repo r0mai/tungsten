@@ -72,7 +72,7 @@ private:
 	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
 	Storage storage;
 
-	Node(const Storage& storage) : storage(storage) {}
+	Node(const Storage& storage);
 };
 
 std::ostream& operator<<(std::ostream& os, const Node& node);
@@ -99,7 +99,6 @@ template<class T, class... Args>
 Node Node::make(const Args&... args) {
 	return Node{T(args...)};
 }
-
 
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {

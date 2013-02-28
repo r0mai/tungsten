@@ -15,4 +15,10 @@ Rational gammaForHalfsSqrtPiRatio(long n) {
 	}
 }
 
+Real gamma(const Real& arg) {
+	Real result;
+	mpfr_gamma( result.backend().data(), arg.backend().data(), MPFR_RNDN );
+	return result;
+}
+
 }} //namespace tungsten::math

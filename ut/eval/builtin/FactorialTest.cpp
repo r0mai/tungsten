@@ -19,8 +19,16 @@ BOOST_FIXTURE_TEST_CASE( test_x_factorial , BuiltinFunctionFixture ) {
 }
 
 
-BOOST_FIXTURE_TEST_CASE( test_minus_1_factorial , BuiltinFunctionFixture ) {
+BOOST_FIXTURE_TEST_CASE( test_minus_1_0_factorial , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("(-1)!");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("DirectedInfinity", {}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_minus_1_factorial , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(-1.0)!");
 
 	BOOST_REQUIRE( result );
 
