@@ -181,4 +181,21 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	return ast::applyVisitor( base, exponent, powerVisitor );
 }
 
+OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1 ) {
+		sessionEnvironment.raiseMessage( Message(ids::Sqrt, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Sqrt ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+		return EvaluationFailure();
+	}
+
+	return sessionEnvironment.recursiveEvaluate(
+			ast::Node::make<ast::FunctionCall>(ids::Power, {
+					operands[0],
+					ast::Node::make<math::Rational>(1,2)
+			})
+		);
+}
+
 }}} //namespace tungsten::eval::builtin
