@@ -14,7 +14,7 @@ OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& s
 		return EvaluationFailure();
 	}
 
-	return sessionEnvironment.evaluate(
+	return sessionEnvironment.recursiveEvaluate(
 			ast::Node::make<ast::FunctionCall>(ids::Plus, {
 					operands[0],
 					ast::Node::make<ast::FunctionCall>(ids::Times, {
@@ -26,9 +26,3 @@ OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& s
 }
 
 }}} //namespace tungsten::eval::builtin
-
-
-
-
-
-

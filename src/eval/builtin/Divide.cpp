@@ -17,7 +17,7 @@ OptionalNode Divide(const ast::Operands& operands, eval::SessionEnvironment& ses
 	const ast::Node& numerator = operands[0];
 	const ast::Node& denominator = operands[1];
 
-	return sessionEnvironment.evaluate(
+	return sessionEnvironment.recursiveEvaluate(
 			ast::Node::make<ast::FunctionCall>( ids::Times, {
 				numerator,
 				ast::Node::make<ast::FunctionCall>( ids::Power, {

@@ -101,7 +101,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	if ( operands.size() > 2 ) {
 		//Power[x,y,z,...] == Power[x,Power[y,z,...]]
 		exponent =
-				sessionEnvironment.evaluate(
+				sessionEnvironment.recursiveEvaluate(
 						ast::Node::make<ast::FunctionCall>(ids::Power,
 								ast::Operands( operands.begin()+1, operands.end() ) ) );
 	}
@@ -120,7 +120,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 					return ast::Node::make<ast::FunctionCall>( ids::Power, {node, exponent} );
 				});
 
-		return sessionEnvironment.evaluate(ast::Node::make<ast::FunctionCall>( ids::Times, resultTimesOperands ));
+		return sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( ids::Times, resultTimesOperands ));
 	}
 
 
@@ -130,7 +130,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	{
 		assert( base.get<ast::FunctionCall>().getOperands().size() == 2 );
 
-		exponent = sessionEnvironment.evaluate( ast::Node::make<ast::FunctionCall>(ids::Times, {
+		exponent = sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>(ids::Times, {
 				base.get<ast::FunctionCall>().getOperands()[1], //b
 				exponent //c
 		}) );
