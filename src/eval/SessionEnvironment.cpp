@@ -119,7 +119,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 			function.is<ast::Identifier>() &&
 			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::Flat) )
 		{
-			operands = flattenOperands( function.get<ast::Identifier>(), operands );
+			operands = flattenOperands( function, operands );
 		}
 
 

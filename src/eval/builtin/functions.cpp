@@ -31,6 +31,7 @@ Functions createFunctions() {
 	result[ids::Factorial] = &Factorial;
 	result[ids::Factorial2] = &Factorial2;
 	result[ids::Sqrt] = &Sqrt;
+	result[ids::Flatten] = &Flatten;
 	return result;
 }
 

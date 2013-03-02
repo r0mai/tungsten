@@ -9,10 +9,10 @@ LD = clang++
 
 
 #DEGUD CPPFLAGS
-CPPFLAGS = -std=c++0x -Wall -Wextra -O2 -g -fPIC
+CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC
 
 #RELEASE CPPFLAGS
-#CPPFLAGS = -std=c++0x -Wall -Wextra -O2
+#CPPFLAGS = -std=c++0x -Wall -Wextra -O2 -fPIC
 
 LDFLAGS =
 

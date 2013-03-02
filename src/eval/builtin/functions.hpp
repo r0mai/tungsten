@@ -40,6 +40,7 @@ OptionalNode CompoundExpression(const ast::Operands& operands, eval::SessionEnvi
 OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
