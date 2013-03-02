@@ -2,7 +2,7 @@
 #include <boost/format.hpp>
 
 
-namespace tungsten { namespace io {
+namespace tungsten { namespace io { namespace graphics {
 
 std::string FormatSpecifier::toSVGString() const {
 	return (boost::format(R"phi(stroke-width="%1%" stroke-opacity="%2%" fill-opacity="%3%" fill="%4%" stroke="%5%" )phi")
@@ -46,4 +46,4 @@ std::string ColorDirective::toSVGString() const {
 	).str();
 }
 
-}} // namespace tungsten::io;
+}}} // namespace tungsten::io::graphics;

@@ -1,9 +1,9 @@
-#ifndef FORMAT_HPP_
-#define FORMAT_HPP_
+#ifndef IO_GRAPHICS_FORMAT_HPP_
+#define IO_FORMAT_HPP_
 
 #include <string>
 
-namespace tungsten { namespace io {
+namespace tungsten { namespace io { namespace graphics {
 
 
 class GraphicsDirective {
@@ -49,5 +49,5 @@ struct FormatSpecifier {
 };
 
 
-}} // namspace tungsten::io;
+}}} // namspace tungsten::io::graphics;
 #endif

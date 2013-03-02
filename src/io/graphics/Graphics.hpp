@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_HPP_
-#define GRAPHICS_HPP_
+#ifndef IO_GRAPHICS_GRAPHICS_HPP_
+#define IO_GRAPHICS_GRAPHICS_HPP_
 
 #include <string>
 #include <vector>
@@ -7,37 +7,15 @@
 #include "ast/Node.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/getHead.hpp"
-#include "Format.hpp"
+#include "Primitives.hpp"
 
-namespace tungsten { namespace io {
+namespace tungsten { namespace io { namespace graphics {
 
 
 
 class GraphicsDirective;
-class Translation;
-struct BoundingBox{
-	double minX, minY;
-	double maxX, maxY;
-};
 
-class GraphicsPrimitive {
-protected:
-	std::string _formatString;
-	std::string _translation;
-	FormatSpecifier _format;
-public:
 
-	GraphicsPrimitive() = default;
-	virtual std::string toSVGString() const = 0;
-	virtual BoundingBox getBoundingBox() const = 0;
-
-	virtual GraphicsPrimitive& formatString(const std::string& format);
-	virtual GraphicsPrimitive& translate(const std::string& trans);
-	virtual GraphicsPrimitive& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) = 0;
-	virtual void raise(eval::SessionEnvironment& environment) const;
-	virtual void modify(const GraphicsDirective&);
-	virtual GraphicsPrimitive& translate(const Translation&);
-};
 
 class Translation {
 	std::string _translation;
@@ -129,59 +107,9 @@ public:
 	BoundingBox getBoundingBox() const;
 };
 
-class Circle : public GraphicsPrimitive {
-	math::Real _x, _y, _r;
-public:
-
-	Circle() : GraphicsPrimitive() {
-		// set overriding formatting options here.
-		_format.fill.fill(false);
-		_format.stroke.fill(true);	
-	}
-		
-	virtual std::string toSVGString() const override ;
-		
-	Circle& radius(const math::Real& arg);
-	
-	Circle& center(const math::Real& arg1, const math::Real& arg2);
-	
-	virtual Circle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
-
-	virtual BoundingBox getBoundingBox() const override;
-};
-
-class Rectangle : public GraphicsPrimitive {
-	math::Real _topLeftX, _topLeftY, _bottomRightX, _bottomRightY;
-public:
-	
-	virtual std::string toSVGString() const override ;
-	
-	Rectangle& topLeft(const math::Real& arg1, const math::Real& arg2);
-	
-	Rectangle& bottomRight(const math::Real& arg1, const math::Real& arg2);
-	
-	virtual Rectangle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
-	virtual BoundingBox getBoundingBox() const override;
-};
-
-class Ellipse : public GraphicsPrimitive {
-	math::Real _x, _y, _xRadius, _yRadius;
-public:
-
-	virtual std::string toSVGString() const override;
-	
-	Ellipse& center(const math::Real& x, const math::Real& y);
-	
-	Ellipse& radius(const math::Real& x, const math::Real& y);
-	
-	virtual Ellipse& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
-	virtual BoundingBox getBoundingBox() const override;
-
-};
-
 void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics);
 void addGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsObject& graphics);
 
-} } // tungsten::io
+}}} // tungsten::io::graphics;
 
 #endif // GRAPHICS_HPP_
