@@ -83,7 +83,7 @@ public:
 			if(expression->is<tungsten::ast::FunctionCall>() && 
 			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
 				// dealing with graphics
-				tungsten::io::GraphicsObject graphics;
+				tungsten::io::graphics::GraphicsObject graphics;
 				makeGraphics(evaluated, *this, graphics);
 				svg = graphics.toSVGString();
 			} else if (expression->is<tungsten::ast::FunctionCall>() && false &&
