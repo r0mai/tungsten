@@ -22,7 +22,7 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	if ( operands.size() == 1 ) {
-		return sessionEnvironment.evaluate(operands[0]);
+		return sessionEnvironment.recursiveEvaluate(operands[0]);
 	}
 
 	if ( operands.size() > 2 ) {

@@ -30,6 +30,7 @@ Functions createFunctions() {
 	result[ids::Csc] = &Csc;
 	result[ids::Factorial] = &Factorial;
 	result[ids::Factorial2] = &Factorial2;
+	result[ids::Sqrt] = &Sqrt;
 	return result;
 }
 

@@ -49,13 +49,13 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		 */
 
 
-		if ( !math::fitsSL(exponentNumerator) ) {
+		if ( !math::fits<long>(exponentNumerator) ) {
 			sessionEnvironment.raiseMessage( Message(ids::General, ids::ovfl, {}) );
 
 			return ast::Node::make<ast::FunctionCall>(ids::Overflow);
 		}
 
-		math::Rational baseExponentation = math::power(base, math::asSL(exponentNumerator));
+		math::Rational baseExponentation = math::power(base, math::as<long>(exponentNumerator));
 
 		math::Rational newExponent(math::Integer(1), exponentDenominator);
 
@@ -101,7 +101,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	if ( operands.size() > 2 ) {
 		//Power[x,y,z,...] == Power[x,Power[y,z,...]]
 		exponent =
-				sessionEnvironment.evaluate(
+				sessionEnvironment.recursiveEvaluate(
 						ast::Node::make<ast::FunctionCall>(ids::Power,
 								ast::Operands( operands.begin()+1, operands.end() ) ) );
 	}
@@ -120,7 +120,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 					return ast::Node::make<ast::FunctionCall>( ids::Power, {node, exponent} );
 				});
 
-		return sessionEnvironment.evaluate(ast::Node::make<ast::FunctionCall>( ids::Times, resultTimesOperands ));
+		return sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( ids::Times, resultTimesOperands ));
 	}
 
 
@@ -130,7 +130,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	{
 		assert( base.get<ast::FunctionCall>().getOperands().size() == 2 );
 
-		exponent = sessionEnvironment.evaluate( ast::Node::make<ast::FunctionCall>(ids::Times, {
+		exponent = sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>(ids::Times, {
 				base.get<ast::FunctionCall>().getOperands()[1], //b
 				exponent //c
 		}) );
@@ -179,6 +179,23 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 	PowerVisitor powerVisitor{sessionEnvironment};
 	return ast::applyVisitor( base, exponent, powerVisitor );
+}
+
+OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1 ) {
+		sessionEnvironment.raiseMessage( Message(ids::Sqrt, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Sqrt ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+		return EvaluationFailure();
+	}
+
+	return sessionEnvironment.recursiveEvaluate(
+			ast::Node::make<ast::FunctionCall>(ids::Power, {
+					operands[0],
+					ast::Node::make<math::Rational>(1,2)
+			})
+		);
 }
 
 }}} //namespace tungsten::eval::builtin

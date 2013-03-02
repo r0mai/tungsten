@@ -1237,8 +1237,4 @@ BOOST_AUTO_TEST_CASE( parsing_c_of_d_of_a_postfix ) {
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>(ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::Identifier>("d")}), {ast::Node::make<ast::Identifier>("a")}));
 }
 
-
-
-
-
 BOOST_AUTO_TEST_SUITE_END()

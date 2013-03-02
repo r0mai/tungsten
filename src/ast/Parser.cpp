@@ -142,8 +142,16 @@ void operatorSet(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Set, result, rhs );
 }
 
-void operatorDelayedSet(Node& result, const Node& rhs) {
+void operatorSetDelayed(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::SetDelayed, result, rhs );
+}
+
+void operatorRule(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Rule, result, rhs );
+}
+
+void operatorRuleDelayed(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::RuleDelayed, result, rhs );
 }
 
 void operatorPattern(Node& result, const Node& rhs) {
@@ -291,13 +299,18 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		equalsToExpression =
 				postFixAtExpression[_val = _1] >>
 				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
-				":=" >> equalsToExpression[phx::bind(&operatorDelayedSet, _val, _1)] |
+				":=" >> equalsToExpression[phx::bind(&operatorSetDelayed, _val, _1)] |
 				eps);
 
 		postFixAtExpression =
-				patternExpression[_val = _1] >>
-				*( "//" >> patternExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
+				ruleExpression[_val = _1] >>
+				*( "//" >> ruleExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
 
+		ruleExpression =
+				patternExpression[_val = _1] >>
+				("->" >> ruleExpression[phx::bind(&operatorRule, _val, _1)] |
+				":>" >> ruleExpression[phx::bind(&operatorRuleDelayed, _val, _1)] |
+				eps);
 
 		patternExpression =
 				identifier[_val = _1] >> ':' >> additiveExpression[phx::bind(&operatorPattern, _val, _1)] |
@@ -395,6 +408,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> compoundExpression;
 	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
 	qi::rule<Iterator, Node(), delimiter> postFixAtExpression; // expr1 // expr2
+	qi::rule<Iterator, Node(), delimiter> ruleExpression;
 	qi::rule<Iterator, Node(), delimiter> patternExpression;
 	qi::rule<Iterator, Node(), delimiter> additiveExpression;
 	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;

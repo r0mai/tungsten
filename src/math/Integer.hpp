@@ -13,14 +13,6 @@ namespace tungsten { namespace math {
 
 typedef boost::multiprecision::mpz_int Integer;
 
-//Deprecated, replaced by fits<T>
-bool fitsUL(const Integer& integer);
-bool fitsSL(const Integer& integer);
-
-//Deprecated, replaced by as<T>
-unsigned long asUL(const Integer& integer);
-signed long asSL(const Integer& integer);
-
 template<class T>
 bool fits(const Integer& integer) {
 

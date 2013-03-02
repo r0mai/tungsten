@@ -16,13 +16,13 @@ BOOST_AUTO_TEST_CASE( Integer_fitsUL_works ) {
 	math::Integer overMaxUL = maxUL + 1;
 	math::Integer underMinUL = minUL - 1;
 
-	BOOST_CHECK( math::fitsUL(maxUL) );
-	BOOST_CHECK_EQUAL(maxUL, math::asUL(maxUL));
-	BOOST_CHECK( !math::fitsUL(overMaxUL) );
+	BOOST_CHECK( math::fits<unsigned long>(maxUL) );
+	BOOST_CHECK_EQUAL(maxUL, math::as<unsigned long>(maxUL));
+	BOOST_CHECK( !math::fits<unsigned long>(overMaxUL) );
 
-	BOOST_CHECK( math::fitsUL(minUL) );
-	BOOST_CHECK_EQUAL(minUL, math::asUL(minUL));
-	BOOST_CHECK( !math::fitsUL(underMinUL) );
+	BOOST_CHECK( math::fits<unsigned long>(minUL) );
+	BOOST_CHECK_EQUAL(minUL, math::as<unsigned long>(minUL));
+	BOOST_CHECK( !math::fits<unsigned long>(underMinUL) );
 
 }
 
@@ -32,38 +32,38 @@ BOOST_AUTO_TEST_CASE( Integer_fitsSL_works ) {
 	math::Integer overMaxSL = maxSL + 1;
 	math::Integer underMinSL = minSL - 1;
 
-	BOOST_CHECK( math::fitsSL(maxSL) );
-	BOOST_CHECK_EQUAL(maxSL, math::asSL(maxSL));
-	BOOST_CHECK( !math::fitsSL(overMaxSL) );
+	BOOST_CHECK( math::fits<signed long>(maxSL) );
+	BOOST_CHECK_EQUAL(maxSL, math::as<signed long>(maxSL));
+	BOOST_CHECK( !math::fits<signed long>(overMaxSL) );
 
-	BOOST_CHECK( math::fitsSL(minSL) );
-	BOOST_CHECK_EQUAL(minSL, math::asSL(minSL));
-	BOOST_CHECK( !math::fitsSL(underMinSL) );
+	BOOST_CHECK( math::fits<signed long>(minSL) );
+	BOOST_CHECK_EQUAL(minSL, math::as<signed long>(minSL));
+	BOOST_CHECK( !math::fits<signed long>(underMinSL) );
 
 }
 
 BOOST_AUTO_TEST_CASE( Integer_asUL_works ) {
 	math::Integer n = 123;
 
-	BOOST_REQUIRE( math::fitsUL(n) );
+	BOOST_REQUIRE( math::fits<unsigned long>(n) );
 
-	BOOST_CHECK_EQUAL( math::asUL(n), 123UL );
+	BOOST_CHECK_EQUAL( math::as<unsigned long>(n), 123UL );
 }
 
-BOOST_AUTO_TEST_CASE( Integer_asSI_works_for_positive ) {
+BOOST_AUTO_TEST_CASE( Integer_asSL_works_for_positive ) {
 	math::Integer n = 123;
 
-	BOOST_REQUIRE( math::fitsSL(n) );
+	BOOST_REQUIRE( math::fits<signed long>(n) );
 
-	BOOST_CHECK_EQUAL( math::asSL(n), 123UL );
+	BOOST_CHECK_EQUAL( math::as<signed long>(n), 123UL );
 }
 
-BOOST_AUTO_TEST_CASE( Integer_asSI_works_for_negative ) {
+BOOST_AUTO_TEST_CASE( Integer_asSL_works_for_negative ) {
 	math::Integer n = -123;
 
-	BOOST_REQUIRE( math::fitsSL(n) );
+	BOOST_REQUIRE( math::fits<signed long>(n) );
 
-	BOOST_CHECK_EQUAL( math::asSL(n), -123L );
+	BOOST_CHECK_EQUAL( math::as<signed long>(n), -123L );
 }
 
 BOOST_AUTO_TEST_CASE( Rational_isInteger_works ) {

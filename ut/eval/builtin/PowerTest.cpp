@@ -325,4 +325,78 @@ BOOST_FIXTURE_TEST_CASE( test_0_0_over_0 , BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>("Indeterminate") );
 }
 
+//SQRT:
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_x , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[x]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(1,2)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_the_list_x__y , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[{x, y}]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(1,2)}), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(1,2)})}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_the_quantity_x_squared , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[x^2]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(2)}), ast::Node::make<math::Rational>(1,2)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_4 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[4]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(2) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_3 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[3]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(1,2)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_4_0 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[4.]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Real>(2.) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_square_root_of_x , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[Sqrt[x]]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(1,4)}) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_16 , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[Sqrt[16]]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(2) );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -32,7 +32,10 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Tan, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Cot, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Sec, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
-				(ids::Csc, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) );
+				(ids::Csc, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Sqrt, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Rule, AttributeSet({ids::SequenceHold, ids::Protected}) )
+				(ids::RuleDelayed, AttributeSet({ids::HoldRest, ids::SequenceHold, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
