@@ -8,6 +8,7 @@
 namespace tungsten { namespace eval {
 
 ast::Operands flattenOperands(const ast::Node& function, const ast::Operands& operands);
+ast::Operands flattenOperands(const ast::Node& function, const ast::Operands& operands, unsigned long level);
 
 }} //namespace tungsten::eval
 
