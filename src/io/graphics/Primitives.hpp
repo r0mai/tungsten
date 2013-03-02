@@ -33,6 +33,8 @@ public:
 	virtual void raise(eval::SessionEnvironment& environment) const;
 	virtual void modify(const GraphicsDirective&);
 	virtual GraphicsPrimitive& translate(const Translation&);
+	FormatSpecifier& getFormat() { return _format; }
+	const FormatSpecifier& getFormat() const { return _format; }
 };
 
 
@@ -40,7 +42,7 @@ class Circle : public GraphicsPrimitive {
 	math::Real _x, _y, _r;
 public:
 
-	Circle() : GraphicsPrimitive() {
+	Circle() : GraphicsPrimitive() , _x(), _y(), _r(){
 		// set overriding formatting options here.
 		_format.fill.fill(false);
 		_format.stroke.fill(true);	
@@ -61,7 +63,7 @@ class Rectangle : public GraphicsPrimitive {
 	math::Real _topLeftX, _topLeftY, _bottomRightX, _bottomRightY;
 public:
 
-	Rectangle() : GraphicsPrimitive() {
+	Rectangle() : GraphicsPrimitive() , _topLeftX(), _topLeftY(), _bottomRightX(), _bottomRightY() {
 		_format.fill.fill(true);
 		_format.stroke.fill(false);
 	}	
@@ -89,6 +91,22 @@ public:
 	virtual BoundingBox getBoundingBox() const override;
 
 };
+
+class Line : public GraphicsPrimitive {
+	// this is a 2d line, Line3D is the 3 dimensional one.
+	std::vector<std::pair<math::Real, math::Real> > points;
+public:
+	Line() : GraphicsPrimitive(), points() {
+		_format.stroke.fill(true);
+		_format.fill.fill(false);
+	}
+
+	virtual std::string toSVGString() const override;
+	virtual Line& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
+	virtual BoundingBox getBoundingBox() const override;
+};
+
+
 
 }}} // tungsten::io::graphics
 

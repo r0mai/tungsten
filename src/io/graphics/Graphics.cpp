@@ -108,12 +108,21 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Circle)) {
 		graphics.addShape(Circle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Disk)) {
+		auto d = Circle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e);
+		d.getFormat().fill.fill(true);
+		graphics.addShape(d);
+	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Rectangle)) {
 		graphics.addShape(Rectangle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
 		graphics.addShape(Ellipse().center(35,40).radius(60,12));
 	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Line)) {
+		graphics.addShape(Line().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
+	}
+
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
 		for(const auto& p : primitive.get<ast::FunctionCall>().getOperands() )
 			addGraphics(p, e, graphics);	

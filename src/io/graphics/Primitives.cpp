@@ -1,4 +1,6 @@
 #include "Primitives.hpp"
+#include <sstream>
+#include <algorithm>
 
 namespace tungsten { namespace io { namespace graphics {
 
@@ -188,5 +190,90 @@ BoundingBox Ellipse::getBoundingBox() const {
 	auto stroke = _format.stroke_width;
 	return {minX-stroke, minY-stroke, maxX+stroke, maxY+stroke};
 }
+
+std::string Line::toSVGString() const {
+//
+// The following commands are available for path data:
+// M = moveto
+// L = lineto
+// H = horizontal lineto
+// V = vertical lineto
+// C = curveto
+// S = smooth curveto
+// Q = quadratic Bézier curve
+// T = smooth quadratic Bézier curveto
+// A = elliptical Arc
+// Z = closepath
+// Capital letters means absolutely positioned, lower cases means relatively positioned.
+//
+	if(!points.empty()){
+		std::stringstream ss;
+		ss<<"<path "<<
+		_format.toSVGString()<<
+		"d=\"M"<<points.front().first<<" "<<points.front().second;
+		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
+					ss<<" L"<<p.first.convert_to<double>()<<" "<<p.second.convert_to<double>();
+				});	
+		ss<<"\"/>"; // end of path string.
+		return ss.str();
+	} else {
+		return "";
+	}
+}
+
+Line& Line::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+	// check that operands is really just a list.
+	// then check that all operands of that list, are points (2-lists)
+	// place all of these 2lists as points into this->points.
+	// return.
+	if(operands.size()==1 && eval::getHead(operands.front()) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
+		// we got a list as parameter.
+		// get list elements.
+		const auto list = operands.front().get<ast::FunctionCall>().getOperands();
+		if(std::all_of(list.begin(), list.end(), [](const ast::Node& n) {
+					return	eval::getHead(n) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
+							n.get<ast::FunctionCall>().getOperands().size() == 2 &&
+							n.get<ast::FunctionCall>().getOperands()[0].isNumeric() &&
+							n.get<ast::FunctionCall>().getOperands()[1].isNumeric() ;
+					})
+		){
+			// all elements of list are 2-points, proceed to packing into vector.
+			for (const auto& p : list) {
+				// we know now that p is awesome.
+				auto x = p.get<ast::FunctionCall>().getOperands()[0].getNumeric();
+				auto y = p.get<ast::FunctionCall>().getOperands()[1].getNumeric();
+				points.push_back(std::make_pair(math::Real(x), math::Real(y)));
+			}
+		} else {
+			raise(environment);
+		}
+	} else {
+		raise(environment);
+	}
+	return *this;
+}
+
+BoundingBox Line::getBoundingBox() const {
+	double minX, minY, maxX, maxY;
+	if(!points.empty()){
+		for(const auto& p : points) {
+			auto x = p.first.convert_to<double>();
+			auto y = p.second.convert_to<double>();
+			if(x<minX)
+				minX = x;
+			if(x>maxX)
+				maxX = x;
+			if(y<minY)
+				minY = y;
+			if(y>maxY)
+				maxY = y;
+		}	
+	} else {
+		minX = 0.0; minY = 0.0; maxX = 0.0; maxY = 0.0;
+	}
+	return {minX, minY, maxX, maxY};
+}
+
+
 
 }}} // tungsten::io::graphics;
