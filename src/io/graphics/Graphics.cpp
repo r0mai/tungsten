@@ -32,25 +32,12 @@ void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 	double strokeWidth = 0.01 * sqrt(diffX*diffX+diffY*diffY);
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	if(colorDirective){
-		//formatString("style=\"stroke:rgb(255,0,0)\"");
-		std::cout<<colorDirective->r()<<std::endl;
-		_formatString = (boost::format(R"fd(style="fill:none; stroke-width:%4%; stroke:rgb(%1%, %2%, %3%)")fd") %(colorDirective->r()) %(colorDirective->g()) %(colorDirective->b()) %strokeWidth ).str();
-		std::cout<<_formatString<<std::endl;
+		this->_format.stroke=std::move(*colorDirective);
+		this->_format.stroke_width=strokeWidth;
+		this->_format.fill.fill(false);
+		this->_format.stroke.fill(true);
 	}
 }
-
-ColorDirective::PixelType ColorDirective::r() const {
-	return _r;
-}
-
-ColorDirective::PixelType ColorDirective::g() const {
-	return _g;
-}
-
-ColorDirective::PixelType ColorDirective::b() const {
-	return _b;
-}
-
 
 std::string GraphicsObject::toSVGString() const {
 	std::stringstream _output;
@@ -91,11 +78,13 @@ BoundingBox GraphicsObject::getBoundingBox() const {
 
 
 std::string Circle::toSVGString() const {
-	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %_y %_r %_formatString).str();
+	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %_y %_r %(_format.toSVGString())).str();
 }
 
 Circle& Circle::radius(const math::Real& arg) {
 	_r = arg;
+	_format.stroke_width = arg.convert_to<double>() * 0.05;	
+
 	return *this;
 }
 
@@ -159,7 +148,7 @@ std::string Rectangle::toSVGString() const {
 			% _topLeftY
 			% (_bottomRightY-_topLeftY)
 			% (_bottomRightX-_topLeftX)
-			% _formatString
+			% (_format.toSVGString())
 			).str();
 
 }
@@ -234,7 +223,7 @@ std::string Ellipse::toSVGString() const {
 		% _y
 		% _xRadius
 		% _yRadius
-		% _formatString
+		% (_format.toSVGString())
 	).str();
 }
 

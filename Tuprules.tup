@@ -3,14 +3,18 @@
 #toolchain stuff
 
 CXX = clang++
+LD = clang++
 #CXX = g++-4.7
 #CXX = g++-4.6
+
 
 #DEGUD CPPFLAGS
 CPPFLAGS = -std=c++0x -Wall -Wextra -O2 -g -fPIC
 
 #RELEASE CPPFLAGS
 #CPPFLAGS = -std=c++0x -Wall -Wextra -O2
+
+LDFLAGS =
 
 PRECOMPILEFLAGS = $(CPPFLAGS) -x c++-header
 
@@ -54,6 +58,6 @@ LIBS = $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS)
 SHARED_LIBS = $(BOOST_SHARED_LIBS) $(PNG_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS)
 
 !cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
-!linker = |> $(CXX) %f $(LIBS) -o %o |>
+!linker = |> $(LD) $(LDFLAGS) %f $(LIBS) -o %o |>
 !preCompile = |> $(CXX) %f $(PRECOMPILEFLAGS) -I $(INCLUDE_DIRS) -o %o |> %b.pch
  

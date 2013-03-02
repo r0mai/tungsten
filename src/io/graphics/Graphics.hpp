@@ -11,6 +11,8 @@
 
 namespace tungsten { namespace io {
 
+
+
 class GraphicsDirective;
 class Translation;
 struct BoundingBox{
@@ -22,8 +24,10 @@ class GraphicsPrimitive {
 protected:
 	std::string _formatString;
 	std::string _translation;
+	FormatSpecifier _format;
 public:
 
+	GraphicsPrimitive() = default;
 	virtual std::string toSVGString() const = 0;
 	virtual BoundingBox getBoundingBox() const = 0;
 
@@ -128,6 +132,12 @@ public:
 class Circle : public GraphicsPrimitive {
 	math::Real _x, _y, _r;
 public:
+
+	Circle() : GraphicsPrimitive() {
+		// set overriding formatting options here.
+		_format.fill.fill(false);
+		_format.stroke.fill(true);	
+	}
 		
 	virtual std::string toSVGString() const override ;
 		

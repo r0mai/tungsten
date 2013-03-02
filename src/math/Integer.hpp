@@ -36,6 +36,8 @@ T as(const Integer& integer) {
 	return integer.convert_to<T>();
 }
 
+Integer factorial(unsigned long n);
+Integer factorial2(unsigned long n);
 Integer power(const Integer& base, unsigned long exponent);
 
 std::string toString(const Integer& integer);
