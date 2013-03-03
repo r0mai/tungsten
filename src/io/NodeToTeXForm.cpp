@@ -33,7 +33,12 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 	}
 
 	TeXFormString operator()(const ast::Identifier& identifier) const {
-		return identifier.toString();
+		if ( identifier.size() == 1 ) {
+			return identifier.toString();
+		} else {
+			return "\\text{" + identifier.toString() + "}";
+		}
+
 	}
 
 	TeXFormString operator()(const ast::FunctionCall& functionCall) const {
@@ -57,18 +62,24 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 			if ( precedence >= 1 ) { result += leftParentheses; }
 
-			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 1 ) ), " " );
+			//result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 1 ) ), " " );
+			result += printPrettyTimes( operands );
 
 			if ( precedence >= 1 ) { result += rightParentheses; }
 
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Power ) ) {
 
-			if ( precedence >= 2 ) { result += leftParentheses; }
+			if ( operands.size() == 2 && operands[1].is<math::Rational>( math::Rational(1,2) ) ) {
+				result += "\\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
+			} else {
 
-			//Might no be the best solution
-			result += "{" + boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 2 ) ), "}^{" ) + "}";
+				if ( precedence >= 2 ) { result += leftParentheses; }
 
-			if ( precedence >= 2 ) { result += rightParentheses; }
+				//Might no be the best solution
+				result += "{" + boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 2 ) ), "}^{" ) + "}";
+
+				if ( precedence >= 2 ) { result += rightParentheses; }
+			}
 
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::List ) ) {
 
@@ -77,7 +88,8 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, -1 ) ), ", " );
 
 			result += "\\right \\}";
-
+		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Sqrt ) && operands.size() == 1 ) {
+			result += "\\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
 		} else {
 
 			//TODO 3 is good here?
@@ -88,6 +100,27 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 		}
 
+		return result;
+	}
+
+	std::string printPrettyTimes(const ast::Operands& operands) const {
+		if ( operands.empty() ) {
+			return "";
+		}
+
+		std::string result = NodeToTeXFormRecursive(operands[0], 1);
+
+		for ( unsigned i = 1; i < operands.size(); ++i ) {
+			const ast::Node& prev = operands[i-1];
+			const ast::Node& current = operands[i];
+
+			if ( prev.isNumeric() && current.isNumeric() ) {
+				result += " \\cdot ";
+			} else {
+				result += " ";
+			}
+			result += NodeToTeXFormRecursive(current, 1);
+		}
 		return result;
 	}
 
