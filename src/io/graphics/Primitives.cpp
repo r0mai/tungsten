@@ -10,8 +10,6 @@ std::string Circle::toSVGString() const {
 
 Circle& Circle::radius(const math::Real& arg) {
 	_r = arg;
-	_format.stroke_width = arg.convert_to<double>() * 0.05;	
-
 	return *this;
 }
 

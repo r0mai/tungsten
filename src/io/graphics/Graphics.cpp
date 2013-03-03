@@ -26,15 +26,10 @@ void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
 }
 
 void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
-	const auto box = this->getBoundingBox();
-	const auto diffX = box.maxX-box.minX;
-	const auto diffY = box.maxY-box.maxY;
-	double strokeWidth = 0.01 * sqrt(diffX*diffX+diffY*diffY);
+
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	if(colorDirective){
 		this->_format.stroke=std::move(*colorDirective);
-		this->_format.stroke_width=strokeWidth;
-		this->_format.fill.fill(false);
 		this->_format.stroke.fill(true);
 	}
 }

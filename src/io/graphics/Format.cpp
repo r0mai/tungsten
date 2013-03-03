@@ -5,7 +5,7 @@
 namespace tungsten { namespace io { namespace graphics {
 
 std::string FormatSpecifier::toSVGString() const {
-	return (boost::format(R"phi(stroke-width="%1%" stroke-opacity="%2%" fill-opacity="%3%" fill="%4%" stroke="%5%" )phi")
+	return (boost::format(R"phi(stroke-width="%1%" stroke-opacity="%2%" fill-opacity="%3%" fill="%4%" stroke="%5%" vector-effect="non-scaling-stroke" )phi")
 		%stroke_width
 		%stroke_opacity
 		%fill_opacity
