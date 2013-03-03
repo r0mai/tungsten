@@ -29,20 +29,33 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 		if ( function.is<ast::Identifier>( ids::Times ) ) {
 			ast::Operands numeratorOperands;
 
-			boost::copy(
-					operands |
-					boost::adaptors::filtered([](const ast::Node& node) {
-						return !node.is<ast::FunctionCall>() ||
-								!node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>( ids::Power ) ||
-								node.get<ast::FunctionCall>().getOperands().size() != 2 ||
-								!isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]);
-					}) | boost::adaptors::transformed([](const ast::Node& node) -> ast::Node { //extra care must be taken for Rationals
-						if ( node.is<math::Rational>() ) {
-							return ast::Node::make<math::Rational>(math::numerator(node.get<math::Rational>()));
-						}
-						return node;
-					}),
-					std::back_inserter(numeratorOperands) );
+			for ( const ast::Node& node : operands ) {
+				if ( node.is<math::Rational>() && math::numerator(node.get<math::Rational>()) != 1 ) {
+					numeratorOperands.push_back( ast::Node::make<math::Rational>(math::numerator(node.get<math::Rational>())) );
+				} else if ( node.isFunctionCall(ids::Power) &&
+						node.get<ast::FunctionCall>().getOperands().size() == 2 &&
+						isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]) )
+				{
+					/*do nothing*/
+				} else {
+					numeratorOperands.push_back(node);
+				}
+			}
+
+//			boost::copy(
+//					operands |
+//					boost::adaptors::filtered([](const ast::Node& node) {
+//						return !node.is<ast::FunctionCall>() ||
+//								!node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>( ids::Power ) ||
+//								node.get<ast::FunctionCall>().getOperands().size() != 2 ||
+//								!isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]);
+//					}) | boost::adaptors::transformed([](const ast::Node& node) -> ast::Node { //extra care must be taken for Rationals
+//						if ( node.is<math::Rational>() ) {
+//							return ast::Node::make<math::Rational>(math::numerator(node.get<math::Rational>()));
+//						}
+//						return node;
+//					}),
+//					std::back_inserter(numeratorOperands) );
 
 			if ( numeratorOperands.empty() ) {
 				return ast::Node::make<math::Rational>(1);
