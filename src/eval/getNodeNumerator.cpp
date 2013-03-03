@@ -30,8 +30,10 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 			ast::Operands numeratorOperands;
 
 			for ( const ast::Node& node : operands ) {
-				if ( node.is<math::Rational>() && math::numerator(node.get<math::Rational>()) != 1 ) {
-					numeratorOperands.push_back( ast::Node::make<math::Rational>(math::numerator(node.get<math::Rational>())) );
+				if ( node.is<math::Rational>() ) {
+					if ( math::numerator(node.get<math::Rational>()) != 1 ) {
+						numeratorOperands.push_back( ast::Node::make<math::Rational>(math::numerator(node.get<math::Rational>())) );
+					}
 				} else if ( node.isFunctionCall(ids::Power) &&
 						node.get<ast::FunctionCall>().getOperands().size() == 2 &&
 						isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]) )

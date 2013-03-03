@@ -133,6 +133,10 @@ TeXFormString NodeToTeXFormRecursive(const ast::Node& node, int precedence) {
 	ast::Node numerator = eval::getNodeNumerator( node );
 	ast::Node denominator = eval::getNodeDenominator( node );
 
+//	std::cout << "node: " << node << std::endl;
+//	std::cout << "num: " << numerator << std::endl;
+//	std::cout << "den: " << denominator << std::endl;
+
 	if ( denominator == ast::Node::make<math::Rational>(1) ) {
 		return ast::applyVisitor( node, NodeToTeXFormVisitor{precedence} );
 	} else {
