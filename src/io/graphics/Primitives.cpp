@@ -10,8 +10,6 @@ std::string Circle::toSVGString() const {
 
 Circle& Circle::radius(const math::Real& arg) {
 	_r = arg;
-	_format.stroke_width = arg.convert_to<double>() * 0.05;	
-
 	return *this;
 }
 
@@ -254,32 +252,46 @@ Line& Line::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 }
 
 BoundingBox Line::getBoundingBox() const {
-	double minX, minY, maxX, maxY;
+	BoundingBox out = {0.0, 0.0, 0.0, 0.0};
 	if(!points.empty()){
-		for(const auto& p : points) {
-			auto x = p.first.convert_to<double>();
-			auto y = p.second.convert_to<double>();
-			if(x<minX)
-				minX = x;
-			if(x>maxX)
-				maxX = x;
-			if(y<minY)
-				minY = y;
-			if(y>maxY)
-				maxY = y;
-		}
-		// create stroke-width here (hack!)
-		const auto diffX = maxX - minX;
-		const auto diffY = maxY - minY;
-		if(diffX > 0 && diffY > 0){
-			const_cast<Line*>(this)->_format.stroke_width = 0.01 * std::sqrt(diffX * diffX + diffY * diffY);
-		}	
-	} else {
-		minX = 0.0; minY = 0.0; maxX = 0.0; maxY = 0.0;
+		out = {
+			points.front().first.convert_to<double>(), 
+			points.front().second.convert_to<double>(), 
+			points.front().first.convert_to<double>(),
+			points.front().second.convert_to<double>()
+		};
 	}
-	return {minX, minY, maxX, maxY};
+	out = std::accumulate(points.begin(), points.end(), out, [](BoundingBox& box, const std::pair<math::Real, math::Real>& p){
+		const auto x = p.first.convert_to<double>();
+		const auto y = p.first.convert_to<double>();		
+		std::cout<<"it"<<std::endl;
+		std::cout<<x<<" "<<y<<std::endl;
+			box.minX = std::min(box.minX, x);
+			box.minY = std::min(box.minY, y);
+			box.maxX = std::max(box.maxX, 2.0);
+			box.maxY = std::max(box.maxY, 2.0);
+			return box;
+			});
+
+//	std::cout<<out.minX <<" "<< out.minY <<" "<< out.maxX <<" "<< out.maxY <<" "<< std::endl;
+	return out;
 }
 
+std::string BezierCurve::toSVGString() const {
+	if(!points.empty()){
+		std::stringstream ss;
+		ss<<"<path "<<
+		_format.toSVGString()<<
+		"d=\"M"<<points.front().first<<" "<<points.front().second<<" C";
+		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
+					ss<<" "<<p.first.convert_to<double>()<<" "<<p.second.convert_to<double>();
+				});	
+		ss<<"\"/>"; // end of path string.
+		return ss.str();
+	} else {
+		return "";
+	}
 
+}
 
 }}} // tungsten::io::graphics;

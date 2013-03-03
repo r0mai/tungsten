@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <cassert>
 #include "math/Real.hpp"
 #include "ast/Node.hpp"
 #include "eval/SessionEnvironment.hpp"
@@ -64,7 +65,7 @@ public:
 
 class GraphicsObject {
 	std::vector<std::unique_ptr<GraphicsPrimitive> > shapes; // polymorphism might not be enough
-	std::vector<std::unique_ptr<GraphicsDirective> > modifiers;
+	std::vector<std::vector<std::unique_ptr<GraphicsDirective> > > modifiers;
 public:
 	std::string toSVGString() const;
 	
@@ -87,21 +88,36 @@ public:
 	template <class T>
 	void addShape(T shape) {
 		static_assert(std::is_base_of<GraphicsPrimitive, T>::value, "You can only add a GraphicsPrimitive");
-		for(const auto& modifier : modifiers)
-			shape.modify(*modifier);
+		for(const auto& modifierVector : modifiers) {
+			for(const auto& modifier : modifierVector) {
+				shape.modify(*modifier);
+			}
+		}
 		shapes.emplace_back(new T(shape));
 	}
 
 	template<class T, class... Ts>
-	void addModifier(const T& modifier, const Ts& ...modifiers){
+	void addModifier(const T& modifier, const Ts& ...modifiers) {
 		addModifier(modifier);
 		addModifier(modifiers...);
 	}
 	
 	template<class T>
-	void addModifier(const T& modifier){
+	void addModifier(const T& modifier) {
 		static_assert(std::is_base_of<GraphicsDirective, T>::value, "You can only add a GraphicsDirective");
-		modifiers.emplace_back(new T(modifier));
+		if(modifiers.empty()){
+			pushModifierVector();
+		}
+		modifiers.back().emplace_back(new T(modifier));
+	}
+
+	void pushModifierVector() {
+		modifiers.emplace_back(std::vector<std::unique_ptr<GraphicsDirective> >());
+	}
+	
+	void popModifierVector() {
+		assert(!modifiers.empty()); // can only pop from a vector with elements.
+		modifiers.pop_back();		
 	}
 
 	BoundingBox getBoundingBox() const;

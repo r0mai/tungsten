@@ -26,15 +26,10 @@ void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
 }
 
 void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
-	const auto box = this->getBoundingBox();
-	const auto diffX = box.maxX-box.minX;
-	const auto diffY = box.maxY-box.maxY;
-	double strokeWidth = 0.01 * sqrt(diffX*diffX+diffY*diffY);
+
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	if(colorDirective){
 		this->_format.stroke=std::move(*colorDirective);
-		this->_format.stroke_width=strokeWidth;
-		this->_format.fill.fill(false);
 		this->_format.stroke.fill(true);
 	}
 }
@@ -47,8 +42,8 @@ std::string GraphicsObject::toSVGString() const {
 	const auto diffX = box.maxX - box.minX;
 	const auto diffY = box.maxY - box.minY;
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"500\" height=\"500\" viewbox=\""
-	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" >"<<std::endl; // svg header in.
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
+	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
 
@@ -60,6 +55,7 @@ std::string GraphicsObject::toSVGString() const {
 }
 
 BoundingBox GraphicsObject::getBoundingBox() const {
+	std::cout<<"Global getBoundingBox()"<<std::endl;
 	if(!shapes.empty()){
 		return std::accumulate(shapes.begin(), shapes.end(), shapes.front()->getBoundingBox(), 
 		[](BoundingBox& out, const std::unique_ptr<GraphicsPrimitive>& ptr) {
@@ -117,15 +113,20 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		graphics.addShape(Rectangle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
-		graphics.addShape(Ellipse().center(35,40).radius(60,12));
+		graphics.addShape(Ellipse().center(0,0).radius(1,1));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Line)) {
 		graphics.addShape(Line().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::BezierCurve)) {
+		graphics.addShape(BezierCurve().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
+	}
 
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
+		graphics.pushModifierVector();
 		for(const auto& p : primitive.get<ast::FunctionCall>().getOperands() )
-			addGraphics(p, e, graphics);	
+			addGraphics(p, e, graphics);
+		graphics.popModifierVector();
 	}
 	else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Red)) {
 		graphics.addModifier(ColorDirective(255,0,0));

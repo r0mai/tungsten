@@ -94,6 +94,7 @@ public:
 
 class Line : public GraphicsPrimitive {
 	// this is a 2d line, Line3D is the 3 dimensional one.
+protected:
 	std::vector<std::pair<math::Real, math::Real> > points;
 public:
 	Line() : GraphicsPrimitive(), points() {
@@ -104,6 +105,19 @@ public:
 	virtual std::string toSVGString() const override;
 	virtual Line& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 	virtual BoundingBox getBoundingBox() const override;
+};
+
+class BezierCurve : public Line {
+public:
+	BezierCurve() : Line() { }
+	virtual std::string toSVGString() const override;
+	virtual BezierCurve& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+		this->Line::fromOperands(operands, environment);
+		return *this;
+	}
+	virtual BoundingBox getBoundingBox() const override {
+		return Line::getBoundingBox();
+	}
 };
 
 
