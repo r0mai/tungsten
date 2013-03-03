@@ -55,6 +55,7 @@ std::string GraphicsObject::toSVGString() const {
 }
 
 BoundingBox GraphicsObject::getBoundingBox() const {
+	std::cout<<"Global getBoundingBox()"<<std::endl;
 	if(!shapes.empty()){
 		return std::accumulate(shapes.begin(), shapes.end(), shapes.front()->getBoundingBox(), 
 		[](BoundingBox& out, const std::unique_ptr<GraphicsPrimitive>& ptr) {
