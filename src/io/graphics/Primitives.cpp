@@ -264,12 +264,11 @@ BoundingBox Line::getBoundingBox() const {
 	out = std::accumulate(points.begin(), points.end(), out, [](BoundingBox& box, const std::pair<math::Real, math::Real>& p){
 		const auto x = p.first.convert_to<double>();
 		const auto y = p.first.convert_to<double>();		
-		std::cout<<"it"<<std::endl;
-		std::cout<<x<<" "<<y<<std::endl;
+
 			box.minX = std::min(box.minX, x);
 			box.minY = std::min(box.minY, y);
-			box.maxX = std::max(box.maxX, 2.0);
-			box.maxY = std::max(box.maxY, 2.0);
+			box.maxX = std::max(box.maxX, x);
+			box.maxY = std::max(box.maxY, y);
 			return box;
 			});
 
