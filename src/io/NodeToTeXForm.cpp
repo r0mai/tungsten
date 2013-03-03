@@ -43,30 +43,33 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 		TeXFormString result;
 
+		const std::string leftParentheses = "\\left(";
+		const std::string rightParentheses = "\\right)";
+
 		if ( function == ast::Node::make<ast::Identifier>( eval::ids::Plus ) ) {
 
-			if ( precedence >= 0 ) { result += '('; }
+			if ( precedence >= 0 ) { result += leftParentheses; }
 
 			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), 0 ) ), "+" );
 
-			if ( precedence >= 0 ) { result += ')'; }
+			if ( precedence >= 0 ) { result += rightParentheses; }
 
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Times ) ) {
 
-			if ( precedence >= 1 ) { result += '('; }
+			if ( precedence >= 1 ) { result += leftParentheses; }
 
 			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), 1 ) ), " " );
 
-			if ( precedence >= 1 ) { result += ')'; }
+			if ( precedence >= 1 ) { result += rightParentheses; }
 
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Power ) ) {
 
-			if ( precedence >= 2 ) { result += '('; }
+			if ( precedence >= 2 ) { result += leftParentheses; }
 
 			//Might no be the best solution
 			result += "{" + boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), 2 ) ), "}^{" ) + "}";
 
-			if ( precedence >= 2 ) { result += ')'; }
+			if ( precedence >= 2 ) { result += rightParentheses; }
 
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::List ) ) {
 
@@ -80,9 +83,9 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 			//TODO 3 is good here?
 			result += NodeToTeXFormRecursive(functionCall.getFunction(), sessionEnvironment, 3) +
-					"(" +
+					leftParentheses +
 					boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), -1 ) ), ", " ) +
-					")";
+					rightParentheses;
 
 		}
 
