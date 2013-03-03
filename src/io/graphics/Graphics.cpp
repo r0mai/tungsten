@@ -47,8 +47,8 @@ std::string GraphicsObject::toSVGString() const {
 	const auto diffX = box.maxX - box.minX;
 	const auto diffY = box.maxY - box.minY;
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"500\" height=\"500\" viewbox=\""
-	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" >"<<std::endl; // svg header in.
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
+	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
 
@@ -124,8 +124,10 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	}
 
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
+		graphics.pushModifierVector();
 		for(const auto& p : primitive.get<ast::FunctionCall>().getOperands() )
-			addGraphics(p, e, graphics);	
+			addGraphics(p, e, graphics);
+		graphics.popModifierVector();
 	}
 	else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Red)) {
 		graphics.addModifier(ColorDirective(255,0,0));
