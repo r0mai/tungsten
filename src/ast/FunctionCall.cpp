@@ -14,7 +14,7 @@ namespace tungsten { namespace ast {
 
 namespace ids = eval::ids;
 
-FunctionCall::FunctionCall() {}
+FunctionCall::FunctionCall() : function(nullptr) {}
 
 FunctionCall::FunctionCall(const FunctionCall& other) :
 		function( new Node(*other.function) ), operands(other.operands) {}
@@ -101,10 +101,12 @@ bool FunctionCall::operator<(const FunctionCall& rhs) const {
 }
 
 Node& FunctionCall::getFunction() {
+	assert( function );
 	return *function;
 }
 
 const Node& FunctionCall::getFunction() const {
+	assert( function );
 	return *function;
 }
 
@@ -122,8 +124,9 @@ void swap(FunctionCall& fc1, FunctionCall& fc2) {
 }
 
 std::string FunctionCall::toString() const {
+	assert( function );
 
-	std::stringstream ss;
+    std::stringstream ss;
 	ss << function->toString() << '[';
 	ss << boost::join( operands | boost::adaptors::transformed( boost::mem_fn(&Node::toString) ), ", " );
 	ss << ']';

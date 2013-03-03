@@ -13,18 +13,16 @@ namespace tungsten { namespace eval {
 
 struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 
-	GetNodeNumeratorVisitor(SessionEnvironment& sessionEnvironment) : sessionEnvironment(sessionEnvironment) {}
-
 	template<class T>
-	ast::Node operator()(const T& node) {
+	ast::Node operator()(const T& node) const {
 		return ast::Node::make<T>(node);
 	}
 
-	ast::Node operator()(const math::Rational& rational) {
+	ast::Node operator()(const math::Rational& rational) const {
 		return ast::Node::make<math::Rational>(math::numerator(rational));
 	}
 
-	ast::Node operator()(const ast::FunctionCall& functionCall) {
+	ast::Node operator()(const ast::FunctionCall& functionCall) const {
 		const ast::Node& function = functionCall.getFunction();
 		const ast::Operands& operands = functionCall.getOperands();
 
@@ -46,7 +44,13 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 					}),
 					std::back_inserter(numeratorOperands) );
 
-			return sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( ids::Times, numeratorOperands )); //shouldn't need eval
+			if ( numeratorOperands.empty() ) {
+				return ast::Node::make<math::Rational>(1);
+			}
+			if ( numeratorOperands.size() == 1 ) {
+				return numeratorOperands[0];
+			}
+			return ast::Node::make<ast::FunctionCall>( ids::Times, numeratorOperands );
 
 		} else if ( function.is<ast::Identifier>( ids::Power ) ) {
 			if ( operands.size() == 2 && isSuperficiallyNegative(operands[1]) ) {
@@ -59,12 +63,10 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 
 	}
 
-	SessionEnvironment& sessionEnvironment;
 };
 
-ast::Node getNodeNumerator(const ast::Node& node, SessionEnvironment& sessionEnvironment) {
-	GetNodeNumeratorVisitor getNodeNumeratorVisitor(sessionEnvironment);
-	return ast::applyVisitor(node, getNodeNumeratorVisitor);
+ast::Node getNodeNumerator(const ast::Node& node) {
+	return ast::applyVisitor(node, GetNodeNumeratorVisitor{});
 }
 
 }} //namespace tungsten::eval

@@ -90,9 +90,9 @@ public:
 			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Table)) {
 				// todo table here (also remove false)
 			} else { // no graphics or tables
-				output = tungsten::io::NodeToTeXForm(evaluated, *this);
+				output = tungsten::io::NodeToTeXForm(evaluated);
 			}
-			TeXInput = tungsten::io::NodeToTeXForm(*expression, *this); // create TeX
+			TeXInput = tungsten::io::NodeToTeXForm(*expression); // create TeX
 		} else { // if input was bad.
 			TeXInput = input;
 		}

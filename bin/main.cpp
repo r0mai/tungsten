@@ -7,6 +7,7 @@
 #include "eval/ArgSessionEnvironment.hpp"
 #include "eval/CLISessionEnvironment.hpp"
 #include "eval/FileSessionEnvironment.hpp"
+#include "io/NodeToTeXForm.hpp"
 
 int main(int argc, char **argv) {
 
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
 
 	if (vm.count("eval")) {
 		tungsten::eval::ArgSessionEnvironment argSessionEnvironment;
+		//std::cout << tungsten::io::NodeToTeXForm(argSessionEnvironment.evaluateArg(vm["eval"].as<std::string>()), argSessionEnvironment) << std::endl;
 		std::cout << argSessionEnvironment.evaluateArg(vm["eval"].as<std::string>()) << std::endl;
 	} else if (vm.count("file")) {
 		tungsten::eval::FileSessionEnvironment fileSessionEnvironment(vm["file"].as<std::string>());

@@ -11,9 +11,9 @@ namespace tungsten { namespace io {
 
 typedef std::string TeXFormString;
 
-TeXFormString NodeToTeXForm(const ast::Node& node, eval::SessionEnvironment& sessionEnvironment);
+TeXFormString NodeToTeXForm(const ast::Node& node);
 
-TeXFormString NodeToTeXFormRecursive(const ast::Node& node, eval::SessionEnvironment& sessionEnvironment, int precedence);
+TeXFormString NodeToTeXFormRecursive(const ast::Node& node, int precedence);
 
 }} //namespace tungsten::io
 

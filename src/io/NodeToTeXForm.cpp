@@ -11,33 +11,32 @@
 
 namespace tungsten { namespace io {
 
-TeXFormString NodeToTeXForm(const ast::Node& node, eval::SessionEnvironment& sessionEnvironment) {
-	return NodeToTeXFormRecursive(node, sessionEnvironment, -1);
+TeXFormString NodeToTeXForm(const ast::Node& node) {
+	return NodeToTeXFormRecursive(node, -1);
 }
 
 struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
-	NodeToTeXFormVisitor(eval::SessionEnvironment& sessionEnvironment, int precedence) :
-		sessionEnvironment(sessionEnvironment), precedence(precedence) {}
+	NodeToTeXFormVisitor(int precedence) : precedence(precedence) {}
 
-	TeXFormString operator()(const ast::String& string) {
+	TeXFormString operator()(const ast::String& string) const {
 		return string.toString();
 	}
 
-	TeXFormString operator()(const math::Real& real) {
+	TeXFormString operator()(const math::Real& real) const {
 		return math::toString(real);
 	}
 
-	TeXFormString operator()(const math::Rational& rational) {
+	TeXFormString operator()(const math::Rational& rational) const {
 		assert(math::isInteger(rational));
 		return math::toString(rational);
 	}
 
-	TeXFormString operator()(const ast::Identifier& identifier) {
+	TeXFormString operator()(const ast::Identifier& identifier) const {
 		return identifier.toString();
 	}
 
-	TeXFormString operator()(const ast::FunctionCall& functionCall) {
+	TeXFormString operator()(const ast::FunctionCall& functionCall) const {
 		const ast::Node& function = functionCall.getFunction();
 		const ast::Operands& operands = functionCall.getOperands();
 
@@ -50,7 +49,7 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 			if ( precedence >= 0 ) { result += leftParentheses; }
 
-			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), 0 ) ), "+" );
+			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 0 ) ), "+" );
 
 			if ( precedence >= 0 ) { result += rightParentheses; }
 
@@ -58,7 +57,7 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 			if ( precedence >= 1 ) { result += leftParentheses; }
 
-			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), 1 ) ), " " );
+			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 1 ) ), " " );
 
 			if ( precedence >= 1 ) { result += rightParentheses; }
 
@@ -67,7 +66,7 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			if ( precedence >= 2 ) { result += leftParentheses; }
 
 			//Might no be the best solution
-			result += "{" + boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), 2 ) ), "}^{" ) + "}";
+			result += "{" + boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, 2 ) ), "}^{" ) + "}";
 
 			if ( precedence >= 2 ) { result += rightParentheses; }
 
@@ -75,16 +74,16 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 			result += "\\left \\{";
 
-			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), -1 ) ), ", " );
+			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, -1 ) ), ", " );
 
 			result += "\\right \\}";
 
 		} else {
 
 			//TODO 3 is good here?
-			result += NodeToTeXFormRecursive(functionCall.getFunction(), sessionEnvironment, 3) +
+			result += NodeToTeXFormRecursive(functionCall.getFunction(), 3) +
 					leftParentheses +
-					boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, boost::ref(sessionEnvironment), -1 ) ), ", " ) +
+					boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, -1 ) ), ", " ) +
 					rightParentheses;
 
 		}
@@ -92,21 +91,19 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		return result;
 	}
 
-	eval::SessionEnvironment& sessionEnvironment;
 	int precedence;
 };
 
 
-TeXFormString NodeToTeXFormRecursive(const ast::Node& node, eval::SessionEnvironment& sessionEnvironment, int precedence) {
+TeXFormString NodeToTeXFormRecursive(const ast::Node& node, int precedence) {
 
-	ast::Node numerator = eval::getNodeNumerator( node, sessionEnvironment );
-	ast::Node denominator = eval::getNodeDenominator( node, sessionEnvironment );
+	ast::Node numerator = eval::getNodeNumerator( node );
+	ast::Node denominator = eval::getNodeDenominator( node );
 
 	if ( denominator == ast::Node::make<math::Rational>(1) ) {
-		NodeToTeXFormVisitor nodeToTeXFormVisitor(sessionEnvironment, precedence);
-		return ast::applyVisitor( node, nodeToTeXFormVisitor );
+		return ast::applyVisitor( node, NodeToTeXFormVisitor{precedence} );
 	} else {
-		return "\\frac{" + NodeToTeXFormRecursive(numerator, sessionEnvironment, -1) + "}{" + NodeToTeXFormRecursive(denominator, sessionEnvironment, -1) + "}";
+		return "\\frac{" + NodeToTeXFormRecursive(numerator, -1) + "}{" + NodeToTeXFormRecursive(denominator, -1) + "}";
 	}
 
 

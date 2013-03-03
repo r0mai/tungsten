@@ -17,8 +17,9 @@ std::string ArgSessionEnvironment::evaluateArg(const std::string& input) {
 		//handleMessage(Message{}); //TODO
 		return "Some error occured";
 	} else {
+		std::cout << io::NodeToTeXForm(*expression) << std::endl;
 		ast::Node result = evaluate(*expression);
-		return io::NodeToTeXForm(result, *this);
+		return io::NodeToTeXForm(result);
 	}
 }
 
