@@ -43,7 +43,7 @@ std::string GraphicsObject::toSVGString() const {
 	const auto diffY = box.maxY - box.minY;
 	_output<<
 	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
-	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" >"<<std::endl; // svg header in.
+	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
 
@@ -113,10 +113,13 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		graphics.addShape(Rectangle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
-		graphics.addShape(Ellipse().center(35,40).radius(60,12));
+		graphics.addShape(Ellipse().center(0,0).radius(1,1));
 	}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Line)) {
 		graphics.addShape(Line().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
+	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::BezierCurve)) {
+		graphics.addShape(BezierCurve().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
 
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {

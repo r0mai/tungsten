@@ -277,6 +277,21 @@ BoundingBox Line::getBoundingBox() const {
 	return out;
 }
 
+std::string BezierCurve::toSVGString() const {
+	if(!points.empty()){
+		std::stringstream ss;
+		ss<<"<path "<<
+		_format.toSVGString()<<
+		"d=\"M"<<points.front().first<<" "<<points.front().second<<" C";
+		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
+					ss<<" "<<p.first.convert_to<double>()<<" "<<p.second.convert_to<double>();
+				});	
+		ss<<"\"/>"; // end of path string.
+		return ss.str();
+	} else {
+		return "";
+	}
 
+}
 
 }}} // tungsten::io::graphics;
