@@ -265,12 +265,6 @@ BoundingBox Line::getBoundingBox() const {
 				minY = y;
 			if(y>maxY)
 				maxY = y;
-		}
-		// create stroke-width here (hack!)
-		const auto diffX = maxX - minX;
-		const auto diffY = maxY - minY;
-		if(diffX > 0 && diffY > 0){
-			const_cast<Line*>(this)->_format.stroke_width = 0.01 * std::sqrt(diffX * diffX + diffY * diffY);
 		}	
 	} else {
 		minX = 0.0; minY = 0.0; maxX = 0.0; maxY = 0.0;
