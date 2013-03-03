@@ -7,7 +7,7 @@
 
 namespace tungsten { namespace eval {
 
-ast::Node getNodeNumerator(const ast::Node& node, SessionEnvironment& sessionEnvironment);
+ast::Node getNodeNumerator(const ast::Node& node);
 
 }} //namespace tungsten::eval
 
