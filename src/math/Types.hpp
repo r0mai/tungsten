@@ -3,7 +3,7 @@
 #ifndef MATH_TYPES_HPP_
 #define MATH_TYPES_HPP_
 
-#include <gmpxx.h>
+//#include <gmpxx.h>
 
 #include "Integer.hpp"
 #include "Rational.hpp"
