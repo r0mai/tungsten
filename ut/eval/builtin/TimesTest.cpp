@@ -196,5 +196,14 @@ BOOST_FIXTURE_TEST_CASE( Real_exponent_doesnt_alter_other_Rational_exponents, Bu
 	}) );
 }
 
+//Test for Issue 1
+BOOST_FIXTURE_TEST_CASE( Times_Sqrt_2_test, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Times[Sqrt[2]]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>( "Power", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(1,2)} ) );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
