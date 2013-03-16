@@ -80,14 +80,14 @@ public:
 		std::string output;
 		if(expression){
 			auto evaluated = tungsten::eval::SessionEnvironment::evaluate(input);
-			if(expression->is<tungsten::ast::FunctionCall>() && 
-			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
+			if(evaluated.is<tungsten::ast::FunctionCall>() && 
+			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
 				// dealing with graphics
 				tungsten::io::graphics::GraphicsObject graphics;
 				makeGraphics(evaluated, *this, graphics);
 				svg = graphics.toSVGString();
-			} else if (expression->is<tungsten::ast::FunctionCall>() && false &&
-			expression->get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Table)) {
+			} else if (evaluated.is<tungsten::ast::FunctionCall>() && false &&
+			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Table)) {
 				// todo table here (also remove false)
 			} else { // no graphics or tables
 				output = tungsten::io::NodeToTeXForm(evaluated);
@@ -98,7 +98,7 @@ public:
 		}
 		auto end = std::chrono::high_resolution_clock::now();
 		auto elapsed = end - start;
-		std::cout<<elapsed.count()<<std::endl;
+		//std::cout<<elapsed.count()<<std::endl;
 		return WebOutput(TeXInput, output, svg, errors);
 	};
 };
