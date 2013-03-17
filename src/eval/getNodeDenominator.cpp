@@ -12,18 +12,21 @@
 
 namespace tungsten { namespace eval {
 
-struct GetNodeDenominatorVisitor : boost::static_visitor<ast::Node> {
+struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optional<ast::Node>> {
 
 	template<class T>
-	ast::Node operator()(const T& /*node*/) const {
-		return ast::Node::make<math::Rational>(1);
+	boost::optional<ast::Node> operator()(const T& /*node*/) const {
+		return boost::none_t();
 	}
 
-	ast::Node operator()(const math::Rational& rational) const {
-		return ast::Node::make<math::Rational>(math::denominator(rational));
+	boost::optional<ast::Node> operator()(const math::Rational& rational) const {
+		if ( math::denominator(rational) != 1 ) {
+			return ast::Node::make<math::Rational>(math::denominator(rational));
+		}
+		return boost::none_t();
 	}
 
-	ast::Node operator()(const ast::FunctionCall& functionCall) const {
+	boost::optional<ast::Node> operator()(const ast::FunctionCall& functionCall) const {
 		const ast::Node& function = functionCall.getFunction();
 		const ast::Operands& operands = functionCall.getOperands();
 
@@ -84,7 +87,7 @@ struct GetNodeDenominatorVisitor : boost::static_visitor<ast::Node> {
 			}
 
 			if ( denominatorOperands.empty() ) {
-				return ast::Node::make<math::Rational>(1);
+				return boost::none_t();
 			}
 			if ( denominatorOperands.size() == 1 ) {
 				return denominatorOperands[0];
@@ -144,7 +147,15 @@ struct GetNodeDenominatorVisitor : boost::static_visitor<ast::Node> {
 };
 
 ast::Node getNodeDenominator(const ast::Node& node) {
-	return ast::applyVisitor(node, GetNodeDenominatorVisitor{});
+	boost::optional<ast::Node> optionalDenominator = ast::applyVisitor(node, GetPrintableNodeDenominatorVisitor{});
+	if ( !optionalDenominator ) {
+		return ast::Node::make<math::Rational>(1);
+	}
+	return *optionalDenominator;
+}
+
+boost::optional<ast::Node> getPrintableNodeDenominator(const ast::Node& node) {
+	return ast::applyVisitor(node, GetPrintableNodeDenominatorVisitor{});
 }
 
 }} //namespace tungsten::eval

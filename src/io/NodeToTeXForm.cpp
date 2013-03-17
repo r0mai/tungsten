@@ -131,16 +131,12 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 TeXFormString NodeToTeXFormRecursive(const ast::Node& node, int precedence) {
 
 	ast::Node numerator = eval::getNodeNumerator( node );
-	ast::Node denominator = eval::getNodeDenominator( node );
+	boost::optional<ast::Node> optionalDenominator = eval::getPrintableNodeDenominator( node );
 
-//	std::cout << "node: " << node << std::endl;
-//	std::cout << "num: " << numerator << std::endl;
-//	std::cout << "den: " << denominator << std::endl;
-
-	if ( denominator == ast::Node::make<math::Rational>(1) ) {
+	if ( !optionalDenominator ) {
 		return ast::applyVisitor( node, NodeToTeXFormVisitor{precedence} );
 	} else {
-		return "\\frac{" + NodeToTeXFormRecursive(numerator, -1) + "}{" + NodeToTeXFormRecursive(denominator, -1) + "}";
+		return "\\frac{" + NodeToTeXFormRecursive(numerator, -1) + "}{" + NodeToTeXFormRecursive(*optionalDenominator, -1) + "}";
 	}
 
 
