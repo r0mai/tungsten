@@ -37,7 +37,7 @@ class index:
 		largeString = ""
 		logStringList = p.stdout.read().split('\n')
 		for l in logStringList:
-			tmpString = "<a href=\""+l+"\">"+l+"</a><br>"
+			tmpString = "<a href=matthiasvegh.dynds.org/tungsten/\""+l+"\">"+l+"</a><br>"
 			largeString+=tmpString
 		return largeString
 
