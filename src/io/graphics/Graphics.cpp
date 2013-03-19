@@ -128,10 +128,21 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 			addGraphics(p, e, graphics);
 		graphics.popModifierVector();
 	}
+	// Color types here.
 	else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Red)) {
 		graphics.addModifier(ColorDirective(255,0,0));
-	
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Blue)) {
+		graphics.addModifier(ColorDirective(0,0,255));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Green)) {
+		graphics.addModifier(ColorDirective(0,255,0));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::White)) {
+		graphics.addModifier(ColorDirective(255,255,255));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Black)) {
+		graphics.addModifier(ColorDirective(0,0,0));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::None)) {
+		// do something smart here.
 	}
+
 	else if(primitive.isFunctionCall(eval::ids::RGBColor) ) {
 		if(primitive.get<ast::FunctionCall>().getOperands().size()==3){
 			const auto& ops = primitive.get<ast::FunctionCall>().getOperands();

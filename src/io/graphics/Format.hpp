@@ -8,7 +8,7 @@ namespace tungsten { namespace io { namespace graphics {
 
 class GraphicsDirective {
 public:
-        virtual ~GraphicsDirective() { }
+	virtual ~GraphicsDirective() { }
 };
 
 class ColorDirective : public GraphicsDirective {
@@ -28,7 +28,8 @@ public:
     ColorDirective& fill(const bool b);
     bool isFill() const;
     std::string toSVGString() const ;
-};
+}; // end GraphicsDirective
+
 
 /* format Specifier */
 
