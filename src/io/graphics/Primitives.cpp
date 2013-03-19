@@ -5,7 +5,7 @@
 namespace tungsten { namespace io { namespace graphics {
 
 std::string Circle::toSVGString() const {
-	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %_y %_r %(_format.toSVGString())).str();
+	return (boost::format(R"ro(<circle %1% cx="%2%" cy="%3%" r="%4%" %5% />)ro") %_translation %_x %(-_y) %_r %(_format.toSVGString())).str();
 }
 
 Circle& Circle::radius(const math::Real& arg) {
@@ -71,7 +71,7 @@ std::string Rectangle::toSVGString() const {
 	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6% />)ro") 
 			% _translation
 			% _topLeftX
-			% _topLeftY
+			% (-_bottomRightY) // flip.
 			% (_bottomRightY-_topLeftY)
 			% (_bottomRightX-_topLeftX)
 			% (_format.toSVGString())
@@ -147,7 +147,7 @@ std::string Ellipse::toSVGString() const {
 	return (boost::format(R"ro(<ellipse %1% cx="%2%" cy="%3%" rx="%4%" ry="%5%" %6%/ >)ro")
 		% _translation
 		% _x
-		% _y
+		% (-_y)
 		% _xRadius
 		% _yRadius
 		% (_format.toSVGString())
@@ -210,7 +210,7 @@ std::string Line::toSVGString() const {
 		_format.toSVGString()<<
 		"d=\"M"<<points.front().first<<" "<<points.front().second;
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
-					ss<<" L"<<p.first.convert_to<double>()<<" "<<p.second.convert_to<double>();
+					ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
 				});	
 		ss<<"\"/>"; // end of path string.
 		return ss.str();
@@ -283,7 +283,7 @@ std::string BezierCurve::toSVGString() const {
 		_format.toSVGString()<<
 		"d=\"M"<<points.front().first<<" "<<points.front().second<<" C";
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
-					ss<<" "<<p.first.convert_to<double>()<<" "<<p.second.convert_to<double>();
+					ss<<" "<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
 				});	
 		ss<<"\"/>"; // end of path string.
 		return ss.str();

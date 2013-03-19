@@ -21,6 +21,7 @@ protected:
 	std::string _formatString;
 	std::string _translation;
 	FormatSpecifier _format;
+	math::Real _xMultiplier, _yMultiplier;
 public:
 
 	GraphicsPrimitive() = default;

@@ -43,7 +43,7 @@ std::string GraphicsObject::toSVGString() const {
 	const auto diffY = box.maxY - box.minY;
 	_output<<
 	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
-	<<box.minX<<" "<<box.minY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
+	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
 
