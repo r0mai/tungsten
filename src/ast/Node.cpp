@@ -134,8 +134,8 @@ struct ToStringVisitor : boost::static_visitor<std::string> {
 };
 
 std::string Node::toString() const {
-	//return io::NodeToInputForm( *this );
-	return applyVisitor( *this, ToStringVisitor{} );
+	return io::NodeToInputForm( *this );
+//	return applyVisitor( *this, ToStringVisitor{} );
 }
 
 std::ostream& operator<<(std::ostream& os, const Node& node) {

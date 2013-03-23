@@ -21,7 +21,7 @@ BOOST_FIXTURE_TEST_CASE( test_Divide_of_x_and_y , BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("x")}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(-1)})}) );
 }
 
 

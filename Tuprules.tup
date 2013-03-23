@@ -3,10 +3,10 @@
 #toolchain stuff
 
 CXX = clang++
-LD = clang++
+#CXX = g++
 #CXX = g++-4.7
 #CXX = g++-4.6
-
+LD = $(CXX)
 
 #DEGUD CPPFLAGS
 CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC

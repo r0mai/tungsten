@@ -219,8 +219,8 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_2_times_c_cubed , BuiltinFunctionFixt
 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times",
 			{
-					ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(3)}),
-					ast::Node::make<math::Rational>(8)
+					ast::Node::make<math::Rational>(8),
+					ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(3)})
 			}) );
 }
 

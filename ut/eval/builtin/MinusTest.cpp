@@ -12,7 +12,7 @@ BOOST_FIXTURE_TEST_CASE( test_Minus_of_x , BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(-1)}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("x")}) );
 }
 
 
@@ -21,7 +21,7 @@ BOOST_FIXTURE_TEST_CASE( test_Minus_of_the_list_x__y , BuiltinFunctionFixture ) 
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(-1)})}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
 
@@ -68,7 +68,7 @@ BOOST_FIXTURE_TEST_CASE( test_Minus_of_x_explicit, BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(-1)}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("x")}) );
 }
 
 
@@ -77,7 +77,7 @@ BOOST_FIXTURE_TEST_CASE( test_Minus_of_the_list_x__y_explicit, BuiltinFunctionFi
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(-1)})}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("x")}), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
 

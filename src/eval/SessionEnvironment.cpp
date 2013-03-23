@@ -14,6 +14,7 @@
 #include "Identifiers.hpp"
 #include "threadListableOperands.hpp"
 #include "flattenOperands.hpp"
+#include "orderNode.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -203,7 +204,7 @@ ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 			attributeMap.hasAttribute(result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), ids::Orderless) )
 	{
 		ast::Operands& operands = result.get<ast::FunctionCall>().getOperands();
-		std::sort( operands.begin(), operands.end() );
+		std::sort( operands.begin(), operands.end(), NodeComparatorLess{} );
 	}
 
 	return result;

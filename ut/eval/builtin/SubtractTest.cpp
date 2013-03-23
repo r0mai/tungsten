@@ -12,7 +12,7 @@ BOOST_FIXTURE_TEST_CASE( test_Subtract_of_x_and_y , BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("x")}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
 
@@ -66,7 +66,7 @@ BOOST_FIXTURE_TEST_CASE( test_Subtract_of_the_list_a__b_and_the_list_c__d , Buil
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("a")}), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("d"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("b")})}) );
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("a")}), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("d"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("b")})}) );
 }
 
 //---- Same as above, but with explicit Subtract
@@ -77,7 +77,7 @@ BOOST_FIXTURE_TEST_CASE( test_Subtract_of_x_and_y_explicit , BuiltinFunctionFixt
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("y"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("x")}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
 
@@ -131,7 +131,7 @@ BOOST_FIXTURE_TEST_CASE( test_Subtract_of_the_list_a__b_and_the_list_c__d_explic
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("a")}), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("d"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("b")})}) );
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("c"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("a")}), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("d"), ast::Node::make<math::Rational>(-1)}), ast::Node::make<ast::Identifier>("b")})}) );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

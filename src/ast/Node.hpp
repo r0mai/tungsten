@@ -52,6 +52,8 @@ public:
 	const T& get() const;
 
 	bool operator==(const Node& other) const;
+	//Fast operator< to be used in sets, maps
+	//For correct comparsion operator, which correctly implements OrderedQ[] see eval/orderNode.hpp
 	bool operator<(const Node& other) const;
 
 	//string representation of an Node
@@ -97,7 +99,7 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 //Template implementation:
 template<class T, class... Args>
 Node Node::make(const Args&... args) {
-	return Node{T(args...)};
+	return Node{Storage(T(args...))};
 }
 
 template<class T, class U>

@@ -16,8 +16,8 @@ struct FactorialVisitor : boost::static_visitor<ast::Node> {
 
 	ast::Node operator()(const math::Real& real) {
 		math::Real result = math::gamma(1 + real);
-		//gamma() can return nan on negative integers:
-		if ( boost::math::isnan(result) ) {
+		//gamma() can return nan on negative integers: (and it seems inf as well (-1)! : FIXME:why?)
+		if ( boost::math::isnan(result) || boost::math::isinf(result) ) {
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, {});
 		}
 		return ast::Node::make<math::Real>(result);
