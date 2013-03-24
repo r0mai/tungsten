@@ -79,6 +79,9 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Real& base, const math::Rational& exponent) {
+		if ( math::isInteger(exponent) ) {
+			return ast::Node::make<math::Real>(math::power(base, exponent));
+		}
 		return operator()(base, math::Real(exponent));
 	}
 
