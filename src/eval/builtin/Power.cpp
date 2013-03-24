@@ -132,9 +132,12 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 
 	//c.isInteger() : (a^b)^c => (a^(b*c))
-	if ( exponent.is<math::Rational>() && math::isInteger(exponent.get<math::Rational>()) &&
-			base.is<ast::FunctionCall>() && base.get<ast::FunctionCall>().getFunction().is<ast::Identifier>(ids::Power) )
-	{
+	//or
+	//c.isRational() && b.isRational()
+	if ( base.isFunctionCall(ids::Power) &&
+			((exponent.is<math::Rational>() && math::isInteger(exponent.get<math::Rational>())) ||
+			(base.get<ast::FunctionCall>().getOperands()[1].is<math::Rational>() && exponent.is<math::Rational>()))
+		) {
 		assert( base.get<ast::FunctionCall>().getOperands().size() == 2 );
 
 		exponent = sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>(ids::Times, {
@@ -142,7 +145,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 				exponent //c
 		}) );
 
-		base = base.get<ast::FunctionCall>().getOperands()[0]; //a
+		base = ast::Node(base.get<ast::FunctionCall>().getOperands()[0]); //a (have to copy, creepy things happen otherwise)
 	}
 
 	//0^0 => Indeterminate

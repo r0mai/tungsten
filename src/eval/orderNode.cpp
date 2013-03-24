@@ -105,7 +105,6 @@ bool compareBaseExponentMaps(BaseExponentMap lhs, BaseExponentMap rhs) {
 	insertDummyCoefficient(lhs);
 	insertDummyCoefficient(rhs);
 
-
 	BaseExponentMap::const_reverse_iterator lhsIt = lhs.rbegin();
 	BaseExponentMap::const_reverse_iterator rhsIt = rhs.rbegin();
 
