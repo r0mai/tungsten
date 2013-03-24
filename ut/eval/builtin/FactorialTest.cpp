@@ -50,7 +50,10 @@ BOOST_FIXTURE_TEST_CASE( test_3_5_factorial , BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Real>(11.6317) );
+	BOOST_REQUIRE( result->is<math::Real>() );
+	//TODO magic number: tolerance
+	math::Real resultDelta = 11.6317 - result->get<math::Real>();
+	BOOST_CHECK_SMALL( resultDelta, math::Real(0.0001) );
 }
 
 
@@ -68,7 +71,7 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_3_over_2_factorial , BuiltinFunctionF
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("Pi"), ast::Node::make<math::Rational>(1,2)}), ast::Node::make<math::Rational>(3,4)}) );
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(3,4), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("Pi"), ast::Node::make<math::Rational>(1,2)})}) );
 }
 
 
@@ -151,7 +154,10 @@ BOOST_FIXTURE_TEST_CASE( test_3_5_double_factorial , BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Real>(4.83232) );
+	BOOST_REQUIRE( result->is<math::Real>() );
+	//TODO magic number: tolerance
+	math::Real resultDelta = 4.83232 - result->get<math::Real>();
+	BOOST_CHECK_SMALL( resultDelta, math::Real(0.0001) );
 }
 
 
