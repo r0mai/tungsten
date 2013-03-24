@@ -83,11 +83,28 @@ std::ostream& operator<<(std::ostream& os, const BaseExponentMap& map) {
 	return os;
 }
 
+void insertDummyCoefficient(BaseExponentMap& baseExponentMap) {
+	//Find a coefficient, if there are none, insert a dummy one (1^0) (TODO maybe 1^1?)
+	if (
+		std::find_if( baseExponentMap.begin(), baseExponentMap.end(),
+			[](const BaseExponentMap::value_type& v) {
+				return v.first.isNumeric();
+			}
+		) == baseExponentMap.end() )
+	{
+		baseExponentMap[ast::Node::make<math::Rational>(1)] = ast::Node::make<math::Rational>(0);
+	}
+}
+
 //acts as operator<
-bool compareBaseExponentMaps(const BaseExponentMap& lhs, const BaseExponentMap& rhs) {
+bool compareBaseExponentMaps(BaseExponentMap lhs, BaseExponentMap rhs) {
 	assert( !lhs.empty() && !rhs.empty() );
 
 //	std::cout << "lhs:\n" << lhs << "rhs:\n" << rhs << std::flush;
+
+	insertDummyCoefficient(lhs);
+	insertDummyCoefficient(rhs);
+
 
 	BaseExponentMap::const_reverse_iterator lhsIt = lhs.rbegin();
 	BaseExponentMap::const_reverse_iterator rhsIt = rhs.rbegin();
