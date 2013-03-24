@@ -34,7 +34,7 @@ class IterationSpecifier {
 public:
 	class Iterator {
 	public:
-		Iterator() = default;
+		Iterator();
 		Iterator(const std::vector<ast::Node>& iterationValues);
 
 		ast::Node current() const;

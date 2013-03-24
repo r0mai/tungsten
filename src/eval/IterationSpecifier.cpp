@@ -41,6 +41,9 @@ void IterationSpecifier::Iterator::advance() {
 	++currentIndex;
 }
 
+IterationSpecifier::Iterator::Iterator() :
+		currentIndex(0), iterationValues() {}
+
 IterationSpecifier::Iterator::Iterator(const std::vector<ast::Node>& iterationValues) :
 		currentIndex(0), iterationValues(iterationValues) {}
 
