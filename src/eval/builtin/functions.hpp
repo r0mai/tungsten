@@ -58,6 +58,9 @@ OptionalNode Tan(const ast::Operands& operands, eval::SessionEnvironment& sessio
 OptionalNode Cot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Sec(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Csc(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ArcSin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ArcCos(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ArcTan(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 
