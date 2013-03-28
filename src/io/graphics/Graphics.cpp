@@ -59,11 +59,11 @@ std::string GraphicsObject::toSVGString() const {
 
 	// assume graph is 500px wide.
 	// place arrow marker, and hope that this will work.
-	_output<<
+	_output<<"<defs>\n";
 		R"phi(<marker id="arrow" viewbox="0 0 10 10" refX="0" refY="5" markerUnits="strokeWidth" markerwidth="3" markerheight="10" orient="auto">)phi";
 	_output<<
 		R"phi(<path d="M 0 0 L 10 5 L 0 10 z" stroke="black"/></marker>)phi";
-	
+	_output<<"\n</defs>\n"
 	for(const auto& shape : shapes){
 		_output<<shape->toSVGString()<<std::endl;
 	}
