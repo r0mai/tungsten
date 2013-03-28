@@ -28,6 +28,7 @@ public:
     ColorDirective& fill(const bool b);
     bool isFill() const;
     std::string toSVGString() const ;
+	ColorDirective& setRGB(const PixelType& r, const PixelType& g, const PixelType& b){ _r = r; _g = g; _b = b; return *this; }
 }; // end GraphicsDirective
 
 

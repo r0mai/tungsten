@@ -30,8 +30,9 @@ void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	auto styleDirective = dynamic_cast<const FormatSpecifier*>(&directive);
 	if(colorDirective) {
-		this->_format.stroke=std::move(*colorDirective);
-		this->_format.stroke.fill(true);
+		this->_format.stroke.setRGB(colorDirective->r(), colorDirective->g(), colorDirective->b());
+		//this->_format.stroke.fill(true);
+		this->_format.fill.setRGB(colorDirective->r(), colorDirective->g(), colorDirective->b());
 	}
 	if(styleDirective) {
 		FormatSpecifier d;
@@ -156,7 +157,26 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		graphics.addModifier(ColorDirective(0,0,0));
 	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::None)) {
 		// do something smart here.
-	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Thick)) {
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Gray)) {
+		graphics.addModifier(ColorDirective(128, 128, 128));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Cyan)) {
+		graphics.addModifier(ColorDirective(0, 255, 255));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Magenta)) {
+		graphics.addModifier(ColorDirective(255, 0, 255));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Yellow)) {
+		graphics.addModifier(ColorDirective(255, 255, 0));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Brown)) {
+		graphics.addModifier(ColorDirective(150, 75, 0));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Orange)) {
+		graphics.addModifier(ColorDirective(255, 127, 0));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Pink)) {
+		graphics.addModifier(ColorDirective(255, 192, 203));
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Purple)) {
+		graphics.addModifier(ColorDirective(128, 0, 128));
+	}
+
+
+	else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Thick)) {
 		FormatSpecifier f;
 		f.stroke_width*=5.0;
 		graphics.addModifier(f);
