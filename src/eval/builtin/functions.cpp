@@ -28,10 +28,14 @@ Functions createFunctions() {
 	result[ids::Cot] = &Cot;
 	result[ids::Sec] = &Sec;
 	result[ids::Csc] = &Csc;
+	result[ids::ArcSin] = &Sin;
+	result[ids::ArcCos] = &Cos;
+	result[ids::ArcTan] = &Tan;
 	result[ids::Factorial] = &Factorial;
 	result[ids::Factorial2] = &Factorial2;
 	result[ids::Sqrt] = &Sqrt;
 	result[ids::Flatten] = &Flatten;
+	result[ids::Sort] = &Sort;
 	return result;
 }
 

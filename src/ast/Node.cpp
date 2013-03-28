@@ -64,34 +64,8 @@ template<> struct NodeTypeToInt<FunctionCall> {
 	static const int value = 5;
 };
 
-struct LengthVisitor : boost::static_visitor<unsigned> {
-	unsigned operator()(const math::Rational& /*r*/) const {
-		return 1;
-	}
-	
-	unsigned operator()(const math::Real& /*r*/) const {
-		return 1;
-	}
-	
-	unsigned operator()(const String& s) const {
-		return s.length();
-	}
-	
-	unsigned operator()(const Identifier& i) const {
-		return i.length();
-	}
-	
-	unsigned operator()(const FunctionCall& f) const {
-		return 1+
-		std::accumulate(f.getOperands().begin(), f.getOperands().end(), 
-		0u, [](unsigned& u, const Node& n) 
-		{return u+applyVisitor(n, LengthVisitor{});});
-	}
-	
-};
 
-
-struct CompareVisitor : boost::static_visitor<bool> {
+struct CompareLessVisitor : boost::static_visitor<bool> {
 
 	template<class T>
 	bool operator()(const T& lhs, const T& rhs) const {
@@ -120,10 +94,8 @@ struct CompareVisitor : boost::static_visitor<bool> {
 };
 
 bool Node::operator<(const Node& other) const {
-	return applyVisitor( *this, other, CompareVisitor{} );
+	return applyVisitor( *this, other, CompareLessVisitor{} );
 }
-
-
 
 struct ToStringVisitor : boost::static_visitor<std::string> {
 	template<class T>

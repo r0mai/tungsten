@@ -41,6 +41,7 @@ OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -57,6 +58,9 @@ OptionalNode Tan(const ast::Operands& operands, eval::SessionEnvironment& sessio
 OptionalNode Cot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Sec(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Csc(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ArcSin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ArcCos(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ArcTan(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 }}} //namespace tungsten::eval::builtin
 

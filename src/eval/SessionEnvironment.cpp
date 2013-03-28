@@ -114,6 +114,30 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				evaluationRange.begin(),
 				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
 
+		//Sequence[] Parameter and Attribute SequenceHold
+		if ( !function.is<ast::Identifier>() ||
+			!sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::SequenceHold) )
+		{
+#if FOR_THE_TIMES_WHEN_STL_IS_CPP11_READY
+			for ( ast::Operands::iterator it = operands.begin(); it != operands.end(); ++it ) {
+				if ( it->isFunctionCall(ids::Sequence) ) {
+					ast::Operands sequenceOperands = it->get<ast::FunctionCall>().getOperands();
+					ast::Operands::iterator sequenceElementPosition = operands.erase( it );
+					it = operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
+					it += sequenceOperands.size();
+				}
+			}
+#else
+			for ( unsigned i = 0; i < operands.size(); ++i ) {
+				if ( operands[i].isFunctionCall(ids::Sequence) ) {
+					ast::Operands sequenceOperands = operands[i].get<ast::FunctionCall>().getOperands();
+					ast::Operands::iterator sequenceElementPosition = operands.erase( operands.begin() + i );
+					operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
+					i += sequenceOperands.size();
+				}
+			}
+#endif
+		}
 
 		//Attribute Flat:
 		if (
@@ -123,7 +147,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 			operands = flattenOperands( function, operands );
 		}
 
-
+		//Attribute Listable:
 		if ( function.is<ast::Identifier>() &&
 			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::Listable) )
 		{

@@ -18,7 +18,7 @@ void CLISessionEnvironment::run() {
 
 
 	for ( int i = 1; ; ++i ) {
-		std::cout << "In[" << i << "] :=\t";
+		std::cout << "In[" << i << "] :=   ";
 
 		std::string line;
 		if (!std::getline(std::cin, line)) {
@@ -26,7 +26,7 @@ void CLISessionEnvironment::run() {
 		}
 
 		ast::Node result = evaluate(line);
-		std::cout << "Out[" << i << "] :=\t" << result << std::endl;
+		std::cout << "Out[" << i << "] =   " << result << std::endl;
 	}
 }
 
