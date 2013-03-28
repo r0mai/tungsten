@@ -28,15 +28,15 @@ public:
     ColorDirective& fill(const bool b);
     bool isFill() const;
     std::string toSVGString() const ;
+	ColorDirective& setRGB(const PixelType& r, const PixelType& g, const PixelType& b){ _r = r; _g = g; _b = b; return *this; }
 }; // end GraphicsDirective
 
 
 /* format Specifier */
 
-struct FormatSpecifier {
+struct FormatSpecifier : public GraphicsDirective {
 	virtual std::string toSVGString() const;
 	FormatSpecifier() : stroke_width(1.0), stroke_opacity(1.0), fill_opacity(1.0), stroke(0.0, 0.0, 0.0), fill(0.0, 0.0, 0.0) { }
-	FormatSpecifier(FormatSpecifier&& f) = default;	
 	FormatSpecifier(const FormatSpecifier& f) = default;
 	virtual ~FormatSpecifier() = default;
 
@@ -46,9 +46,8 @@ struct FormatSpecifier {
 	double fill_opacity;
 	ColorDirective stroke;
 	ColorDirective fill;
-
+	
 };
-
 
 }}} // namspace tungsten::io::graphics;
 #endif

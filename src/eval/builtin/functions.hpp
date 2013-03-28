@@ -62,6 +62,8 @@ OptionalNode ArcSin(const ast::Operands& operands, eval::SessionEnvironment& ses
 OptionalNode ArcCos(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ArcTan(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+// Defined in Plot.cpp
+OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 }}} //namespace tungsten::eval::builtin
 
 #endif /* EVAL_BUILTIN_FUNCTIONS_HPP_ */

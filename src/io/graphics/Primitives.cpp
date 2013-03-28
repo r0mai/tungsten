@@ -1,6 +1,7 @@
 #include "Primitives.hpp"
 #include <sstream>
 #include <algorithm>
+#include <boost/math/constants/constants.hpp>
 
 namespace tungsten { namespace io { namespace graphics {
 
@@ -208,7 +209,7 @@ std::string Line::toSVGString() const {
 		std::stringstream ss;
 		ss<<"<path "<<
 		_format.toSVGString()<<
-		"d=\"M"<<points.front().first<<" "<<points.front().second;
+		"d=\"M"<<points.front().first<<" "<<-points.front().second;
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 					ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
 				});	
@@ -263,14 +264,14 @@ BoundingBox Line::getBoundingBox() const {
 	}
 	out = std::accumulate(points.begin(), points.end(), out, [](BoundingBox& box, const std::pair<math::Real, math::Real>& p){
 		const auto x = p.first.convert_to<double>();
-		const auto y = p.first.convert_to<double>();		
+		const auto y = p.second.convert_to<double>();		
 
 			box.minX = std::min(box.minX, x);
 			box.minY = std::min(box.minY, y);
 			box.maxX = std::max(box.maxX, x);
 			box.maxY = std::max(box.maxY, y);
 			return box;
-			});
+		});
 
 //	std::cout<<out.minX <<" "<< out.minY <<" "<< out.maxX <<" "<< out.maxY <<" "<< std::endl;
 	return out;
@@ -281,7 +282,7 @@ std::string BezierCurve::toSVGString() const {
 		std::stringstream ss;
 		ss<<"<path "<<
 		_format.toSVGString()<<
-		"d=\"M"<<points.front().first<<" "<<points.front().second<<" C";
+		"d=\"M"<<points.front().first<<" "<<-points.front().second<<" C";
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 					ss<<" "<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
 				});	
@@ -291,6 +292,54 @@ std::string BezierCurve::toSVGString() const {
 		return "";
 	}
 
+}
+
+std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
+	Arrow arrowHead;
+	if(points.size()>=2){
+		// figure out points for triangle path here.
+		const auto last = points.back();
+		auto it = std::find_if_not(points.rbegin(), points.rend(), [&last](const std::pair<math::Real, math::Real>& p){
+					return p.first == last.first && p.second == last.second;
+				});	
+		// rationale: atan2 has issues when diffX and diffY are both 0 (ie.: prev == last),
+		// so we find the last point that isn't last.
+		if(it != points.rend()){
+			// arrow still makes sense.
+			const auto previous = *it;
+			const auto diffX = last.first.convert_to<double>() - previous.first.convert_to<double>();
+			const auto diffY = last.second.convert_to<double>() - previous.second.convert_to<double>();
+			assert(diffX != 0 || diffY != 0);
+			const auto radians = std::atan2(diffY, diffX);
+			
+			const auto diameter = std::sqrt((box.maxX - box.minX)*(box.maxX - box.minX) + (box.maxY - box.minY)*(box.maxY - box.minY));
+
+			const auto distance = diameter * 0.04; // const for triangle size.
+//			const auto pi = boost::math::constants::pi<double>();
+
+			const auto x = math::Real(last.first - std::cos(radians)*distance ).convert_to<double>();
+			const auto y = math::Real(last.second - std::sin(radians)*distance ).convert_to<double>();
+			std::pair<double, double> p1;
+				p1.first = x - std::sin(radians) * distance;
+				p1.second = y + std::cos(radians) * distance;
+
+			std::pair<double, double> p2;
+				p2.first = last.first.convert_to<double>();
+				p2.second = last.second.convert_to<double>();
+
+			std::pair<double, double> p3;
+				p3.first = x + std::sin(radians) * distance;
+				p3.second = y - std::cos(radians) * distance;
+
+			arrowHead.points = { p2, p1, p3, p2 };
+			arrowHead._format = this->_format;
+					
+		} else {
+			std::cout<<"Arrow had to raise."<<std::endl;
+		}
+	}
+
+	return this->Line::toSVGString()+Line(arrowHead).toSVGString(); // Slicing intentionally.
 }
 
 }}} // tungsten::io::graphics;
