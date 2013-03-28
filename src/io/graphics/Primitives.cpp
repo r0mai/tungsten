@@ -298,7 +298,7 @@ std::string Arrow::toSVGString() const {
 		std::stringstream ss;
 		ss<<"<path "<<
 			_format.toSVGString()<<
-			"d=\"M"<<points.front().first<<" "<<points.front().second<<" L";
+			"d=\"M"<<points.front().first<<" "<<points.front().second;
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 				ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
 				});
