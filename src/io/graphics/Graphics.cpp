@@ -138,6 +138,9 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::BezierCurve)) {
 		graphics.addShape(BezierCurve().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Arrow)) {
+		graphics.addShape(Arrow().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
+	}
 
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
 		graphics.pushModifierVector();

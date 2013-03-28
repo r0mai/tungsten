@@ -122,6 +122,7 @@ public:
 };
 
 class Arrow : public Line {
+public:
 	Arrow() : Line() { }
 	virtual std::string toSVGString() const override;
 	virtual Arrow& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
