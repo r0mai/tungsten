@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
-#include <chrono>
 
 #include "ast/Parser.hpp"
 #include "io/NodeToTeXForm.hpp"
@@ -73,7 +72,6 @@ public:
 		time(&lastAccess);
 		errors.clear();
 
-		auto start = std::chrono::high_resolution_clock::now();
 		boost::optional<tungsten::ast::Node> expression = tungsten::ast::parseInput(input);
 		std::string TeXInput;
 		std::string svg;
@@ -96,9 +94,6 @@ public:
 		} else { // if input was bad.
 			TeXInput = input;
 		}
-		auto end = std::chrono::high_resolution_clock::now();
-		auto elapsed = end - start;
-		//std::cout<<elapsed.count()<<std::endl;
 		return WebOutput(TeXInput, output, svg, errors);
 	};
 };

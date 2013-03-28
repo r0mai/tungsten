@@ -28,9 +28,21 @@ void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
 void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
-	if(colorDirective){
+	auto styleDirective = dynamic_cast<const FormatSpecifier*>(&directive);
+	if(colorDirective) {
 		this->_format.stroke=std::move(*colorDirective);
 		this->_format.stroke.fill(true);
+	}
+	if(styleDirective) {
+		FormatSpecifier d;
+		// only overwrite parameters actually set by styleDirective. 
+		// Padding with bools or something like that could be better.
+		this->_format.stroke_width=
+			(styleDirective->stroke_width==d.stroke_width)?
+			this->_format.stroke_width:styleDirective->stroke_width;
+		this->_format.stroke_opacity=
+			(styleDirective->stroke_opacity==d.stroke_opacity)?
+			this->_format.stroke_opacity:styleDirective->stroke_opacity;
 	}
 }
 
@@ -46,6 +58,9 @@ std::string GraphicsObject::toSVGString() const {
 	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
+	// place arrow marker, and hope that this will work.
+	_output<<
+		R"phi(<marker id="arrow" viewbox="0 0 10 10" refX="0" refY="5" markerUnits="strokeWidth" markerwidth="3" markerheight="10" orient="auto">)phi";
 
 	for(const auto& shape : shapes){
 		_output<<shape->toSVGString()<<std::endl;
@@ -141,6 +156,14 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		graphics.addModifier(ColorDirective(0,0,0));
 	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::None)) {
 		// do something smart here.
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Thick)) {
+		FormatSpecifier f;
+		f.stroke_width*=5.0;
+		graphics.addModifier(f);
+	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Thin)) {
+		FormatSpecifier f;
+		f.stroke_width*=0.2;
+		graphics.addModifier(f);
 	}
 
 	else if(primitive.isFunctionCall(eval::ids::RGBColor) ) {
@@ -152,9 +175,25 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		}
 		
 	}
+
+	// Rules here.
+	else if (primitive.isFunctionCall(eval::ids::Rule)) { 
+		// TODO: Also handle more exotic rule types.
+		const auto& ops = primitive.get<ast::FunctionCall>().getOperands();
+		assert(ops.size()==2); // Rules should be of form attribute->value; non binary forms seem weird.
+		const auto& attribute = ops[0];
+	//	const auto& value = ops[1];
+		if(attribute == ast::Node::make<ast::Identifier>(eval::ids::Thickness)) {
+			// push modifier with stroke-width = value;
+			
+		} else {
+			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
+		}	
+		
+	}
 	else {
 		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
-		std::cout<<"Invalid graphics primitive occured!"<<std::endl;
+		//std::cout<<"Invalid graphics primitive occured!"<<std::endl;
 	}
 }
 
