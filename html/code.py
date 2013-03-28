@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append('/var/www/tungsten')
+sys.path.append( os.path.dirname(__file__)  )
 
 from subprocess import Popen, PIPE, STDOUT
 import web
@@ -13,8 +13,10 @@ import ctypes
 import unicodedata
 import uuid
 
+
+
 web.config.debug = False
-render = web.template.render('/var/www/tungsten/templates/')
+render = web.template.render( os.path.join(os.path.dirname(__file__), 'templates/' ) )
 t = pytungsten.tungsten()
 
 urls = ('/(.*)', 'index')
