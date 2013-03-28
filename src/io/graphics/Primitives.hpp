@@ -121,7 +121,17 @@ public:
 	}
 };
 
-
+class Arrow : public Line {
+	Arrow() : Line() { }
+	virtual std::string toSVGString() const override;
+	virtual Arrow& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+		this->Line::fromOperands(operands, environment);
+		return *this;
+	}
+	virtual BoundingBox getBoundingBox() const override {
+		return Line::getBoundingBox();
+	}
+};
 
 }}} // tungsten::io::graphics
 
