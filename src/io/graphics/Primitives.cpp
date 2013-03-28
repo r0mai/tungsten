@@ -296,14 +296,14 @@ std::string BezierCurve::toSVGString() const {
 std::string Arrow::toSVGString() const {
 	if(!points.empty()){
 		std::stringstream ss;
-		ss<"<path "<<
+		ss<<"<path "<<
 			_format.toSVGString()<<
-			"d=\"M"<<points.front().first<<" "<<points.front().second" L";
+			"d=\"M"<<points.front().first<<" "<<points.front().second<<" L";
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 				ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
 				});
-		ss<<"\" marker-end="url(#arrow)" />";
-		return ss.str;
+		ss<<"\" marker-end=\"url(#arrow)\" />";
+		return ss.str();
 	} else {
 		return "";
 	}
