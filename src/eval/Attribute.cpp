@@ -36,7 +36,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Sqrt, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Rule, AttributeSet({ids::SequenceHold, ids::Protected}) )
 				(ids::RuleDelayed, AttributeSet({ids::HoldRest, ids::SequenceHold, ids::Protected}) )
-				(ids::Sort, AttributeSet({ids::Protected}) );
+				(ids::Sort, AttributeSet({ids::Protected}) )
+				(ids::Plot, AttributeSet({ids::HoldAll, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
