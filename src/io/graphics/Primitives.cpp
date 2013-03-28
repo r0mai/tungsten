@@ -294,7 +294,7 @@ std::string BezierCurve::toSVGString() const {
 
 }
 
-std::string Arrow::toSVGString() const {
+std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 	Arrow arrowHead;
 	if(points.size()>=2){
 		// figure out points for triangle path here.
@@ -312,10 +312,9 @@ std::string Arrow::toSVGString() const {
 			assert(diffX != 0 || diffY != 0);
 			const auto radians = std::atan2(diffY, diffX);
 			
-			const auto box = this->getBoundingBox();
 			const auto diameter = std::sqrt((box.maxX - box.minX)*(box.maxX - box.minX) + (box.maxY - box.minY)*(box.maxY - box.minY));
 
-			const auto distance = diameter * 0.05; // const for triangle size.
+			const auto distance = diameter * 0.04; // const for triangle size.
 //			const auto pi = boost::math::constants::pi<double>();
 
 			const auto length = std::sqrt(math::Real(

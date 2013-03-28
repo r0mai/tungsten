@@ -61,7 +61,7 @@ std::string GraphicsObject::toSVGString() const {
 	// assume graph is 500px wide.
 	// place arrow marker, and hope that this will work.
 	for(const auto& shape : shapes){
-		_output<<shape->toSVGString()<<std::endl;
+		_output<<shape->toBoundedSVGString(box)<<std::endl;
 	}
 	_output<<"</svg>";
 	return _output.str();

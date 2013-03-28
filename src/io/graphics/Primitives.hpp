@@ -26,6 +26,7 @@ public:
 
 	GraphicsPrimitive() = default;
 	virtual std::string toSVGString() const = 0;
+	virtual std::string toBoundedSVGString(const BoundingBox& /*b*/ ) const { return toSVGString(); }
 	virtual BoundingBox getBoundingBox() const = 0;
 
 	virtual GraphicsPrimitive& formatString(const std::string& format);
@@ -36,6 +37,7 @@ public:
 	virtual GraphicsPrimitive& translate(const Translation&);
 	FormatSpecifier& getFormat() { return _format; }
 	const FormatSpecifier& getFormat() const { return _format; }
+	virtual ~GraphicsPrimitive() { }
 };
 
 
@@ -93,7 +95,7 @@ public:
 
 };
 
-class Line : public GraphicsPrimitive {
+class Line : public virtual GraphicsPrimitive {
 	// this is a 2d line, Line3D is the 3 dimensional one.
 protected:
 	std::vector<std::pair<math::Real, math::Real> > points;
@@ -102,8 +104,8 @@ public:
 		_format.stroke.fill(true);
 		_format.fill.fill(false);
 	}
-
 	virtual std::string toSVGString() const override;
+	virtual std::string toBoundedSVGString(const BoundingBox&) const override {return toSVGString(); }
 	virtual Line& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 	virtual BoundingBox getBoundingBox() const override;
 };
@@ -124,7 +126,8 @@ public:
 class Arrow : public Line {
 public:
 	Arrow() : Line() { }
-	virtual std::string toSVGString() const override;
+	virtual std::string toSVGString() const override { return toBoundedSVGString(this->Line::getBoundingBox()); }
+	virtual std::string toBoundedSVGString(const BoundingBox& ) const override;
 	virtual Arrow& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
 		this->Line::fromOperands(operands, environment);
 		return *this;
