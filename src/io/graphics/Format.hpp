@@ -37,7 +37,6 @@ public:
 struct FormatSpecifier : public GraphicsDirective {
 	virtual std::string toSVGString() const;
 	FormatSpecifier() : stroke_width(1.0), stroke_opacity(1.0), fill_opacity(1.0), stroke(0.0, 0.0, 0.0), fill(0.0, 0.0, 0.0) { }
-	FormatSpecifier(FormatSpecifier&& f) = default;	
 	FormatSpecifier(const FormatSpecifier& f) = default;
 	virtual ~FormatSpecifier() = default;
 

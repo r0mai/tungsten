@@ -317,16 +317,8 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 			const auto distance = diameter * 0.04; // const for triangle size.
 //			const auto pi = boost::math::constants::pi<double>();
 
-			const auto length = std::sqrt(math::Real(
-							(last.first-previous.first)*(last.first-previous.first)
-							+
-							(last.second-previous.second)*(last.second-previous.second)
-					   	).convert_to<double>());
-			std::cout<<length<<std::endl;
-			std::cout<<distance<<std::endl;
 			const auto x = math::Real(last.first - std::cos(radians)*distance ).convert_to<double>();
 			const auto y = math::Real(last.second - std::sin(radians)*distance ).convert_to<double>();
-			std::cout<<x<<" "<<y<<std::endl;
 			std::pair<double, double> p1;
 				p1.first = x - std::sin(radians) * distance;
 				p1.second = y + std::cos(radians) * distance;
@@ -340,6 +332,7 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 				p3.second = y - std::cos(radians) * distance;
 
 			arrowHead.points = { p2, p1, p3, p2 };
+			arrowHead._format = this->_format;
 					
 		} else {
 			std::cout<<"Arrow had to raise."<<std::endl;

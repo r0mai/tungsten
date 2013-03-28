@@ -125,7 +125,7 @@ public:
 
 class Arrow : public Line {
 public:
-	Arrow() : Line() { }
+	Arrow() : Line() { _format.fill.fill(true); }
 	virtual std::string toSVGString() const override { return toBoundedSVGString(this->Line::getBoundingBox()); }
 	virtual std::string toBoundedSVGString(const BoundingBox& ) const override;
 	virtual Arrow& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
