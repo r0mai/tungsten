@@ -37,7 +37,7 @@ public:
 	bool is(const T& test) const;
 
 	//These returns true, if this is a FunctionCall, and it's function is 'head'
-	//Doesn't to anything with the operands
+	//Doesn't do anything with the operands
 	bool isFunctionCall(const Identifier& head) const;
 	bool isFunctionCall(const Node& head) const;
 
