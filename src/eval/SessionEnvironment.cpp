@@ -100,6 +100,16 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		bool doHoldFirst = hasHoldFirst || hasHoldAll;
 		bool doHoldRest = hasHoldRest || hasHoldAll;
 
+		for ( unsigned i = 0; i < operands.size(); ++i ) {
+			if ( ((i != 0 || !doHoldFirst) && (i == 0 || !doHoldRest)) || operands[i].isFunctionCall(ids::Evaluate) ) {
+				operands[i] = sessionEnvironment.recursiveEvaluate( operands[i] );
+			}
+//			if ( ((i == 0 && doHoldFirst) || (i != 0 && doHoldRest)) && !operands[i].isFunctionCall(ids::Evaluate) ) {
+//				continue;
+//			}
+
+		}
+#if 0
 		boost::iterator_range<ast::Operands::iterator> evaluationRange(operands);
 
 		if ( doHoldRest && !evaluationRange.empty() ) {
@@ -113,7 +123,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				evaluationRange,
 				evaluationRange.begin(),
 				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
-
+#endif
 		//Sequence[] Parameter and Attribute SequenceHold
 		if ( !function.is<ast::Identifier>() ||
 			!sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::SequenceHold) )

@@ -37,6 +37,7 @@ Functions createFunctions() {
 	result[ids::Flatten] = &Flatten;
 	result[ids::Sort] = &Sort;
 	result[ids::Plot] = &Plot;
+	result[ids::Evaluate] = &Evaluate;
 
 	return result;
 }

@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE( PlotTest )
 
 using namespace tungsten;
 
-BOOST_FIXTURE_TEST_CASE( test_should_leave_its_local_variable_unassigned, BuiltinFunctionFixture ) {
+BOOST_FIXTURE_TEST_CASE( Plot_should_leave_its_local_variable_unassigned, BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Plot[x^2,{x,-1,1}];x");
 
 	BOOST_REQUIRE( result );
