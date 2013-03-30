@@ -43,6 +43,8 @@ OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Evaluate(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode N(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode NumericQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);

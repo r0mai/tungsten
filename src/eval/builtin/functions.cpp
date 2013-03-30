@@ -38,6 +38,8 @@ Functions createFunctions() {
 	result[ids::Sort] = &Sort;
 	result[ids::Plot] = &Plot;
 	result[ids::Evaluate] = &Evaluate;
+	result[ids::N] = &N;
+	result[ids::NumericQ] = &NumericQ;
 
 	return result;
 }

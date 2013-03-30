@@ -38,7 +38,9 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::RuleDelayed, AttributeSet({ids::HoldRest, ids::SequenceHold, ids::Protected}) )
 				(ids::Sort, AttributeSet({ids::Protected}) )
 				(ids::Plot, AttributeSet({ids::HoldAll, ids::Protected}) )
-				(ids::Plot, AttributeSet({ids::Protected}) );
+				(ids::Evaluate, AttributeSet({ids::Protected}) )
+				(ids::N, AttributeSet({ids::Protected}) )
+				(ids::NumericQ, AttributeSet({ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

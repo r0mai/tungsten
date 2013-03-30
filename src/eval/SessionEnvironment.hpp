@@ -27,6 +27,8 @@ public:
 	void removePattern(const ast::Node& pattern);
 
 	RandomEngine& getRandomEngine();
+	AttributeMap& getAttributeMap();
+	const AttributeMap& getAttributeMap() const;
 
 	//Both can be called.
 	//std::string version will raise syntax error messages

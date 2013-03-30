@@ -44,6 +44,14 @@ RandomEngine& SessionEnvironment::getRandomEngine() {
 	return randomEngine;
 }
 
+AttributeMap& SessionEnvironment::getAttributeMap() {
+	return attributeMap;
+}
+
+const AttributeMap& SessionEnvironment::getAttributeMap() const {
+	return attributeMap;
+}
+
 ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 
 	boost::optional<ast::Node> expression = ast::parseInput(inputString);
