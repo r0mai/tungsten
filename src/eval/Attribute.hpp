@@ -11,19 +11,20 @@
 namespace tungsten { namespace eval {
 
 typedef ast::Identifier Attribute;
-//typedef std::map<ast::Identifier, AttributeVector> AttributeMap;
+typedef std::set<Attribute> AttributeSet;
 
-//TODO typedef nameing is a little bit inconsistent here
+//TODO typedef naming is a little bit inconsistent here
+
 class AttributeMap {
 public:
-	typedef std::set<Attribute> AttributeSet;
 	typedef std::map<ast::Identifier, AttributeSet> AttributeStorage;
 
 	AttributeMap();
 	AttributeMap(const AttributeStorage& attributeStorage);
 
-
 	static AttributeMap makeDefault();
+
+	AttributeSet getAttributeSet(const ast::Identifier& identifier) const;
 
 	bool hasAttribute(const ast::Identifier& identifier, const Attribute& attribute) const;
 	void addAttribute(const ast::Identifier& identifier, const Attribute& attribute);

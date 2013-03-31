@@ -30,6 +30,8 @@ public:
 	AttributeMap& getAttributeMap();
 	const AttributeMap& getAttributeMap() const;
 
+	AttributeSet getAttributeSetForFunction(const ast::Node& node) const;
+
 	//Both can be called.
 	//std::string version will raise syntax error messages
 	ast::Node evaluate(const std::string& inputString);

@@ -51,6 +51,16 @@ AttributeMap::AttributeMap() {}
 AttributeMap::AttributeMap(const AttributeStorage& attributeStorage) :
 		attributeStorage(attributeStorage) {}
 
+AttributeSet AttributeMap::getAttributeSet(const ast::Identifier& identifier) const {
+	AttributeStorage::const_iterator it = attributeStorage.find( identifier );
+
+	if ( it == attributeStorage.end() ) {
+		return AttributeSet{};
+	}
+
+	return it->second;
+}
+
 bool AttributeMap::hasAttribute(const ast::Identifier& identifier, const Attribute& attribute) const {
 	AttributeStorage::const_iterator it = attributeStorage.find( identifier );
 

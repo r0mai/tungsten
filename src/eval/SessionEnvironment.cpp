@@ -52,6 +52,13 @@ const AttributeMap& SessionEnvironment::getAttributeMap() const {
 	return attributeMap;
 }
 
+AttributeSet SessionEnvironment::getAttributeSetForFunction(const ast::Node& node) const {
+	if ( node.is<ast::Identifier>() ) {
+		return attributeMap.getAttributeSet( node.get<ast::Identifier>() );
+	}
+	return AttributeSet{};
+}
+
 ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 
 	boost::optional<ast::Node> expression = ast::parseInput(inputString);
@@ -93,16 +100,16 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction());
 		ast::Operands operands(functionCall.getOperands());
 
-		//Attribute Hold*
-		bool hasHoldFirst = false;
-		bool hasHoldRest = false;
-		bool hasHoldAll = false;
+		AttributeSet functionAttributes = sessionEnvironment.getAttributeSetForFunction(function);
 
-		if ( function.is<ast::Identifier>() ) {
-			hasHoldFirst = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldFirst);
-			hasHoldRest = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldRest);
-			hasHoldAll = sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::HoldAll);
-		}
+		//Attribute Hold*
+		bool hasHoldFirst = functionAttributes.count( ids::HoldFirst );
+		bool hasHoldRest = functionAttributes.count( ids::HoldRest );
+		bool hasHoldAll = functionAttributes.count( ids::HoldAll );
+		bool hasSequenceHold = functionAttributes.count( ids::SequenceHold );
+		bool hasFlat = functionAttributes.count( ids::Flat );
+		bool hasListable = functionAttributes.count( ids::Listable );
+		bool hasNumericFunction = functionAttributes.count( ids::NumericFunction );
 
 		//Do we evaluate
 		bool doHoldFirst = hasHoldFirst || hasHoldAll;
@@ -112,29 +119,11 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 			if ( ((i != 0 || !doHoldFirst) && (i == 0 || !doHoldRest)) || operands[i].isFunctionCall(ids::Evaluate) ) {
 				operands[i] = sessionEnvironment.recursiveEvaluate( operands[i] );
 			}
-//			if ( ((i == 0 && doHoldFirst) || (i != 0 && doHoldRest)) && !operands[i].isFunctionCall(ids::Evaluate) ) {
-//				continue;
-//			}
 
 		}
-#if 0
-		boost::iterator_range<ast::Operands::iterator> evaluationRange(operands);
 
-		if ( doHoldRest && !evaluationRange.empty() ) {
-			evaluationRange.advance_end( -(evaluationRange.size() - 1) );
-		}
-		if ( doHoldFirst && !evaluationRange.empty() ) {
-			evaluationRange.advance_begin( 1 );
-		}
-
-		boost::transform(
-				evaluationRange,
-				evaluationRange.begin(),
-				boost::bind(&SessionEnvironment::recursiveEvaluate, boost::ref(sessionEnvironment), _1) );
-#endif
 		//Sequence[] Parameter and Attribute SequenceHold
-		if ( !function.is<ast::Identifier>() ||
-			!sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::SequenceHold) )
+		if ( !hasSequenceHold )
 		{
 #if FOR_THE_TIMES_WHEN_STL_IS_CPP11_READY
 			for ( ast::Operands::iterator it = operands.begin(); it != operands.end(); ++it ) {
@@ -158,17 +147,12 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		}
 
 		//Attribute Flat:
-		if (
-			function.is<ast::Identifier>() &&
-			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::Flat) )
-		{
+		if ( hasFlat ) {
 			operands = flattenOperands( function, operands );
 		}
 
 		//Attribute Listable:
-		if ( function.is<ast::Identifier>() &&
-			sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::Listable) )
-		{
+		if ( hasListable ) {
 
 			ast::Operands listOperands;
 
@@ -188,9 +172,9 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		}
 
 		//If it is a numeric function and it has at least one Indeterminate argument, then the result is Indeterminate
-		if ( function.is<ast::Identifier>() &&
-				sessionEnvironment.attributeMap.hasAttribute(function.get<ast::Identifier>(), ids::NumericFunction) &&
-				boost::find(operands, ast::Node::make<ast::Identifier>(ids::Indeterminate)) != operands.end() ) {
+		if ( hasNumericFunction &&
+				boost::find(operands, ast::Node::make<ast::Identifier>(ids::Indeterminate)) != operands.end() )
+		{
 			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
 		}
 
