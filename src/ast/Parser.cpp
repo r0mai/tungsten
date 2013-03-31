@@ -197,6 +197,10 @@ void operatorPostFixAt(Node& result, Node rhs) {
 	result = Node::make<FunctionCall>(rhs, {result});
 }
 
+void operatorLambdaFunction(Node& result) {
+	applyPostFixOperator( result, Node::make<Identifier>(ids::Function) );
+}
+
 void operatorParentheses(Node& result, const Node& expression) {
 	//Don't do anything for multiple, paralell parentheses
 	if ( expression.is<FunctionCall>() && expression.get<FunctionCall>().getFunction() == Node::make<Identifier>(parenthesesIdentityFunction) ) {
@@ -220,6 +224,14 @@ void makeBlankPattern(Node& result, const boost::optional<Node>& name) {
 	} else {
 		result = Node::make<FunctionCall>( ids::Blank );
 	}
+}
+
+void makeSlot(Node& result, boost::optional<Node> n) {
+	if ( !n ) {
+		n = Node::make<math::Rational>(1);
+	}
+	assert(n && n->is<math::Rational>() && math::isInteger(n->get<math::Rational>()) );
+	result = Node::make<FunctionCall>( ids::Slot, {*n} );
 }
 
 void createFunctionCallFromNode(Node& result, const Node& function) {
@@ -282,6 +294,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::char_;
 		using qi::eps;
 		using qi::lit;
+		using qi::lexeme;
 
 		start = expression[_val = _1] | qi::eoi[_val = Node::make<Identifier>(ids::Null)];
 
@@ -303,8 +316,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				eps);
 
 		postFixAtExpression =
-				ruleExpression[_val = _1] >>
-				*( "//" >> ruleExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
+				lamdaFunctionExpression[_val = _1] >>
+				*( "//" >> lamdaFunctionExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
+
+		lamdaFunctionExpression =
+				ruleExpression[_val = _1] >> *(
+				lit("&")[phx::bind(&operatorLambdaFunction, _val)]);
 
 		ruleExpression =
 				patternExpression[_val = _1] >>
@@ -361,7 +378,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				);
 
 		//Primaries : ---
-		integer = integerParser[phx::bind(&makeInteger, _val, _1)];
+		signedInteger = signedIntegerParser[phx::bind(&makeInteger, _val, _1)];
+		unsignedInteger = unsignedIntegerParser[phx::bind(&makeInteger, _val, _1)];
 		real = realParser[phx::bind(&makeReal, _val, _1)];
 
 		variable %=
@@ -389,17 +407,25 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
 				'}';
 
+		//TODO lexeme
 		blankPattern =
 				(-identifier)[phx::bind(&makeBlankPattern, _val, _1)] >>
 				'_';
 
+		//TODO lexeme
+		slotPattern =
+				'#' >>
+				(-unsignedInteger)[phx::bind(&makeSlot, _val, _1)];
+
+
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | integer | string | blankPattern | parenthesizedExpression | list | identifier;
+		primary %= real | signedInteger | string | blankPattern | slotPattern | parenthesizedExpression | list | identifier;
 
 	}
 
-	qi::int_parser< math::Integer > integerParser;
+	qi::int_parser< math::Integer > signedIntegerParser;
+	qi::uint_parser< math::Integer > unsignedIntegerParser;
 	qi::real_parser< math::Real, OnlyNumericRealPolicies<math::Real> > realParser;
 
 
@@ -416,8 +442,10 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> applyExpression;
 	qi::rule<Iterator, Node(), delimiter> prefixAtExpression; // expr1 @ expr2
 	qi::rule<Iterator, Node(), delimiter> factorialExpression;
+	qi::rule<Iterator, Node(), delimiter> lamdaFunctionExpression; // expr &
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
+	qi::rule<Iterator, Node(), delimiter> slotPattern;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
 	qi::rule<Iterator, std::vector<Node>(), delimiter> argumentList;
@@ -427,7 +455,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> string;
 
 	qi::rule<Iterator, Node(), delimiter> identifier;
-	qi::rule<Iterator, Node(), delimiter> integer;
+	qi::rule<Iterator, Node(), delimiter> signedInteger;
+	qi::rule<Iterator, Node(), delimiter> unsignedInteger;
 	qi::rule<Iterator, Node(), delimiter> real;
 	qi::rule<Iterator, Node(), delimiter> functionCall;
 	qi::rule<Iterator, Node(), delimiter> list;

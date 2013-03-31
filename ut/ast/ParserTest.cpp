@@ -960,6 +960,15 @@ BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank ) {
 }
 
 
+BOOST_AUTO_TEST_CASE( parsing_blank_times_x ) {
+	boost::optional<ast::Node>tree = ast::parseInput("x_");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::FunctionCall>("Blank", {}), ast::Node::make<ast::Identifier>("x")}));
+}
+
+
 BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank_with_colon ) {
 	boost::optional<ast::Node>tree = ast::parseInput("x:_");
 
