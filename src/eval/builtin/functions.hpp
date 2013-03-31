@@ -41,7 +41,6 @@ OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Evaluate(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode N(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode NumericQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -64,6 +63,10 @@ OptionalNode Csc(const ast::Operands& operands, eval::SessionEnvironment& sessio
 OptionalNode ArcSin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ArcCos(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ArcTan(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
+//These are defined in Sort.cpp
+OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);

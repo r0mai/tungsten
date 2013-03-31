@@ -40,7 +40,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Plot, AttributeSet({ids::HoldAll, ids::Protected}) )
 				(ids::Evaluate, AttributeSet({ids::Protected}) )
 				(ids::N, AttributeSet({ids::Protected}) )
-				(ids::NumericQ, AttributeSet({ids::Protected}) );
+				(ids::NumericQ, AttributeSet({ids::Protected}) )
+				(ids::OrderedQ, AttributeSet({ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

@@ -40,6 +40,7 @@ Functions createFunctions() {
 	result[ids::Evaluate] = &Evaluate;
 	result[ids::N] = &N;
 	result[ids::NumericQ] = &NumericQ;
+	result[ids::OrderedQ] = &OrderedQ;
 
 	return result;
 }
