@@ -41,7 +41,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Evaluate, AttributeSet({ids::Protected}) )
 				(ids::N, AttributeSet({ids::Protected}) )
 				(ids::NumericQ, AttributeSet({ids::Protected}) )
-				(ids::OrderedQ, AttributeSet({ids::Protected}) );
+				(ids::OrderedQ, AttributeSet({ids::Protected}) )
+				(ids::Function, AttributeSet({ids::HoldAll, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
@@ -50,6 +51,16 @@ AttributeMap::AttributeMap() {}
 
 AttributeMap::AttributeMap(const AttributeStorage& attributeStorage) :
 		attributeStorage(attributeStorage) {}
+
+AttributeSet AttributeMap::getAttributeSet(const ast::Identifier& identifier) const {
+	AttributeStorage::const_iterator it = attributeStorage.find( identifier );
+
+	if ( it == attributeStorage.end() ) {
+		return AttributeSet{};
+	}
+
+	return it->second;
+}
 
 bool AttributeMap::hasAttribute(const ast::Identifier& identifier, const Attribute& attribute) const {
 	AttributeStorage::const_iterator it = attributeStorage.find( identifier );

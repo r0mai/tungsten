@@ -68,6 +68,9 @@ OptionalNode ArcTan(const ast::Operands& operands, eval::SessionEnvironment& ses
 OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+OptionalNode Function(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 }}} //namespace tungsten::eval::builtin
