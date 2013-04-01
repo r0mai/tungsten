@@ -102,7 +102,6 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 		AttributeSet functionAttributes = sessionEnvironment.getAttributeSetForFunction(function);
 
-		//Attribute Hold*
 		bool hasHoldFirst = functionAttributes.count( ids::HoldFirst );
 		bool hasHoldRest = functionAttributes.count( ids::HoldRest );
 		bool hasHoldAll = functionAttributes.count( ids::HoldAll );
@@ -111,6 +110,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		bool hasListable = functionAttributes.count( ids::Listable );
 		bool hasNumericFunction = functionAttributes.count( ids::NumericFunction );
 
+		//Attribute Hold*
 		//Do we evaluate
 		bool doHoldFirst = hasHoldFirst || hasHoldAll;
 		bool doHoldRest = hasHoldRest || hasHoldAll;
@@ -188,6 +188,14 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				}
 				return *evaluationResult;
 			}
+		//lamdba function
+		} else if ( function.isFunctionCall(ids::Function) ) {
+			builtin::OptionalNode evaluationResult = builtin::evaluateFunction( function.get<ast::FunctionCall>().getOperands(), operands, sessionEnvironment );
+			//TODO code repetition
+			if ( !evaluationResult ) { //Evaluation failed => return the expression untouched
+				return ast::Node::make<ast::FunctionCall>(function, operands);
+			}
+			return *evaluationResult;
 		}
 
 		//Check for used defined rules in patternMap

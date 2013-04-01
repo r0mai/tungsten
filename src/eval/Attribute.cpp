@@ -41,7 +41,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Evaluate, AttributeSet({ids::Protected}) )
 				(ids::N, AttributeSet({ids::Protected}) )
 				(ids::NumericQ, AttributeSet({ids::Protected}) )
-				(ids::OrderedQ, AttributeSet({ids::Protected}) );
+				(ids::OrderedQ, AttributeSet({ids::Protected}) )
+				(ids::Function, AttributeSet({ids::HoldAll, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
