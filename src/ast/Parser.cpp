@@ -197,7 +197,6 @@ void lessOrEqual(Node& result, const Node& rhs) {
 }
 
 void less(Node& result, const Node& rhs) {
-	std::cout<<"Less Called"<<std::endl;
 	rightAssociativeOperator( ids::Less, result, rhs );
 
 }
