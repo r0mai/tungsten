@@ -73,6 +73,10 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 
 // Defined in Relations.cpp
 OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode LessOrEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode GreaterOrEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 }}} //namespace tungsten::eval::builtin
