@@ -181,6 +181,26 @@ void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
+void greaterOrEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::GreaterOrEqual, result, rhs );
+
+}
+
+void greater(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Greater, result, rhs );
+
+}
+
+void lessOrEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::LessOrEqual, result, rhs );
+
+}
+
+void less(Node& result, const Node& rhs) {
+	std::cout<<"Less Called"<<std::endl;
+	rightAssociativeOperator( ids::Less, result, rhs );
+
+}
 void operatorApply(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
 }
@@ -303,12 +323,22 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		//Tree : ---
 
 		compoundExpression =
-				equalsToExpression[_val = _1] >> (
+				relationalExpression[_val = _1] >> (
 					';' >> compoundExpression[phx::bind(&operatorCompoundExpressionSequence, _val, _1)] |
 					char_(';')[phx::bind(&operatorCompoundExpressionNullEnd, _val)] |
 					eps
 				);
+		// <(=) ; >(=) here
+		#if 1
+		relationalExpression = 
+				equalsToExpression[_val = _1] >> (
+				"<=" >> equalsToExpression[phx::bind(&lessOrEqual, _val, _1) ] |
+				">=" >> equalsToExpression[phx::bind(&greaterOrEqual, _val, _1)] |
+				'<' >> equalsToExpression[phx::bind(&less, _val, _1)] |
+				'>' >> equalsToExpression[phx::bind(&greater, _val, _1)] |
+				eps);
 
+		#endif
 		equalsToExpression =
 				postFixAtExpression[_val = _1] >>
 				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
@@ -432,6 +462,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> start;
 	qi::rule<Iterator, Node(), delimiter> expression;
 	qi::rule<Iterator, Node(), delimiter> compoundExpression;
+	qi::rule<Iterator, Node(), delimiter> relationalExpression;
 	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
 	qi::rule<Iterator, Node(), delimiter> postFixAtExpression; // expr1 // expr2
 	qi::rule<Iterator, Node(), delimiter> ruleExpression;
