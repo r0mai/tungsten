@@ -137,6 +137,19 @@ public:
 	}
 };
 
+class Polygon : public Line {
+public:
+	Polygon() : Line() { _format.fill.fill(true); }
+	virtual std::string toSVGString() const override;
+	virtual Polygon& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment) {
+		this->Line::fromOperands(operands, environment);
+		return *this;
+	}
+	virtual BoundingBox getBoundingBox() const override {
+		return Line::getBoundingBox();
+	}
+};
+
 }}} // tungsten::io::graphics
 
 #endif

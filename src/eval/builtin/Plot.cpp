@@ -19,13 +19,14 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			ast::Operands graphicsOperands;
 			boost::optional<eval::IterationSpecifier> iteration = eval::IterationSpecifier::fromNode(operands[1], sessionEnvironment);
 			if(!iteration || !iteration->isFinite()){
-				std::cout<<"NEAOOohoHhHHhhhhH :("<<std::endl;
 				return EvaluationFailure();
 			}
 
 			auto it = iteration->makeIterator();
 			auto previous = it.current();
-
+			auto lastKnownName = ast::Node::make<ast::Identifier>(iteration->getVariable());
+			// get last known value for plot variable
+			const auto lastKnownValue = sessionEnvironment.getPatternReplacement(ast::Node::make<ast::Identifier>(iteration->getVariable()));
 			for(it.advance();!it.isEnd() ; previous = it.current(), it.advance()){
 				ast::Node preVal, curVal;
 				if(iteration -> hasVariable()) {
@@ -48,13 +49,17 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				graphicsOperands.push_back(ast::Node::make<ast::FunctionCall>(eval::ids::Line, lineSegment));
 
 			} 
-			sessionEnvironment.removePattern( ast::Node::make<ast::Identifier>(iteration->getVariable()) );
-			const auto diff = 0.01;
+//			sessionEnvironment.removePattern( ast::Node::make<ast::Identifier>(iteration->getVariable()) );
+//			^^ Don't remove, may not exist. //TODO Find way to query existance.
+			if(lastKnownValue)	
+				sessionEnvironment.addPattern( lastKnownName, *lastKnownValue);
+			else
+				sessionEnvironment.removePattern(lastKnownName);
+			// restore variable.
 			const auto GraphicsNode = ast::Node::make<ast::FunctionCall>(eval::ids::Graphics, 
 					{ast::Node::make<ast::FunctionCall>(eval::ids::List,	graphicsOperands)});
 			return GraphicsNode;
 		}
-		std::cout<<"a"<<std::endl;
 	}
 	return EvaluationFailure();
 }

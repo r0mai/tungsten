@@ -339,7 +339,25 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 		}
 	}
 
-	return this->Line::toSVGString()+Line(arrowHead).toSVGString(); // Slicing intentionally.
+	return this->Line::toSVGString()+arrowHead.Line::toSVGString(); // No more slicing.
 }
+
+std::string Polygon::toSVGString() const {
+	if(!points.empty()){
+		std::stringstream ss;
+		ss<<"<path "<<
+		_format.toSVGString()<<
+		"d=\"M"<<points.front().first<<" "<<-points.front().second;
+		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
+					ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
+				});	
+		ss<<"\" Z/>"; // end of path string.
+		return ss.str();
+	} else {
+		return "";
+	}
+}
+
+
 
 }}} // tungsten::io::graphics;
