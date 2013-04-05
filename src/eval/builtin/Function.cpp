@@ -47,7 +47,8 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 					*current = operands[slotNumberSizeT-1];
 				}
 			}
-			//TODO maybe stop if its a Function[]?
+		} else if ( current->isFunctionCall(ids::Function) ) {
+			/*do nothing*/
 		} else if ( current->is<ast::FunctionCall>() ) {
 			toTraverseNodes.push( &current->get<ast::FunctionCall>().getFunction() );
 			for ( ast::Node& node : current->get<ast::FunctionCall>().getOperands() ) {
