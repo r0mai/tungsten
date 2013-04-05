@@ -26,7 +26,6 @@ Functions createFunctions() {
 	result[ids::Greater] = &Greater;
 	result[ids::LessOrEqual] = &LessOrEqual;
 	result[ids::GreaterOrEqual] = &GreaterOrEqual;
-
 	result[ids::Sin] = &Sin;
 	result[ids::Cos] = &Cos;
 	result[ids::Tan] = &Tan;
@@ -46,6 +45,7 @@ Functions createFunctions() {
 	result[ids::N] = &N;
 	result[ids::NumericQ] = &NumericQ;
 	result[ids::OrderedQ] = &OrderedQ;
+	result[ids::If] = &If;
 
 	return result;
 }
