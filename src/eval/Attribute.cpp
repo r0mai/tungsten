@@ -43,6 +43,10 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::NumericQ, AttributeSet({ids::Protected}) )
 				(ids::OrderedQ, AttributeSet({ids::Protected}) )
 				(ids::Function, AttributeSet({ids::HoldAll, ids::Protected}) )
+				(ids::Less, AttributeSet({ids::Protected}) )
+				(ids::Greater, AttributeSet({ids::Protected}) )
+				(ids::LessOrEqual, AttributeSet({ids::Protected}) )
+				(ids::GreaterOrEqual, AttributeSet({ids::Protected}) )
 				(ids::If, AttributeSet({ids::HoldRest, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
