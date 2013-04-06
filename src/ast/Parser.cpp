@@ -181,22 +181,22 @@ void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
-void greaterOrEqual(Node& result, const Node& rhs) {
-	rightAssociativeOperator( ids::GreaterOrEqual, result, rhs );
+void operatorGreaterEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::GreaterEqual, result, rhs );
 
 }
 
-void greater(Node& result, const Node& rhs) {
+void operatorGreater(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Greater, result, rhs );
 
 }
 
-void lessOrEqual(Node& result, const Node& rhs) {
-	rightAssociativeOperator( ids::LessOrEqual, result, rhs );
+void operatorLessEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::LessEqual, result, rhs );
 
 }
 
-void less(Node& result, const Node& rhs) {
+void operatorLess(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Less, result, rhs );
 
 }
@@ -331,10 +331,10 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		#if 1
 		relationalExpression = 
 				equalsToExpression[_val = _1] >> (
-				"<=" >> equalsToExpression[phx::bind(&lessOrEqual, _val, _1) ] |
-				">=" >> equalsToExpression[phx::bind(&greaterOrEqual, _val, _1)] |
-				'<' >> equalsToExpression[phx::bind(&less, _val, _1)] |
-				'>' >> equalsToExpression[phx::bind(&greater, _val, _1)] |
+				"<=" >> equalsToExpression[phx::bind(&operatorLessEqual, _val, _1) ] |
+				">=" >> equalsToExpression[phx::bind(&operatorGreaterEqual, _val, _1)] |
+				'<' >> equalsToExpression[phx::bind(&operatorLess, _val, _1)] |
+				'>' >> equalsToExpression[phx::bind(&operatorGreater, _val, _1)] |
 				eps);
 
 		#endif

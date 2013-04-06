@@ -45,8 +45,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Function, AttributeSet({ids::HoldAll, ids::Protected}) )
 				(ids::Less, AttributeSet({ids::Protected}) )
 				(ids::Greater, AttributeSet({ids::Protected}) )
-				(ids::LessOrEqual, AttributeSet({ids::Protected}) )
-				(ids::GreaterOrEqual, AttributeSet({ids::Protected}) )
+				(ids::LessEqual, AttributeSet({ids::Protected}) )
+				(ids::GreaterEqual, AttributeSet({ids::Protected}) )
 				(ids::If, AttributeSet({ids::HoldRest, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);

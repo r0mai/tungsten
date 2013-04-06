@@ -1,9 +1,6 @@
+
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
-#include "eval/IterationSpecifier.hpp"
-
-#include <algorithm>
-#include <cassert>
 
 namespace tungsten { namespace eval { namespace builtin {
 
@@ -11,7 +8,7 @@ OptionalNode Less(const ast::Operands& /*operands*/, eval::SessionEnvironment& /
 	return EvaluationFailure();
 }
 
-OptionalNode LessOrEqual(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode LessEqual(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
 	return EvaluationFailure();
 }
 
@@ -21,7 +18,7 @@ OptionalNode Greater(const ast::Operands& /*operands*/, eval::SessionEnvironment
 }
 
 
-OptionalNode GreaterOrEqual(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode GreaterEqual(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
 	return EvaluationFailure();
 }
 

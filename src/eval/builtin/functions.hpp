@@ -72,11 +72,11 @@ OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& s
 OptionalNode Function(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
-// Defined in Relations.cpp
+// Defined in relations.cpp
 OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode LessOrEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode GreaterOrEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode GreaterEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);

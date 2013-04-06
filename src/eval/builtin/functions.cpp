@@ -24,8 +24,8 @@ Functions createFunctions() {
 	result[ids::Apply] = &Apply;
 	result[ids::Less] = &Less;
 	result[ids::Greater] = &Greater;
-	result[ids::LessOrEqual] = &LessOrEqual;
-	result[ids::GreaterOrEqual] = &GreaterOrEqual;
+	result[ids::LessEqual] = &LessEqual;
+	result[ids::GreaterEqual] = &GreaterEqual;
 	result[ids::Sin] = &Sin;
 	result[ids::Cos] = &Cos;
 	result[ids::Tan] = &Tan;
