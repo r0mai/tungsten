@@ -1,64 +1,87 @@
 
+
+#include <functional>
+#include <boost/logic/tribool.hpp>
+
 #include "functions.hpp"
+#include "eval/SessionEnvironment.hpp"
+#include "eval/numericNodeEvaluation.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
-OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
-
+template<class Func>
+boost::tribool compareNodes(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment, Func func) {
 	for ( unsigned i = 1; i < operands.size(); ++i ) {
-		 if ( !operands[i-1].isNumeric() || !operands[i].isNumeric() ) {
-			 return ast::Node::make<ast::FunctionCall>(ids::Less, operands);
-		 }
-		 if ( operands[i-1].getNumeric() >= operands[i].getNumeric() ) {
-			 return ast::Node::make<ast::Identifier>(ids::False);
-		 }
-	}
 
-	return ast::Node::make<ast::Identifier>(ids::True);
+		ast::Node lhs = numericNodeEvaluation(operands[i-1], sessionEnvironment);
+		ast::Node rhs = numericNodeEvaluation(operands[i], sessionEnvironment);
+
+		if ( !lhs.isNumeric() || !rhs.isNumeric() ) {
+			return boost::indeterminate;
+		}
+		if ( !func(lhs.getNumeric(), rhs.getNumeric()) ) {
+			return false;
+		}
+	}
+	return true;
 }
 
-OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
-	for ( unsigned i = 1; i < operands.size(); ++i ) {
-		 if ( !operands[i-1].isNumeric() || !operands[i].isNumeric() ) {
-			 return ast::Node::make<ast::FunctionCall>(ids::Less, operands);
-		 }
-		 if ( operands[i-1].getNumeric() > operands[i].getNumeric() ) {
-			 return ast::Node::make<ast::Identifier>(ids::False);
-		 }
+	boost::tribool result = compareNodes( operands, sessionEnvironment, std::less<math::Real>() );
+
+	if ( result ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else if ( !result ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	} else {
+		return ast::Node::make<ast::FunctionCall>(ids::Less, operands);
 	}
 
-	return ast::Node::make<ast::Identifier>(ids::True);
+}
+
+OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+
+	boost::tribool result = compareNodes( operands, sessionEnvironment, std::less_equal<math::Real>() );
+
+	if ( result ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else if ( !result ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	} else {
+		return ast::Node::make<ast::FunctionCall>(ids::LessEqual, operands);
+	}
+
 }
 
 
-OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
-	for ( unsigned i = 1; i < operands.size(); ++i ) {
-		 if ( !operands[i-1].isNumeric() || !operands[i].isNumeric() ) {
-			 return ast::Node::make<ast::FunctionCall>(ids::Less, operands);
-		 }
-		 if ( operands[i-1].getNumeric() <= operands[i].getNumeric() ) {
-			 return ast::Node::make<ast::Identifier>(ids::False);
-		 }
+	boost::tribool result = compareNodes( operands, sessionEnvironment, std::greater<math::Real>() );
+
+	if ( result ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else if ( !result ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	} else {
+		return ast::Node::make<ast::FunctionCall>(ids::Greater, operands);
 	}
 
-	return ast::Node::make<ast::Identifier>(ids::True);
 }
 
 
-OptionalNode GreaterEqual(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode GreaterEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
-	for ( unsigned i = 1; i < operands.size(); ++i ) {
-		 if ( !operands[i-1].isNumeric() || !operands[i].isNumeric() ) {
-			 return ast::Node::make<ast::FunctionCall>(ids::Less, operands);
-		 }
-		 if ( operands[i-1].getNumeric() > operands[i].getNumeric() ) {
-			 return ast::Node::make<ast::Identifier>(ids::False);
-		 }
+	boost::tribool result = compareNodes( operands, sessionEnvironment, std::greater_equal<math::Real>() );
+
+	if ( result ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else if ( !result ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	} else {
+		return ast::Node::make<ast::FunctionCall>(ids::GreaterEqual, operands);
 	}
 
-	return ast::Node::make<ast::Identifier>(ids::True);
 }
 
 

@@ -1,8 +1,8 @@
 
-#include "numericNodeEvaluation.hpp"
-
 #include <stack>
+#include <boost/math/constants/constants.hpp>
 
+#include "numericNodeEvaluation.hpp"
 #include "Identifiers.hpp"
 
 namespace tungsten { namespace eval {
@@ -40,6 +40,13 @@ ast::Node numericNodeEvaluation(const ast::Node& node, eval::SessionEnvironment&
 			}
 		} else if ( current->is<math::Rational>() ) {
 			*current = ast::Node::make<math::Real>(current->get<math::Rational>() );
+		} else if ( current->is<ast::Identifier>() ) {
+			const ast::Identifier& identifier = current->get<ast::Identifier>();
+			if ( identifier == ids::Pi ) {
+				*current = ast::Node::make<math::Real>(boost::math::constants::pi<math::Real>());
+			} else if ( identifier == ids::E ) {
+				*current = ast::Node::make<math::Real>(boost::math::constants::e<math::Real>());
+			}
 		}
 
 	}
