@@ -42,12 +42,24 @@ BOOST_FIXTURE_TEST_CASE( test_the_pure_function_hash_squared_plus_hash_2_to_the_
 	BOOST_CHECK_EQUAL( *result, expected );
 }
 
+
 BOOST_FIXTURE_TEST_CASE( test_f_equals_the_pure_function_if_hash_equals_equals_1_then_1_else_hash_times_hash_0_of_the_quantity_hash_minus_1_semicolon_f_of_10, BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("f = If[#1 <= 1, 1, #1*#0[#1 - 1]] & ; f[10]");
 
 	BOOST_REQUIRE( result );
 
 	ast::Node expected = ast::Node::make<math::Rational>(3628800);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_the_pure_function_the_pure_function_hash_to_the_power_of_hash_of_x_of_x, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("((#1^#1 & ) & )[x][x]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("x")});
 
 	BOOST_CHECK_EQUAL( *result, expected );
 }
