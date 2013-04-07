@@ -328,8 +328,6 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 					eps
 				);
 
-
-
 		equalsToExpression =
 				postFixAtExpression[_val = _1] >>
 				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
