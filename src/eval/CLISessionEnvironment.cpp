@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include <readline/history.h>
 #include <readline/readline.h>
 
 namespace tungsten { namespace eval {
@@ -18,6 +19,7 @@ void CLISessionEnvironment::handleMessageString(const ast::String& messageString
 
 void CLISessionEnvironment::run() {
 
+	using_history();
 
 	for ( int i = 1; ; ++i ) {
 		std::string prompt = "In[" + std::to_string(i) + "] :=   ";
@@ -27,6 +29,8 @@ void CLISessionEnvironment::run() {
 		if (!input) {
 			break;
 		}
+
+		add_history(input);
 
 		ast::Node result = evaluate(std::string(input));
 
