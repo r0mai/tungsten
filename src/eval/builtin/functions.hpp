@@ -73,6 +73,8 @@ OptionalNode Function(const ast::Operands& operands, eval::SessionEnvironment& s
 OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in relations.cpp
+OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);

@@ -26,6 +26,16 @@ boost::tribool compareNodes(const ast::Operands& operands, eval::SessionEnvironm
 	return true;
 }
 
+OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	//TODO Indeterminate == Indeterminate
+	return EvaluationFailure();
+}
+
+OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+	//TODO Indeterminate == Indeterminate
+	return EvaluationFailure();
+}
+
 OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 
 	boost::tribool result = compareNodes( operands, sessionEnvironment, std::less<math::Real>() );

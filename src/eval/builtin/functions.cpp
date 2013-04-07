@@ -22,6 +22,8 @@ Functions createFunctions() {
 	result[ids::Minus] = &Minus;
 	result[ids::Subtract] = &Subtract;
 	result[ids::Apply] = &Apply;
+	result[ids::Equal] = &Equal;
+	result[ids::Unequal] = &Unequal;
 	result[ids::Less] = &Less;
 	result[ids::Greater] = &Greater;
 	result[ids::LessEqual] = &LessEqual;
