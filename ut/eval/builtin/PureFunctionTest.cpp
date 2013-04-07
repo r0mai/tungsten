@@ -5,7 +5,7 @@
 
 #include "Fixture.hpp"
 
-BOOST_AUTO_TEST_SUITE( MinusTest )
+BOOST_AUTO_TEST_SUITE( PureFunctionTest )
 
 using namespace tungsten;
 
