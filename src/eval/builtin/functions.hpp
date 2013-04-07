@@ -80,8 +80,16 @@ OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& se
 OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode GreaterEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+//Defined in booleanFunctions.cpp
+OptionalNode TrueQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Not(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode And(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Or(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 }}} //namespace tungsten::eval::builtin
 
 #endif /* EVAL_BUILTIN_FUNCTIONS_HPP_ */

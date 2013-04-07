@@ -48,6 +48,11 @@ Functions createFunctions() {
 	result[ids::NumericQ] = &NumericQ;
 	result[ids::OrderedQ] = &OrderedQ;
 	result[ids::If] = &If;
+	result[ids::TrueQ] = &TrueQ;
+	result[ids::Not] = &Not;
+	result[ids::And] = &And;
+	result[ids::Or] = &Or;
+	result[ids::Boole] = &Boole;
 
 	return result;
 }

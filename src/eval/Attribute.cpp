@@ -50,7 +50,12 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Equal, AttributeSet({ids::Protected}) )
 				(ids::Unequal, AttributeSet({ids::Protected}) )
 				(ids::If, AttributeSet({ids::HoldRest, ids::Protected}) )
-				(ids::Slot, AttributeSet({ids::NHoldAll, ids::Protected}) );
+				(ids::Slot, AttributeSet({ids::NHoldAll, ids::Protected}) )
+				(ids::TrueQ, AttributeSet({ids::Protected}) )
+				(ids::Not, AttributeSet({ids::Protected}) )
+				(ids::And, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
+				(ids::Or, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
+				(ids::Boole, AttributeSet({ids::Listable, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

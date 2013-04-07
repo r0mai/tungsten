@@ -241,6 +241,13 @@ void operatorUnaryMinus(Node& result, const Node& operand) {
 	operatorParentheses(result, result);
 }
 
+void operatorNot(Node& result, Node operand) {
+	removeIfParenthesesIdentityFunction(result);
+	removeIfParenthesesIdentityFunction(operand);
+	result = Node::make<ast::FunctionCall>(ids::Not, {operand});
+	operatorParentheses(result, result);
+}
+
 void makeBlankPattern(Node& result, const boost::optional<Node>& name) {
 	if ( name ) {
 		assert(name->is<Identifier>());
@@ -354,8 +361,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				eps);
 
 		patternExpression =
-				identifier[_val = _1] >> ':' >> relationalExpression[phx::bind(&operatorPattern, _val, _1)] |
-				relationalExpression[_val = _1];
+				identifier[_val = _1] >> ':' >> notExpression[phx::bind(&operatorPattern, _val, _1)] |
+				notExpression[_val = _1];
+
+		notExpression = relationalExpression[_val = _1] |
+				'!' >> notExpression[phx::bind(&operatorNot, _val, _1)];
+
 
 		relationalExpression =
 				additiveExpression[_val = _1] >> (
@@ -478,6 +489,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> prefixAtExpression; // expr1 @ expr2
 	qi::rule<Iterator, Node(), delimiter> factorialExpression;
 	qi::rule<Iterator, Node(), delimiter> lamdaFunctionExpression; // expr &
+	qi::rule<Iterator, Node(), delimiter> notExpression;
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
 	qi::rule<Iterator, Node(), delimiter> slotPattern;
