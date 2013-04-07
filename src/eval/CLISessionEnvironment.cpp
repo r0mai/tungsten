@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include <readline/readline.h>
+
 namespace tungsten { namespace eval {
 
 CLISessionEnvironment::CLISessionEnvironment() {}
@@ -18,15 +20,19 @@ void CLISessionEnvironment::run() {
 
 
 	for ( int i = 1; ; ++i ) {
-		std::cout << "In[" << i << "] :=   ";
+		std::string prompt = "In[" + std::to_string(i) + "] :=   ";
 
-		std::string line;
-		if (!std::getline(std::cin, line)) {
+		char *input = readline( prompt.c_str() );
+
+		if (!input) {
 			break;
 		}
 
-		ast::Node result = evaluate(line);
+		ast::Node result = evaluate(std::string(input));
+
 		std::cout << "Out[" << i << "] =   " << result << std::endl;
+
+		std::free(input);
 	}
 }
 
