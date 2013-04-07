@@ -322,22 +322,14 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		//Tree : ---
 
 		compoundExpression =
-				relationalExpression[_val = _1] >> (
+				equalsToExpression[_val = _1] >> (
 					';' >> compoundExpression[phx::bind(&operatorCompoundExpressionSequence, _val, _1)] |
 					char_(';')[phx::bind(&operatorCompoundExpressionNullEnd, _val)] |
 					eps
 				);
-		// <(=) ; >(=) here
-		#if 1
-		relationalExpression = 
-				equalsToExpression[_val = _1] >> (
-				"<=" >> equalsToExpression[phx::bind(&operatorLessEqual, _val, _1) ] |
-				">=" >> equalsToExpression[phx::bind(&operatorGreaterEqual, _val, _1)] |
-				'<' >> equalsToExpression[phx::bind(&operatorLess, _val, _1)] |
-				'>' >> equalsToExpression[phx::bind(&operatorGreater, _val, _1)] |
-				eps);
 
-		#endif
+
+
 		equalsToExpression =
 				postFixAtExpression[_val = _1] >>
 				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
@@ -359,8 +351,16 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				eps);
 
 		patternExpression =
-				identifier[_val = _1] >> ':' >> additiveExpression[phx::bind(&operatorPattern, _val, _1)] |
-				additiveExpression[_val = _1];
+				identifier[_val = _1] >> ':' >> relationalExpression[phx::bind(&operatorPattern, _val, _1)] |
+				relationalExpression[_val = _1];
+
+		relationalExpression =
+				additiveExpression[_val = _1] >> (
+				"<=" >> additiveExpression[phx::bind(&operatorLessEqual, _val, _1) ] |
+				">=" >> additiveExpression[phx::bind(&operatorGreaterEqual, _val, _1)] |
+				'<' >> additiveExpression[phx::bind(&operatorLess, _val, _1)] |
+				'>' >> additiveExpression[phx::bind(&operatorGreater, _val, _1)] |
+				eps);
 
 		additiveExpression =
 				multiplicativeExpression[_val = _1] >>
