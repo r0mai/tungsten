@@ -42,7 +42,20 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::N, AttributeSet({ids::Protected}) )
 				(ids::NumericQ, AttributeSet({ids::Protected}) )
 				(ids::OrderedQ, AttributeSet({ids::Protected}) )
-				(ids::Function, AttributeSet({ids::HoldAll, ids::Protected}) );
+				(ids::Function, AttributeSet({ids::HoldAll, ids::Protected}) )
+				(ids::Less, AttributeSet({ids::Protected}) )
+				(ids::Greater, AttributeSet({ids::Protected}) )
+				(ids::LessEqual, AttributeSet({ids::Protected}) )
+				(ids::GreaterEqual, AttributeSet({ids::Protected}) )
+				(ids::Equal, AttributeSet({ids::Protected}) )
+				(ids::Unequal, AttributeSet({ids::Protected}) )
+				(ids::If, AttributeSet({ids::HoldRest, ids::Protected}) )
+				(ids::Slot, AttributeSet({ids::NHoldAll, ids::Protected}) )
+				(ids::TrueQ, AttributeSet({ids::Protected}) )
+				(ids::Not, AttributeSet({ids::Protected}) )
+				(ids::And, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
+				(ids::Or, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
+				(ids::Boole, AttributeSet({ids::Listable, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }

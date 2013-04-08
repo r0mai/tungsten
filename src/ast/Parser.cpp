@@ -181,25 +181,30 @@ void operatorPower(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
-void greaterOrEqual(Node& result, const Node& rhs) {
-	rightAssociativeOperator( ids::GreaterOrEqual, result, rhs );
-
+void operatorGreaterEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::GreaterEqual, result, rhs );
 }
 
-void greater(Node& result, const Node& rhs) {
+void operatorGreater(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Greater, result, rhs );
-
 }
 
-void lessOrEqual(Node& result, const Node& rhs) {
-	rightAssociativeOperator( ids::LessOrEqual, result, rhs );
-
+void operatorLessEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::LessEqual, result, rhs );
 }
 
-void less(Node& result, const Node& rhs) {
+void operatorLess(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Less, result, rhs );
-
 }
+
+void operatorUnequal(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Unequal, result, rhs );
+}
+
+void operatorEqual(Node& result, const Node& rhs) {
+	rightAssociativeOperator( ids::Equal, result, rhs );
+}
+
 void operatorApply(Node& result, const Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
 }
@@ -233,6 +238,13 @@ void operatorUnaryMinus(Node& result, const Node& operand) {
 	//TODO "- 1" should be parsed as -1 directly (and not Times[-1, 1] (low priority)
 	result = Node::make<math::Rational>(-1);
 	operatorTimes(result, operand);
+	operatorParentheses(result, result);
+}
+
+void operatorNot(Node& result, Node operand) {
+	removeIfParenthesesIdentityFunction(result);
+	removeIfParenthesesIdentityFunction(operand);
+	result = Node::make<ast::FunctionCall>(ids::Not, {operand});
 	operatorParentheses(result, result);
 }
 
@@ -322,22 +334,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		//Tree : ---
 
 		compoundExpression =
-				relationalExpression[_val = _1] >> (
+				equalsToExpression[_val = _1] >> (
 					';' >> compoundExpression[phx::bind(&operatorCompoundExpressionSequence, _val, _1)] |
 					char_(';')[phx::bind(&operatorCompoundExpressionNullEnd, _val)] |
 					eps
 				);
-		// <(=) ; >(=) here
-		#if 1
-		relationalExpression = 
-				equalsToExpression[_val = _1] >> (
-				"<=" >> equalsToExpression[phx::bind(&lessOrEqual, _val, _1) ] |
-				">=" >> equalsToExpression[phx::bind(&greaterOrEqual, _val, _1)] |
-				'<' >> equalsToExpression[phx::bind(&less, _val, _1)] |
-				'>' >> equalsToExpression[phx::bind(&greater, _val, _1)] |
-				eps);
 
-		#endif
 		equalsToExpression =
 				postFixAtExpression[_val = _1] >>
 				('=' >> equalsToExpression[phx::bind(&operatorSet, _val, _1)] |
@@ -359,8 +361,22 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 				eps);
 
 		patternExpression =
-				identifier[_val = _1] >> ':' >> additiveExpression[phx::bind(&operatorPattern, _val, _1)] |
-				additiveExpression[_val = _1];
+				identifier[_val = _1] >> ':' >> notExpression[phx::bind(&operatorPattern, _val, _1)] |
+				notExpression[_val = _1];
+
+		notExpression = relationalExpression[_val = _1] |
+				'!' >> notExpression[phx::bind(&operatorNot, _val, _1)];
+
+
+		relationalExpression =
+				additiveExpression[_val = _1] >> (
+				"==" >> additiveExpression[phx::bind(&operatorEqual, _val, _1)] |
+				"!=" >> additiveExpression[phx::bind(&operatorUnequal, _val, _1)] |
+				"<=" >> additiveExpression[phx::bind(&operatorLessEqual, _val, _1) ] |
+				">=" >> additiveExpression[phx::bind(&operatorGreaterEqual, _val, _1)] |
+				'<' >> additiveExpression[phx::bind(&operatorLess, _val, _1)] |
+				'>' >> additiveExpression[phx::bind(&operatorGreater, _val, _1)] |
+				eps);
 
 		additiveExpression =
 				multiplicativeExpression[_val = _1] >>
@@ -473,6 +489,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::rule<Iterator, Node(), delimiter> prefixAtExpression; // expr1 @ expr2
 	qi::rule<Iterator, Node(), delimiter> factorialExpression;
 	qi::rule<Iterator, Node(), delimiter> lamdaFunctionExpression; // expr &
+	qi::rule<Iterator, Node(), delimiter> notExpression;
 
 	qi::rule<Iterator, Node(), delimiter> blankPattern;
 	qi::rule<Iterator, Node(), delimiter> slotPattern;

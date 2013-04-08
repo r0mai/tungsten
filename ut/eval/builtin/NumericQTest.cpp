@@ -3,7 +3,7 @@
 
 #include "Fixture.hpp"
 
-BOOST_AUTO_TEST_SUITE( AbsTest )
+BOOST_AUTO_TEST_SUITE( NumericQTest )
 
 using namespace tungsten;
 

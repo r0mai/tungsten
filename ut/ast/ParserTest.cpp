@@ -961,7 +961,7 @@ BOOST_AUTO_TEST_CASE( parsing_the_pattern_x_blank ) {
 
 
 BOOST_AUTO_TEST_CASE( parsing_blank_times_x ) {
-	boost::optional<ast::Node>tree = ast::parseInput("x_");
+	boost::optional<ast::Node>tree = ast::parseInput("x _");
 
 	BOOST_REQUIRE( tree );
 
@@ -1244,6 +1244,64 @@ BOOST_AUTO_TEST_CASE( parsing_c_of_d_of_a_postfix ) {
 	BOOST_REQUIRE( tree );
 
 	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>(ast::Node::make<ast::FunctionCall>("c", {ast::Node::make<ast::Identifier>("d")}), {ast::Node::make<ast::Identifier>("a")}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_hash ) {
+	boost::optional<ast::Node>tree = ast::parseInput("#");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(1)}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_hash_1 ) {
+	boost::optional<ast::Node>tree = ast::parseInput("#1");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(1)}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_hash_2 ) {
+	boost::optional<ast::Node>tree = ast::parseInput("#2");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(2)}));
+}
+
+
+BOOST_AUTO_TEST_CASE( parsing_the_pure_function_hash_1 ) {
+	boost::optional<ast::Node>tree = ast::parseInput("#1 & ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Function", {ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(1)})}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_the_pure_function_hash ) {
+	boost::optional<ast::Node>tree = ast::parseInput("#& ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Function", {ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(1)})}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_the_pure_function_hash_plus_hash_2 ) {
+	boost::optional<ast::Node>tree = ast::parseInput("#1 + #2 & ");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Function", {ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(1)}), ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(2)})})}));
+}
+
+BOOST_AUTO_TEST_CASE( parsing_Slot_times_1 ) {
+	boost::optional<ast::Node>tree = ast::parseInput("# 1");
+
+	BOOST_REQUIRE( tree );
+
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::FunctionCall>("Slot", {ast::Node::make<math::Rational>(1)}), ast::Node::make<math::Rational>(1)}));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

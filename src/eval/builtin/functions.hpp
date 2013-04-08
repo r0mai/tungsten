@@ -44,6 +44,7 @@ OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& se
 OptionalNode Evaluate(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode N(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode NumericQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode If(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -71,14 +72,24 @@ OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& s
 OptionalNode Function(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
-// Defined in Relations.cpp
+// Defined in relations.cpp
+OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode LessOrEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode GreaterOrEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode GreaterEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
+//Defined in booleanFunctions.cpp
+OptionalNode TrueQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Not(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode And(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Or(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 }}} //namespace tungsten::eval::builtin
 
 #endif /* EVAL_BUILTIN_FUNCTIONS_HPP_ */

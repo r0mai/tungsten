@@ -22,11 +22,12 @@ Functions createFunctions() {
 	result[ids::Minus] = &Minus;
 	result[ids::Subtract] = &Subtract;
 	result[ids::Apply] = &Apply;
+	result[ids::Equal] = &Equal;
+	result[ids::Unequal] = &Unequal;
 	result[ids::Less] = &Less;
 	result[ids::Greater] = &Greater;
-	result[ids::LessOrEqual] = &LessOrEqual;
-	result[ids::GreaterOrEqual] = &GreaterOrEqual;
-
+	result[ids::LessEqual] = &LessEqual;
+	result[ids::GreaterEqual] = &GreaterEqual;
 	result[ids::Sin] = &Sin;
 	result[ids::Cos] = &Cos;
 	result[ids::Tan] = &Tan;
@@ -46,6 +47,12 @@ Functions createFunctions() {
 	result[ids::N] = &N;
 	result[ids::NumericQ] = &NumericQ;
 	result[ids::OrderedQ] = &OrderedQ;
+	result[ids::If] = &If;
+	result[ids::TrueQ] = &TrueQ;
+	result[ids::Not] = &Not;
+	result[ids::And] = &And;
+	result[ids::Or] = &Or;
+	result[ids::Boole] = &Boole;
 
 	return result;
 }

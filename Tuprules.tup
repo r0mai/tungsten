@@ -3,7 +3,7 @@
 #toolchain stuff
 
 CXX = clang++
-#CXX = g++
+CXX = g++
 #CXX = g++-4.7
 #CXX = g++-4.6
 LD = $(CXX)
@@ -12,7 +12,7 @@ LD = $(CXX)
 CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC
 
 #RELEASE CPPFLAGS
-#CPPFLAGS = -std=c++0x -Wall -Wextra -O2 -fPIC
+#CPPFLAGS = -std=c++0x -Wall -Wextra -O2 -g -fPIC
 
 LDFLAGS =
 
@@ -29,6 +29,9 @@ gmp_lib_statement = -L $(gmp_lib_dir)
 
 mpfr_lib_dir = /usr/local/lib
 mpfr_lib_statement = -L $(mpfr_lib_dir)
+
+readline_lib_dir = /usr/local/lib
+readline_lib_statement = -L $(readline_lib_dir)
 
 source_dir = $(TUP_CWD)/src
 
@@ -54,11 +57,14 @@ GMP_SHARED_LIBS = $(gmp_lib_dir)/libgmp.so
 MPFR_LIBS = $(mpfr_lib_dir)/libmpfr.a
 MPFR_SHARED_LIBS = $(mpfr_lib_dir)/libmpfr.so
 
+READLINE_LIBS = $(readline_lib_dir)/libreadline.a
+READLINE_SHARED_LIBS = $(readline_lib_dir)/libreadline.so
+
 #LIBS = $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS)
-LIBS = $(BOOST_LIBS) $(MPFR_LIBS) $(GMP_LIBS)
+LIBS = $(BOOST_LIBS) $(MPFR_LIBS) $(GMP_LIBS) $(READLINE_LIBS) -ltermcap
 
 #SHARED_LIBS = $(BOOST_SHARED_LIBS) $(PNG_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS)
-SHARED_LIBS = $(BOOST_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS)
+SHARED_LIBS = $(BOOST_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS) $(READLINE_SHARED_LIBS)
 
 
 !cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o

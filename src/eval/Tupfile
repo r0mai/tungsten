@@ -1,0 +1,7 @@
+.gitignore
+
+include_rules
+
+#Tup deletes the output file for us first
+: *.cpp |> cat %f >> %o |> aggregated_eval.cc
+
