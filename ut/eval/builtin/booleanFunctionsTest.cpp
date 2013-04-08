@@ -172,6 +172,51 @@ BOOST_FIXTURE_TEST_CASE( test_not_a_is_not_equal_to_b, BuiltinFunctionFixture ) 
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_1_if_False_is_true_and_0_otherwise, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Boole[False]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(0);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_1_if_True_is_true_and_0_otherwise, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Boole[True]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(1);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_1_if_x_is_true_and_0_otherwise, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Boole[x]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("Boole", {ast::Node::make<ast::Identifier>("x")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_1_if_the_list_True__False__x_is_true_and_0_otherwise, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Boole[{True, False, x}]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(0), ast::Node::make<ast::FunctionCall>("Boole", {ast::Node::make<ast::Identifier>("x")})});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

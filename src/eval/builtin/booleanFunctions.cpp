@@ -61,8 +61,21 @@ OptionalNode Or(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*s
 	return EvaluationFailure();
 }
 
-OptionalNode Boole(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
-	return EvaluationFailure();
+OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1 ) {
+		sessionEnvironment.raiseMessage( Message(ids::TrueQ, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::TrueQ ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+		return EvaluationFailure();
+	}
+
+	if ( operands[0].is<ast::Identifier>(ids::True) ) {
+		return ast::Node::make<math::Rational>(1);
+	} else if ( operands[0].is<ast::Identifier>(ids::False) ) {
+		return ast::Node::make<math::Rational>(0);
+	}
+	return ast::Node::make<ast::FunctionCall>(ids::Boole, operands);
 }
 
 }}} //namespace tungsten::eval::builtin
