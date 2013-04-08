@@ -35,9 +35,8 @@ def myform(val):
 
 class index: 
 	def getLog(self): 
-		p = Popen("tail log.txt", shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
 		largeString = ""
-		logStringList = p.stdout.read().split('\n')
+		logStringList = t.getLog().split('\n')
 		for l in logStringList:
 			tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l+"</a><br>"
 			largeString+=tmpString
@@ -58,9 +57,6 @@ class index:
 			output = ""
 			errors = ""
 			svg = ""
-		with open("log.txt", "a") as myfile:
-			if not (name == 'favicon.ico'): 
-				myfile.write(smart_str(name)+'\n')
 		return render.formtest(form, input, output, svg, errors.replace('\n', r'<br>'), self.getLog())
 
 

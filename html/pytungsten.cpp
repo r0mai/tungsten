@@ -19,13 +19,14 @@
 
 class WebOutput{
 	std::string input;
+	std::string TeXInput;
 	std::string output;
 	std::string svg;
 	std::vector<std::string> errors;
 	public:
 	WebOutput() : output() {};
-	WebOutput(const std::string& input, const std::string& output, const std::string& svg, const std::vector<std::string>& errors) :
-		input(input), output(output), svg(svg), errors(errors) { };
+	WebOutput(const std::string& input, const std::string& TeXInput, const std::string& output, const std::string& svg, const std::vector<std::string>& errors) :
+		input(input), TeXInput(TeXInput), output(output), svg(svg), errors(errors) { };
 
 	std::string getOutputString() const {
 		return output;
@@ -34,7 +35,9 @@ class WebOutput{
 	std::string getInputString() const {
 		return input;
 	}
-	
+	std::string getTeXInputString() const {
+		return TeXInput;
+	}	
 	std::string getSVG() const {
 		return svg;
 	}
@@ -92,9 +95,9 @@ public:
 			}
 			TeXInput = tungsten::io::NodeToTeXForm(*expression); // create TeX
 		} else { // if input was bad.
-			TeXInput = input;
+			TeXInput = "";
 		}
-		return WebOutput(TeXInput, output, svg, errors);
+		return WebOutput(input, TeXInput, output, svg, errors);
 	};
 };
 
@@ -104,6 +107,7 @@ class WebClassMonolith{
 private:
 	typedef std::string HashType;
 	std::map<HashType, std::shared_ptr<WebSessionEnvironment> > storage;
+	std::vector<std::string> log;	
 	boost::upgrade_mutex access;
 	WebClassMonolith(const WebClassMonolith&) = delete;
 	void operator=(const WebClassMonolith&) = delete;
@@ -134,6 +138,8 @@ public:
 			access.lock_shared(); // fall back to read access
 		}
 		auto tmp = it->second->evaluate(input);
+		if(tmp.getTeXInputString().size())
+			log.push_back(input);
 		access.unlock_shared(); // release read access.
 		return tmp;
 	}
@@ -143,6 +149,13 @@ public:
 		storage.erase(id);
 		access.unlock();
 	}
+	std::string getLog() const {
+		std::string str;
+		std::for_each(log.begin(), log.end(), [&str](const std::string& input){
+					str.append(input+"\n");
+				});
+		return str;	
+	}
 };
 
 BOOST_PYTHON_MODULE(pytungsten){
@@ -150,6 +163,7 @@ BOOST_PYTHON_MODULE(pytungsten){
 	using namespace boost::python;
 		class_<WebClassMonolith, boost::noncopyable>("tungsten")
 			.def("evaluate", &WebClassMonolith::evaluate)
+			.def("getLog", &WebClassMonolith::getLog)
 		;
 		class_<WebOutput>("WebOutput")
 			.def("getOutputString", &WebOutput::getOutputString)
