@@ -53,6 +53,7 @@ Functions createFunctions() {
 	result[ids::And] = &And;
 	result[ids::Or] = &Or;
 	result[ids::Boole] = &Boole;
+	result[ids::While] = &While;
 
 	return result;
 }

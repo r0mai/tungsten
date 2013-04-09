@@ -55,7 +55,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Not, AttributeSet({ids::Protected}) )
 				(ids::And, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
 				(ids::Or, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
-				(ids::Boole, AttributeSet({ids::Listable, ids::Protected}) );
+				(ids::Boole, AttributeSet({ids::Listable, ids::Protected}) )
+				(ids::While, AttributeSet({ids::HoldAll, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
