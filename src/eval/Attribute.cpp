@@ -56,7 +56,13 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::And, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
 				(ids::Or, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}) )
 				(ids::Boole, AttributeSet({ids::Listable, ids::Protected}) )
-				(ids::While, AttributeSet({ids::HoldAll, ids::Protected}) );
+				(ids::While, AttributeSet({ids::HoldAll, ids::Protected}) )
+				(ids::Attributes, AttributeSet({ids::HoldAll, ids::Listable, ids::Protected}) )
+				(ids::CompoundExpression, AttributeSet({ids::HoldAll, ids::Protected, ids::ReadProtected}) )
+				(ids::Flatten, AttributeSet({ids::Protected}) )
+				(ids::ArcSin, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected, ids::ReadProtected}) )
+				(ids::ArcCos, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected, ids::ReadProtected}) )
+				(ids::ArcTan, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected, ids::ReadProtected}) );
 
 	return AttributeMap(attributeStorage);
 }

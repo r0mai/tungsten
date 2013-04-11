@@ -25,7 +25,6 @@ Functions createFunctions();
 
 OptionalNode Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Numerator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Denominator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -46,6 +45,7 @@ OptionalNode N(const ast::Operands& operands, eval::SessionEnvironment& sessionE
 OptionalNode NumericQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode If(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
