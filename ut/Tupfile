@@ -4,5 +4,5 @@ include_rules
 
 LIBS += $(boost_lib_dir)/libboost_unit_test_framework.a
 
-: foreach ast/*.cpp eval/*.cpp eval/builtin/*.cpp math/*.cpp util/*.cpp *.cpp |> !cxx |>
+: foreach ast/*.cpp eval/*.cpp io/*.cpp eval/builtin/*.cpp math/*.cpp util/*.cpp *.cpp |> !cxx |>
 : *.o ../src/*.o |> !linker |> unitTest
