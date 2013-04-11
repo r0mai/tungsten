@@ -9,7 +9,7 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 
-namespace tungsten { namespace ast {
+namespace tungsten { namespace io {
 /** 
 \brief Main Namespace for Abstract Syntax Tree Building
 
@@ -21,61 +21,61 @@ namespace qi = spirit::qi;
 namespace phx = boost::phoenix;
 
 //FIXME: get rid of this global
-static const Identifier parenthesesIdentityFunction("#");
+static const ast::Identifier parenthesesIdentityFunction("#");
 
-void makeIdentifier(Node& result, const std::vector<char>& name) {
-	result = Node::make<Identifier>(name.begin(), name.end());
+void makeIdentifier(ast::Node& result, const std::vector<char>& name) {
+	result = ast::Node::make<ast::Identifier>(name.begin(), name.end());
 }
 
-void makeInteger(Node& result, const math::Integer& number) {
-	result = Node::make<math::Rational>(number);
+void makeInteger(ast::Node& result, const math::Integer& number) {
+	result = ast::Node::make<math::Rational>(number);
 }
 
-void makeReal(Node& result, const math::Real& number) {
-	result = Node::make<math::Real>(number);
+void makeReal(ast::Node& result, const math::Real& number) {
+	result = ast::Node::make<math::Real>(number);
 }
 
-void makeString(Node& result, const String& string) {
-	result = Node::make<String>(string);
+void makeString(ast::Node& result, const ast::String& string) {
+	result = ast::Node::make<ast::String>(string);
 }
 
-void removeParenthesesIdentityFunction(Node& node) {
-	assert( node.is<FunctionCall>() );
-	assert( node.get<FunctionCall>().getFunction().is<Identifier>() );
-	assert( node.get<FunctionCall>().getFunction().get<Identifier>() == parenthesesIdentityFunction );
-	assert( node.get<FunctionCall>().getOperands().size() == 1 );
+void removeParenthesesIdentityFunction(ast::Node& node) {
+	assert( node.is<ast::FunctionCall>() );
+	assert( node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() );
+	assert( node.get<ast::FunctionCall>().getFunction().get<ast::Identifier>() == parenthesesIdentityFunction );
+	assert( node.get<ast::FunctionCall>().getOperands().size() == 1 );
 
 	//We want a copy here of the front() reference
-	node = Node(node.get<FunctionCall>().getOperands().front());
+	node = ast::Node(node.get<ast::FunctionCall>().getOperands().front());
 }
 
-void removeIfParenthesesIdentityFunction(Node& node) {
+void removeIfParenthesesIdentityFunction(ast::Node& node) {
 
-	if ( 	node.is<FunctionCall>() &&
-			node.get<FunctionCall>().getFunction().is<Identifier>() &&
-			node.get<FunctionCall>().getFunction().get<Identifier>() == parenthesesIdentityFunction )
+	if ( 	node.is<ast::FunctionCall>() &&
+			node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() &&
+			node.get<ast::FunctionCall>().getFunction().get<ast::Identifier>() == parenthesesIdentityFunction )
 	{
 		removeParenthesesIdentityFunction(node);
 	}
 }
 
 
-void createFunctionCall(Node& result, const std::vector<ast::Node>& arguments) {
+void createFunctionCall(ast::Node& result, const std::vector<ast::Node>& arguments) {
 	removeIfParenthesesIdentityFunction(result);
 	result = ast::Node::make<ast::FunctionCall>(result, arguments);
 }
 
 
 //rhs by value, so removeIfParenthesesIdentityFunction can manipulate it
-void leftAssociativeListableOperator(const Identifier& functionName, Node& result, Node rhs) {
+void leftAssociativeListableOperator(const ast::Identifier& functionName, ast::Node& result, ast::Node rhs) {
 
 	removeIfParenthesesIdentityFunction(rhs);
 
-	if ( result.is<FunctionCall>() && result.get<FunctionCall>().getFunction().is<Identifier>() ) {
-		const Identifier& functionIdentifier = result.get<FunctionCall>().getFunction().get<Identifier>();
+	if ( result.is<ast::FunctionCall>() && result.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() ) {
+		const ast::Identifier& functionIdentifier = result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>();
 
 		if ( functionIdentifier == functionName ) {
-			result.get<FunctionCall>().getOperands().push_back(rhs);
+			result.get<ast::FunctionCall>().getOperands().push_back(rhs);
 			return;
 		} else if ( functionIdentifier == parenthesesIdentityFunction ) {
 			removeParenthesesIdentityFunction( result );
@@ -83,33 +83,33 @@ void leftAssociativeListableOperator(const Identifier& functionName, Node& resul
 		}
 
 	}
-	result = Node::make<FunctionCall>( functionName, {result, rhs} );
+	result = ast::Node::make<ast::FunctionCall>( functionName, {result, rhs} );
 }
 
-void rightAssociativeOperator(const Node& function, Node& result, Node rhs) {
+void rightAssociativeOperator(const ast::Node& function, ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
 
-	result = Node::make<FunctionCall>( function, {result, rhs} );
+	result = ast::Node::make<ast::FunctionCall>( function, {result, rhs} );
 }
 
-void rightAssociativeOperator(const Identifier& functionName, Node& result, const Node& rhs) {
-	rightAssociativeOperator(Node::make<Identifier>(functionName), result, rhs);
+void rightAssociativeOperator(const ast::Identifier& functionName, ast::Node& result, const ast::Node& rhs) {
+	rightAssociativeOperator(ast::Node::make<ast::Identifier>(functionName), result, rhs);
 }
 
-void operatorCompoundExpressionSequence(Node& result, Node rhs) {
+void operatorCompoundExpressionSequence(ast::Node& result, ast::Node rhs) {
 
 	//This would basically be rightAssociativeListableOperator
 	removeIfParenthesesIdentityFunction(result);
 
-	if ( rhs.is<ast::FunctionCall>() && rhs.get<FunctionCall>().getFunction().is<Identifier>() ) {
-		const Identifier& functionIdentifier = rhs.get<FunctionCall>().getFunction().get<Identifier>();
+	if ( rhs.is<ast::FunctionCall>() && rhs.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() ) {
+		const ast::Identifier& functionIdentifier = rhs.get<ast::FunctionCall>().getFunction().get<ast::Identifier>();
 
 		if ( functionIdentifier == ids::CompoundExpression ) {
 
-			Operands newOperands = rhs.get<FunctionCall>().getOperands();
+			ast::Operands newOperands = rhs.get<ast::FunctionCall>().getOperands();
 			newOperands.insert( newOperands.begin(), result );
-			result = Node::make<FunctionCall>(ids::CompoundExpression, newOperands);
+			result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, newOperands);
 			return;
 		} else if ( functionIdentifier == parenthesesIdentityFunction ) {
 			removeParenthesesIdentityFunction(rhs);
@@ -120,166 +120,166 @@ void operatorCompoundExpressionSequence(Node& result, Node rhs) {
 	result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, {result, rhs});
 }
 
-void operatorCompoundExpressionNullEnd(Node& result) {
+void operatorCompoundExpressionNullEnd(ast::Node& result) {
 	operatorCompoundExpressionSequence(result, ast::Node::make<ast::Identifier>(ids::Null));
 //	result = ast::Node::make<ast::FunctionCall>(ids::CompoundExpression, {result, ast::Node::make<ast::Identifier>(ids::Null)});
 }
 
-void applyPostFixOperator(Node& result, const Node& function) {
+void applyPostFixOperator(ast::Node& result, const ast::Node& function) {
 	removeIfParenthesesIdentityFunction(result);
-	result = Node::make<FunctionCall>(function, {result});
+	result = ast::Node::make<ast::FunctionCall>(function, {result});
 }
 
-void operatorFactorial2(Node& result) {
-	applyPostFixOperator( result, Node::make<Identifier>(ids::Factorial2) );
+void operatorFactorial2(ast::Node& result) {
+	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Factorial2) );
 }
 
-void operatorFactorial(Node& result) {
-	applyPostFixOperator( result, Node::make<Identifier>(ids::Factorial) );
+void operatorFactorial(ast::Node& result) {
+	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Factorial) );
 }
 
-void operatorSet(Node& result, const Node& rhs) {
+void operatorSet(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Set, result, rhs );
 }
 
-void operatorSetDelayed(Node& result, const Node& rhs) {
+void operatorSetDelayed(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::SetDelayed, result, rhs );
 }
 
-void operatorRule(Node& result, const Node& rhs) {
+void operatorRule(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Rule, result, rhs );
 }
 
-void operatorRuleDelayed(Node& result, const Node& rhs) {
+void operatorRuleDelayed(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::RuleDelayed, result, rhs );
 }
 
-void operatorPattern(Node& result, const Node& rhs) {
-	assert(result.is<Identifier>());
-	result = Node::make<FunctionCall>( ids::Pattern, {result, rhs} );
+void operatorPattern(ast::Node& result, const ast::Node& rhs) {
+	assert(result.is<ast::Identifier>());
+	result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {result, rhs} );
 }
 
-void operatorPlus(Node& result, const Node& rhs) {
+void operatorPlus(ast::Node& result, const ast::Node& rhs) {
 	leftAssociativeListableOperator( ids::Plus, result, rhs );
 }
 
-void operatorMinus(Node& result, Node rhs) {
+void operatorMinus(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(rhs);
-	operatorPlus( result, Node::make<FunctionCall>(ids::Times, {Node::make<math::Rational>(-1), rhs}) );
+	operatorPlus( result, ast::Node::make<ast::FunctionCall>(ids::Times, {ast::Node::make<math::Rational>(-1), rhs}) );
 }
 
-void operatorTimes(Node& result, const Node& rhs) {
+void operatorTimes(ast::Node& result, const ast::Node& rhs) {
 	leftAssociativeListableOperator( ids::Times, result, rhs );
 }
 
-void operatorDivide(Node& result, Node rhs) {
+void operatorDivide(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(rhs);
-	operatorTimes( result, Node::make<FunctionCall>(ids::Power, {rhs, Node::make<math::Rational>(-1)}) );
+	operatorTimes( result, ast::Node::make<ast::FunctionCall>(ids::Power, {rhs, ast::Node::make<math::Rational>(-1)}) );
 }
 
-void operatorPower(Node& result, const Node& rhs) {
+void operatorPower(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
-void operatorGreaterEqual(Node& result, const Node& rhs) {
+void operatorGreaterEqual(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::GreaterEqual, result, rhs );
 }
 
-void operatorGreater(Node& result, const Node& rhs) {
+void operatorGreater(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Greater, result, rhs );
 }
 
-void operatorLessEqual(Node& result, const Node& rhs) {
+void operatorLessEqual(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::LessEqual, result, rhs );
 }
 
-void operatorLess(Node& result, const Node& rhs) {
+void operatorLess(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Less, result, rhs );
 }
 
-void operatorUnequal(Node& result, const Node& rhs) {
+void operatorUnequal(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Unequal, result, rhs );
 }
 
-void operatorEqual(Node& result, const Node& rhs) {
+void operatorEqual(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Equal, result, rhs );
 }
 
-void operatorApply(Node& result, const Node& rhs) {
+void operatorApply(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
 }
 
-void operatorPrefixAt(Node& result, Node rhs) {
+void operatorPrefixAt(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
-	result = Node::make<FunctionCall>(result, {rhs});
+	result = ast::Node::make<ast::FunctionCall>(result, {rhs});
 }
 
-void operatorPostFixAt(Node& result, Node rhs) {
+void operatorPostFixAt(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
-	result = Node::make<FunctionCall>(rhs, {result});
+	result = ast::Node::make<ast::FunctionCall>(rhs, {result});
 }
 
-void operatorLambdaFunction(Node& result) {
-	applyPostFixOperator( result, Node::make<Identifier>(ids::Function) );
+void operatorLambdaFunction(ast::Node& result) {
+	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Function) );
 }
 
-void operatorParentheses(Node& result, const Node& expression) {
+void operatorParentheses(ast::Node& result, const ast::Node& expression) {
 	//Don't do anything for multiple, paralell parentheses
-	if ( expression.is<FunctionCall>() && expression.get<FunctionCall>().getFunction() == Node::make<Identifier>(parenthesesIdentityFunction) ) {
+	if ( expression.is<ast::FunctionCall>() && expression.get<ast::FunctionCall>().getFunction() == ast::Node::make<ast::Identifier>(parenthesesIdentityFunction) ) {
 		result = expression;
 	} else {
-		result = Node::make<FunctionCall>( parenthesesIdentityFunction, {expression} );
+		result = ast::Node::make<ast::FunctionCall>( parenthesesIdentityFunction, {expression} );
 	}
 }
 
-void operatorUnaryMinus(Node& result, const Node& operand) {
+void operatorUnaryMinus(ast::Node& result, const ast::Node& operand) {
 	//TODO "- 1" should be parsed as -1 directly (and not Times[-1, 1] (low priority)
-	result = Node::make<math::Rational>(-1);
+	result = ast::Node::make<math::Rational>(-1);
 	operatorTimes(result, operand);
 	operatorParentheses(result, result);
 }
 
-void operatorNot(Node& result, Node operand) {
+void operatorNot(ast::Node& result, ast::Node operand) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(operand);
-	result = Node::make<ast::FunctionCall>(ids::Not, {operand});
+	result = ast::Node::make<ast::FunctionCall>(ids::Not, {operand});
 	operatorParentheses(result, result);
 }
 
-void makeBlankPattern(Node& result, const boost::optional<Node>& name) {
+void makeBlankPattern(ast::Node& result, const boost::optional<ast::Node>& name) {
 	if ( name ) {
-		assert(name->is<Identifier>());
-		result = Node::make<FunctionCall>( ids::Pattern, {*name, Node::make<FunctionCall>( ids::Blank )} );
+		assert(name->is<ast::Identifier>());
+		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {*name, ast::Node::make<ast::FunctionCall>( ids::Blank )} );
 	} else {
-		result = Node::make<FunctionCall>( ids::Blank );
+		result = ast::Node::make<ast::FunctionCall>( ids::Blank );
 	}
 }
 
-void makeSlot(Node& result, boost::optional<Node> n) {
+void makeSlot(ast::Node& result, boost::optional<ast::Node> n) {
 	if ( !n ) {
-		n = Node::make<math::Rational>(1);
+		n = ast::Node::make<math::Rational>(1);
 	}
 	assert(n && n->is<math::Rational>() && math::isInteger(n->get<math::Rational>()) );
-	result = Node::make<FunctionCall>( ids::Slot, {*n} );
+	result = ast::Node::make<ast::FunctionCall>( ids::Slot, {*n} );
 }
 
-void createFunctionCallFromNode(Node& result, const Node& function) {
-	result = Node::make<FunctionCall>( function );
+void createFunctionCallFromNode(ast::Node& result, const ast::Node& function) {
+	result = ast::Node::make<ast::FunctionCall>( function );
 }
 
-void createFunctionCallFromString(Node& result, const std::string& name) {
-	result = Node::make<FunctionCall>( Node::make<Identifier>(name) );
+void createFunctionCallFromString(ast::Node& result, const std::string& name) {
+	result = ast::Node::make<ast::FunctionCall>( ast::Node::make<ast::Identifier>(name) );
 }
 
-void fillFunctionCall(Node& result, const std::vector<Node>& operands) {
-	assert( result.is<FunctionCall>() );
-	assert( result.get<FunctionCall>().getOperands().empty() );
-	result.get<FunctionCall>().getOperands() = operands;
+void fillFunctionCall(ast::Node& result, const std::vector<ast::Node>& operands) {
+	assert( result.is<ast::FunctionCall>() );
+	assert( result.get<ast::FunctionCall>().getOperands().empty() );
+	result.get<ast::FunctionCall>().getOperands() = operands;
 }
 
-void finishingTouches(Node& result, const Node& wholeExpression) {
+void finishingTouches(ast::Node& result, const ast::Node& wholeExpression) {
 	result = wholeExpression;
 	removeIfParenthesesIdentityFunction(result);
 }
@@ -312,7 +312,7 @@ struct OnlyNumericRealPolicies : qi::strict_real_policies<T> {
 typedef boost::spirit::ascii::space_type delimiter;
 
 template<class Iterator>
-struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter> {
+struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delimiter> {
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 
@@ -327,7 +327,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 		using qi::lit;
 		using qi::lexeme;
 
-		start = expression[_val = _1] | qi::eoi[_val = Node::make<Identifier>(ids::Null)];
+		start = expression[_val = _1] | qi::eoi[_val = ast::Node::make<ast::Identifier>(ids::Null)];
 
 		expression = compoundExpression[phx::bind(&finishingTouches, _val, _1)];
 
@@ -474,47 +474,47 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, Node(), delimiter>
 	qi::real_parser< math::Real, OnlyNumericRealPolicies<math::Real> > realParser;
 
 
-	qi::rule<Iterator, Node(), delimiter> start;
-	qi::rule<Iterator, Node(), delimiter> expression;
-	qi::rule<Iterator, Node(), delimiter> compoundExpression;
-	qi::rule<Iterator, Node(), delimiter> relationalExpression;
-	qi::rule<Iterator, Node(), delimiter> equalsToExpression;
-	qi::rule<Iterator, Node(), delimiter> postFixAtExpression; // expr1 // expr2
-	qi::rule<Iterator, Node(), delimiter> ruleExpression;
-	qi::rule<Iterator, Node(), delimiter> patternExpression;
-	qi::rule<Iterator, Node(), delimiter> additiveExpression;
-	qi::rule<Iterator, Node(), delimiter> multiplicativeExpression;
-	qi::rule<Iterator, Node(), delimiter> powerExpression;
-	qi::rule<Iterator, Node(), delimiter> applyExpression;
-	qi::rule<Iterator, Node(), delimiter> prefixAtExpression; // expr1 @ expr2
-	qi::rule<Iterator, Node(), delimiter> factorialExpression;
-	qi::rule<Iterator, Node(), delimiter> lamdaFunctionExpression; // expr &
-	qi::rule<Iterator, Node(), delimiter> notExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> start;
+	qi::rule<Iterator, ast::Node(), delimiter> expression;
+	qi::rule<Iterator, ast::Node(), delimiter> compoundExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> relationalExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> equalsToExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> postFixAtExpression; // expr1 // expr2
+	qi::rule<Iterator, ast::Node(), delimiter> ruleExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> patternExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> additiveExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> multiplicativeExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> powerExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> applyExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> prefixAtExpression; // expr1 @ expr2
+	qi::rule<Iterator, ast::Node(), delimiter> factorialExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> lamdaFunctionExpression; // expr &
+	qi::rule<Iterator, ast::Node(), delimiter> notExpression;
 
-	qi::rule<Iterator, Node(), delimiter> blankPattern;
-	qi::rule<Iterator, Node(), delimiter> slotPattern;
+	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
+	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
-	qi::rule<Iterator, std::vector<Node>(), delimiter> argumentList;
+	qi::rule<Iterator, std::vector<ast::Node>(), delimiter> argumentList;
 
-	qi::symbols<String::value_type, String::value_type> unescapedCharacters;
-	qi::rule<Iterator, String()> unescapedString;
-	qi::rule<Iterator, Node(), delimiter> string;
+	qi::symbols<ast::String::value_type, ast::String::value_type> unescapedCharacters;
+	qi::rule<Iterator, ast::String()> unescapedString;
+	qi::rule<Iterator, ast::Node(), delimiter> string;
 
-	qi::rule<Iterator, Node(), delimiter> identifier;
-	qi::rule<Iterator, Node(), delimiter> signedInteger;
-	qi::rule<Iterator, Node(), delimiter> unsignedInteger;
-	qi::rule<Iterator, Node(), delimiter> real;
-	qi::rule<Iterator, Node(), delimiter> functionCall;
-	qi::rule<Iterator, Node(), delimiter> list;
-	qi::rule<Iterator, Node(), delimiter> unaryPlusMinusOperator;
-	qi::rule<Iterator, Node(), delimiter> parenthesizedExpression;
-	qi::rule<Iterator, Node(), delimiter> primary;
+	qi::rule<Iterator, ast::Node(), delimiter> identifier;
+	qi::rule<Iterator, ast::Node(), delimiter> signedInteger;
+	qi::rule<Iterator, ast::Node(), delimiter> unsignedInteger;
+	qi::rule<Iterator, ast::Node(), delimiter> real;
+	qi::rule<Iterator, ast::Node(), delimiter> functionCall;
+	qi::rule<Iterator, ast::Node(), delimiter> list;
+	qi::rule<Iterator, ast::Node(), delimiter> unaryPlusMinusOperator;
+	qi::rule<Iterator, ast::Node(), delimiter> parenthesizedExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> primary;
 
 };
 
-boost::optional<Node> parseInput(const std::string& input) {
-	Node result;
+boost::optional<ast::Node> parseInput(const std::string& input) {
+	ast::Node result;
 	
 	std::string::const_iterator begin = input.cbegin();
 	std::string::const_iterator end = input.cend();
@@ -529,10 +529,10 @@ boost::optional<Node> parseInput(const std::string& input) {
 	if(success && begin == end){
 		return result;
 	} else {
-		return boost::optional<Node>();
+		return boost::optional<ast::Node>();
 	}
 }
 
 
-}} //namespace tungsten::ast
+}} //namespace tungsten::io
 

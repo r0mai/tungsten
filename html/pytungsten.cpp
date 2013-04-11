@@ -7,7 +7,7 @@
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
 
-#include "ast/Parser.hpp"
+#include "io/Parser.hpp"
 #include "io/NodeToTeXForm.hpp"
 #include "eval/ArgSessionEnvironment.hpp"
 #include "eval/CLISessionEnvironment.hpp"
@@ -75,7 +75,7 @@ public:
 		time(&lastAccess);
 		errors.clear();
 
-		boost::optional<tungsten::ast::Node> expression = tungsten::ast::parseInput(input);
+		boost::optional<tungsten::ast::Node> expression = tungsten::io::parseInput(input);
 		std::string TeXInput;
 		std::string svg;
 		std::string output;

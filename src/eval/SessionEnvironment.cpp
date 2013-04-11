@@ -10,7 +10,7 @@
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/transform.hpp>
 
-#include "ast/Parser.hpp"
+#include "io/Parser.hpp"
 #include "Identifiers.hpp"
 #include "threadListableOperands.hpp"
 #include "flattenOperands.hpp"
@@ -61,7 +61,7 @@ AttributeSet SessionEnvironment::getAttributeSetForFunction(const ast::Node& nod
 
 ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 
-	boost::optional<ast::Node> expression = ast::parseInput(inputString);
+	boost::optional<ast::Node> expression = io::parseInput(inputString);
 
 	if ( !expression ) {
 		raiseMessage(Message(ids::Syntax, ids::Syntax, {}));

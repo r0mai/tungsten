@@ -1,7 +1,7 @@
 
 #include "ArgSessionEnvironment.hpp"
 
-#include "ast/Parser.hpp"
+#include "io/Parser.hpp"
 #include "io/NodeToTeXForm.hpp"
 
 #include <boost/optional.hpp>
@@ -12,15 +12,9 @@ ArgSessionEnvironment::ArgSessionEnvironment() {}
 ArgSessionEnvironment::~ArgSessionEnvironment() {}
 
 std::string ArgSessionEnvironment::evaluateArg(const std::string& input) {
-	boost::optional<ast::Node> expression = ast::parseInput(input);
-	if ( !expression ) {
-		//handleMessage(Message{}); //TODO
-		return "Some error occured";
-	} else {
-		std::cout << io::NodeToTeXForm(*expression) << std::endl;
-		ast::Node result = evaluate(*expression);
-		return io::NodeToTeXForm(result);
-	}
+	ast::Node result = evaluate(input);
+	return io::NodeToTeXForm(result);
+
 }
 
 }} //namespace tungsten::eval
