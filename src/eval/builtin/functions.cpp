@@ -56,6 +56,7 @@ Functions createFunctions() {
 	result[ids::While] = &While;
 	result[ids::Attributes] = &Attributes;
 	result[ids::Print] = &Print;
+	result[ids::Part] = &Part;
 
 	return result;
 }

@@ -63,7 +63,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::ArcSin, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected, ids::ReadProtected}) )
 				(ids::ArcCos, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected, ids::ReadProtected}) )
 				(ids::ArcTan, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected, ids::ReadProtected}) )
-				(ids::Print, AttributeSet({ids::Protected}) );
+				(ids::Print, AttributeSet({ids::Protected}) )
+				(ids::Part, AttributeSet({ids::NHoldRest, ids::Protected, ids::ReadProtected}) );
 
 	return AttributeMap(attributeStorage);
 }

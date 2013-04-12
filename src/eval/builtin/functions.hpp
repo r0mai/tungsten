@@ -1,5 +1,6 @@
 
 
+
 #ifndef EVAL_BUILTIN_FUNCTIONS_HPP_
 #define EVAL_BUILTIN_FUNCTIONS_HPP_
 
@@ -47,6 +48,7 @@ OptionalNode If(const ast::Operands& operands, eval::SessionEnvironment& session
 OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
