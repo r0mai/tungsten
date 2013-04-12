@@ -181,6 +181,14 @@ void operatorPower(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Power, result, rhs );
 }
 
+void operatorAnd(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeListableOperator( ids::And, result, rhs );
+}
+
+void operatorOr(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeListableOperator( ids::Or, result, rhs );
+}
+
 void operatorGreaterEqual(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::GreaterEqual, result, rhs );
 }
@@ -361,8 +369,16 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				eps);
 
 		patternExpression =
-				identifier[_val = _1] >> ':' >> notExpression[phx::bind(&operatorPattern, _val, _1)] |
-				notExpression[_val = _1];
+				identifier[_val = _1] >> ':' >> orExpression[phx::bind(&operatorPattern, _val, _1)] |
+				orExpression[_val = _1];
+
+		orExpression =
+				andExpression[_val = _1] >>
+				*(  "||" >> andExpression[phx::bind(&operatorOr, _val, _1)] );
+
+		andExpression =
+				notExpression[_val = _1] >>
+				*(  "&&" >> notExpression[phx::bind(&operatorAnd, _val, _1)] );
 
 		notExpression = relationalExpression[_val = _1] |
 				'!' >> notExpression[phx::bind(&operatorNot, _val, _1)];
@@ -490,6 +506,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> factorialExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> lamdaFunctionExpression; // expr &
 	qi::rule<Iterator, ast::Node(), delimiter> notExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> andExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> orExpression;
 
 	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
 	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;

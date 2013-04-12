@@ -2,6 +2,8 @@
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
 
+#include <utility>
+
 namespace tungsten { namespace eval { namespace builtin {
 
 OptionalNode TrueQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
@@ -53,12 +55,50 @@ OptionalNode Not(const ast::Operands& operands, eval::SessionEnvironment& sessio
 	return ast::Node::make<ast::FunctionCall>( ids::Not, operands );
 }
 
-OptionalNode And(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
-	return EvaluationFailure();
+OptionalNode And(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+
+	ast::Operands resultOperands;
+
+	for ( const ast::Node& operand : operands ) {
+		ast::Node term = sessionEnvironment.recursiveEvaluate( operand );
+		if ( term.is<ast::Identifier>(ids::False) ) {
+			return ast::Node::make<ast::Identifier>(ids::False);
+		}
+		if ( !term.is<ast::Identifier>(ids::True) ) {
+			resultOperands.push_back( std::move(term) );
+		}
+	}
+
+	if ( resultOperands.empty() ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	}
+	if ( resultOperands.size() == 1 ) {
+		return resultOperands.back();
+	}
+	return ast::Node::make<ast::FunctionCall>(ids::And, std::move(resultOperands));
 }
 
-OptionalNode Or(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
-	return EvaluationFailure();
+OptionalNode Or(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+
+	ast::Operands resultOperands;
+
+	for ( const ast::Node& operand : operands ) {
+		ast::Node term = sessionEnvironment.recursiveEvaluate( operand );
+		if ( term.is<ast::Identifier>(ids::True) ) {
+			return ast::Node::make<ast::Identifier>(ids::True);
+		}
+		if ( !term.is<ast::Identifier>(ids::False) ) {
+			resultOperands.push_back( std::move(term) );
+		}
+	}
+
+	if ( resultOperands.empty() ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	}
+	if ( resultOperands.size() == 1 ) {
+		return resultOperands.back();
+	}
+	return ast::Node::make<ast::FunctionCall>(ids::Or, std::move(resultOperands));
 }
 
 OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
