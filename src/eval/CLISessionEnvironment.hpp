@@ -13,6 +13,7 @@ public:
 	virtual ~CLISessionEnvironment() override;
 
 	virtual void handleMessageString(const ast::String& /*messageString*/) override;
+    virtual void printToStdout(const ast::Operands& nodes) override;
 
 	void run();
 

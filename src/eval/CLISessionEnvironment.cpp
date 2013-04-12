@@ -13,6 +13,13 @@ CLISessionEnvironment::CLISessionEnvironment() {}
 
 CLISessionEnvironment::~CLISessionEnvironment() {}
 
+void CLISessionEnvironment::printToStdout(const ast::Operands& nodes) {
+    for ( const ast::Node& node : nodes ) {
+        std::cout << node << " ";
+    }
+    std::cout << std::endl;
+}
+
 void CLISessionEnvironment::handleMessageString(const ast::String& messageString) {
 	std::cout << "\033[1;31m" << messageString << "\033[0;00m" << std::endl;
 }

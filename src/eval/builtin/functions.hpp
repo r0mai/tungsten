@@ -46,6 +46,7 @@ OptionalNode NumericQ(const ast::Operands& operands, eval::SessionEnvironment& s
 OptionalNode If(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);

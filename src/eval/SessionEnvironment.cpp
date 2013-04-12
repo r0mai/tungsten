@@ -4,6 +4,7 @@
 #include <iterator>
 #include <vector>
 #include <functional>
+#include <iostream>
 
 #include <boost/bind.hpp>
 #include <boost/range/iterator_range.hpp>
