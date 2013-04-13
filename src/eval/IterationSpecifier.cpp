@@ -52,7 +52,8 @@ IterationSpecifier::Iterator::Iterator(const std::vector<ast::Node>& iterationVa
 
 IterationSpecifier::IterationSpecifier() {}
 
-ast::Node tryConvertToNumeric(const ast::Node& node, SessionEnvironment& sessionEnvironment) {
+ast::Node tryConvertToNumeric(ast::Node node, SessionEnvironment& sessionEnvironment) {
+	node = sessionEnvironment.recursiveEvaluate(node);
     if ( node.isNumeric() ) {
         return node;
     }
@@ -64,7 +65,7 @@ ast::Node tryConvertToNumeric(const ast::Node& node, SessionEnvironment& session
 }
 
 boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node& node, SessionEnvironment& sessionEnvironment) {
-	if ( getHead(node) != ast::Node::make<ast::Identifier>(ids::List) ) {
+	if ( !node.isFunctionCall(ids::List) ) {
 		return boost::none_t(); //failure
 	}
 
@@ -77,7 +78,7 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		return boost::none_t();
 
 	case 1:
-		listOperands[0] = sessionEnvironment.recursiveEvaluate(listOperands[0]); //min
+		listOperands[0] = tryConvertToNumeric(listOperands[0], sessionEnvironment); //min
 		if ( listOperands[0].isFunctionCall(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[0].get<ast::FunctionCall>().getOperands() );
 		} else if ( listOperands[0].isNumeric() ) {
@@ -86,7 +87,9 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 				listOperands[0], //max
 				ast::Node::make<math::Rational>(1) //step
 			);
-		}
+		} else {
+            return boost::none_t(); //TODO: Table[x,{t}] raises the wrong error
+        }
 		break;
 
 	case 2:
@@ -95,15 +98,14 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		}
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
 
-		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //max
+		listOperands[1] = tryConvertToNumeric(listOperands[1], sessionEnvironment); //max
 
 		if ( listOperands[1].isFunctionCall(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[1].get<ast::FunctionCall>().getOperands() );
 		} else if ( listOperands[1].isNumeric() ) {
 			iterationSpecifier.iteration = detail::MinMaxIteration(
 				ast::Node::make<math::Rational>(1), //min
-				//Not evaulatiing these here, they will be evaulated anyway
-				sessionEnvironment.recursiveEvaluate(listOperands[1]), //max
+				listOperands[1], //max
 				ast::Node::make<math::Rational>(1) //step
 			);
 		} else {
@@ -112,8 +114,8 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		break;
 
 	case 3:
-		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //min
-		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); //max
+		listOperands[1] = tryConvertToNumeric(listOperands[1], sessionEnvironment); //min
+		listOperands[2] = tryConvertToNumeric(listOperands[2], sessionEnvironment); //max
 		if ( !listOperands[0].is<ast::Identifier>() ||
 				!listOperands[1].isNumeric() ||
 				!listOperands[2].isNumeric() )
@@ -128,9 +130,9 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		);
 		break;
 	case 4:
-		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //min
-		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); //max
-		listOperands[3] = sessionEnvironment.recursiveEvaluate(listOperands[3]); //step
+		listOperands[1] = tryConvertToNumeric(listOperands[1], sessionEnvironment); //min
+		listOperands[2] = tryConvertToNumeric(listOperands[2], sessionEnvironment); //max
+		listOperands[3] = tryConvertToNumeric(listOperands[3], sessionEnvironment); //step
 		if ( !listOperands[0].is<ast::Identifier>() ||
 				!listOperands[1].isNumeric() ||
 				!listOperands[2].isNumeric() ||
