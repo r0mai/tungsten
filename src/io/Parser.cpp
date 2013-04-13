@@ -438,8 +438,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 		functionCallAndPartExpression =
 				primary[_val = _1] >> (
-					*(('[' >> argumentList >> ']')[phx::bind(&createFunctionCall, _val, _1)]  |
-                    ("[[" >> argumentList>> "]]")[phx::bind(&createPartExpression, _val, _1)] )
+                    *(("[[" >> argumentList >> "]]")[phx::bind(&createPartExpression, _val, _1)] |
+					('[' >> argumentList >> ']')[phx::bind(&createFunctionCall, _val, _1)]  )
 				);
 
 		//Primaries : ---
