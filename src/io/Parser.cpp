@@ -281,10 +281,15 @@ void createFunctionCallFromString(ast::Node& result, const std::string& name) {
 	result = ast::Node::make<ast::FunctionCall>( ast::Node::make<ast::Identifier>(name) );
 }
 
-void fillFunctionCall(ast::Node& result, const std::vector<ast::Node>& operands) {
+void fillFunctionCall(ast::Node& result, const ast::Operands& operands) {
 	assert( result.is<ast::FunctionCall>() );
 	assert( result.get<ast::FunctionCall>().getOperands().empty() );
 	result.get<ast::FunctionCall>().getOperands() = operands;
+}
+
+void createPartExpression(ast::Node& indexable, ast::Operands index) {
+    index.insert( index.begin(), indexable );
+    indexable = ast::Node::make<ast::FunctionCall>( ids::Part, index );
 }
 
 void finishingTouches(ast::Node& result, const ast::Node& wholeExpression) {
@@ -427,15 +432,14 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				eps);
 
 		prefixAtExpression =
-				functionCall[_val = _1] >> (
+				functionCallAndPartExpression[_val = _1] >> (
 				"@" >> prefixAtExpression[phx::bind(&operatorPrefixAt, _val, _1)] |
 				eps);
 
-		functionCall =
+		functionCallAndPartExpression =
 				primary[_val = _1] >> (
-					*('[' >>
-					argumentList[phx::bind(&createFunctionCall, _val, _1)] >>
-					']')
+					*(('[' >> argumentList >> ']')[phx::bind(&createFunctionCall, _val, _1)]  |
+                    ("[[" >> argumentList>> "]]")[phx::bind(&createPartExpression, _val, _1)] )
 				);
 
 		//Primaries : ---
@@ -513,7 +517,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
-	qi::rule<Iterator, std::vector<ast::Node>(), delimiter> argumentList;
+	qi::rule<Iterator, ast::Operands(), delimiter> argumentList;
 
 	qi::symbols<ast::String::value_type, ast::String::value_type> unescapedCharacters;
 	qi::rule<Iterator, ast::String()> unescapedString;
@@ -523,7 +527,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> signedInteger;
 	qi::rule<Iterator, ast::Node(), delimiter> unsignedInteger;
 	qi::rule<Iterator, ast::Node(), delimiter> real;
-	qi::rule<Iterator, ast::Node(), delimiter> functionCall;
+	qi::rule<Iterator, ast::Node(), delimiter> functionCallAndPartExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> list;
 	qi::rule<Iterator, ast::Node(), delimiter> unaryPlusMinusOperator;
 	qi::rule<Iterator, ast::Node(), delimiter> parenthesizedExpression;
