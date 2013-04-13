@@ -3,6 +3,7 @@
 #include "getHead.hpp"
 #include "ast/Node.hpp"
 #include "Identifiers.hpp"
+#include "eval/numericNodeEvaluation.hpp"
 
 
 namespace tungsten { namespace eval {
@@ -51,6 +52,17 @@ IterationSpecifier::Iterator::Iterator(const std::vector<ast::Node>& iterationVa
 
 IterationSpecifier::IterationSpecifier() {}
 
+ast::Node tryConvertToNumeric(const ast::Node& node, SessionEnvironment& sessionEnvironment) {
+    if ( node.isNumeric() ) {
+        return node;
+    }
+    ast::Node numericNode = numericNodeEvaluation(node, sessionEnvironment);
+    if ( numericNode.isNumeric() ) {
+        return numericNode;
+    }
+    return node;
+}
+
 boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node& node, SessionEnvironment& sessionEnvironment) {
 	if ( getHead(node) != ast::Node::make<ast::Identifier>(ids::List) ) {
 		return boost::none_t(); //failure
@@ -66,13 +78,12 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 
 	case 1:
 		listOperands[0] = sessionEnvironment.recursiveEvaluate(listOperands[0]); //min
-		if ( getHead(listOperands[0]) == ast::Node::make<ast::Identifier>(ids::List) ) {
+		if ( listOperands[0].isFunctionCall(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[0].get<ast::FunctionCall>().getOperands() );
 		} else if ( listOperands[0].isNumeric() ) {
 			iterationSpecifier.iteration = detail::MinMaxIteration(
 				ast::Node::make<math::Rational>(1), //min
-				//Not evaulatiing these here, they will be evaulated anyway
-				sessionEnvironment.recursiveEvaluate(listOperands[0]), //max
+				listOperands[0], //max
 				ast::Node::make<math::Rational>(1) //step
 			);
 		}
@@ -86,7 +97,7 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 
 		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); //max
 
-		if ( getHead(listOperands[1]) == ast::Node::make<ast::Identifier>(ids::List) ) {
+		if ( listOperands[1].isFunctionCall(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[1].get<ast::FunctionCall>().getOperands() );
 		} else if ( listOperands[1].isNumeric() ) {
 			iterationSpecifier.iteration = detail::MinMaxIteration(
@@ -181,10 +192,10 @@ bool IterationSpecifier::isFinite() const {
 	return boost::apply_visitor( IsFiniteVisitor{}, iteration );
 }
 
-template<class Number>
-std::vector<ast::Node> minMaxIterationCreator(const Number& min, const Number& max, const Number& step) {
+template<class IteratorNumber, class MaxNumber>
+std::vector<ast::Node> minMaxIterationCreator(const IteratorNumber& min, const MaxNumber& max, const IteratorNumber& step) {
 	if ( step == 0 && min == max ) {
-		return std::vector<ast::Node>({ast::Node::make<Number>(min)});
+		return std::vector<ast::Node>({ast::Node::make<IteratorNumber>(min)});
 	}
 
 	if ( (min < max && step < 0) || (min > max && step > 0) ) {
@@ -192,22 +203,28 @@ std::vector<ast::Node> minMaxIterationCreator(const Number& min, const Number& m
 	}
 
 	std::vector<ast::Node> resultIteration;
-	for ( Number i = min; i <= max; i += step ) {
-		resultIteration.push_back( ast::Node::make<Number>(i) );
+	for ( IteratorNumber i = min; i <= max; i += step ) {
+		resultIteration.push_back( ast::Node::make<IteratorNumber>(i) );
 	}
 	return resultIteration;
 }
 
 struct MakeIteratorVisitor : boost::static_visitor<std::vector<ast::Node>> {
 	std::vector<ast::Node> operator()(const detail::MinMaxIteration& minMaxIteration) const {
-		if ( minMaxIteration.max.is<math::Rational>() &&
-				minMaxIteration.min.is<math::Rational>() &&
+		if ( minMaxIteration.min.is<math::Rational>() &&
 				minMaxIteration.step.is<math::Rational>() )
 		{
-			return minMaxIterationCreator<math::Rational>(
+            if ( minMaxIteration.max.is<math::Rational>() ) {
+			    return minMaxIterationCreator(
 					minMaxIteration.min.get<math::Rational>(),
 					minMaxIteration.max.get<math::Rational>(),
 					minMaxIteration.step.get<math::Rational>());
+            }
+			return minMaxIterationCreator(
+		    	minMaxIteration.min.get<math::Rational>(),
+				minMaxIteration.max.get<math::Real>(),
+				minMaxIteration.step.get<math::Rational>());
+            
 		}
 
 		return minMaxIterationCreator<math::Real>(

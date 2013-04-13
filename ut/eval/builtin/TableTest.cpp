@@ -149,4 +149,59 @@ BOOST_FIXTURE_TEST_CASE( test_Table_of_x_and_the_list_the_list_1_plus_1__1_plus_
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_1_over_2_to_3_4, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, 1/2, 3.4}]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1,2), ast::Node::make<math::Rational>(3,2), ast::Node::make<math::Rational>(5,2)});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_1_over_2_to_Pi, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, 1/2, Pi}]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1,2), ast::Node::make<math::Rational>(3,2), ast::Node::make<math::Rational>(5,2)});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_1_over_2_to_5_6_in_increments_of_2, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, 1/2, 5.6, 2}]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1,2), ast::Node::make<math::Rational>(5,2), ast::Node::make<math::Rational>(9,2)});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_iterated_Pi_times, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {Pi}]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("x")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_x_equals_3_semicolon_build_a_table_out_of_x_iterated_x_times, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("x = 3; Table[x, {x}]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(3)});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
