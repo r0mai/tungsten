@@ -1,7 +1,7 @@
 
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
-#include "math/specialMathFunctions.hpp"
+#include "math/mathFunctions.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 

@@ -1,5 +1,5 @@
 
-#include "specialMathFunctions.hpp"
+#include "mathFunctions.hpp"
 #include <cassert>
 
 namespace tungsten { namespace math {
