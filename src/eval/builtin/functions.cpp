@@ -57,6 +57,11 @@ Functions createFunctions() {
 	result[ids::Attributes] = &Attributes;
 	result[ids::Print] = &Print;
 	result[ids::Part] = &Part;
+	result[ids::Floor] = &Floor;
+	result[ids::Ceiling] = &Ceiling;
+	result[ids::Round] = &Round;
+	result[ids::IntegerPart] = &IntegerPart;
+	result[ids::FractionalPart] = &FractionalPart;
 
 	return result;
 }

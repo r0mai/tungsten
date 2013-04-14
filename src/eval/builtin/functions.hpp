@@ -91,6 +91,13 @@ OptionalNode And(const ast::Operands& operands, eval::SessionEnvironment& sessio
 OptionalNode Or(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+//Defined in numericFunctions.cpp
+OptionalNode Floor(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Ceiling(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode IntegerPart(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 

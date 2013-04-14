@@ -588,6 +588,62 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Part, BuiltinFunctionFixture ) {
     BOOST_CHECK_EQUAL( *result, expected );
 }
 
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Floor, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Floor]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Ceiling, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Ceiling]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Round, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Round]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_IntegerPart, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Attributes[IntegerPart]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_FractionalPart, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Attributes[FractionalPart]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 

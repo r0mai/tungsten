@@ -19,6 +19,9 @@ Rational gammaForHalfsSqrtPiRatio(long n);
  */
 Real gamma(const Real& arg);
 
+Integer floor(const Real& arg);
+Integer ceiling(const Real& arg);
+
 }} //namespace tungsten::math
 
 #endif /* MATH_SPECIALMATHFUNCTIONS_HPP_ */

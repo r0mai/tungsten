@@ -21,4 +21,23 @@ Real gamma(const Real& arg) {
 	return result;
 }
 
+Integer floor(const Real& arg) {
+    Real resultReal;
+    Integer resultInteger;
+    mpfr_floor( resultReal.backend().data(), arg.backend().data() );
+    assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
+    mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
+    return resultInteger;
+}
+
+Integer ceiling(const Real& arg) {
+    Real resultReal;
+    Integer resultInteger;
+    mpfr_ceil( resultReal.backend().data(), arg.backend().data() );
+    assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
+    mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
+    return resultInteger;
+}
+
 }} //namespace tungsten::math
+
