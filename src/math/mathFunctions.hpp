@@ -21,6 +21,10 @@ Real gamma(const Real& arg);
 
 Integer floor(const Real& arg);
 Integer ceiling(const Real& arg);
+/*
+ * On half integer cases, it rounds to even integer
+ */
+Integer round(const Real& arg);
 
 }} //namespace tungsten::math
 

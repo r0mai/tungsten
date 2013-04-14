@@ -39,5 +39,15 @@ Integer ceiling(const Real& arg) {
     return resultInteger;
 }
 
+Integer round(const Real& arg) {
+    Real resultReal;
+    Integer resultInteger;
+    mpfr_rint( resultReal.backend().data(), arg.backend().data(), MPFR_RNDN );
+    assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
+    mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
+    return resultInteger;
+}
+
+
 }} //namespace tungsten::math
 
