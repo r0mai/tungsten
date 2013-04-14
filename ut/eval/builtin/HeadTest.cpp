@@ -70,3 +70,4 @@ BOOST_FIXTURE_TEST_CASE( test_Head_of_f_of_x_of_y , BuiltinFunctionFixture ) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+

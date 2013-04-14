@@ -34,7 +34,7 @@ OptionalNode Ceiling(const ast::Operands& operands, eval::SessionEnvironment& se
    
     ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
-        return ast::Node::make<ast::FunctionCall>( ids::Floor, operands );
+        return ast::Node::make<ast::FunctionCall>( ids::Ceiling, operands );
     }
     return ast::Node::make<math::Rational>( math::ceiling( numericNode.get<math::Real>() ) );
 }
@@ -51,7 +51,7 @@ OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sess
    
     ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
-        return ast::Node::make<ast::FunctionCall>( ids::Floor, operands );
+        return ast::Node::make<ast::FunctionCall>( ids::Round, operands );
     }
     return ast::Node::make<math::Rational>( math::round( numericNode.get<math::Real>() ) );
 }
