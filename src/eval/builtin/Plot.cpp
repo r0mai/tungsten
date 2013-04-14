@@ -25,13 +25,17 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			auto it = iteration->makeIterator();
 			auto previous = it.current();
 			auto lastKnownName = ast::Node::make<ast::Identifier>(iteration->getVariable());
+			ast::Node preVal, curVal;
+			if(iteration -> hasVariable()){
+				sessionEnvironment.addPattern(ast::Node::make<ast::Identifier>(iteration->getVariable()), previous);
+					preVal = sessionEnvironment.recursiveEvaluate(operands[0]);
+			}
 			// get last known value for plot variable
 			const auto lastKnownValue = sessionEnvironment.getPatternReplacement(ast::Node::make<ast::Identifier>(iteration->getVariable()));
-			for(it.advance();!it.isEnd() ; previous = it.current(), it.advance()){
-				ast::Node preVal, curVal;
+			ast::Operands functionLine; 
+
+			for(it.advance();!it.isEnd() ; previous = it.current(), it.advance(), preVal = curVal){
 				if(iteration -> hasVariable()) {
-					sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), previous );
-						preVal = sessionEnvironment.recursiveEvaluate(operands[0]);
 					sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), it.current() );
 						curVal = sessionEnvironment.recursiveEvaluate(operands[0]);
 				}
@@ -46,9 +50,13 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 							})
 								
 						})};
-				graphicsOperands.push_back(ast::Node::make<ast::FunctionCall>(eval::ids::Line, lineSegment));
+				functionLine.push_back(ast::Node::make<ast::FunctionCall>(eval::ids::List, {it.current(), curVal}));
 
-			} 
+			}
+			ast::Node functionLineList = ast::Node::make<ast::FunctionCall>(eval::ids::List, {});
+			functionLineList.get<ast::FunctionCall>().getOperands() = std::move(functionLine);	
+			graphicsOperands.push_back(ast::Node::make<ast::FunctionCall>(eval::ids::Line, {functionLineList}));
+
 //			sessionEnvironment.removePattern( ast::Node::make<ast::Identifier>(iteration->getVariable()) );
 //			^^ Don't remove, may not exist. //TODO Find way to query existance.
 			if(lastKnownValue)	
