@@ -4,7 +4,7 @@ include_rules
 
 CPPFLAGS += -fPIC -I ../src -I/usr/include/python2.7
 
-LDFLAGS += -shared -lpython2.7 -lboost_python
+LDFLAGS += -shared -lpython2.7 -lboost_python -lncurses
 
 !htmllinker = |> $(LD) $(LDFLAGS) $(SHARED_LIBS) -o %o %f |> pytungsten.so
 
