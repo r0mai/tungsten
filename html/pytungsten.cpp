@@ -1,9 +1,11 @@
 #include <Python.h>
 #include <boost/python.hpp>
 #include <string>
+#include <signal.h>
 #include <vector>
 #include <ctime>
 #include <algorithm>
+#include <fstream>
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
 
@@ -15,6 +17,26 @@
 #include "ast/Identifier.hpp"
 #include "eval/getHead.hpp"
 #include "io/NodeToTeXForm.hpp"
+
+
+std::vector<std::string>* logPtr;
+
+
+void catcher(int param){
+
+	//  std::exit(param);
+	signal(param, SIG_IGN);
+	signal(SIGINT, catcher);
+	std::cout<<"killed "<<param<<std::endl;
+	//write to file from logPTR.
+	std::ofstream out("log.txt");
+	std::for_each(logPtr->begin(), logPtr->end(), [&out](const std::string& s){
+				out<<s<<std::endl;
+			});	
+	out.close();
+	std::exit(param);          
+
+}
 
 
 class WebOutput{
@@ -112,7 +134,16 @@ private:
 	WebClassMonolith(const WebClassMonolith&) = delete;
 	void operator=(const WebClassMonolith&) = delete;
 public:
-	WebClassMonolith() : storage(), access() { };
+	WebClassMonolith() : storage(), access() { 
+		signal(SIGINT, catcher); 
+		// read into log from file.
+		logPtr = &log;
+		std::ifstream file("log.txt");
+		std::string tmp;
+		while(std::getline(file, tmp)){
+			log.push_back(tmp);
+		}
+	};
 	
 	WebOutput evaluate(HashType id, const std::string& input){
 		access.lock_shared(); // get read access.
@@ -168,6 +199,7 @@ BOOST_PYTHON_MODULE(pytungsten){
 		class_<WebOutput>("WebOutput")
 			.def("getOutputString", &WebOutput::getOutputString)
 			.def("getInputString", &WebOutput::getInputString)
+			.def("getTeXInputString", &WebOutput::getTeXInputString)
 			.def("getErrors", &WebOutput::getErrorMessages)
 			.def("getSVG", &WebOutput::getSVG)
 		;

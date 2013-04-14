@@ -36,7 +36,8 @@ def myform(val):
 class index: 
 	def getLog(self): 
 		largeString = ""
-		logStringList = t.getLog().split('\n')
+		logStringList = (t.getLog().split('\n')[-10:])
+		logStringList.reverse()
 		for l in logStringList:
 			tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l+"</a><br>"
 			largeString+=tmpString
@@ -49,7 +50,7 @@ class index:
 			uid = session.session_id
 			o = t.evaluate(uid,name.encode('ascii', 'ignore'))
 			output = o.getOutputString()
-			input = o.getInputString()
+			input = o.getTeXInputString()
 			errors = o.getErrors()
 			svg = o.getSVG()
 		else:
