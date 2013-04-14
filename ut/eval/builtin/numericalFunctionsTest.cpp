@@ -402,6 +402,39 @@ BOOST_FIXTURE_TEST_CASE( test_the_integer_closest_to_E, BuiltinFunctionFixture )
     BOOST_CHECK_EQUAL( *result, expected );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_Floor_of_Floor_of_x, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Floor[Floor[x]]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("Floor", {ast::Node::make<ast::Identifier>("x")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Ceiling_of_Ceiling_of_x, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Ceiling[Ceiling[x]]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("Ceiling", {ast::Node::make<ast::Identifier>("x")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_the_integer_closest_to_the_integer_closest_to_x, BuiltinFunctionFixture ) {
+    boost::optional<ast::Node> result = parseAndEvaluate("Round[Round[x]]");
+
+    BOOST_REQUIRE( result );
+
+    ast::Node expected = ast::Node::make<ast::FunctionCall>("Round", {ast::Node::make<ast::Identifier>("x")});
+
+    BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -14,7 +14,11 @@ OptionalNode Floor(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 		return EvaluationFailure();
     }
-   
+
+    if ( operands[0].isFunctionCall(ids::Floor) && operands[0].get<ast::FunctionCall>().getOperands().size() == 1 ) {
+        return operands[0];
+    }    
+
     ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
         return ast::Node::make<ast::FunctionCall>( ids::Floor, operands );
@@ -31,7 +35,11 @@ OptionalNode Ceiling(const ast::Operands& operands, eval::SessionEnvironment& se
 
 		return EvaluationFailure();
     }
-   
+ 
+    if ( operands[0].isFunctionCall(ids::Ceiling) && operands[0].get<ast::FunctionCall>().getOperands().size() == 1 ) {
+        return operands[0];
+    }    
+  
     ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
         return ast::Node::make<ast::FunctionCall>( ids::Ceiling, operands );
@@ -49,6 +57,10 @@ OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
     }
    
+    if ( operands[0].isFunctionCall(ids::Round) && operands[0].get<ast::FunctionCall>().getOperands().size() == 1 ) {
+        return operands[0];
+    }    
+
     ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
         return ast::Node::make<ast::FunctionCall>( ids::Round, operands );
