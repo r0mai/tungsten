@@ -1,4 +1,3 @@
-
 tungsten has the following dependencies:
 
 gcc (4.8) or clang (3.2)
@@ -27,6 +26,8 @@ boost (http://boost.org):
     Note: if you want to build the web front end as well you should first aquire python, since boost.python depends on it.
 
 tup (http://gittup.org/tup/):
+    apt-add-repository 'deb http://ppa.launchpad.net/anatol/tup/ubuntu lucid main'
+    apt-get update
     apt-get install tup
 
 gmp (http://gmplib.org/):
@@ -46,20 +47,25 @@ Downloading tungsten:
 
 tungsten is hosted on Google Code, you can download it from here:
 https://code.google.com/p/tungsten/source/checkout
+git clone https://code.google.com/p/tungsten/
 
 --------------------
 Building tungsten:
 
 From the root directory of tungsten
-to build only the binary:
+
+    tup init
+    
+and then    
+- to build only the binary:
     
     tup upd bin/tungsten
 
-to build only unit tests:
+- to build only unit tests:
     
     tup upd ut/unitest
 
-to build everything (web front-end as well):
+- to build everything (including the web front end):
 
     tup upd
 
