@@ -62,7 +62,7 @@ Functions createFunctions() {
 	result[ids::Round] = &Round;
 	result[ids::IntegerPart] = &IntegerPart;
 	result[ids::FractionalPart] = &FractionalPart;
-
+	result[ids::Export] = &Export;
 	return result;
 }
 

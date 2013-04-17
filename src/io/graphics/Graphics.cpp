@@ -1,4 +1,5 @@
 #include <string>
+#include <fstream>
 #include <iostream>
 #include <boost/format.hpp>
 #include "Graphics.hpp"
@@ -65,6 +66,25 @@ std::string GraphicsObject::toSVGString() const {
 	}
 	_output<<"</svg>";
 	return _output.str();
+}
+
+void GraphicsObject::exportToSVG(const std::string& filename) const {
+	std::ofstream _output(filename);
+	const auto box = getBoundingBox();
+	const auto diffX = [&](){const auto def = box.maxX - box.minX; if(def !=0) return def; return 0.001;}();
+	const auto diffY = [&](){const auto def = box.maxY - box.maxY; if(def !=0) return def; return 0.001;}();
+	_output<<
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
+	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<'"'; // svg header in.
+
+	// assume graph is 500px wide.
+	// place arrow marker, and hope that this will work.
+	for(const auto& shape : shapes){
+		_output<<shape->toBoundedSVGString(box)<<'\n';
+	}
+	_output<<"</svg>";
+	_output<<std::endl;
+	_output.close();
 }
 
 BoundingBox GraphicsObject::getBoundingBox() const {

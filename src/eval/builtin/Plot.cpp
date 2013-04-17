@@ -1,9 +1,12 @@
+#include <fstream>
+#include <algorithm>
 #include "functions.hpp"
 #include "eval/getHead.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/IterationSpecifier.hpp"
 #include "eval/orderNode.hpp"
 #include "io/graphics/Primitives.hpp"
+#include "io/graphics/Graphics.hpp"
 #include "math/Real.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
@@ -137,6 +140,24 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 	return EvaluationFailure();
 }
 
+OptionalNode Export(const ast::Operands& operands, SessionEnvironment& sessionEnvironment){
+	if(operands.size()==2 && operands[0].is<ast::String>() ){
+		io::graphics::GraphicsObject graphicsObject;
+		makeGraphics(operands[1], sessionEnvironment, graphicsObject);
+		const auto filename = [&]() -> const std::string {
+			const auto filename = operands[0].get<ast::String>().toString();
+			if(filename.size()>=2 && filename[0] == '"' && filename[filename.length()-1] == '"'){
+				std::string realFilename;
+				std::copy(filename.begin()+1, filename.end()-1, realFilename.begin());
+				return realFilename;
+			}
+			return filename;
+		}();
+		graphicsObject.exportToSVG(filename);
+		return (operands[0]);
+	} 
+	return EvaluationFailure();
+}
 
 
 }}}; // tungsten::eval::builtin

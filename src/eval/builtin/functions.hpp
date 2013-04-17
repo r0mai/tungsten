@@ -100,7 +100,7 @@ OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironm
 
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-
+OptionalNode Export(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 }}} //namespace tungsten::eval::builtin
 
 #endif /* EVAL_BUILTIN_FUNCTIONS_HPP_ */

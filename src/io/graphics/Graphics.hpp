@@ -68,7 +68,7 @@ class GraphicsObject {
 	std::vector<std::vector<std::unique_ptr<GraphicsDirective> > > modifiers;
 public:
 	std::string toSVGString() const;
-	
+	void exportToSVG(const std::string& filename) const;	
 	GraphicsObject(const GraphicsObject& g) = delete;
 	GraphicsObject(GraphicsObject&& g) : shapes(std::move(g.shapes)), modifiers(std::move(g.modifiers)) { }
 	GraphicsObject() = default;
