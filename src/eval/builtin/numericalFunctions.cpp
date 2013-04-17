@@ -69,10 +69,12 @@ OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sess
 }
 
 OptionalNode IntegerPart(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+    //TODO
 	return ast::Node::make<ast::FunctionCall>( ids::IntegerPart, operands );
 }
 
 OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+    //TODO
 	return ast::Node::make<ast::FunctionCall>( ids::FractionalPart, operands );
 }
 }}} //namespace tungsten::eval::builtin

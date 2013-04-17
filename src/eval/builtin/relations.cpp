@@ -26,14 +26,57 @@ boost::tribool compareNodes(const ast::Operands& operands, eval::SessionEnvironm
 	return true;
 }
 
-OptionalNode Equal(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	//TODO Indeterminate == Indeterminate
-	return EvaluationFailure();
+	if ( operands.size() != 2 ) {
+		return EvaluationFailure();
+	}
+	const ast::Node& lhs = operands[0];
+	const ast::Node& rhs = operands[1];
+	boost::tribool result = boost::indeterminate;
+	if ( lhs.is<math::Rational>() && rhs.is<math::Rational>() ) {
+		result = lhs.get<math::Rational>() == rhs.get<math::Rational>();
+	} else {
+		ast::Node numericLhs = numericNodeEvaluation(lhs, sessionEnvironment);
+		ast::Node numericRhs = numericNodeEvaluation(rhs, sessionEnvironment);
+		if ( numericLhs.isNumeric() && numericRhs.isNumeric() ) {
+			result = numericLhs == numericRhs;
+		}
+	}
+	if ( result ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else if ( !result ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	} else {
+		return EvaluationFailure();
+	}
+		
 }
 
-OptionalNode Unequal(const ast::Operands& /*operands*/, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	//TODO Indeterminate == Indeterminate
-	return EvaluationFailure();
+	if ( operands.size() != 2 ) {
+		return EvaluationFailure();
+	}
+	const ast::Node& lhs = operands[0];
+	const ast::Node& rhs = operands[1];
+	boost::tribool result = boost::indeterminate;
+	if ( lhs.is<math::Rational>() && rhs.is<math::Rational>() ) {
+		result = lhs.get<math::Rational>() != rhs.get<math::Rational>();
+	} else {
+		ast::Node numericLhs = numericNodeEvaluation(lhs, sessionEnvironment);
+		ast::Node numericRhs = numericNodeEvaluation(rhs, sessionEnvironment);
+		if ( numericLhs.isNumeric() && numericRhs.isNumeric() ) {
+			result = numericLhs != numericRhs;
+		}
+	}
+	if ( result ) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else if ( !result ) {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	} else {
+		return EvaluationFailure();
+	}
 }
 
 OptionalNode Less(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
