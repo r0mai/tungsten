@@ -29,18 +29,22 @@ application = app.wsgifunc()
 
 
 def myform(val):
-	return  form.Form( form.Textbox("input", size="56", maxlength="128", placeholder="Input here", value=val, 
-    	validators = [form.Validator("Only ASCII chars please.", lambda s: all(ord(smart_str(c))<128 for c in s) )]) )
+	return  form.Form( form.Textarea("input", rows="5", cols="40", placeholder="Input here", value=val ) )
 
 
 class index: 
 	def getLog(self): 
 		largeString = ""
-		logStringList = (t.getLog().split('\n')[-10:])
+		logStringList = (t.getLog().split('\n')[-11:])
 		logStringList.reverse()
 		for l in logStringList:
-			tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l+"</a><br>"
-			largeString+=tmpString
+			if l:
+				if len(l) < 100:
+					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l+"</a><br>"
+				else:
+					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten"+l+"\">"+l[:97]+"...</a><br>"
+				largeString+=tmpString
+
 		return largeString
 
 	

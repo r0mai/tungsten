@@ -4,7 +4,14 @@ $def with (form, name, output, svg, errors, log)
 <head>
 <!-- header info used to contain extra information about
    this document, not displayed on the page -->
-   
+<!-- skinning here
+-->
+<style type="text/css">
+	body {background:url(http://matthiasvegh.dyndns.org/bg.png);}
+	svg {border: 1px solid black;background:white;}
+	.log {border: 1px dashed darkgrey; border-radius: 5px; display: inline-block; min-width:30%; padding: 5px}
+</style>
+
  <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   "HTML-CSS": { linebreaks: { automatic: true } },
@@ -37,16 +44,16 @@ MathJax.Hub.Config({
 <body onload = "escapeCharacters()">
 	<div align="center">
 		$if name:
-			Your Input: \$\$ $name \$\$ 
+			Your Input:<br><div class="input"> \$\$ $name \$\$ </div>
 		$else:
 			Try me!
 
 		$if errors:
-			$:errors
+			$:errors<br>
 		$if output:
-			\$\$ $output \$\$
+			Output:<br><div class="output"> \$\$ $output \$\$ </div>
 		$if svg and not output:
-			$:svg
+			<div class="svg">$:svg</div>
 
 		<form name="main" method="post">
 			$:form.render()
@@ -57,7 +64,7 @@ MathJax.Hub.Config({
 		<br>
 		$if name:
 			Last 10 inputs: <br>
-			$:log
+			<div class="log">$:log</div>
 		$else:
 			Try these inputs:<br>
 			<a href="/tungsten/2+2">2+2</a><br>
