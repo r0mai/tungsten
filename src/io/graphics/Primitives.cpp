@@ -247,6 +247,7 @@ Line& Line::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 			raise(environment);
 		}
 	} else {
+		std::cout<<"Line got "<<operands.size()<<" Operands"<<std::endl;
 		raise(environment);
 	}
 	return *this;
@@ -305,6 +306,7 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 		// rationale: atan2 has issues when diffX and diffY are both 0 (ie.: prev == last),
 		// so we find the last point that isn't last.
 		if(it != points.rend()){
+		//	std::cout<<"Arrow made sense"<<std::endl;
 			// arrow still makes sense.
 			const auto previous = *it;
 			const auto diffX = last.first.convert_to<double>() - previous.first.convert_to<double>();
@@ -314,7 +316,7 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 			
 			const auto diameter = std::sqrt((box.maxX - box.minX)*(box.maxX - box.minX) + (box.maxY - box.minY)*(box.maxY - box.minY));
 
-			const auto distance = diameter * 0.04; // const for triangle size.
+			const auto distance = diameter * 0.01; // const for triangle size.
 //			const auto pi = boost::math::constants::pi<double>();
 
 			const auto x = math::Real(last.first - std::cos(radians)*distance ).convert_to<double>();
