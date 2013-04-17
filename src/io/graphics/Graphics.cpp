@@ -52,8 +52,8 @@ std::string GraphicsObject::toSVGString() const {
 
 		// calulate scale for ACS
 	const auto box = getBoundingBox();
-	const auto diffX = box.maxX - box.minX;
-	const auto diffY = box.maxY - box.minY;
+	const auto diffX = [&](){const auto def=box.maxX - box.minX; if(def) return def; return 0.001;}();
+	const auto diffY = [&](){const auto def=box.maxY - box.minY; if(def) return def; return 0.001;}();
 	_output<<
 	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
 	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.

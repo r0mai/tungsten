@@ -1,4 +1,3 @@
-
 tungsten has the following dependencies:
 
 gcc (4.8) or clang (3.2)
@@ -14,8 +13,8 @@ python (2.7)
 Note: It is very likely that tungsten will work with newer versions of these libraries, but less likely with previous versions.
 Note: It is recommended to install everything to /usr/local/ (The default install location for all of these libraries). This way tungsten should work without any extra configuration.
 
---------------------
 Installing dependencies:
+--------------------
 
 clang (http://clang.llvm.org/)
     From svn trunk: http://clang.llvm.org/get_started.html
@@ -27,6 +26,8 @@ boost (http://boost.org):
     Note: if you want to build the web front end as well you should first aquire python, since boost.python depends on it.
 
 tup (http://gittup.org/tup/):
+    apt-add-repository 'deb http://ppa.launchpad.net/anatol/tup/ubuntu lucid main'
+    apt-get update
     apt-get install tup
 
 gmp (http://gmplib.org/):
@@ -41,25 +42,39 @@ readline (http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html):
 python (http://www.python.org/):
     apt-get install python2.7-dev
 
---------------------
 Downloading tungsten:
+--------------------
 
 tungsten is hosted on Google Code, you can download it from here:
 https://code.google.com/p/tungsten/source/checkout
+git clone https://code.google.com/p/tungsten/
 
+Configuring tungsten:
 --------------------
+
+There is no ./configure script for tungsten (yet).
+This means, that you have to do these configurations by hand.
+The configuration has to be done in the Tuprules.tup file in the root directory.
+For example, if you're using clang++ for compiling (as recommended above) make sure
+that $(CXX) variable has clang++ as its value.
+
 Building tungsten:
+--------------------
 
 From the root directory of tungsten
-to build only the binary:
+
+    tup init
+    
+and then    
+- to build only the binary:
     
     tup upd bin/tungsten
 
-to build only unit tests:
+- to build only unit tests:
     
     tup upd ut/unitest
 
-to build everything (web front-end as well):
+- to build everything (including the web front end):
 
     tup upd
 
