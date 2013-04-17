@@ -36,7 +36,10 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		if ( identifier.size() == 1 ) {
 			return identifier.toString();
 		} else {
-			return "\\text{" + identifier.toString() + "}";
+			if(identifier == eval::ids::Pi)
+				return "\\pi";
+			else
+				return "\\text{" + identifier.toString() + "}";
 		}
 
 	}
@@ -98,7 +101,16 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			result += NodeToTeXFormRecursive(operands[0], -1) + "\\ge" + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::LessEqual) && operands.size() == 2) {
 			result += NodeToTeXFormRecursive(operands[0], -1) + "\\le" + NodeToTeXFormRecursive(operands[1], -1);
-		} else {
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Equal) && operands.size() == 2){
+			result += NodeToTeXFormRecursive(operands[0], -1) + "==" + NodeToTeXFormRecursive(operands[1], -1);
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Floor) && operands.size() == 1) {
+			result += "\\lfloor" + NodeToTeXFormRecursive(operands[0], -1) + "\\rfloor";
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Ceiling) && operands.size() == 1) {
+			result += "\\lceil" + NodeToTeXFormRecursive(operands[0], -1) + "\\rceil";
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Abs) && operands.size() == 1) {
+			result += '|' + NodeToTeXFormRecursive(operands[0], -1) + '|';
+		}
+		else {
 
 			//TODO 3 is good here?
 			result += NodeToTeXFormRecursive(functionCall.getFunction(), 3) +
