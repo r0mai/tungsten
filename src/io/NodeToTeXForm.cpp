@@ -104,9 +104,9 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Equal) && operands.size() == 2){
 			result += NodeToTeXFormRecursive(operands[0], -1) + "==" + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Floor) && operands.size() == 1) {
-			result += "\\lfloor" + NodeToTeXFormRecursive(operands[0], -1) + "\\rfloor";
+			result += "\\lfloor " + NodeToTeXFormRecursive(operands[0], -1) + "\\rfloor ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Ceiling) && operands.size() == 1) {
-			result += "\\lceil" + NodeToTeXFormRecursive(operands[0], -1) + "\\rceil";
+			result += "\\lceil " + NodeToTeXFormRecursive(operands[0], -1) + "\\rceil ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Abs) && operands.size() == 1) {
 			result += '|' + NodeToTeXFormRecursive(operands[0], -1) + '|';
 		}
