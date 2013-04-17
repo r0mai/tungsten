@@ -20,7 +20,7 @@ private:
 public:
     ColorDirective() = default;
     ColorDirective(const ColorDirective& ) = default;
-    ColorDirective& operator=(const ColorDirective& c) = default;
+    ColorDirective& operator=(const ColorDirective& ) = default;
     ColorDirective(const PixelType& r, const PixelType& g, const PixelType& b) : _r(r), _g(g), _b(b) { }
     PixelType r() const;
     PixelType g() const;
