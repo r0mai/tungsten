@@ -2,6 +2,7 @@
 #include "eval/getHead.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/IterationSpecifier.hpp"
+#include "eval/orderNode.hpp"
 #include "io/graphics/Primitives.hpp"
 #include "math/Real.hpp"
 
@@ -48,20 +49,43 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			}
 			// get last known value for plot variable
 			const auto lastKnownValue = sessionEnvironment.getPatternReplacement(ast::Node::make<ast::Identifier>(iteration->getVariable()));
-			ast::Operands functionLine; 
-
+			std::vector<ast::Operands> functionLine; 
+			functionLine.push_back(ast::Operands());
+			const auto yRangeMultiplier = 0.5; // if 0.5, Plots will be square, increase for taller, decrease for wider.
+			bool isValid = false;
 			for(it.advance();!it.isEnd() ; previous = it.current(), it.advance(), preVal = curVal){
 				if(iteration -> hasVariable()) {
 					sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), it.current() );
 						curVal = sessionEnvironment.recursiveEvaluate(operands[0]);
-				}	
-				functionLine.push_back(ast::Node::make<ast::FunctionCall>(eval::ids::List, {it.current(), curVal}));
+				}
+				if(curVal.isNumeric() && 
+						nodeLess(ast::Node::make<math::Real>(curVal.getNumeric()),ast::Node::make<math::Real>(yRangeMultiplier*(end-start))) && 
+						nodeLess(ast::Node::make<math::Real>(-yRangeMultiplier*(end-start)), ast::Node::make<math::Real>(curVal.getNumeric())) )
+				// if curval isn't stupidly big (or invalid) then add to function Line.	
+				{
+					functionLine.back().push_back(ast::Node::make<ast::FunctionCall>(eval::ids::List, {it.current(), curVal}));
+					isValid = true;
+				}
+				else
+			   	{
+					if(isValid)
+						functionLine.push_back(ast::Operands());
+					isValid = false;
+				} 
 			}
-			ast::Node Line = ast::Node::make<ast::FunctionCall>(eval::ids::Line, {
-					ast::Node::make<ast::FunctionCall>(eval::ids::List, std::move(functionLine))}
-			);
+
+			ast::Operands flatLine;
+			for(const auto lineSegment : functionLine){
+				for(const auto point : lineSegment){
+					flatLine.push_back(point);
+				}
+			}
+
+			ast::Node helperLine = ast::Node::make<ast::FunctionCall>(eval::ids::Line, {
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, flatLine)
+			});
 			
-			const auto lineHelper = io::graphics::Line().fromOperands(Line.get<ast::FunctionCall>().getOperands(), sessionEnvironment);
+			const auto lineHelper = io::graphics::Line().fromOperands(helperLine.get<ast::FunctionCall>().getOperands(), sessionEnvironment);
 			const auto box = lineHelper.getBoundingBox();
 			ast::Node xAxis = ast::Node::make<ast::FunctionCall>(eval::ids::Arrow, {
 						ast::Node::make<ast::FunctionCall>(eval::ids::List, {
@@ -91,8 +115,22 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			else
 				sessionEnvironment.removePattern(lastKnownName);
 			// restore variable.
+			//
+			const auto blue = ast::Node::make<ast::Identifier>(eval::ids::Blue);
+
+			ast::Operands merged;
+			merged.push_back(xAxis);
+			merged.push_back(yAxis);
+			merged.push_back(blue);
+
+			for(const auto lineSegment : functionLine){
+				merged.push_back(ast::Node::make<ast::FunctionCall>(eval::ids::Line, {
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, lineSegment)
+				}));
+			}
+
 			const auto GraphicsNode = ast::Node::make<ast::FunctionCall>(eval::ids::Graphics, 
-					{ast::Node::make<ast::FunctionCall>(eval::ids::List, {Line, xAxis, yAxis} )});
+					{ast::Node::make<ast::FunctionCall>(eval::ids::List, merged )});
 			return GraphicsNode;
 		}
 	}
