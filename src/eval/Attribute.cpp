@@ -69,7 +69,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Ceiling, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::Round, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::IntegerPart, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
-				(ids::FractionalPart, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) );
+				(ids::FractionalPart, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
+				(ids::Hold, AttributeSet({ids::HoldAll, ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
