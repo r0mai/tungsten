@@ -42,7 +42,7 @@ class index:
 				if len(l) < 100:
 					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l+"</a><br>"
 				else:
-					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten"+l+"\">"+l[:97]+"...</a><br>"
+					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l[:97]+"...</a><br>"
 				largeString+=tmpString
 
 		return largeString
