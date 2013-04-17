@@ -18,7 +18,22 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			const auto tableList = *tableListOptional;
 			assert(getHead(tableList) == ast::Node::make<ast::Identifier>(eval::ids::List));
 			const auto argumentList = tableList.get<ast::FunctionCall>().getOperands();
-			boost::optional<eval::IterationSpecifier> iteration = eval::IterationSpecifier::fromNode(operands[1], sessionEnvironment);
+			if(!operands[1].get<ast::FunctionCall>().getOperands()[1].isNumeric() || !operands[1].get<ast::FunctionCall>().getOperands()[2].isNumeric()){
+				return EvaluationFailure();
+			}
+			const math::Real& start = operands[1].get<ast::FunctionCall>().getOperands()[1].getNumeric();
+			const math::Real& end = operands[1].get<ast::FunctionCall>().getOperands()[2].getNumeric();
+
+			const auto newRange = [&]() -> const ast::Node {
+				if(operands[1].get<ast::FunctionCall>().getOperands().size()==4)
+					return operands[1];
+				auto copy = operands[1];
+				copy.get<ast::FunctionCall>().getOperands().push_back(
+					ast::Node::make<math::Real>((end-start)/math::Real(500.0))
+				);
+				return copy;
+			}();
+			boost::optional<eval::IterationSpecifier> iteration = eval::IterationSpecifier::fromNode(newRange, sessionEnvironment);
 			if(!iteration || !iteration->isFinite()){
 				return EvaluationFailure();
 			}
