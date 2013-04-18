@@ -80,7 +80,7 @@ boost::optional<LevelSpecifier> LevelSpecifier::fromNode(const ast::Node& node) 
 				boost::optional<Depth> optionalLevelMin = nodeToSensibleLevelSpec(operands[0]);
 				boost::optional<Depth> optionalLevelMax = nodeToSensibleLevelSpec(operands[1]);
 
-				if ( !optionalLevelMin || !optionalLevelMin ) {
+				if ( !optionalLevelMin || !optionalLevelMax ) {
 					return boost::none_t();
 				}
 				return LevelSpecifier( *optionalLevelMin, *optionalLevelMax );
