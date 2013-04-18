@@ -70,7 +70,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Round, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::IntegerPart, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
 				(ids::FractionalPart, AttributeSet({ids::Listable, ids::NumericFunction, ids::Protected}) )
-				(ids::Hold, AttributeSet({ids::HoldAll, ids::Protected}) );
+				(ids::Hold, AttributeSet({ids::HoldAll, ids::Protected}) )
+				(ids::Export, AttributeSet({ids::Protected, ids::ReadProtected}) );
 
 	return AttributeMap(attributeStorage);
 }
