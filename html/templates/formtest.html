@@ -8,8 +8,21 @@ $def with (form, name, output, svg, errors, log)
 -->
 <style type="text/css">
 	body {background:url(http://matthiasvegh.dyndns.org/bg.png);}
+
+	.upper div {margin-bottom: 10px; }
+	.upper p {padding: 0; margin: 0;}
 	svg {border: 1px solid black;background:white;}
 	.log {border: 1px dashed darkgrey; border-radius: 5px; display: inline-block; min-width:30%; padding: 5px}
+	.output { background: rgba(126, 152, 190, 0.1); border-width: 1px 0px 1px 0px; border-style: solid; border-color:rgba(126, 152, 190, 0.7);
+			display:inline-block; max-width:80%; min-width:30%;
+	}
+	.input { background: rgba(126, 152, 190, 0.1); border-width: 1px 0px 1px 0px; border-style: solid; border-color:rgba(126, 152, 190, 0.7);
+			display:inline-block; max-width:80%; min-width:30%;
+	}
+	.errors { background: rgba(126, 152, 190, 0.1); border-width: 1px 0px 1px 0px; border-style: solid; border-color:rgba(126, 152, 190, 0.7);
+			display:inline-block; max-width:80%; min-width:30%
+	}
+
 </style>
 
  <script type="text/x-mathjax-config">
@@ -43,18 +56,18 @@ MathJax.Hub.Config({
 </head>
 <body onload = "escapeCharacters()">
 	<div align="center">
+		<div class=upper">
 		$if name:
-			Your Input:<br><div class="input"> \$\$ $name \$\$ </div>
+			<p>Your Input:</p><div class="input"> \$\$ $name \$\$ </div>
 		$else:
-			Try me!
-
+			<p>Try me!</p>
 		$if errors:
-			$:errors<br>
+			<p>Errors:</p><div class="errors">$:errors</div>
 		$if output:
-			Output:<br><div class="output"> \$\$ $output \$\$ </div>
+			<p>Output:</p><div class="output"> \$\$ $output \$\$ </div>
 		$if svg and not output:
 			<div class="svg">$:svg</div>
-
+		</div>
 		<form name="main" method="post">
 			$:form.render()
 			<input type="submit" />
@@ -63,7 +76,7 @@ MathJax.Hub.Config({
 		<a href="http://code.google.com/p/tungsten">Source code on Google Code</a>
 		<br>
 		$if name:
-			Last 10 inputs: <br>
+			<p>Last 10 inputs:</p>
 			<div class="log">$:log</div>
 		$else:
 			Try these inputs:<br>
