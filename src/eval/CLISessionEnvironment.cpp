@@ -34,6 +34,7 @@ void CLISessionEnvironment::run() {
 		char *input = readline( prompt.c_str() );
 
 		if (!input) {
+			std::cout << std::endl;
 			break;
 		}
 
