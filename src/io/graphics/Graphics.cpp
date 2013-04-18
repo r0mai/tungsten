@@ -56,7 +56,7 @@ std::string GraphicsObject::toSVGString() const {
 	const auto diffX = [&](){const auto def=box.maxX - box.minX; if(def) return def; return 0.001;}();
 	const auto diffY = [&](){const auto def=box.maxY - box.minY; if(def) return def; return 0.001;}();
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" viewbox=\""
 	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
@@ -74,8 +74,9 @@ void GraphicsObject::exportToSVG(const std::string& filename) const {
 	const auto diffX = [&](){const auto def = box.maxX - box.minX; if(def !=0) return def; return 0.001;}();
 	const auto diffY = [&](){const auto def = box.maxY - box.maxY; if(def !=0) return def; return 0.001;}();
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" height=\"70%\" viewbox=\""
-	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<'"'; // svg header in.
+	"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"<<'\n'<<
+	"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink='http://www.w3.org/1999/xlink' viewbox=\""
+	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" >"<<'"'; // svg header in.
 
 	// assume graph is 500px wide.
 	// place arrow marker, and hope that this will work.
