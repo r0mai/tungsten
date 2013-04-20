@@ -5,7 +5,9 @@
 
 #include <boost/range/algorithm/transform.hpp>
 
+#include "math/mathFunctions.hpp"
 #include "eval/SessionEnvironment.hpp"
+#include "eval/orderNode.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
@@ -57,15 +59,54 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 
 		math::Rational baseExponentation = math::power(base, math::as<long>(exponentNumerator));
 
-		math::Rational newExponent(math::Integer(1), exponentDenominator);
-
-		if ( newExponent == 1 ) {
+		if ( exponentDenominator == 1 ) {
 			return ast::Node::make<math::Rational>(baseExponentation);
 		}
 
-		return ast::Node::make<ast::FunctionCall>(ids::Power, {
-				ast::Node::make<math::Rational>(baseExponentation),
-				ast::Node::make<math::Rational>(newExponent)});
+		math::Rational newExponent(math::Integer(1), exponentDenominator);
+
+		if ( !math::fits<unsigned long>(exponentDenominator) ) {
+			return ast::Node::make<ast::FunctionCall>(ids::Power, {
+					ast::Node::make<math::Rational>(baseExponentation),
+					ast::Node::make<math::Rational>(newExponent)});
+		}
+
+		boost::optional<math::Integer> baseNumeratorRoot = math::tryNthRoot( math::numerator(baseExponentation), math::as<unsigned long>(exponentDenominator) );
+		boost::optional<math::Integer> baseDenominatorRoot = math::tryNthRoot( math::denominator(baseExponentation), math::as<unsigned long>(exponentDenominator) );
+
+		if ( !baseNumeratorRoot && !baseDenominatorRoot ) {
+			return ast::Node::make<ast::FunctionCall>(ids::Power, {
+					ast::Node::make<math::Rational>(baseExponentation),
+					ast::Node::make<math::Rational>(newExponent)});
+		}
+		if ( baseNumeratorRoot && baseDenominatorRoot ) {
+			return ast::Node::make<math::Rational>(*baseNumeratorRoot, *baseDenominatorRoot);
+		}
+		if ( baseNumeratorRoot ) {
+			if ( *baseNumeratorRoot != 1 ) {
+				ast::Operands timesOperands = {
+						ast::Node::make<math::Rational>(*baseNumeratorRoot), 
+						ast::Node::make<ast::FunctionCall>(ids::Power, {
+							ast::Node::make<math::Rational>(math::denominator(baseExponentation)),
+							 ast::Node::make<math::Rational>(-newExponent)})};
+				//std::sort(timesOperands.begin(), timesOperands.end(), NodeComparatorLess{});
+				return ast::Node::make<ast::FunctionCall>(ids::Times, timesOperands);
+			}
+			return ast::Node::make<ast::FunctionCall>(ids::Power, {
+					ast::Node::make<math::Rational>(math::denominator(baseExponentation)), ast::Node::make<math::Rational>(-newExponent)});
+		}
+
+		assert( baseDenominatorRoot );
+		if ( *baseDenominatorRoot != 1 ) {
+			ast::Operands timesOperands = {
+					ast::Node::make<math::Rational>(math::Integer(1), *baseDenominatorRoot), 
+					ast::Node::make<ast::FunctionCall>(ids::Power, {
+						ast::Node::make<math::Rational>(math::numerator(baseExponentation)),
+						ast::Node::make<math::Rational>(newExponent)})};
+			//std::sort(timesOperands.begin(), timesOperands.end(), NodeComparatorLess{});
+			return ast::Node::make<ast::FunctionCall>(ids::Times, timesOperands);
+		}
+		return ast::Node::make<ast::FunctionCall>(ids::Power, {ast::Node::make<math::Rational>(math::numerator(baseExponentation)), ast::Node::make<math::Rational>(newExponent)});
 
 	}
 

@@ -6,6 +6,8 @@
 #include "Rational.hpp"
 #include "Real.hpp"
 
+#include <boost/optional.hpp>
+
 namespace tungsten { namespace math {
 
 /*
@@ -21,10 +23,16 @@ Real gamma(const Real& arg);
 
 Integer floor(const Real& arg);
 Integer ceiling(const Real& arg);
+
 /*
  * On half integer cases, it rounds to even integer
  */
 Integer round(const Real& arg);
+
+/*
+ * Returns a valid optional if base^(1/n) is an integer
+ */
+boost::optional<Integer> tryNthRoot(const Integer& base, unsigned long n);
 
 }} //namespace tungsten::math
 

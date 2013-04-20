@@ -399,4 +399,81 @@ BOOST_FIXTURE_TEST_CASE( test_square_root_of_16 , BuiltinFunctionFixture ) {
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_square_root_of_the_list_4__9__16, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Sqrt[{4, 9, 16}]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(4)});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_8_to_the_power_of_the_quantity_1_over_3, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("8^(1/3)");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(2);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_8_to_the_power_of_the_quantity_2_over_3, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("8^(2/3)");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(4);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_1_over_8_to_the_power_of_the_quantity_2_over_3, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(1/8)^(2/3)");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(1,4);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_4_over_9_to_the_power_of_the_quantity_1_over_2, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(4/9)^(1/2)");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(2,3);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_4_over_7_to_the_power_of_the_quantity_1_over_2, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(4/7)^(1/2)");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(2), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<math::Rational>(7), ast::Node::make<math::Rational>(-1,2)})});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_the_quantity_7_over_4_to_the_power_of_the_quantity_1_over_2, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(7/4)^(1/2)");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(1,2), ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<math::Rational>(7), ast::Node::make<math::Rational>(1,2)}) });
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

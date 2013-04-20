@@ -48,6 +48,13 @@ Integer round(const Real& arg) {
     return resultInteger;
 }
 
+boost::optional<Integer> tryNthRoot(const Integer& base, unsigned long n) {
+	Integer result;
+	if ( mpz_root(result.backend().data(), base.backend().data(), n) != 0 ) {
+		return result;
+	}
+	return boost::none_t();
+}
 
 }} //namespace tungsten::math
 
