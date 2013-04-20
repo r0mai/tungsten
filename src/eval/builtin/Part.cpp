@@ -51,5 +51,24 @@ OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessi
 	return expr.get<ast::FunctionCall>().getOperands()[wantedIndex];
 }
 
+OptionalNode Length(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1 ) {
+		sessionEnvironment.raiseMessage( Message(ids::Length, ids::argx, {
+			ast::Node::make<ast::Identifier>( ids::Length ),
+			ast::Node::make<math::Rational>( operands.size() )
+		} ));
+		return EvaluationFailure();
+	}
+	
+	const ast::Node& operand = operands[0];
+
+	if ( !operand.is<ast::FunctionCall>() ) {
+		return ast::Node::make<math::Rational>(0);
+	}
+
+	return ast::Node::make<math::Rational>( operand.get<ast::FunctionCall>().getOperands().size() );
+
+}
+
 }}} //namespace tungsten::eval::builtin
 

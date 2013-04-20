@@ -15,11 +15,10 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 //	std::cout<<"Plot"<<std::endl;
 	using eval::getHead;
 	if(operands.size()==2){
-		const auto tableListOptional = 
-			Table(operands, sessionEnvironment);	// TODO x should be identity function.
-		if(tableListOptional){
+		ast::Node tableList = sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>( ids::Table, operands ) );// TODO x should be identity function.
+
+		if(tableList.isFunctionCall(ids::List)){
 //			std::cout<<"so far, so good."<<std::endl;
-			const auto tableList = *tableListOptional;
 			assert(getHead(tableList) == ast::Node::make<ast::Identifier>(eval::ids::List));
 			const auto argumentList = tableList.get<ast::FunctionCall>().getOperands();
 			if(!operands[1].get<ast::FunctionCall>().getOperands()[1].isNumeric() || !operands[1].get<ast::FunctionCall>().getOperands()[2].isNumeric()){

@@ -658,27 +658,35 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Export, BuiltinFunctionFixture ) {
 BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Append, BuiltinFunctionFixture ) {
 		boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Append]");
 
-			BOOST_REQUIRE( result );
+		BOOST_REQUIRE( result );
 
-				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+		ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
 
-					BOOST_CHECK_EQUAL( *result, expected );
+		BOOST_CHECK_EQUAL( *result, expected );
 }
 
 
 BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Prepend, BuiltinFunctionFixture ) {
 		boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Prepend]");
 
-			BOOST_REQUIRE( result );
+		BOOST_REQUIRE( result );
 
-				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+		ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
 
-					BOOST_CHECK_EQUAL( *result, expected );
+		BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Length, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Length]");
+
+		BOOST_REQUIRE( result );
+
+		ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+		BOOST_CHECK_EQUAL( *result, expected );
 }
 
 
 BOOST_AUTO_TEST_SUITE_END()
-
-
-
 

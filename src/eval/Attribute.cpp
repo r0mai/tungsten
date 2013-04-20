@@ -73,7 +73,8 @@ AttributeMap AttributeMap::makeDefault() {
 				(ids::Hold, AttributeSet({ids::HoldAll, ids::Protected}) )
 				(ids::Export, AttributeSet({ids::Protected, ids::ReadProtected}) )
 				(ids::Append, AttributeSet({ids::Protected}) )
-				(ids::Prepend, AttributeSet({ids::Protected}) );
+				(ids::Prepend, AttributeSet({ids::Protected}) )
+				(ids::Length, AttributeSet({ids::Protected}) );
 
 	return AttributeMap(attributeStorage);
 }
