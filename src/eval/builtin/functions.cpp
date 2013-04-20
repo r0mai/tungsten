@@ -63,6 +63,8 @@ Functions createFunctions() {
 	result[ids::IntegerPart] = &IntegerPart;
 	result[ids::FractionalPart] = &FractionalPart;
 	result[ids::Export] = &Export;
+	result[ids::Append] = &Append;
+	result[ids::Prepend] = &Prepend;
 	return result;
 }
 

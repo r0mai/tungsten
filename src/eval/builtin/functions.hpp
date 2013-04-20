@@ -50,6 +50,10 @@ OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment&
 OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+//These are defined in Append.cpp
+OptionalNode Append(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Prepend(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 //These are defined in Power.cpp
 OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
