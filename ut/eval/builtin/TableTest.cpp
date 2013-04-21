@@ -204,4 +204,16 @@ BOOST_FIXTURE_TEST_CASE( test_x_equals_3_semicolon_build_a_table_out_of_x_iterat
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_a_to_b_in_increments_of_the_quantity_b_minus_a_over_2, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Table[x, {x, a, b, (b - a)/2}]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(1,2), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(-1), ast::Node::make<ast::Identifier>("a")}), ast::Node::make<ast::Identifier>("b")})}) }), ast::Node::make<ast::Identifier>("b")});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()
