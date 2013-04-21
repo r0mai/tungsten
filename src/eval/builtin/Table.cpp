@@ -57,7 +57,9 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
 	}
 
-	if ( !iteration->isFinite() ) {
+	boost::optional<eval::IterationSpecifier::Iterator> iterator = iteration->makeIterator(sessionEnvironment);
+
+	if ( !iterator ) {
 		sessionEnvironment.raiseMessage( Message(ids::Table, ids::iterb, {
 				operands[1]
 		} ));
@@ -82,11 +84,10 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 	} BOOST_SCOPE_EXIT_END
 
 	ast::Operands resultListOperands;
-	eval::IterationSpecifier::Iterator iterator = iteration->makeIterator();
 
-	for ( ; !iterator.isEnd(); iterator.advance() ) {
+	for ( ; !iterator->isEnd(); iterator->advance() ) {
 		if ( iteration->hasVariable() ) {
-			sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), iterator.current() );
+			sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), iterator->current() );
 		}
 
 		resultListOperands.push_back(

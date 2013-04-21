@@ -51,9 +51,8 @@ public:
 	bool hasVariable() const;
 	ast::Identifier getVariable() const;
 
-	bool isFinite() const;
-	//Can be expensive, precondition: isFinite()
-	Iterator makeIterator() const;
+	//Creates an Iterator if the specificaion is valid and finite
+	boost::optional<Iterator> makeIterator(SessionEnvironment& sessionEnvironment) const;
 
 private:
 	IterationSpecifier();

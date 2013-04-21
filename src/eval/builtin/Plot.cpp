@@ -13,6 +13,8 @@ namespace tungsten { namespace eval { namespace builtin {
 
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 //	std::cout<<"Plot"<<std::endl;
+	return EvaluationFailure();
+#if 0
 	using eval::getHead;
 	if(operands.size()==2){
 		ast::Node tableList = sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>( ids::Table, operands ) );// TODO x should be identity function.
@@ -137,6 +139,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 		}
 	}
 	return EvaluationFailure();
+#endif
 }
 
 OptionalNode Export(const ast::Operands& operands, SessionEnvironment& sessionEnvironment){
