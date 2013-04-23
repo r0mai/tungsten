@@ -41,8 +41,10 @@ void CLISessionEnvironment::run() {
 		add_history(input);
 
 		ast::Node result = evaluate(std::string(input));
-
-		std::cout << "Out[" << i << "] =   " << result << std::endl;
+		
+		if ( !result.is<ast::Identifier>(ids::Null) ) {
+			std::cout << "Out[" << i << "] =   " << result << std::endl;
+		}
 
 		std::free(input);
 	}
