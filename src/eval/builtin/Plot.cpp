@@ -149,9 +149,7 @@ OptionalNode Export(const ast::Operands& operands, SessionEnvironment& sessionEn
 		const auto filename = [&]() -> const std::string {
 			const auto filename = operands[0].get<ast::String>().toString();
 			if(filename.size()>=2 && filename[0] == '"' && filename[filename.length()-1] == '"'){
-				std::string realFilename;
-				std::copy(filename.begin()+1, filename.end()-1, realFilename.begin());
-				return realFilename;
+				return filename.substr(1, filename.size() - 2);
 			}
 			return filename;
 		}();
