@@ -33,7 +33,8 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 			const ast::Node& slotNumber = current->get<ast::FunctionCall>().getOperands()[0];
 			if ( !slotNumber.is<math::Rational>() ||
 					!math::isInteger(slotNumber.get<math::Rational>()) ||
-					operands.size() < math::asInteger( slotNumber.get<math::Rational>() ) )
+					operands.size() < math::asInteger( slotNumber.get<math::Rational>() ) ||
+					math::asInteger( slotNumber.get<math::Rational>() ) < 0 ) //TODO wrong warning for this case
 			{
 				sessionEnvironment.raiseMessage( Message(ids::Function, ids::slot, {} ));
 			} else {
@@ -46,6 +47,21 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 				} else {
 					*current = operands[slotNumberSizeT-1];
 				}
+			}
+		} else if ( current->isFunctionCall( ids::SlotSequence ) && current->get<ast::FunctionCall>().getOperands().size() == 1 ) {
+			const ast::Node& slotSequenceNumber = current->get<ast::FunctionCall>().getOperands()[0];
+			if ( !slotSequenceNumber.is<math::Rational>() ||
+					!math::isInteger(slotSequenceNumber.get<math::Rational>()) ||
+					operands.size()+1 < math::asInteger( slotSequenceNumber.get<math::Rational>() ) ||
+					math::asInteger( slotSequenceNumber.get<math::Rational>() ) <= 0 ) //TODO wrong warning for this case
+			{
+				sessionEnvironment.raiseMessage( Message(ids::Function, ids::slot, {} ));
+			} else {
+				assert( math::fits<std::size_t>(math::asInteger( slotSequenceNumber.get<math::Rational>() )) );
+				std::size_t slotSequenceNumberSizeT = math::as<std::size_t>(math::asInteger( slotSequenceNumber.get<math::Rational>() ));
+				assert( slotSequenceNumberSizeT <= operands.size()+1 && slotSequenceNumberSizeT > 0 );
+
+				*current = ast::Node::make<ast::FunctionCall>( ids::Sequence, ast::Operands(operands.begin() + (slotSequenceNumberSizeT - 1), operands.end()) );	
 			}
 		} else if ( current->isFunctionCall(ids::Function) ) {
 			/*do nothing*/
