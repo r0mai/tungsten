@@ -2,6 +2,7 @@
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/IterationSpecifier.hpp"
+#include "eval/createRange.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -57,7 +58,9 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
 	}
 
-	if ( !iteration->isFinite() ) {
+	boost::optional<eval::IterationSpecifier::Iterator> iterator = iteration->makeIterator(sessionEnvironment);
+
+	if ( !iterator ) {
 		sessionEnvironment.raiseMessage( Message(ids::Table, ids::iterb, {
 				operands[1]
 		} ));
@@ -82,11 +85,10 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 	} BOOST_SCOPE_EXIT_END
 
 	ast::Operands resultListOperands;
-	eval::IterationSpecifier::Iterator iterator = iteration->makeIterator();
 
-	for ( ; !iterator.isEnd(); iterator.advance() ) {
+	for ( ; !iterator->isEnd(); iterator->advance() ) {
 		if ( iteration->hasVariable() ) {
-			sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), iterator.current() );
+			sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>(iteration->getVariable()), iterator->current() );
 		}
 
 		resultListOperands.push_back(
@@ -97,6 +99,43 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 	//Restoring iteration variable is done in BOOST_SCOPE_EXIT above
 	return ast::Node::make<ast::FunctionCall>(ids::List, resultListOperands);
 
+}
+
+
+OptionalNode Range(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+
+	if ( operands.empty() || operands.size() > 3 ) {
+		sessionEnvironment.raiseMessage( Message(ids::Range, ids::argb, {
+				ast::Node::make<ast::Identifier>( ids::Range ),
+				ast::Node::make<math::Rational>( operands.size() ),
+				ast::Node::make<math::Rational>( 1 ),
+				ast::Node::make<math::Rational>( 3 )
+		} ));
+		return EvaluationFailure();
+	}
+
+	ast::Node min = operands[0];
+	ast::Node max = ast::Node::make<math::Rational>(1);
+	ast::Node step = ast::Node::make<math::Rational>(1);
+
+	if ( operands.size() > 1 ) {
+		max = operands[1];
+	}
+	if ( operands.size() > 2 ) {
+		step = operands[2];
+	}
+
+	boost::optional<ast::Operands> range = createRange( min, max, step, sessionEnvironment );
+
+	if ( !range ) {
+		sessionEnvironment.raiseMessage( Message(ids::Range, ids::itform, {
+				ast::Node::make<ast::FunctionCall>(ids::List, operands),
+				ast::Node::make<math::Rational>( 2 )
+		} ));
+		return EvaluationFailure();
+	}
+
+	return ast::Node::make<ast::FunctionCall>( ids::List, *range );
 }
 
 }}} //namespace tungsten::eval::builtin

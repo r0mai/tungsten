@@ -103,6 +103,12 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 		AttributeSet functionAttributes = sessionEnvironment.getAttributeSetForFunction(function);
 
+		bool hasHoldAllComplete = functionAttributes.count( ids::HoldAllComplete );
+
+		if ( hasHoldAllComplete ) {
+			return ast::Node::make<ast::FunctionCall>(function, operands);
+		}
+
 		bool hasHoldFirst = functionAttributes.count( ids::HoldFirst );
 		bool hasHoldRest = functionAttributes.count( ids::HoldRest );
 		bool hasHoldAll = functionAttributes.count( ids::HoldAll );
@@ -189,7 +195,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				}
 				return *evaluationResult;
 			}
-		//lamdba function
+		//pure function
 		} else if ( function.isFunctionCall(ids::Function) ) {
 			builtin::OptionalNode evaluationResult = builtin::evaluateFunction( function.get<ast::FunctionCall>().getOperands(), operands, sessionEnvironment );
 			//TODO code repetition

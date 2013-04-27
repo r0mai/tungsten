@@ -4,7 +4,7 @@
 #include "ast/Node.hpp"
 #include "Identifiers.hpp"
 #include "eval/numericNodeEvaluation.hpp"
-
+#include "eval/createRange.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -78,18 +78,16 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		return boost::none_t();
 
 	case 1:
-		listOperands[0] = tryConvertToNumeric(listOperands[0], sessionEnvironment); //min
+		listOperands[0] = sessionEnvironment.recursiveEvaluate(listOperands[0]); 
 		if ( listOperands[0].isFunctionCall(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[0].get<ast::FunctionCall>().getOperands() );
-		} else if ( listOperands[0].isNumeric() ) {
+		} else {
 			iterationSpecifier.iteration = detail::MinMaxIteration(
 				ast::Node::make<math::Rational>(1), //min
 				listOperands[0], //max
 				ast::Node::make<math::Rational>(1) //step
 			);
-		} else {
-            return boost::none_t(); //TODO: Table[x,{t}] raises the wrong error
-        }
+		}
 		break;
 
 	case 2:
@@ -98,31 +96,28 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		}
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
 
-		listOperands[1] = tryConvertToNumeric(listOperands[1], sessionEnvironment); //max
+		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); 
 
 		if ( listOperands[1].isFunctionCall(ids::List) ) {
 			iterationSpecifier.iteration = detail::ListIteration( listOperands[1].get<ast::FunctionCall>().getOperands() );
-		} else if ( listOperands[1].isNumeric() ) {
+		} else {
 			iterationSpecifier.iteration = detail::MinMaxIteration(
 				ast::Node::make<math::Rational>(1), //min
 				listOperands[1], //max
 				ast::Node::make<math::Rational>(1) //step
 			);
-		} else {
-			return boost::none_t();
-		}
+		} 
 		break;
 
 	case 3:
-		listOperands[1] = tryConvertToNumeric(listOperands[1], sessionEnvironment); //min
-		listOperands[2] = tryConvertToNumeric(listOperands[2], sessionEnvironment); //max
-		if ( !listOperands[0].is<ast::Identifier>() ||
-				!listOperands[1].isNumeric() ||
-				!listOperands[2].isNumeric() )
-		{
+		if ( !listOperands[0].is<ast::Identifier>() ) {
 			return boost::none_t();
 		}
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
+
+		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); 
+		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); 
+
 		iterationSpecifier.iteration = detail::MinMaxIteration(
 				listOperands[1], //min
 				listOperands[2], //max
@@ -130,16 +125,13 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		);
 		break;
 	case 4:
-		listOperands[1] = tryConvertToNumeric(listOperands[1], sessionEnvironment); //min
-		listOperands[2] = tryConvertToNumeric(listOperands[2], sessionEnvironment); //max
-		listOperands[3] = tryConvertToNumeric(listOperands[3], sessionEnvironment); //step
-		if ( !listOperands[0].is<ast::Identifier>() ||
-				!listOperands[1].isNumeric() ||
-				!listOperands[2].isNumeric() ||
-				!listOperands[3].isNumeric() )
-		{
+		if ( !listOperands[0].is<ast::Identifier>() ) {
 			return boost::none_t();
 		}
+		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); 
+		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); 
+		listOperands[3] = sessionEnvironment.recursiveEvaluate(listOperands[3]); 
+
 		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
 		iterationSpecifier.iteration = detail::MinMaxIteration(
 			listOperands[1], //min
@@ -161,88 +153,29 @@ ast::Identifier IterationSpecifier::getVariable() const {
 	return optionalVariable.get();
 }
 
-struct IsFiniteVisitor : boost::static_visitor<bool> {
-	bool operator()(const detail::MinMaxIteration& minMaxIteration) const {
-		if ( !minMaxIteration.min.isNumeric() ||
-				!minMaxIteration.max.isNumeric() ||
-				!minMaxIteration.step.isNumeric() )
-		{
-			return false;
-		}
 
-		//{x,1,1,0} is OK, {x,1,2,0} is NOK also it is NOK if any of them is Real
-		if ( minMaxIteration.step.getNumeric() == 0.0 ) {
-			if ( minMaxIteration.step.is<math::Rational>() &&
-					minMaxIteration.min.is<math::Rational>() &&
-					minMaxIteration.max.is<math::Rational>() &&
-					minMaxIteration.min.get<math::Rational>() == minMaxIteration.max.get<math::Rational>())
-			{
-				return true;
-			}
-			return false;
-		}
+struct MakeIteratorVisitor : boost::static_visitor<boost::optional<ast::Operands>> {
 
-		return true;
+	MakeIteratorVisitor(SessionEnvironment& sessionEnvironment) : sessionEnvironment(sessionEnvironment) {}
+
+	boost::optional<ast::Operands> operator()(const detail::MinMaxIteration& minMaxIteration) {
+		return createRange(minMaxIteration.min, minMaxIteration.max, minMaxIteration.step, sessionEnvironment);
 	}
 
-	bool operator()(const detail::ListIteration& /*listIteration*/) const {
-		return true;
-	}
-};
-
-bool IterationSpecifier::isFinite() const {
-	return boost::apply_visitor( IsFiniteVisitor{}, iteration );
-}
-
-template<class IteratorNumber, class MaxNumber>
-std::vector<ast::Node> minMaxIterationCreator(const IteratorNumber& min, const MaxNumber& max, const IteratorNumber& step) {
-	if ( step == 0 && min == max ) {
-		return std::vector<ast::Node>({ast::Node::make<IteratorNumber>(min)});
-	}
-
-	if ( (min < max && step < 0) || (min > max && step > 0) ) {
-		return std::vector<ast::Node>({});
-	}
-
-	std::vector<ast::Node> resultIteration;
-	for ( IteratorNumber i = min; i <= max; i += step ) {
-		resultIteration.push_back( ast::Node::make<IteratorNumber>(i) );
-	}
-	return resultIteration;
-}
-
-struct MakeIteratorVisitor : boost::static_visitor<std::vector<ast::Node>> {
-	std::vector<ast::Node> operator()(const detail::MinMaxIteration& minMaxIteration) const {
-		if ( minMaxIteration.min.is<math::Rational>() &&
-				minMaxIteration.step.is<math::Rational>() )
-		{
-            if ( minMaxIteration.max.is<math::Rational>() ) {
-			    return minMaxIterationCreator(
-					minMaxIteration.min.get<math::Rational>(),
-					minMaxIteration.max.get<math::Rational>(),
-					minMaxIteration.step.get<math::Rational>());
-            }
-			return minMaxIterationCreator(
-		    	minMaxIteration.min.get<math::Rational>(),
-				minMaxIteration.max.get<math::Real>(),
-				minMaxIteration.step.get<math::Rational>());
-            
-		}
-
-		return minMaxIterationCreator<math::Real>(
-				minMaxIteration.min.getNumeric(),
-				minMaxIteration.max.getNumeric(),
-				minMaxIteration.step.getNumeric());
-	}
-
-	std::vector<ast::Node> operator()(const detail::ListIteration& listIteration) const {
+	boost::optional<ast::Operands> operator()(const detail::ListIteration& listIteration) {
 		return listIteration.iterationValues;
 	}
+
+	SessionEnvironment& sessionEnvironment;
 };
 
-IterationSpecifier::Iterator IterationSpecifier::makeIterator() const {
-	assert( isFinite() );
-	return boost::apply_visitor( MakeIteratorVisitor{}, iteration );
+boost::optional<IterationSpecifier::Iterator> IterationSpecifier::makeIterator(SessionEnvironment& sessionEnvironment) const {
+	MakeIteratorVisitor makeIteratorVisitor{sessionEnvironment};
+	boost::optional<ast::Operands> optionalResult = boost::apply_visitor( makeIteratorVisitor, iteration );
+	if ( optionalResult ) {
+		return IterationSpecifier::Iterator( *optionalResult );
+	}
+	return boost::none_t();
 }
 
 }} //namespace tungsten::eval
