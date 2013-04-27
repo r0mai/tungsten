@@ -150,9 +150,10 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Rectangle)) {
 		graphics.addShape(Rectangle().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
-	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
-		graphics.addShape(Ellipse().center(0,0).radius(1,1));
-	}
+	//FIXME there is no such thing as ids::Ellipse
+	//else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Ellipse)) {
+	//	graphics.addShape(Ellipse().center(0,0).radius(1,1));
+	//}
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Line)) {
 		graphics.addShape(Line().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}

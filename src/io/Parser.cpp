@@ -273,6 +273,14 @@ void makeSlot(ast::Node& result, boost::optional<ast::Node> n) {
 	result = ast::Node::make<ast::FunctionCall>( ids::Slot, {*n} );
 }
 
+void makeSlotSequence(ast::Node& result, boost::optional<ast::Node> n) {
+	if ( !n ) {
+		n = ast::Node::make<math::Rational>(1);
+	}
+	assert(n && n->is<math::Rational>() && math::isInteger(n->get<math::Rational>()) );
+	result = ast::Node::make<ast::FunctionCall>( ids::SlotSequence, {*n} );
+}
+
 void createFunctionCallFromNode(ast::Node& result, const ast::Node& function) {
 	result = ast::Node::make<ast::FunctionCall>( function );
 }
@@ -479,8 +487,9 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 		//TODO lexeme
 		slotPattern =
-				'#' >>
-				(-unsignedInteger)[phx::bind(&makeSlot, _val, _1)];
+				( "##" >> (-unsignedInteger)[phx::bind(&makeSlotSequence, _val, _1)] ) |
+				( '#' >> (-unsignedInteger)[phx::bind(&makeSlot, _val, _1)] );
+				
 
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';

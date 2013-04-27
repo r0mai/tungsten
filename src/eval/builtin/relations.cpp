@@ -36,13 +36,16 @@ OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sess
 	boost::tribool result = boost::indeterminate;
 	if ( lhs.is<math::Rational>() && rhs.is<math::Rational>() ) {
 		result = lhs.get<math::Rational>() == rhs.get<math::Rational>();
+	} else if ( lhs == rhs ) {
+		result = true;
 	} else {
 		ast::Node numericLhs = numericNodeEvaluation(lhs, sessionEnvironment);
 		ast::Node numericRhs = numericNodeEvaluation(rhs, sessionEnvironment);
 		if ( numericLhs.isNumeric() && numericRhs.isNumeric() ) {
-			result = numericLhs == numericRhs;
+			result = numericLhs.getNumeric() == numericRhs.getNumeric();
 		}
 	}
+
 	if ( result ) {
 		return ast::Node::make<ast::Identifier>(ids::True);
 	} else if ( !result ) {
