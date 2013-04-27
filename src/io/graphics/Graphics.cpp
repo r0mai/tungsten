@@ -161,6 +161,9 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Polygon)) {
 		graphics.addShape(Polygon().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
 	}
+	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::Text)) {
+		graphics.addShape(Text().fromOperands(primitive.get<ast::FunctionCall>().getOperands(), e));
+	}
 
 	else if(getHead(primitive) == ast::Node::make<ast::Identifier>(eval::ids::List)) {
 		graphics.pushModifierVector();

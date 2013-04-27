@@ -150,6 +150,18 @@ public:
 	}
 };
 
+class Text : public GraphicsPrimitive {
+	std::string _text;
+	double _x, _y;
+public:
+	Text() : _text(), _x(), _y() { }
+	virtual std::string toBoundedSVGString(const BoundingBox& box) const override;
+	virtual std::string toSVGString() const override { return this->toBoundedSVGString(this->getBoundingBox()); }
+	virtual Text& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
+	virtual BoundingBox getBoundingBox() const override;
+	
+};
+
 }}} // tungsten::io::graphics
 
 #endif

@@ -1,4 +1,6 @@
 #include "Primitives.hpp"
+#include "math/Real.hpp"
+#include "eval/numericNodeEvaluation.hpp"
 #include <sstream>
 #include <algorithm>
 #include <boost/math/constants/constants.hpp>
@@ -360,6 +362,45 @@ std::string Polygon::toSVGString() const {
 	}
 }
 
+std::string Text::toBoundedSVGString(const BoundingBox& box) const {
+	std::stringstream ss;
+	const auto height = box.maxY - box.minY;
+	const auto size = 0.04 * height;
+	if(!_text.empty()){
+		ss<<"<text x=\""<<_x<<"\" y=\""<<-(_y)<<"\" "<</*_format.toSVGString()<<*/" font-family=\"Verdana\" font-size=\""<<size<<"\" >"<<
+				_text<<"</text>";
+	} 
+	return ss.str();
+}
+
+Text& Text::fromOperands(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if(operands.size()==2 && eval::getHead(operands.back()) == ast::Node::make<ast::Identifier>(eval::ids::List)){
+		const auto& listRef = operands.back().get<ast::FunctionCall>().getOperands();
+		if(listRef.size()==2){
+			const auto xNode = listRef[0];
+			const auto yNode = listRef[1];
+			const auto xReal = numericNodeEvaluation(xNode, sessionEnvironment);
+			const auto yReal = numericNodeEvaluation(yNode, sessionEnvironment);
+			if(xReal.is<math::Real>() && yReal.is<math::Real>()){
+				// all okay, lets get to work.
+				_text = operands[0].toString();
+				_x = xReal.get<math::Real>().convert_to<double>();
+				_y = yReal.get<math::Real>().convert_to<double>();
+			} else {
+				raise(sessionEnvironment);
+			}
+		} else {
+			raise(sessionEnvironment);
+		}	
+	} else {
+		raise(sessionEnvironment);	
+	}
+	return *this;
+}
+
+BoundingBox Text::getBoundingBox() const {
+	return BoundingBox();
+}
 
 
 }}} // tungsten::io::graphics;
