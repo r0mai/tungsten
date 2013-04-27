@@ -94,13 +94,13 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Sqrt ) && operands.size() == 1 ) {
 			result += "\\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Less ) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\lt" + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + "\\lt " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Greater) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\gt" + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + "\\gt " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::GreaterEqual) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\ge" + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + "\\ge " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::LessEqual) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\le" + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + "\\le " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Equal) && operands.size() == 2){
 			result += NodeToTeXFormRecursive(operands[0], -1) + "==" + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Floor) && operands.size() == 1) {
@@ -109,6 +109,8 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			result += "\\lceil " + NodeToTeXFormRecursive(operands[0], -1) + "\\rceil ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Abs) && operands.size() == 1) {
 			result += '|' + NodeToTeXFormRecursive(operands[0], -1) + '|';
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Rule) && operands.size() ==2 ) {
+			result += NodeToTeXFormRecursive(operands[0], -1) + "\\rightarrow " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::CompoundExpression )) {
 			for(unsigned i = 1; i< operands.size(); ++i){
 				result += NodeToTeXFormRecursive(operands[i-1], -1) + ';';
