@@ -56,8 +56,13 @@ std::string GraphicsObject::toSVGString() const {
 	const auto diffX = [&](){const auto def=box.maxX - box.minX; if(def) return def; return 0.001;}();
 	const auto diffY = [&](){const auto def=box.maxY - box.minY; if(def) return def; return 0.001;}();
 	_output<<
-	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"70%\" viewbox=\""
-	<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
+	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" ";
+	if(diffX>1.5*diffY)
+		_output<<"width=\""<<"70%\" ";
+	else
+		_output<<"height=\""<<"70%\" ";
+	_output<<
+	"viewbox=\""<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
 	// assume graph is 500px wide.
 	// place arrow marker, and hope that this will work.
