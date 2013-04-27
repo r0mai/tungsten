@@ -14,7 +14,6 @@ OptionalNode SetDelayed(const ast::Operands& operands, eval::SessionEnvironment&
 OptionalNode RandomReal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Divide(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Head(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode CompoundExpression(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -43,6 +42,10 @@ OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessi
 //These are defined in Factorial.cpp
 OptionalNode Factorial(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Factorial2(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
+//These are defined in Table.cpp
+OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Range(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in trigonometricFunctions.cpp
 OptionalNode Sin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -150,6 +153,8 @@ Functions createFunctions() {
 	result[ids::Append] = &Append;
 	result[ids::Prepend] = &Prepend;
 	result[ids::Length] = &Length;
+	result[ids::Table] = &Table;
+	result[ids::Range] = &Range;
 	return result;
 }
 

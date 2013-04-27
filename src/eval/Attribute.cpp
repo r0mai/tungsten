@@ -154,7 +154,8 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::NHoldRest, AttributeSet({ids::Protected}))
 		(ids::HoldAllComplete, AttributeSet({ids::Protected}))
 		(ids::General, AttributeSet({ids::Protected}))
-		(ids::Syntax, AttributeSet({ids::Protected}));
+		(ids::Syntax, AttributeSet({ids::Protected}))
+		(ids::Range, AttributeSet({ids::Listable, ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }
