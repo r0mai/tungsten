@@ -109,6 +109,12 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			result += "\\lceil " + NodeToTeXFormRecursive(operands[0], -1) + "\\rceil ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Abs) && operands.size() == 1) {
 			result += '|' + NodeToTeXFormRecursive(operands[0], -1) + '|';
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::CompoundExpression )) {
+			for(unsigned i = 1; i< operands.size(); ++i){
+				result += NodeToTeXFormRecursive(operands[i-1], -1) + ';';
+			} 
+			if(operands.back() != ast::Node::make<ast::Identifier>(eval::ids::Null))
+				result += NodeToTeXFormRecursive(operands.back(), -1);
 		}
 		else {
 
