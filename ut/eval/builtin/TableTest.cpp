@@ -215,5 +215,93 @@ BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_x_for_x_ranging_from_a_to_b_i
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_i_for_i_ranging_from_n_to_3_times_n_in_increments_of_n, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Table[i, {i, n, 3*n, n}]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("n"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(2), ast::Node::make<ast::Identifier>("n")}), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("n")})});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_i_for_i_ranging_from_1_to_Pi, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Table[i, {i, 1, Pi}]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3)});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_table_out_of_i_for_i_ranging_from_1_to_8_in_increments_of_Pi, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Table[i, {i, 1, 8, Pi}]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<math::Rational>(1), ast::Node::make<ast::Identifier>("Pi")}), ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<math::Rational>(1), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(2), ast::Node::make<ast::Identifier>("Pi")})})});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_list_of_values_from_1_to_10_with_step_2, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Range[1, 10, 2]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(5), ast::Node::make<math::Rational>(7), ast::Node::make<math::Rational>(9)});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_list_of_values_from_1_to_4, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Range[4]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3), ast::Node::make<math::Rational>(4)});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_list_of_values_from_0_to_10_with_step_Pi, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Range[0, 10, Pi]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(0), ast::Node::make<ast::Identifier>("Pi"), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(2), ast::Node::make<ast::Identifier>("Pi")}), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("Pi")})});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_list_of_values_from_0_to_3, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Range[0, 3]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(0), ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3)});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_build_a_list_of_values_from_1_to_the_list_3__2, BuiltinFunctionFixture ) {
+		boost::optional<ast::Node> result = parseAndEvaluate("Range[{3, 2}]");
+
+			BOOST_REQUIRE( result );
+
+				ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(2), ast::Node::make<math::Rational>(3)}), ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<math::Rational>(1), ast::Node::make<math::Rational>(2)})});
+
+					BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
