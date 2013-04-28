@@ -27,7 +27,7 @@ $def with (form, name, output, svg, errors, log)
 
  <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
-  "HTML-CSS": { linebreaks: { automatic: true } },
+  "HTML-CSS": { linebreaks: { automatic: true, width: "80% container" } },
          SVG: { linebreaks: { automatic: true } },
 		tex2jax: {inlineMath: [['$$','$$'], ['\\(','\\)']]}
 
@@ -58,13 +58,21 @@ MathJax.Hub.Config({
 	<div align="center">
 		<div class="upper">
 		$if name:
-			<p>Your Input:</p><div class="input"> \$\$ $name \$\$ </div>
+			<p>Your Input:</p><div class="input"> 
+				<script type="math/tex; mode=display">
+					  $name
+				</script>
+			</div>
 		$else:
 			<p>Try me!</p>
 		$if errors:
 			<p>Errors:</p><div class="errors">$:errors</div>
 		$if output:
-			<p>Output:</p><div class="output"> \$\$ $output \$\$ </div>
+			<p>Output:</p><div class="output">
+				<script type="math/tex; mode=display">
+					$output
+				</script>
+			</div>
 		$if svg and not output:
 			<div class="svg">$:svg</div>
 		</div>
