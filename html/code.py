@@ -54,6 +54,9 @@ class index:
 			uid = session.session_id
 			o = t.evaluate(uid,name.encode('ascii', 'ignore'))
 			output = o.getOutputString()
+			if output == "\\text{Null}":
+				output = "\\verb|No Output|"
+
 			input = o.getTeXInputString()
 			errors = o.getErrors()
 			svg = o.getSVG()
