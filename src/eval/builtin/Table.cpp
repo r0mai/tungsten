@@ -114,15 +114,28 @@ OptionalNode Range(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
 	}
 
-	ast::Node min = operands[0];
-	ast::Node max = ast::Node::make<math::Rational>(1);
-	ast::Node step = ast::Node::make<math::Rational>(1);
+	ast::Node min;
+	ast::Node max;
+	ast::Node step;
 
-	if ( operands.size() > 1 ) {
+	switch ( operands.size() ) {
+	default:
+		assert(false);
+	case 1:
+		min = ast::Node::make<math::Rational>( 1 );
+		max = operands[0];
+		step = ast::Node::make<math::Rational>( 1 );
+		break;
+	case 2:
+		min = operands[0];
 		max = operands[1];
-	}
-	if ( operands.size() > 2 ) {
+		step = ast::Node::make<math::Rational>( 1 );
+		break;
+	case 3:
+		min = operands[0];
+		max = operands[1];
 		step = operands[2];
+		break;
 	}
 
 	boost::optional<ast::Operands> range = createRange( min, max, step, sessionEnvironment );
