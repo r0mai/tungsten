@@ -50,8 +50,8 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 		TeXFormString result;
 
-		const std::string leftParentheses = "\\left(";
-		const std::string rightParentheses = "\\right)";
+		const std::string leftParentheses = " \\left(";
+		const std::string rightParentheses = " \\right)";
 
 		if ( function == ast::Node::make<ast::Identifier>( eval::ids::Plus ) ) {
 
@@ -73,7 +73,7 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Power ) ) {
 
 			if ( operands.size() == 2 && operands[1].is<math::Rational>( math::Rational(1,2) ) ) {
-				result += "\\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
+				result += " \\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
 			} else {
 
 				if ( precedence >= 2 ) { result += leftParentheses; }
@@ -86,23 +86,23 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::List ) ) {
 
-			result += "\\left \\{";
+			result += " \\left \\{";
 
 			result += boost::join( operands | boost::adaptors::transformed( boost::bind( &NodeToTeXFormRecursive, _1, -1 ) ), ", " );
 
-			result += "\\right \\}";
+			result += " \\right \\}";
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Sqrt ) && operands.size() == 1 ) {
-			result += "\\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
+			result += " \\sqrt{" + NodeToTeXFormRecursive(operands[0], -1) + "}";
 		} else if ( function == ast::Node::make<ast::Identifier>( eval::ids::Less ) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\lt " + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + " \\lt " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Greater) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\gt " + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + " \\gt " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::GreaterEqual) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\ge " + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + " \\ge " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::LessEqual) && operands.size() == 2) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\le " + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + " \\le " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Equal) && operands.size() == 2){
-			result += NodeToTeXFormRecursive(operands[0], -1) + "==" + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + " == " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Floor) && operands.size() == 1) {
 			result += "\\lfloor " + NodeToTeXFormRecursive(operands[0], -1) + "\\rfloor ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Ceiling) && operands.size() == 1) {
@@ -110,13 +110,37 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Abs) && operands.size() == 1) {
 			result += '|' + NodeToTeXFormRecursive(operands[0], -1) + '|';
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Rule) && operands.size() ==2 ) {
-			result += NodeToTeXFormRecursive(operands[0], -1) + "\\rightarrow " + NodeToTeXFormRecursive(operands[1], -1);
+			result += NodeToTeXFormRecursive(operands[0], -1) + " \\rightarrow " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::CompoundExpression )) {
 			for(unsigned i = 1; i< operands.size(); ++i){
 				result += NodeToTeXFormRecursive(operands[i-1], -1) + ';';
 			} 
 			if(operands.back() != ast::Node::make<ast::Identifier>(eval::ids::Null))
 				result += NodeToTeXFormRecursive(operands.back(), -1);
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Hyperlink ) && operands.size() != 0 && operands.size() <=2 && std::all_of(operands.begin(), operands.end(), 
+					[](const ast::Node& node){
+						return node.is<ast::String>();
+					}))
+		{
+			// allow 1 or 2 operands.
+			// Hyperlink[uri]
+			// Hyperlink[label, uri]
+			std::string label, uri;
+			if(operands.size() == 1){
+				uri = NodeToTeXFormRecursive(operands[0], -1);
+				uri = uri.substr(1, uri.length()-2);
+				label = uri;
+			} else {
+				label = NodeToTeXFormRecursive(operands[0], -1);
+				uri = NodeToTeXFormRecursive(operands[1], -1);
+				label = label.substr(1, label.length()-2);
+				uri = uri.substr(1, uri.length()-2);
+			} 
+			result += " \\href{" + uri + "}{" + label + "}";
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Factorial) && operands.size() == 1){
+			result += NodeToTeXFormRecursive(operands[0], -1) + "! ";
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Factorial2) && operands.size() == 1){
+			result += NodeToTeXFormRecursive(operands[0], -1) + "!! ";
 		}
 		else {
 
@@ -164,7 +188,7 @@ TeXFormString NodeToTeXFormRecursive(const ast::Node& node, int precedence) {
 	if ( !optionalDenominator ) {
 		return ast::applyVisitor( node, NodeToTeXFormVisitor{precedence} );
 	} else {
-		return "\\frac{" + NodeToTeXFormRecursive(numerator, -1) + "}{" + NodeToTeXFormRecursive(*optionalDenominator, -1) + "}";
+		return " \\frac{" + NodeToTeXFormRecursive(numerator, -1) + "}{" + NodeToTeXFormRecursive(*optionalDenominator, -1) + "}";
 	}
 
 
