@@ -40,6 +40,14 @@ std::string String::toString() const {
 	return ss.str();
 }
 
+const std::string& String::getRawString() const {
+	return *this;
+}
+
+std::string& String::getRawString() {
+	return *this;
+}
+
 std::ostream& operator<<(std::ostream& os, const String& string) {
 	os << string.toString();
 	return os;
