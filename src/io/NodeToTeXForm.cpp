@@ -20,7 +20,7 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 	NodeToTeXFormVisitor(int precedence) : precedence(precedence) {}
 
 	TeXFormString operator()(const ast::String& string) const {
-		return string.toString();
+		return "\\unicode{x22}"+string.getRawString()+"\\unicode{x22}";
 	}
 
 	TeXFormString operator()(const math::Real& real) const {
@@ -141,6 +141,18 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			result += NodeToTeXFormRecursive(operands[0], -1) + "! ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Factorial2) && operands.size() == 1){
 			result += NodeToTeXFormRecursive(operands[0], -1) + "!! ";
+		} 
+		// i dont know.
+		else if (function == ast::Node::make<ast::Identifier>( eval::ids::SetDelayed) && operands.size() == 2){
+			result += NodeToTeXFormRecursive(operands[0], -1) + " := " + NodeToTeXFormRecursive(operands[1], -1);
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Set) && operands.size() == 2){
+			result += NodeToTeXFormRecursive(operands[0], -1) + " = " + NodeToTeXFormRecursive(operands[1], -1);
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Function) && operands.size() == 1){
+			result += NodeToTeXFormRecursive(operands[0], -1) + "\\unicode{x26}"; // fuck if I know. \\& becomes \&amp; in html.
+		}
+		// i do know
+		else if (function == ast::Node::make<ast::Identifier>(eval::ids::Slot) && operands.size() == 1){
+			result += " \\#" + NodeToTeXFormRecursive(operands[0], -1);
 		}
 		else {
 
