@@ -57,9 +57,13 @@ class index:
 			if output == "\\text{Null}":
 				output = "\\verb|No Output|"
 
-			input = o.getTeXInputString()
 			errors = o.getErrors()
-			svg = o.getSVG()
+			input = o.getTeXInputString()
+			if not input:
+				input = "\\verb~"+name+"~"
+				errors = "syntax::syntax" + errors
+				output = "\\verb|No Output|"
+				svg = o.getSVG()
 		else:
 			input = name
 			output = ""

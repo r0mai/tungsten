@@ -127,14 +127,11 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			// Hyperlink[label, uri]
 			std::string label, uri;
 			if(operands.size() == 1){
-				uri = NodeToTeXFormRecursive(operands[0], -1);
-				uri = uri.substr(1, uri.length()-2);
+				uri = operands[0].get<ast::String>().getRawString();
 				label = uri;
 			} else {
-				label = NodeToTeXFormRecursive(operands[0], -1);
-				uri = NodeToTeXFormRecursive(operands[1], -1);
-				label = label.substr(1, label.length()-2);
-				uri = uri.substr(1, uri.length()-2);
+				label = operands[0].get<ast::String>().getRawString();
+				uri = operands[1].get<ast::String>().getRawString();
 			} 
 			result += " \\href{" + uri + "}{" + label + "}";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Factorial) && operands.size() == 1){
