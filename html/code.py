@@ -63,7 +63,7 @@ class index:
 				input = "\\verb~"+name+"~"
 				errors = "syntax::syntax" + errors
 				output = "\\verb|No Output|"
-				svg = o.getSVG()
+			svg = o.getSVG()
 		else:
 			input = name
 			output = ""
