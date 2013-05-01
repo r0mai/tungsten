@@ -24,6 +24,9 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			const auto variable = rangeOperands[0]; // is an identifier.
 			const auto minX = numericNodeEvaluation(rangeOperands[1], sessionEnvironment).getNumeric();
 			const auto maxX = numericNodeEvaluation(rangeOperands[2], sessionEnvironment).getNumeric();
+			if(minX == maxX){
+				return EvaluationFailure();
+			}
 			const auto distance = maxX - minX;
 
 		//	const math::Real aspectRatio;
@@ -40,7 +43,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			maxY = 0.0;
 			bool first=true; // signifies whether this is the first valid point on the function.
 
-			for(currentX = minX; currentX <= maxX; currentX += advancement){
+			for(currentX = minX; currentX != maxX; currentX += advancement){
 				sessionEnvironment.addPattern(variable, ast::Node::make<math::Real>(currentX));
 				const auto currentYAttempt = numericNodeEvaluation(function, sessionEnvironment);
 				if(currentYAttempt.isNumeric()){
