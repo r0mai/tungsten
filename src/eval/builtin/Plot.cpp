@@ -22,9 +22,13 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			numericNodeEvaluation(rangeOperands[2], sessionEnvironment).isNumeric() ){
 			/* range is a-ok */
 			const auto variable = rangeOperands[0]; // is an identifier.
-			const auto minX = numericNodeEvaluation(rangeOperands[1], sessionEnvironment).getNumeric();
-			const auto maxX = numericNodeEvaluation(rangeOperands[2], sessionEnvironment).getNumeric();
-			if(minX == maxX){
+			const auto minXT = numericNodeEvaluation(rangeOperands[1], sessionEnvironment).getNumeric();
+			const auto maxXT = numericNodeEvaluation(rangeOperands[2], sessionEnvironment).getNumeric();
+
+			const auto& minX = minXT>maxXT?maxXT:minXT;
+			const auto& maxX = minXT>maxXT?minXT:maxXT;
+
+			if(minX >= maxX){
 				return EvaluationFailure();
 			}
 			const auto distance = maxX - minX;
@@ -81,6 +85,10 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 					})
 				);
 				currentLine.clear();
+			}
+
+			if(!lineVector.empty()){
+//				std::cout<<"line Vector has something in it!"<<std::endl;
 			}
 			// line vector is now an array of Line[]-s
 			// move it all to merged

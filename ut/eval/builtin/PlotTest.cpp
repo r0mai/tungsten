@@ -29,10 +29,10 @@ BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_001, BuiltinFunctionFixture
 	BOOST_CHECK( result-> isFunctionCall(eval::ids::Graphics));
 }
 
-BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_002, BuiltinFunctionFixture) {
+BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_even_with_null_points, BuiltinFunctionFixture) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Plot[If[x-Floor[x]>0.5, Sin[x], Infinite], {x, -5, 5}]");
 	BOOST_REQUIRE( result );
-	BOOST_CHECK( result -> isFunctionCall( eval::ids::Graphics));
+	BOOST_CHECK( result -> isFunctionCall( eval::ids::Graphics ));
 }
 
 BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_reverse_range, BuiltinFunctionFixture) {
