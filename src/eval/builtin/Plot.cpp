@@ -43,7 +43,8 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			maxY = 0.0;
 			bool first=true; // signifies whether this is the first valid point on the function.
 
-			for(currentX = minX; currentX != maxX; currentX += advancement){
+			for(unsigned i=0; i<768; ++i){
+				currentX = i*advancement+minX;
 				sessionEnvironment.addPattern(variable, ast::Node::make<math::Real>(currentX));
 				const auto currentYAttempt = numericNodeEvaluation(function, sessionEnvironment);
 				if(currentYAttempt.isNumeric()){
