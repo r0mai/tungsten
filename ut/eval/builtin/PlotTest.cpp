@@ -23,5 +23,24 @@ BOOST_FIXTURE_TEST_CASE( Plot_shouldnt_modify_its_local_variable , BuiltinFuncti
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(3) );
 }
 
+BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_001, BuiltinFunctionFixture) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Plot[Sin[x], {x, -5, 5}]");
+	BOOST_REQUIRE( result );
+	BOOST_CHECK( result-> isFunctionCall(eval::ids::Graphics));
+}
+
+BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_002, BuiltinFunctionFixture) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Plot[If[x-Floor[x]>0.5, Sin[x], Infinite], {x, -5, 5}]");
+	BOOST_REQUIRE( result );
+	BOOST_CHECK( result -> isFunctionCall( eval::ids::Graphics));
+}
+
+BOOST_FIXTURE_TEST_CASE( Plot_should_return_graphics_reverse_range, BuiltinFunctionFixture) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Plot[If[x-Floor[x]>0.5, Sin[x], Infinite], {x, 5, -5}]");
+	BOOST_REQUIRE( result );
+	BOOST_CHECK( result -> isFunctionCall( eval::ids::Graphics));
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
