@@ -12,6 +12,11 @@ $def with (form, name, output, svg, errors, log)
 	.upper div {margin-bottom: 10px; }
 	.upper p {padding: 0; margin: 0;}
 	svg {border: 1px solid black;background:white;}
+	.MathJax span {clip: auto!important;}
+	textarea#input {width: 100%;}
+	td { display: block; }
+	table {width: 80%;}
+	th { display: block; }
 	.log {border: 1px dashed darkgrey; border-radius: 5px; display: inline-block; min-width:30%; padding: 5px}
 	.output { background: rgba(111, 190, 107, 0.1); border-width: 1px 0px 1px 0px; border-style: solid; border-color:rgba(111, 190, 107, 0.7);
 			display:inline-block; max-width:80%; min-width:30%; font-size:20px;
@@ -27,8 +32,9 @@ $def with (form, name, output, svg, errors, log)
 
  <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
-  "HTML-CSS": { linebreaks: { automatic: true, width: "80% container" } },
-         SVG: { linebreaks: { automatic: true } },
+	"HTML-CSS": 	{ linebreaks: { automatic: true, width: "30em" } },
+  		"SVG": 		{ linebreaks: { automatic: true, width: "80% Container" } },
+		"NativeMML":{ linebreaks: { automatic: true, width: "80% Container" } },
 		tex2jax: {inlineMath: [['$$','$$'], ['\\(','\\)']]}
 
 	});
@@ -47,9 +53,8 @@ MathJax.Hub.Config({
 	}
 </script>
 <script type="text/javascript"
-	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG.js">
 </script>
-<!--<script src="http://code.jquery.com/jquery-latest.js"></script>-->
 
 <link rel="icon" type="image/png" href="http://www.gstatic.com/codesite/ph/images/defaultlogo.png" />
 <title>Tungsten|Alpha</title>
@@ -60,7 +65,9 @@ MathJax.Hub.Config({
 		$if name:
 			<p>Your Input:</p><div class="input"> 
 				<script type="math/tex; mode=display">
-					  $name
+				\begin{align}
+					$name
+				\end{align}
 				</script>
 			</div>
 		$else:
