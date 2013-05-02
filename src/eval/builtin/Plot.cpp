@@ -89,27 +89,49 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 			if(!lineVector.empty()){
 //				std::cout<<"line Vector has something in it!"<<std::endl;
+//				auto lineHelper = io::graphics::GraphicsObject();
+//				io::graphics::makeGraphics(ast::Node::make<ast::FunctionCall>(eval::ids::List, lineVector), sessionEnvironment, lineHelper);
+				
 			}
 			// line vector is now an array of Line[]-s
 			// move it all to merged
+			//
+			// 0,0 may not be a part of the Plot[]
+			//
+
+			math::Real axisX, axisY;
+
+			if( minX < 0.0 && 0.0 < maxX ){
+				axisX = 0.0;
+			} else {
+				axisX = minX;
+			}
+
+			if( minY < 0.0 && 0.0 < maxY ){
+				axisY = 0.0;
+			} else {
+				axisY = minY;
+			}
+
+
 			ast::Operands merged(std::move(lineVector));
 			const auto xAxis =	ast::Node::make<ast::FunctionCall>(ids::Line, {
 									ast::Node::make<ast::FunctionCall>(ids::List, {
 										ast::Node::make<ast::FunctionCall>(ids::List, {
-											ast::Node::make<math::Real>(minX), ast::Node::make<math::Real>(0.0)
+											ast::Node::make<math::Real>(minX), ast::Node::make<math::Real>(axisY)
 										}),
 										ast::Node::make<ast::FunctionCall>(ids::List, {
-											ast::Node::make<math::Real>(maxX), ast::Node::make<math::Real>(0.0)
+											ast::Node::make<math::Real>(maxX), ast::Node::make<math::Real>(axisY) // first coord X, second coord Y
 										})
 									})
 								});
 			const auto yAxis =	ast::Node::make<ast::FunctionCall>(ids::Line, {
 									ast::Node::make<ast::FunctionCall>(ids::List, {
 										ast::Node::make<ast::FunctionCall>(ids::List, {
-											ast::Node::make<math::Real>(0.0), ast::Node::make<math::Real>(minY)
+											ast::Node::make<math::Real>(axisX), ast::Node::make<math::Real>(minY)
 										}),
 										ast::Node::make<ast::FunctionCall>(ids::List, {
-											ast::Node::make<math::Real>(0.0), ast::Node::make<math::Real>(maxY)
+											ast::Node::make<math::Real>(axisX), ast::Node::make<math::Real>(maxY)
 										})
 									})
 								});
@@ -123,16 +145,16 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			const math::Real scaleX = ceil(pow(10, floor(log10(distance)))); // 
 			const math::Real lineHeight = 0.04 * (maxY - minY);
 			for(math::Real marker = ceil(minX/scaleX); marker <= floor(maxX)/scaleX; marker=ceil(marker+1)){
-				if( marker < 0.9 && marker > -0.9)
-					continue; // skip values close to 0.
+				if( (marker - axisX) < 0.9 && (marker - axisX) > -0.9 )
+					continue; // skip values close to axial point.
 
 				const auto tickNode =	ast::Node::make<ast::FunctionCall>(eval::ids::Line, {
 											ast::Node::make<ast::FunctionCall>(eval::ids::List, {
 												ast::Node::make<ast::FunctionCall>(eval::ids::List, {
-													ast::Node::make<math::Real>(marker*scaleX), ast::Node::make<math::Real>(-lineHeight)
+													ast::Node::make<math::Real>(marker*scaleX), ast::Node::make<math::Real>(axisY)
 												}),
 												ast::Node::make<ast::FunctionCall>(eval::ids::List, {
-													ast::Node::make<math::Real>(marker*scaleX), ast::Node::make<math::Real>(lineHeight)
+													ast::Node::make<math::Real>(marker*scaleX), ast::Node::make<math::Real>(axisY+lineHeight)
 												})
 											})
 										});
@@ -142,7 +164,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 							ast::Node::make<math::Real>(marker*scaleX),
 							ast::Node::make<ast::FunctionCall>(ids::List, {
 								ast::Node::make<math::Real>(marker*scaleX), 
-								ast::Node::make<math::Real>(0.0)
+								ast::Node::make<math::Real>(axisY)
 							})
 						}));
 			}
@@ -150,16 +172,16 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			const math::Real scaleY = ceil(pow(10, floor(log10(maxY-minY)))); // 
 			const math::Real lineWidth = 0.04 * distance;
 			for(math::Real marker = ceil(minY/scaleY); marker <= floor(maxY)/scaleY; marker=ceil(marker+1)){
-				if( marker < 0.9 && marker > -0.9)
-					continue; // skip values close to 0.
+				if( (marker - axisY) < 0.9 && (marker - axisY) > -0.9 )
+					continue; // skip values close to axial point.
 
 				const auto tickNode =	ast::Node::make<ast::FunctionCall>(eval::ids::Line, {
 											ast::Node::make<ast::FunctionCall>(eval::ids::List, {
 												ast::Node::make<ast::FunctionCall>(eval::ids::List, {
-													ast::Node::make<math::Real>(-lineWidth), ast::Node::make<math::Real>(marker*scaleY)
+													ast::Node::make<math::Real>(axisX), ast::Node::make<math::Real>(marker*scaleY)
 												}),
 												ast::Node::make<ast::FunctionCall>(eval::ids::List, {
-													ast::Node::make<math::Real>(lineWidth), ast::Node::make<math::Real>(marker*scaleY) 
+													ast::Node::make<math::Real>(axisX+lineWidth), ast::Node::make<math::Real>(marker*scaleY) 
 												})
 											})
 										});
@@ -168,7 +190,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				merged.push_back(ast::Node::make<ast::FunctionCall>(ids::Text, {
 							ast::Node::make<math::Real>(marker*scaleY),
 							ast::Node::make<ast::FunctionCall>(ids::List, {
-								ast::Node::make<math::Real>(0.0),
+								ast::Node::make<math::Real>(axisX),
 								ast::Node::make<math::Real>(marker*scaleY)
 							})
 						}));
