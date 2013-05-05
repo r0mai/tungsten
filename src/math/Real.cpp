@@ -16,4 +16,8 @@ Real power(const Real& base, const Real& exponent) {
 	return boost::multiprecision::pow(base, exponent);
 }
 
+bool isInteger(const Real& n) {
+	return mpfr_integer_p( n.backend().data() ) != 0;
+}
+
 }} //namespace tungsten::math

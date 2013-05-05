@@ -13,6 +13,8 @@ std::string toString(const Real& real);
 
 Real power(const Real& base, const Real& exponent);
 
+bool isInteger(const Real& n);
+
 }} //namespace tungsten::math
 
 

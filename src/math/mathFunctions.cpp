@@ -25,7 +25,7 @@ Integer floor(const Real& arg) {
     Real resultReal;
     Integer resultInteger;
     mpfr_floor( resultReal.backend().data(), arg.backend().data() );
-    assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
+    assert( isInteger( resultReal ) );
     mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
     return resultInteger;
 }
