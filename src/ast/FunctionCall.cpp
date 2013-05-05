@@ -17,7 +17,7 @@ namespace ids = eval::ids;
 FunctionCall::FunctionCall() : function(nullptr) {}
 
 FunctionCall::FunctionCall(const FunctionCall& other) :
-		function( new Node(*other.function) ), operands(other.operands) {}
+		function( other.function ? new Node(*other.function) : nullptr ), operands(other.operands) {}
 
 FunctionCall::FunctionCall(const Identifier& name) :
 		function( new Node(Node::make<Identifier>(name)) ) {}
@@ -43,7 +43,7 @@ FunctionCall& FunctionCall::operator=(FunctionCall other) {
 }
 
 bool FunctionCall::operator==(const FunctionCall& other) const {
-	return *function == *other.function && operands == other.operands;
+	return getFunction() == other.getFunction() && operands == other.operands;
 }
 
 bool FunctionCall::operator<(const FunctionCall& rhs) const {
@@ -89,10 +89,9 @@ void swap(FunctionCall& fc1, FunctionCall& fc2) {
 }
 
 std::string FunctionCall::toString() const {
-	assert( function );
 
     std::stringstream ss;
-	ss << function->toString() << '[';
+	ss << getFunction().toString() << '[';
 	ss << boost::join( operands | boost::adaptors::transformed( boost::mem_fn(&Node::toString) ), ", " );
 	ss << ']';
 	return ss.str();

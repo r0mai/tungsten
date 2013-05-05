@@ -20,24 +20,47 @@ bool isRational(const ast::Node& node) {
 	return node.is<math::Rational>();
 }
 
+void setFunctionCall(ast::FunctionCall& functionCall, const ast::Node& node) {
+	assert(node.is<ast::FunctionCall>());
+	functionCall = node.get<ast::FunctionCall>();
+}
+
+bool isFunctionCall(const ast::Node& node) {
+	return node.is<ast::FunctionCall>();
+}
+
+void setFunction(ast::Node& function, const ast::FunctionCall& functionCall) {
+	function = functionCall.getFunction();
+}
+
+void setOperands(ast::Operands& operands, const ast::FunctionCall& functionCall) {
+	operands = functionCall.getOperands();
+}
+
 template<class Iterator>
 struct FullFormGrammar : karma::grammar<Iterator, ast::Node()> {
 
 	FullFormGrammar() : FullFormGrammar::base_type(start) {
 		using karma::_1;
 		using karma::double_;
+		using karma::char_;
 		using karma::_val;
 		using karma::eps;
 		using karma::stream;
 
-		start = eps(phx::bind(&isRational, _val)) << double_[phx::bind(&setRational, _1, _val)];
+		start = nodeRule.alias();
 
-		functionCallRule = start[_1 = phx::bind((const ast::Node& (ast::FunctionCall::*)() const)(&ast::FunctionCall::getFunction), _val)];
+		nodeRule = 
+			eps(phx::bind(&isFunctionCall, _val)) << functionCallRule[phx::bind(&setFunctionCall, _1, _val)] |
+			eps(phx::bind(&isRational, _val)) << char_[_1 = 'c'];
+
+		functionCallRule = nodeRule[phx::bind(&setFunction, _1, _val)] << '[' << (nodeRule % ", ")[phx::bind(&setOperands, _1, _val)] << ']';
 
 
 	}
 	
 	karma::rule<Iterator, ast::Node()> start;
+	karma::rule<Iterator, ast::Node()> nodeRule;
 	karma::rule<Iterator, ast::FunctionCall()> functionCallRule; 
 };
 
