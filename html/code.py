@@ -29,7 +29,7 @@ application = app.wsgifunc()
 
 
 def myform(val):
-	return  form.Form( form.Textarea("input", rows="5", cols="40", placeholder="Input here", value=val ) )
+	return  form.Form( form.Textarea("input", rows="5", cols="40", placeholder="Input here", value=val) )
 
 
 class index: 

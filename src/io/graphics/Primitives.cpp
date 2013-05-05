@@ -399,7 +399,7 @@ Text& Text::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 }
 
 BoundingBox Text::getBoundingBox() const {
-	return BoundingBox();
+	return {_x, _y, _x, _y};
 }
 
 
