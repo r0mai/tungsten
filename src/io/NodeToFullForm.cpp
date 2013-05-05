@@ -1,3 +1,13 @@
+/* 
+ * Boost 1.52 made a change in the implementation of
+ * result_of which depends on decltype
+ * at the time of writing, clang has issues with this,
+ * while g++ 4.8 does not. fix is below
+ */
+
+#define BOOST_RESULT_OF_USE_TR1 
+#define BOOST_NO_DECLTYPE
+
 
 #include "NodeToFullForm.hpp"
 
@@ -7,6 +17,8 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted/std_pair.hpp>
 #include <boost/fusion/include/std_pair.hpp>
+
+
 
 namespace tungsten { namespace io {
 
