@@ -232,15 +232,18 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 	else if (primitive.isFunctionCall(eval::ids::Rule)) { 
 		// TODO: Also handle more exotic rule types.
 		const auto& ops = primitive.get<ast::FunctionCall>().getOperands();
-		assert(ops.size()==2); // Rules should be of form attribute->value; non binary forms seem weird.
-		const auto& attribute = ops[0];
-	//	const auto& value = ops[1];
-		if(attribute == ast::Node::make<ast::Identifier>(eval::ids::Thickness)) {
-			// push modifier with stroke-width = value;
-			
+		if(ops.size()==2){ // Rules should be of form attribute->value; non binary forms seem weird.
+			const auto& attribute = ops[0];
+		//	const auto& value = ops[1];
+			if(attribute == ast::Node::make<ast::Identifier>(eval::ids::Thickness)) {
+				// push modifier with stroke-width = value;
+				
+			} else {
+				e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
+			}
 		} else {
-			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
-		}	
+			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
+		}
 		
 	}
 	else {

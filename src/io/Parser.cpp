@@ -213,6 +213,10 @@ void operatorEqual(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Equal, result, rhs );
 }
 
+void operatorMap(ast::Node& result, const ast::Node& rhs) {
+	rightAssociativeOperator( ids::Map, result, rhs );
+}
+
 void operatorApply(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
 }
@@ -437,6 +441,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 		applyExpression =
 				prefixAtExpression[_val = _1] >> (
 				"@@" >> applyExpression[phx::bind(&operatorApply, _val, _1)] |
+				"/@" >> applyExpression[phx::bind(&operatorMap, _val, _1)] |
 				eps);
 
 		prefixAtExpression =

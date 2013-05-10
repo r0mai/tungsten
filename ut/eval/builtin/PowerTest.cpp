@@ -138,6 +138,24 @@ BOOST_FIXTURE_TEST_CASE( test_one_over_3_to_the_4th_power , BuiltinFunctionFixtu
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_one_over_3_to_the_4th_power_as_Reals , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(-3.)^4.");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Real>(81) );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_one_over_3_to_the_3th_power_as_Reals , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(-3.)^3.");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Real>(-27) );
+}
+
+
 BOOST_FIXTURE_TEST_CASE( test_2_to_the_32nd_power , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("2^32");
 

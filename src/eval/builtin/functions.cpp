@@ -27,6 +27,7 @@ OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Block(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Map(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Part.cpp
 OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -161,6 +162,7 @@ Functions createFunctions() {
 	result[ids::Table] = &Table;
 	result[ids::Range] = &Range;
 	result[ids::Block] = &Block;
+	result[ids::Map] = &Map;
 	result[ids::Sum] = &Sum;
 	return result;
 }

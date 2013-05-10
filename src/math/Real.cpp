@@ -16,6 +16,10 @@ Real power(const Real& base, const Real& exponent) {
 	return boost::multiprecision::pow(base, exponent);
 }
 
+bool isInteger(const Real& n) {
+	return mpfr_integer_p( n.backend().data() ) != 0;
+}
+
 Real nextReal(Real real) {
 	mpfr_nextabove(real.backend().data());
 	return real;

@@ -1634,6 +1634,26 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Range, BuiltinFunctionFixture ) {
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Block, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Block]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Map, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Map]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
