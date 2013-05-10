@@ -20,4 +20,14 @@ bool isInteger(const Real& n) {
 	return mpfr_integer_p( n.backend().data() ) != 0;
 }
 
+Real nextReal(Real real) {
+	mpfr_nextabove(real.backend().data());
+	return real;
+}
+
+Real previousReal(Real real) {
+	mpfr_nextbelow(real.backend().data());
+	return real;
+}
+
 }} //namespace tungsten::math
