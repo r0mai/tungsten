@@ -157,7 +157,8 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Syntax, AttributeSet({ids::Protected}))
 		(ids::Range, AttributeSet({ids::Listable, ids::Protected}))
 		(ids::Block, AttributeSet({ids::HoldAll, ids::Protected}))
-		(ids::Map, AttributeSet({ids::Protected}));
+		(ids::Map, AttributeSet({ids::Protected}))
+		(ids::Sum, AttributeSet({ids::HoldAll, ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }

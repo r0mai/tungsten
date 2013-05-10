@@ -66,6 +66,10 @@ OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& s
 
 OptionalNode Function(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+// These are defined in sum.cpp
+OptionalNode Sum(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
+
 // Defined in relations.cpp
 OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -159,6 +163,7 @@ Functions createFunctions() {
 	result[ids::Range] = &Range;
 	result[ids::Block] = &Block;
 	result[ids::Map] = &Map;
+	result[ids::Sum] = &Sum;
 	return result;
 }
 
