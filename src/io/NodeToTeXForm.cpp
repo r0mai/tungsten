@@ -38,6 +38,10 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else {
 			if(identifier == eval::ids::Pi)
 				return "\\pi";
+			else if(identifier == eval::ids::Infinity)
+				return "\\infty";
+			else if(identifier == eval::ids::DirectedInfinity)
+				return "\\infty";
 			else
 				return "\\text{" + identifier.toString() + "}";
 		}
@@ -150,6 +154,19 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		// i do know
 		else if (function == ast::Node::make<ast::Identifier>(eval::ids::Slot) && operands.size() == 1){
 			result += " \\#" + NodeToTeXFormRecursive(operands[0], -1);
+		} else if(function == ast::Node::make<ast::Identifier>(eval::ids::Sum) && operands.size() == 2 &&
+					operands[1].isFunctionCall(eval::ids::List) && operands[1].get<ast::FunctionCall>().getOperands().size() == 3
+			){
+				const auto assignmentNode = ast::Node::make<ast::FunctionCall>(eval::ids::Set, {
+						operands[1].get<ast::FunctionCall>().getOperands()[0], operands[1].get<ast::FunctionCall>().getOperands()[1]
+						});
+				result+="\\sum_{" + NodeToTeXFormRecursive(assignmentNode, -1) 
+								  +	"}^{" +
+								  NodeToTeXFormRecursive(operands[1].get<ast::FunctionCall>().getOperands()[2], -1)
+								  + "}{" +
+								  NodeToTeXFormRecursive(operands[0], 0)
+								  + '}';
+		
 		}
 		else {
 
