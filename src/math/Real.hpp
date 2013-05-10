@@ -13,6 +13,10 @@ std::string toString(const Real& real);
 
 Real power(const Real& base, const Real& exponent);
 
+Real nextReal(Real real);
+
+Real previousReal(Real real);
+
 }} //namespace tungsten::math
 
 
