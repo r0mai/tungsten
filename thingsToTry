@@ -6,3 +6,10 @@ If[Equal[Slot, List], If[Equal[Length[Slot[1]], 0], {}, CompoundExpression[Set[p
 sierpinski := If[ #7 == 0, Polygon[{{#1,#2},{#3,#4},{#5,#6}}],{#0[#1, #2, (#1+#3)/2, (#2+#4)/2, (#1+#5)/2, (#2+#6)/2, #7 - 1],#0[(#1+#3)/2, (#2+#4)/2, #3, #4, (#3+#5)/2, (#4+#6)/2, #7 - 1],#0[(#1+#5)/2, (#2+#6)/2, (#3+#5)/2, (#4+#6)/2, #5, #6, #7 - 1]}]&; Graphics[sierpinski[-1,0,1,0,0,1,5]]
 
 resolution=0.1; iterationCount = 10; complexAdd = {#1[[1]]+#2[[1]], #1[[2]]+#2[[2]]}&; complexMultiply = {#1[[1]] #2[[1]] - #1[[2]] #2[[2]], #1[[2]] #2[[1]] + #1[[1]] #2[[2]]}&; mandelbrot = ( c=#; z={0,0}; n=0; inside=True; While[n < iterationCount && inside, inside = (z[[1]]^2 + z[[2]]^2 < 4); z=complexAdd[c, complexMultiply[z,z]]  ;n=n+1]; n )&; Graphics[Table[{iter = mandelbrot[{x,y}]; If[iter == iterationCount, White, RGBColor[1-iter / iterationCount,1-iter / iterationCount, iter / iterationCount]], Disk[{x,y}, resolution/2]}, {x, -2.5, 1, resolution}, {y, -1, 1, resolution}]]
+
+t=N[2Pi]/(2.0*RandomReal[]-1)+N[Pi/2]; 
+l=Append[Table[Text[i, {Sin[2i*Pi/12], Cos[2i*Pi/12]}], {i, 1, 12}], Circle[{0.1,0.1},1.5]];
+l=Append[l, Arrow[{{0.1, 0.1},{0.5*Cos[t], 0.5*Sin[t]}}]];
+l=Append[l, Arrow[{{0.1, 0.1},{Cos[60*t], Sin[60*t]}}]]; 
+Graphics[l]
+
