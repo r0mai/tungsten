@@ -89,6 +89,7 @@ struct FullFormGrammar : karma::grammar<Iterator, ast::Node()> {
 		using karma::_val;
 		using karma::eps;
 		using karma::stream;
+		using karma::stream_generator;
 		using karma::string;
 
 		start = nodeRule.alias();
@@ -107,13 +108,11 @@ struct FullFormGrammar : karma::grammar<Iterator, ast::Node()> {
 			eps(phx::bind(&isRationalInteger, _val)) << integerRule[phx::bind(&getNumerator, _1, _val)] |
 			"Rational[" << integerRule[phx::bind(&getNumerator, _1, _val)] << ", " << integerRule[phx::bind(&getDenominator, _1, _val)] << "]";
 				
-		integerRule = string[_1 = "integer"];
-
-		realRule = string[_1 = "real"];
-		
-		stringRule = string[_1 = "string"];
-
-		identifierRule = string[_1 = _val];
+		//integerRule %= karma::int_generator<math::Integer, 10, false>();
+		integerRule = stream_generator<char>();
+		realRule = stream_generator<char>();
+		stringRule = stream_generator<char>();
+		identifierRule = stream_generator<char>();
 
 	}
 	
