@@ -21,7 +21,7 @@ public:
 
 	void raiseMessage(const Message& message);
 	virtual void handleMessageString(const ast::String& /*messageString*/) {}
-    virtual void printToStdout(const ast::Operands& /*nodes*/) {}
+	virtual void printToStdout(const ast::Operands& /*nodes*/) {}
 
 	void addPattern(const ast::Node& pattern, const ast::Node& replacement);
 	boost::optional<ast::Node> getPatternReplacement(const ast::Node& pattern);

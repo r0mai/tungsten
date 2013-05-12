@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -28,6 +29,7 @@ void CLISessionEnvironment::run() {
 
 	using_history();
 
+	readHistoryFromFile(".tungsten");
 	for ( int i = 1; ; ++i ) {
 		std::string prompt = "In[" + std::to_string(i) + "] :=   ";
 
@@ -38,7 +40,7 @@ void CLISessionEnvironment::run() {
 			break;
 		}
 
-		add_history(input);
+		addToReadlineHistory(input);
 
 		ast::Node result = evaluate(std::string(input));
 		
@@ -48,8 +50,33 @@ void CLISessionEnvironment::run() {
 
 		std::free(input);
 	}
+	writeHistoryToFile(".tungsten");
 }
 
+void CLISessionEnvironment::addToReadlineHistory(const std::string& line) {
+	add_history(line.c_str()); //readline
+	history.push_back(line);
+}
+
+void CLISessionEnvironment::readHistoryFromFile(const std::string& fileName) {
+	std::ifstream historyFile(fileName);
+	if ( historyFile.is_open() ) {
+		std::string line;
+		while ( std::getline(historyFile, line) ) {
+			addToReadlineHistory(line.c_str());	
+		}			
+	}
+}
+
+
+void CLISessionEnvironment::writeHistoryToFile(const std::string& fileName) {
+	std::ofstream historyFile(fileName);
+	if ( historyFile.is_open() ) {
+		for ( const std::string& line : history ) {
+			historyFile << line << '\n';
+		}
+	}
+}
 
 }} //namespace tungsten::eval
 
