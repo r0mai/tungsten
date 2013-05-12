@@ -18,3 +18,10 @@ toEE = Block[{go = If[# == 0, {}, Prepend[go[# * Ceiling[1/#] - 1], Ceiling[1/#]
 fromEE = Block[{go = If[ Length[#1] == #2, 1/#1[[#2]], (1 + go[#1, #2+1])/#1[[#2]]  ]&}, go[#, 1]  ]&;
 
 polarPlot = Graphics[Line[Table[ #1 * { Cos[#2[[1]]], Sin[#2[[1]]]  },  #2]]]&; polarPlot[1/x, {x, 1, 10Pi, 0.1}]
+
+t=N[2Pi]/(2.0*RandomReal[]-1)+N[Pi/2]; 
+l=Append[Table[Text[i, {Sin[2i*Pi/12], Cos[2i*Pi/12]}], {i, 1, 12}], Circle[{0.1,0.1},1.5]];
+l=Append[l, Arrow[{{0.1, 0.1},{0.5*Cos[t], 0.5*Sin[t]}}]];
+l=Append[l, Arrow[{{0.1, 0.1},{Cos[60*t], Sin[60*t]}}]]; 
+Graphics[l]
+
