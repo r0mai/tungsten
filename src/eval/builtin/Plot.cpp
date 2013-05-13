@@ -1,5 +1,6 @@
 #include <fstream>
 #include <algorithm>
+#include <boost/math/constants/constants.hpp>
 #include "functions.hpp"
 #include "eval/getHead.hpp"
 #include "eval/SessionEnvironment.hpp"
@@ -25,8 +26,8 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			const auto minXT = numericNodeEvaluation(rangeOperands[1], sessionEnvironment).getNumeric();
 			const auto maxXT = numericNodeEvaluation(rangeOperands[2], sessionEnvironment).getNumeric();
 
-			const auto& minX = minXT>maxXT?maxXT:minXT;
-			const auto& maxX = minXT>maxXT?minXT:maxXT;
+			auto minX = minXT>maxXT?maxXT:minXT;
+			auto maxX = minXT>maxXT?minXT:maxXT;
 
 			if(minX >= maxX){
 				return EvaluationFailure();
@@ -93,6 +94,34 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 //				io::graphics::makeGraphics(ast::Node::make<ast::FunctionCall>(eval::ids::List, lineVector), sessionEnvironment, lineHelper);
 				
 			}
+
+
+			if( abs(maxY - minY) <= boost::math::constants::phi<double>()*abs(maxX-minX) ){
+				// graph is very wide.
+//				std::cout<<"wide"<<std::endl;
+				const auto height = abs(maxY - minY);
+				const auto desiredHeight = abs(maxX - minX) / boost::math::constants::phi<double>();
+				const auto difference = desiredHeight - height;
+				const math::Real differenceByTwo = difference/math::Real(2);
+				maxY += differenceByTwo;
+				minY -= differenceByTwo;
+
+			} else if( abs(maxX - minX) <= abs(maxY-minY) / boost::math::constants::phi<double>() ) {
+				//graph is very tall
+//				std::cout<<"tall"<<std::endl;
+				const auto width = abs(maxX - minX);
+				const auto desiredWidth = abs(maxY - minY) * boost::math::constants::phi<double>();
+				const auto difference = desiredWidth - width;
+				const math::Real differenceByTwo = difference/math::Real(2);
+				maxX += differenceByTwo;
+				minX -= differenceByTwo;
+
+			} else {
+				std::cout<<"goldilocks"<<std::endl;
+			}
+
+
+
 			// line vector is now an array of Line[]-s
 			// move it all to merged
 			//
@@ -168,6 +197,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 							})
 						}));
 			}
+
 
 			const math::Real scaleY = ceil(pow(10, floor(log10(maxY-minY)))); // 
 			const math::Real lineWidth = 0.04 * distance;

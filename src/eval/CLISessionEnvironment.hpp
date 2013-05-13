@@ -1,5 +1,4 @@
 
-
 #ifndef EVAL_CLISESSIONENVIRONMENT_HPP_
 #define EVAL_CLISESSIONENVIRONMENT_HPP_
 
@@ -18,8 +17,11 @@ public:
 	void run();
 
 private:
+	void addToReadlineHistory(const std::string& line);
+	void readHistoryFromFile(const std::string& fileName);
+	void writeHistoryToFile(const std::string& fileName);
 
-
+	std::vector<std::string> history;
 };
 
 }} //namespace tungsten::eval

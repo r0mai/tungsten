@@ -9,7 +9,6 @@
 #include <boost/bind.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/find.hpp>
-#include <boost/range/algorithm/transform.hpp>
 
 #include "io/Parser.hpp"
 #include "Identifiers.hpp"
