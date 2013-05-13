@@ -98,7 +98,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 			if( abs(maxY - minY) <= boost::math::constants::phi<double>()*abs(maxX-minX) ){
 				// graph is very wide.
-				std::cout<<"wide"<<std::endl;
+//				std::cout<<"wide"<<std::endl;
 				const auto height = abs(maxY - minY);
 				const auto desiredHeight = abs(maxX - minX) / boost::math::constants::phi<double>();
 				const auto difference = desiredHeight - height;
@@ -108,7 +108,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 			} else if( abs(maxX - minX) <= abs(maxY-minY) / boost::math::constants::phi<double>() ) {
 				//graph is very tall
-				std::cout<<"tall"<<std::endl;
+//				std::cout<<"tall"<<std::endl;
 				const auto width = abs(maxX - minX);
 				const auto desiredWidth = abs(maxY - minY) * boost::math::constants::phi<double>();
 				const auto difference = desiredWidth - width;
