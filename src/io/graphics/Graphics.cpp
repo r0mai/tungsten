@@ -58,9 +58,9 @@ std::string GraphicsObject::toSVGString() const {
 	_output<<
 	"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" ";
 	if(diffX>1.5*diffY)
-		_output<<"width=\""<<"70%\" ";
+		_output<<"width=\""<<"50%\" ";
 	else
-		_output<<"height=\""<<"70%\" ";
+		_output<<"height=\""<<"50%\" ";
 	_output<<
 	"viewbox=\""<<box.minX<<" "<<-box.maxY<<" "<<diffX<<" "<<diffY<<"\" preserveAspectRatio=\"xMidYMid meet\" overflow=\"visible\" >"<<std::endl; // svg header in.
 
