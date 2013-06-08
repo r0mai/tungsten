@@ -72,7 +72,6 @@ void PatternMap::removePattern(const ast::Node& pattern) {
 }
 
 bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result, eval::SessionEnvironment& sessionEnvironment) const {
-#if 1
 
 	for ( const std::pair<ast::Node, ast::Node>& assignmentPattern : storage ) {
 		MatchedPatternMap matchedPatternMap;
@@ -86,33 +85,6 @@ bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result, eval::S
 		}
 	}
 	return false;
-#elif 0
-
-	result = node;
-	for ( Storage::value_type patternPair : storage ) {
-
-		std::map<ast::Identifier, ast::Node> patterns;
-		if ( tryPattern(node, patternPair.first, patterns) ) {
-
-			for ( const std::pair<ast::Identifier, ast::Node>& replacementPair : patterns ) {
-				result = replaceAll( result, replacementPair.first, replacementPair.second );
-			}
-
-			std::cout << "result : " << result << std::endl;
-			return true;
-		}
-	}
-	return false;
-#else
-	Storage::const_iterator it = storage.find(node);
-
-	if ( it != storage.cend() ) {
-		result = it->second;
-		return true;
-	}
-	result = node;
-	return false;
-#endif
 }
 
 
