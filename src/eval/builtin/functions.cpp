@@ -28,6 +28,7 @@ OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment&
 OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Block(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Map(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode MatchQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Part.cpp
 OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -164,6 +165,7 @@ Functions createFunctions() {
 	result[ids::Block] = &Block;
 	result[ids::Map] = &Map;
 	result[ids::Sum] = &Sum;
+	result[ids::MatchQ] = &MatchQ;
 	return result;
 }
 

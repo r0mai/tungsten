@@ -1,7 +1,8 @@
 
 #include "PatternMap.hpp"
-
+#include "patternMatching.hpp"
 #include "Identifiers.hpp"
+#include "SessionEnvironment.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -70,8 +71,22 @@ void PatternMap::removePattern(const ast::Node& pattern) {
 	storage.erase(pattern);
 }
 
-bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result) const {
-#if 0
+bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result, eval::SessionEnvironment& sessionEnvironment) const {
+#if 1
+
+	for ( const std::pair<ast::Node, ast::Node>& assignmentPattern : storage ) {
+		MatchedPatternMap matchedPatternMap;
+		if ( doesPatternMatch(node, assignmentPattern.first, matchedPatternMap, sessionEnvironment) ) {
+			result = assignmentPattern.second;
+			for ( const std::pair<ast::Identifier, ast::Node>& matchedPattern : matchedPatternMap ) {
+				//FIXME TODO XXX remove this copy!!!
+				result = replaceAll(ast::Node(result), matchedPattern.first, matchedPattern.second);
+			}
+			return true;
+		}
+	}
+	return false;
+#elif 0
 
 	result = node;
 	for ( Storage::value_type patternPair : storage ) {
@@ -100,62 +115,6 @@ bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result) const {
 #endif
 }
 
-bool isBlank(const ast::Node& pattern, boost::optional<ast::Identifier>& name) {
-	name = boost::optional<ast::Identifier>();
-	if ( pattern.is<ast::FunctionCall>( ids::Blank ) && pattern.get<ast::FunctionCall>().getOperands().empty() ) {
-		return true;
-	}
-	if ( pattern.is<ast::FunctionCall>( ids::Pattern ) &&
-			pattern.get<ast::FunctionCall>().getOperands().size() == 2 &&
-			pattern.get<ast::FunctionCall>().getOperands()[0].is<ast::Identifier>() &&
-			pattern.get<ast::FunctionCall>().getOperands()[1].is<ast::FunctionCall>( ids::Blank ) &&
-			pattern.get<ast::FunctionCall>().getOperands()[1].get<ast::FunctionCall>().getOperands().empty() )
-	{
-		name = pattern.get<ast::FunctionCall>().getOperands()[0].get<ast::Identifier>();
-		return true;
-	}
-	return false;
-}
-
-bool tryPattern(const ast::Node& node, const ast::Node& pattern, std::map<ast::Identifier, ast::Node>& patterns) {
-	boost::optional<ast::Identifier> blankName;
-	if ( isBlank(pattern, blankName) ) {
-		if ( blankName ) {
-			patterns[*blankName] = node;
-		}
-		return true;
-	}
-
-	if ( node.is<ast::FunctionCall>() && pattern.is<ast::FunctionCall>() ) {
-
-		const ast::Node& nodeFunction = node.get<ast::FunctionCall>().getFunction();
-		const ast::Node& patternFunction = pattern.get<ast::FunctionCall>().getFunction();
-		const ast::Operands& nodeOperands = node.get<ast::FunctionCall>().getOperands();
-		const ast::Operands& patternOperands = pattern.get<ast::FunctionCall>().getOperands();
-
-		if ( !tryPattern( nodeFunction, patternFunction, patterns) ) {
-			return false;
-		}
-
-		if ( nodeOperands.size() != patternOperands.size() ) {
-			return false;
-		}
-
-		for ( ast::Operands::const_iterator
-				nodeIterator = nodeOperands.cbegin(), patternIterator = patternOperands.cbegin();
-				nodeIterator != nodeOperands.cend();
-				++nodeIterator, ++patternIterator )
-		{
-			if ( !tryPattern( *nodeIterator, *patternIterator, patterns ) ) {
-				return false;
-			}
-
-		}
-		return true;
-	}
-
-	return node == pattern;
-}
 
 ast::Node replaceAll(const ast::Node& node, const ast::Identifier& what, const ast::Node& with) {
 	if ( node.is<ast::Identifier>(what) ) {
