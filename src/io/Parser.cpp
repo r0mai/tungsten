@@ -266,12 +266,22 @@ void operatorNot(ast::Node& result, ast::Node operand) {
 	operatorParentheses(result, result);
 }
 
-void makeBlankPattern(ast::Node& result, const boost::optional<ast::Node>& name) {
+void makeBlankPattern(ast::Node& result, const boost::optional<ast::Node>& name, const boost::optional<ast::Node>& headType) {
+
+	assert( !name || name->is<ast::Identifier>() );
+	assert( !headType || headType->is<ast::Identifier>() );
+
+	auto blankPatternLambda = [&] { 
+		if (headType) {
+			return ast::Node::make<ast::FunctionCall>( ids::Blank, {*headType} );
+		}
+		return ast::Node::make<ast::FunctionCall>( ids::Blank );
+	};
+
 	if ( name ) {
-		assert(name->is<ast::Identifier>());
-		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {*name, ast::Node::make<ast::FunctionCall>( ids::Blank )} );
+		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {*name, blankPatternLambda()} );
 	} else {
-		result = ast::Node::make<ast::FunctionCall>( ids::Blank );
+		result = blankPatternLambda();
 	}
 }
 
@@ -357,6 +367,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 		using qi::eps;
 		using qi::lit;
 		using qi::lexeme;
+		using qi::no_skip;
+		using qi::omit;
 
 		start = expression[_val = _1] | qi::eoi[_val = ast::Node::make<ast::Identifier>(ids::Null)];
 
@@ -496,8 +508,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 		//TODO lexeme
 		blankPattern =
-				(-identifier)[phx::bind(&makeBlankPattern, _val, _1)] >>
-				'_';
+				//((-identifier) >> (!boost::spirit::ascii::space) >> '_' >> (!boost::spirit::ascii::space) >> (-identifier))[phx::bind(&makeBlankPattern, _val, _1, _2)];
+				((-identifier) >> '_' >> (-identifier))[phx::bind(&makeBlankPattern, _val, _1, _2)];
 
 		//TODO lexeme
 		slotPattern =
