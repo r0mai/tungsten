@@ -93,6 +93,10 @@ void rightAssociativeOperator(const ast::Node& function, ast::Node& result, ast:
 	result = ast::Node::make<ast::FunctionCall>( function, {result, rhs} );
 }
 
+void leftAssociativeOperator(const ast::Identifier& function, ast::Node& result, ast::Node rhs) {
+	rightAssociativeOperator(ast::Node::make<ast::Identifier>(function), result, rhs); //currently it is the same
+}
+
 void rightAssociativeOperator(const ast::Identifier& functionName, ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator(ast::Node::make<ast::Identifier>(functionName), result, rhs);
 }
@@ -219,6 +223,10 @@ void operatorMap(ast::Node& result, const ast::Node& rhs) {
 
 void operatorApply(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
+}
+
+void operatorReplaceAll(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeOperator( ids::ReplaceAll, result, rhs );
 }
 
 void operatorPrefixAt(ast::Node& result, ast::Node rhs) {
@@ -394,8 +402,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				*( "//" >> lamdaFunctionExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
 
 		lamdaFunctionExpression =
-				ruleExpression[_val = _1] >> *(
+				replaceAllExpression[_val = _1] >> *(
 				lit("&")[phx::bind(&operatorLambdaFunction, _val)]);
+
+		replaceAllExpression =
+				ruleExpression[_val = _1] >> *(
+				"/." >> ruleExpression[phx::bind(&operatorReplaceAll, _val, _1)]);
 
 		ruleExpression =
 				patternExpression[_val = _1] >>
@@ -548,6 +560,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> andExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> orExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> patternTestExpression; // a?b
+	qi::rule<Iterator, ast::Node(), delimiter> replaceAllExpression; // expr /. patt
 
 	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
 	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;

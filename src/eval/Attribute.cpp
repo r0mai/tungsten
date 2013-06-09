@@ -161,7 +161,8 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Sum, AttributeSet({ids::HoldAll, ids::Protected}))
 		(ids::MatchQ, AttributeSet({ids::Protected}))
 		(ids::PatternTest, AttributeSet({ids::HoldRest, ids::Protected}))
-		(ids::HoldPattern, AttributeSet({ids::HoldAll, ids::Protected}));
+		(ids::HoldPattern, AttributeSet({ids::HoldAll, ids::Protected}))
+		(ids::ReplaceAll, AttributeSet({ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }
