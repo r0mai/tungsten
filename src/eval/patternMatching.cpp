@@ -43,7 +43,8 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 			case 0:
 				return true;
 			case 1:
-				return doesPatternMatchRecursive(getHead(expression), blankOperands[0], patternMap, sessionEnvironment);
+				//return doesPatternMatchRecursive(getHead(expression), blankOperands[0], patternMap, sessionEnvironment);
+				return getHead(expression) == blankOperands[0]; //Blank[h] : h cannot contain patterns itself accroding to WM. why?
 			default:
 				sessionEnvironment.raiseMessage( Message(ids::Blank, ids::argt, {
 						ast::Node::make<ast::Identifier>( ids::Blank ),
@@ -55,12 +56,42 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 		}
 		assert(false);
 	}
+
+	if ( pattern.isFunctionCall(ids::PatternTest) ) {
+		const ast::Operands& patternTestOperands = pattern.get<ast::FunctionCall>().getOperands();
+		if ( patternTestOperands.size() != 2 ) {
+				sessionEnvironment.raiseMessage( Message(ids::PatternTest, ids::argrx, {
+						ast::Node::make<ast::Identifier>( ids::Blank ),
+						ast::Node::make<math::Rational>( patternTestOperands.size() ),
+						ast::Node::make<math::Rational>( 2 )
+				} ));
+				return false;
+		}
+		const ast::Node& patternToTest = patternTestOperands[0];
+		const ast::Node& testFunction = patternTestOperands[1];
+
+		return doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) && 
+			sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( testFunction, {expression} ) ) == ast::Node::make<ast::Identifier>(ids::True);
+	}
 	
 	DoesPatternMatchRecursive2Visitor patternMatchVisitor(patternMap, sessionEnvironment);
 	return ast::applyVisitor(expression, pattern, patternMatchVisitor);
 }
 
+//TODO try to reduce recursivity, this is not haskell :/
 bool doesPatternMatchRecursive(const ast::Node& expression, const ast::Node& pattern, MatchedPatternMap& patternMap, eval::SessionEnvironment& sessionEnvironment) {
+
+	if ( pattern.isFunctionCall(ids::HoldPattern) ) {
+		const ast::Operands& holdPatternOperands = pattern.get<ast::FunctionCall>().getOperands();
+		if ( holdPatternOperands.size() != 1 ) {
+			sessionEnvironment.raiseMessage( Message(ids::HoldPattern, ids::argx, {
+					ast::Node::make<ast::Identifier>( ids::HoldPattern ),
+					ast::Node::make<math::Rational>( holdPatternOperands.size() )
+			} ));
+			return false;
+		}
+		return doesPatternMatchRecursive(expression, holdPatternOperands[0], patternMap, sessionEnvironment);
+	}
 
 	boost::optional<ast::Identifier> patternName;
 	const ast::Node *patternPtr = &pattern; //using pointer to avoid copying

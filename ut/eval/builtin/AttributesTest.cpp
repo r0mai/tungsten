@@ -1665,5 +1665,27 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_MatchQ, BuiltinFunctionFixture ) {
 
 	BOOST_CHECK_EQUAL( *result, expected );
 }
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_PatternTest, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[PatternTest]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldRest"), ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldPattern, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldPattern]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
 BOOST_AUTO_TEST_SUITE_END()
 

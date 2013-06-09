@@ -233,6 +233,12 @@ void operatorPostFixAt(ast::Node& result, ast::Node rhs) {
 	result = ast::Node::make<ast::FunctionCall>(rhs, {result});
 }
 
+void operatorPatternTest(ast::Node& result, ast::Node rhs) {
+	removeIfParenthesesIdentityFunction(result);
+	removeIfParenthesesIdentityFunction(rhs);
+	result = ast::Node::make<ast::FunctionCall>(ids::PatternTest, {result, rhs});
+}
+
 void operatorLambdaFunction(ast::Node& result) {
 	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Function) );
 }
@@ -450,10 +456,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				eps);
 
 		functionCallAndPartExpression =
-				primary[_val = _1] >> (
+				patternTestExpression[_val = _1] >> (
                     *(("[[" >> argumentList >> "]]")[phx::bind(&createPartExpression, _val, _1)] |
 					('[' >> argumentList >> ']')[phx::bind(&createFunctionCall, _val, _1)]  )
 				);
+
+		patternTestExpression =
+				primary[_val = _1] >> -('?' >> primary[phx::bind(&operatorPatternTest, _val, _1)]); //Cannot be chained
 
 		//Primaries : ---
 		signedInteger = signedIntegerParser[phx::bind(&makeInteger, _val, _1)];
@@ -526,6 +535,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> notExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> andExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> orExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> patternTestExpression; // a?b
 
 	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
 	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;
