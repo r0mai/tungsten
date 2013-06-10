@@ -8,7 +8,6 @@ OptionalNode Times(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Abs(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Numerator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Denominator(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
-OptionalNode Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Set(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode SetDelayed(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode RandomReal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -28,6 +27,12 @@ OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment&
 OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Block(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Map(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode MatchQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
+//These are defined in Replace.cpp
+OptionalNode Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ReplaceAll(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ReplaceRepeated(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Part.cpp
 OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -164,6 +169,9 @@ Functions createFunctions() {
 	result[ids::Block] = &Block;
 	result[ids::Map] = &Map;
 	result[ids::Sum] = &Sum;
+	result[ids::MatchQ] = &MatchQ;
+	result[ids::ReplaceAll] = &ReplaceAll;
+	result[ids::ReplaceRepeated] = &ReplaceRepeated;
 	return result;
 }
 

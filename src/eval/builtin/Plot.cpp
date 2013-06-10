@@ -173,6 +173,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			//
 			const math::Real scaleX = ceil(pow(10, floor(log10(distance)))); // 
 			const math::Real lineHeight = 0.04 * (maxY - minY);
+#if 0 //disabled, unstable
 			for(math::Real marker = ceil(minX/scaleX); marker <= floor(maxX)/scaleX; marker=ceil(marker+1)){
 				if( (marker - axisX) < 0.9 && (marker - axisX) > -0.9 )
 					continue; // skip values close to axial point.
@@ -204,7 +205,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			for(math::Real marker = ceil(minY/scaleY); marker <= floor(maxY)/scaleY; marker=ceil(marker+1)){
 				if( (marker - axisY) < 0.9 && (marker - axisY) > -0.9 )
 					continue; // skip values close to axial point.
-
+				std::cout << "scaleY " << scaleY <<  " marker: " << marker << std::endl;
 				const auto tickNode =	ast::Node::make<ast::FunctionCall>(eval::ids::Line, {
 											ast::Node::make<ast::FunctionCall>(eval::ids::List, {
 												ast::Node::make<ast::FunctionCall>(eval::ids::List, {
@@ -225,7 +226,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 							})
 						}));
 			}
-
+#endif
 			// merged now includes all function lines, and axes.
 			const auto GraphicsNode = ast::Node::make<ast::FunctionCall>(ids::Graphics, 
 					{ast::Node::make<ast::FunctionCall>(ids::List, merged )});

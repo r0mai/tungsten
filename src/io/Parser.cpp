@@ -93,6 +93,10 @@ void rightAssociativeOperator(const ast::Node& function, ast::Node& result, ast:
 	result = ast::Node::make<ast::FunctionCall>( function, {result, rhs} );
 }
 
+void leftAssociativeOperator(const ast::Identifier& function, ast::Node& result, ast::Node rhs) {
+	rightAssociativeOperator(ast::Node::make<ast::Identifier>(function), result, rhs); //currently it is the same
+}
+
 void rightAssociativeOperator(const ast::Identifier& functionName, ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator(ast::Node::make<ast::Identifier>(functionName), result, rhs);
 }
@@ -221,6 +225,14 @@ void operatorApply(ast::Node& result, const ast::Node& rhs) {
 	rightAssociativeOperator( ids::Apply, result, rhs );
 }
 
+void operatorReplaceAll(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeOperator( ids::ReplaceAll, result, rhs );
+}
+
+void operatorReplaceRepeated(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeOperator( ids::ReplaceRepeated, result, rhs );
+}
+
 void operatorPrefixAt(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
@@ -231,6 +243,12 @@ void operatorPostFixAt(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
 	result = ast::Node::make<ast::FunctionCall>(rhs, {result});
+}
+
+void operatorPatternTest(ast::Node& result, ast::Node rhs) {
+	removeIfParenthesesIdentityFunction(result);
+	removeIfParenthesesIdentityFunction(rhs);
+	result = ast::Node::make<ast::FunctionCall>(ids::PatternTest, {result, rhs});
 }
 
 void operatorLambdaFunction(ast::Node& result) {
@@ -260,12 +278,22 @@ void operatorNot(ast::Node& result, ast::Node operand) {
 	operatorParentheses(result, result);
 }
 
-void makeBlankPattern(ast::Node& result, const boost::optional<ast::Node>& name) {
+void makeBlankPattern(ast::Node& result, const boost::optional<ast::Node>& name, const boost::optional<ast::Node>& headType) {
+
+	assert( !name || name->is<ast::Identifier>() );
+	assert( !headType || headType->is<ast::Identifier>() );
+
+	auto blankPatternLambda = [&] { 
+		if (headType) {
+			return ast::Node::make<ast::FunctionCall>( ids::Blank, {*headType} );
+		}
+		return ast::Node::make<ast::FunctionCall>( ids::Blank );
+	};
+
 	if ( name ) {
-		assert(name->is<ast::Identifier>());
-		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {*name, ast::Node::make<ast::FunctionCall>( ids::Blank )} );
+		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {*name, blankPatternLambda()} );
 	} else {
-		result = ast::Node::make<ast::FunctionCall>( ids::Blank );
+		result = blankPatternLambda();
 	}
 }
 
@@ -351,6 +379,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 		using qi::eps;
 		using qi::lit;
 		using qi::lexeme;
+		using qi::no_skip;
+		using qi::omit;
 
 		start = expression[_val = _1] | qi::eoi[_val = ast::Node::make<ast::Identifier>(ids::Null)];
 
@@ -376,8 +406,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				*( "//" >> lamdaFunctionExpression[phx::bind(&operatorPostFixAt, _val, _1)] );
 
 		lamdaFunctionExpression =
-				ruleExpression[_val = _1] >> *(
+				replaceAllExpression[_val = _1] >> *(
 				lit("&")[phx::bind(&operatorLambdaFunction, _val)]);
+
+		replaceAllExpression =
+				ruleExpression[_val = _1] >> *(
+				"/." >> ruleExpression[phx::bind(&operatorReplaceAll, _val, _1)] |
+				"//." >> ruleExpression[phx::bind(&operatorReplaceRepeated, _val, _1)]);
 
 		ruleExpression =
 				patternExpression[_val = _1] >>
@@ -450,10 +485,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				eps);
 
 		functionCallAndPartExpression =
-				primary[_val = _1] >> (
+				patternTestExpression[_val = _1] >> (
                     *(("[[" >> argumentList >> "]]")[phx::bind(&createPartExpression, _val, _1)] |
 					('[' >> argumentList >> ']')[phx::bind(&createFunctionCall, _val, _1)]  )
 				);
+
+		patternTestExpression =
+				primary[_val = _1] >> -('?' >> primary[phx::bind(&operatorPatternTest, _val, _1)]); //Cannot be chained
 
 		//Primaries : ---
 		signedInteger = signedIntegerParser[phx::bind(&makeInteger, _val, _1)];
@@ -487,8 +525,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 		//TODO lexeme
 		blankPattern =
-				(-identifier)[phx::bind(&makeBlankPattern, _val, _1)] >>
-				'_';
+				//((-identifier) >> (!boost::spirit::ascii::space) >> '_' >> (!boost::spirit::ascii::space) >> (-identifier))[phx::bind(&makeBlankPattern, _val, _1, _2)];
+				((-identifier) >> '_' >> (-identifier))[phx::bind(&makeBlankPattern, _val, _1, _2)];
 
 		//TODO lexeme
 		slotPattern =
@@ -526,6 +564,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> notExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> andExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> orExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> patternTestExpression; // a?b
+	qi::rule<Iterator, ast::Node(), delimiter> replaceAllExpression; // expr /. patt
 
 	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
 	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;

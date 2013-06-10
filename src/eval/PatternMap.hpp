@@ -8,7 +8,10 @@
 
 #include "ast/Node.hpp"
 
+
 namespace tungsten { namespace eval {
+
+class SessionEnvironment;
 
 class PatternMap {
 public:
@@ -23,7 +26,7 @@ public:
 
 	//Returns true, if a patterns matches node; result will be set to it's new value
 	//Otherwise, result == node
-	bool applyPatterns(const ast::Node& node, ast::Node& result) const;
+	bool applyPatterns(const ast::Node& node, ast::Node& result, eval::SessionEnvironment& sessionEnvironment) const;
 private:
 	//<pattern, replacement>
 	typedef std::map<ast::Node, ast::Node> Storage;
