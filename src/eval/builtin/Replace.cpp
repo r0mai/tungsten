@@ -51,7 +51,7 @@ bool applyRulePtrs(ast::Node& expression, const std::vector<RulePtr>& rules, eva
 }
 
 //returns false when a error message is raised
-bool applyRules(ast::Node& expression, const ast::Node& rules, eval::SessionEnvironment& sessionEnvironment) {
+bool applyRules(ast::Node& expression, const ast::Node& rules, eval::SessionEnvironment& sessionEnvironment, const ast::Identifier& caller) {
 
 	if ( rules.isFunctionCall(ids::List) ) {
 		const ast::Operands& listOperands = rules.get<ast::FunctionCall>().getOperands();
@@ -60,7 +60,7 @@ bool applyRules(ast::Node& expression, const ast::Node& rules, eval::SessionEnvi
 			ast::Operands expressionList = ast::Operands( listOperands.size(), expression );
 
 			for ( unsigned i = 0; i < listOperands.size(); ++i ) {
-				if ( !applyRules( expressionList[i], listOperands[i], sessionEnvironment ) ) {
+				if ( !applyRules( expressionList[i], listOperands[i], sessionEnvironment, caller ) ) {
 					return false;
 				}
 			}
@@ -76,14 +76,14 @@ bool applyRules(ast::Node& expression, const ast::Node& rules, eval::SessionEnvi
 			} );
 			applyRulePtrs(expression, rulePtrs, sessionEnvironment);
 		} else {
-			sessionEnvironment.raiseMessage( Message(ids::ReplaceAll, ids::rmix, {rules}) );
+			sessionEnvironment.raiseMessage( Message(caller, ids::rmix, {rules}) );
 			return false;
 		}
 	
 	} else if ((rules.isFunctionCall(ids::Rule) || rules.isFunctionCall(ids::RuleDelayed)) && rules.get<ast::FunctionCall>().getOperands().size() == 2 ) {
 		applyRulePtrs(expression, std::vector<RulePtr>(1, std::make_pair(&rules.get<ast::FunctionCall>().getOperands()[0], &rules.get<ast::FunctionCall>().getOperands()[1])), sessionEnvironment);
 	} else {
-		sessionEnvironment.raiseMessage( Message(ids::ReplaceAll, ids::reps, {rules}) );
+		sessionEnvironment.raiseMessage( Message(caller, ids::reps, {rules}) );
 		return false;
 	}
 	return true;
@@ -103,8 +103,37 @@ OptionalNode ReplaceAll(const ast::Operands& operands, eval::SessionEnvironment&
 	const ast::Node& rules = operands[1];
 
 	ast::Node result = expression;
-	applyRules( result, rules, sessionEnvironment );
+	if ( !applyRules( result, rules, sessionEnvironment, ids::ReplaceAll ) ) {
+		return EvaluationFailure();
+	}
 	return sessionEnvironment.recursiveEvaluate(result);
+}
+
+OptionalNode ReplaceRepeated(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 2 ) {
+		sessionEnvironment.raiseMessage( Message(ids::ReplaceRepeated, ids::argrx, {
+				ast::Node::make<ast::Identifier>( ids::ReplaceRepeated ),
+				ast::Node::make<math::Rational>( operands.size() ),
+				ast::Node::make<math::Rational>( 2 )
+		} ));
+		return EvaluationFailure();
+	}
+		
+	const ast::Node& expression = operands[0];
+	const ast::Node& rules = operands[1];
+
+	ast::Node result = expression;
+	while ( true ) {
+		ast::Node last = result; 
+		if ( !applyRules( result, rules, sessionEnvironment, ids::ReplaceRepeated ) ) {
+			return EvaluationFailure();
+		}
+		result = sessionEnvironment.recursiveEvaluate(result);
+		if ( result == last ) {
+			break;
+		}
+	}
+	return result;
 }
 
 }}} //namespace tungsten::eval::builtin

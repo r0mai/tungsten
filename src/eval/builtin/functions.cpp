@@ -32,6 +32,7 @@ OptionalNode MatchQ(const ast::Operands& operands, eval::SessionEnvironment& ses
 //These are defined in Replace.cpp
 OptionalNode Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ReplaceAll(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ReplaceRepeated(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Part.cpp
 OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -170,6 +171,7 @@ Functions createFunctions() {
 	result[ids::Sum] = &Sum;
 	result[ids::MatchQ] = &MatchQ;
 	result[ids::ReplaceAll] = &ReplaceAll;
+	result[ids::ReplaceRepeated] = &ReplaceRepeated;
 	return result;
 }
 

@@ -229,6 +229,10 @@ void operatorReplaceAll(ast::Node& result, const ast::Node& rhs) {
 	leftAssociativeOperator( ids::ReplaceAll, result, rhs );
 }
 
+void operatorReplaceRepeated(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeOperator( ids::ReplaceRepeated, result, rhs );
+}
+
 void operatorPrefixAt(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
@@ -407,7 +411,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 		replaceAllExpression =
 				ruleExpression[_val = _1] >> *(
-				"/." >> ruleExpression[phx::bind(&operatorReplaceAll, _val, _1)]);
+				"/." >> ruleExpression[phx::bind(&operatorReplaceAll, _val, _1)] |
+				"//." >> ruleExpression[phx::bind(&operatorReplaceRepeated, _val, _1)]);
 
 		ruleExpression =
 				patternExpression[_val = _1] >>
