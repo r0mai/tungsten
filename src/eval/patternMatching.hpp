@@ -14,6 +14,9 @@ typedef std::map<ast::Identifier, ast::Node> MatchedPatternMap;
 bool doesPatternMatch(const ast::Node& expression, const ast::Node& pattern, eval::SessionEnvironment& sessionEnvironment);
 bool doesPatternMatch(const ast::Node& expression, const ast::Node& pattern, MatchedPatternMap& patternMap, eval::SessionEnvironment& sessionEnvironment);
 
+void applyPatternMapMutable(ast::Node& expression, const MatchedPatternMap& patternMap);
+ast::Node applyPatternMapImmutable(const ast::Node& expression, const MatchedPatternMap& patternMap);
+
 }} //namespace tungsten::eval
 
 #endif // EVAL_PATTERN_MATCHING_HPP_

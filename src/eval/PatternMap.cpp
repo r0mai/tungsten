@@ -76,34 +76,11 @@ bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result, eval::S
 	for ( const std::pair<ast::Node, ast::Node>& assignmentPattern : storage ) {
 		MatchedPatternMap matchedPatternMap;
 		if ( doesPatternMatch(node, assignmentPattern.first, matchedPatternMap, sessionEnvironment) ) {
-			result = assignmentPattern.second;
-			for ( const std::pair<ast::Identifier, ast::Node>& matchedPattern : matchedPatternMap ) {
-				//FIXME TODO XXX remove this copy!!!
-				result = replaceAll(ast::Node(result), matchedPattern.first, matchedPattern.second);
-			}
+			result = applyPatternMapImmutable(assignmentPattern.second, matchedPatternMap);
 			return true;
 		}
 	}
 	return false;
-}
-
-
-ast::Node replaceAll(const ast::Node& node, const ast::Identifier& what, const ast::Node& with) {
-	if ( node.is<ast::Identifier>(what) ) {
-		return with;
-	}
-
-	if ( node.is<ast::FunctionCall>() ) {
-		ast::Node function = replaceAll(node.get<ast::FunctionCall>().getFunction(), what, with);
-		ast::Operands operands = node.get<ast::FunctionCall>().getOperands();
-
-		for ( ast::Node& operand : operands ) {
-			operand = replaceAll(operand, what, with);
-		}
-
-		return ast::Node::make<ast::FunctionCall>(function, operands);
-	}
-	return node;
 }
 
 }} //namespace tungsten::eval

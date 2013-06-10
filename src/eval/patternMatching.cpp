@@ -1,6 +1,7 @@
 
 #include "patternMatching.hpp"
 #include "getHead.hpp"
+#include <stack>
 
 namespace tungsten { namespace eval {
 
@@ -129,6 +130,35 @@ bool doesPatternMatch(const ast::Node& expression, const ast::Node& pattern, Mat
 	return res;
 }
 
+
+void applyPatternMapMutable(ast::Node& expression, const MatchedPatternMap& patternMap) {
+	std::stack<ast::Node*> todoStack;
+
+	todoStack.push(&expression);
+
+	while ( !todoStack.empty() ) {
+		ast::Node& current = *todoStack.top();
+		todoStack.pop();
+		if ( current.is<ast::Identifier>() ) {
+			const ast::Identifier& identifier = current.get<ast::Identifier>();
+			MatchedPatternMap::const_iterator identifierLocation = patternMap.find(identifier);
+			if ( identifierLocation != patternMap.end() ) {
+				current = identifierLocation->second;
+			}
+		} else if ( current.is<ast::FunctionCall>() ) {
+			todoStack.push(&current.get<ast::FunctionCall>().getFunction());
+			for ( ast::Node& operand : current.get<ast::FunctionCall>().getOperands() ) {
+				todoStack.push(&operand);
+			}
+		}
+	}
+}
+
+ast::Node applyPatternMapImmutable(const ast::Node& expression, const MatchedPatternMap& patternMap) {
+	ast::Node result = expression;
+	applyPatternMapMutable(result, patternMap);
+	return result;
+}
 
 }} //namespace tungsten::eval
 
