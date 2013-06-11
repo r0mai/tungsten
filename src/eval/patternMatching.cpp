@@ -110,7 +110,14 @@ bool doesPatternMatchRecursive(const ast::Node& expression, const ast::Node& pat
 	
 	if ( doesPatternMatchRecursive2(expression, *patternPtr, patternMap, sessionEnvironment) ) {
 		if ( patternName ) {
-			patternMap[*patternName] = expression;
+			MatchedPatternMap::iterator patternNameLocation = patternMap.find(*patternName);
+			if ( patternNameLocation == patternMap.end() ) {
+				patternMap[*patternName] = expression;
+			} else if ( patternNameLocation->second != expression ) { //f[n_,n_] doesn't match f[4,5]
+				return false;
+			} else {
+				//nop: everything is fine
+			}
 		}
 		return true;
 	}

@@ -250,5 +250,28 @@ BOOST_FIXTURE_TEST_CASE( test_true_if_3_13_matches_blank_question_mark_NumericQ_
 }
 
 
+
+BOOST_FIXTURE_TEST_CASE( test_true_if_the_list_the_pattern_n_blank__the_pattern_n_blank_matches_the_list_5__5_and_false_otherwise, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("MatchQ[{n_, n_}, {5, 5}]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::Identifier>("False");
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_true_if_the_list_the_pattern_n_blank__the_pattern_n_blank_matches_the_list_5__4_and_false_otherwise, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("MatchQ[{n_, n_}, {5, 4}]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::Identifier>("False");
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 

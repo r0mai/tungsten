@@ -3,7 +3,8 @@
 #ifndef EVAL_PATTERNMAP_HPP_
 #define EVAL_PATTERNMAP_HPP_
 
-#include <map>
+#include <list>
+#include <utility>
 #include <boost/optional.hpp>
 
 #include "ast/Node.hpp"
@@ -29,7 +30,7 @@ public:
 	bool applyPatterns(const ast::Node& node, ast::Node& result, eval::SessionEnvironment& sessionEnvironment) const;
 private:
 	//<pattern, replacement>
-	typedef std::map<ast::Node, ast::Node> Storage;
+	typedef std::vector<std::pair<ast::Node, ast::Node>> Storage;
 	Storage storage;
 };
 
