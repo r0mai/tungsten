@@ -163,7 +163,12 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::PatternTest, AttributeSet({ids::HoldRest, ids::Protected}))
 		(ids::HoldPattern, AttributeSet({ids::HoldAll, ids::Protected}))
 		(ids::ReplaceAll, AttributeSet({ids::Protected}))
-		(ids::ReplaceRepeated, AttributeSet({ids::Protected}));
+		(ids::ReplaceRepeated, AttributeSet({ids::Protected}))
+		(ids::Condition, AttributeSet({ids::HoldAll, ids::Protected}))
+		(ids::Verbatim, AttributeSet({ids::Protected}))
+		(ids::Alternatives, AttributeSet({ids::Protected}))
+		(ids::Optional, AttributeSet({ids::Protected}))
+		(ids::Except, AttributeSet({ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }

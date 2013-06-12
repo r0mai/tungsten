@@ -1,5 +1,4 @@
 
-
 #ifndef EVAL_PATTERNMAP_HPP_
 #define EVAL_PATTERNMAP_HPP_
 
@@ -37,3 +36,4 @@ private:
 }} //namespace tungsten::eval
 
 #endif /* EVAL_PATTERNMAP_HPP_ */
+
