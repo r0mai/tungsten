@@ -1710,5 +1710,61 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_ReplaceRepeated, BuiltinFunctionFixt
 	BOOST_CHECK_EQUAL( *result, expected );
 }
 
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Condition, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Condition]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Verbatim, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Verbatim]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Alternatives, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Alternatives]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Except, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Except]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Optional, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Optional]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 

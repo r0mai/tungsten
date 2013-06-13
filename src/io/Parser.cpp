@@ -233,6 +233,10 @@ void operatorReplaceRepeated(ast::Node& result, const ast::Node& rhs) {
 	leftAssociativeOperator( ids::ReplaceRepeated, result, rhs );
 }
 
+void operatorCondition(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeOperator( ids::Condition, result, rhs );
+}
+
 void operatorPrefixAt(ast::Node& result, ast::Node rhs) {
 	removeIfParenthesesIdentityFunction(result);
 	removeIfParenthesesIdentityFunction(rhs);
@@ -415,10 +419,14 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				"//." >> ruleExpression[phx::bind(&operatorReplaceRepeated, _val, _1)]);
 
 		ruleExpression =
-				patternExpression[_val = _1] >>
+				conditionExpression[_val = _1] >>
 				("->" >> ruleExpression[phx::bind(&operatorRule, _val, _1)] |
 				":>" >> ruleExpression[phx::bind(&operatorRuleDelayed, _val, _1)] |
 				eps);
+
+		conditionExpression = 
+				patternExpression[_val = _1] >> *(
+				"/;" >> patternExpression[phx::bind(&operatorCondition, _val, _1)]);
 
 		patternExpression =
 				identifier[_val = _1] >> ':' >> orExpression[phx::bind(&operatorPattern, _val, _1)] |
@@ -566,6 +574,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> orExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> patternTestExpression; // a?b
 	qi::rule<Iterator, ast::Node(), delimiter> replaceAllExpression; // expr /. patt
+	qi::rule<Iterator, ast::Node(), delimiter> conditionExpression; // patt /; test
 
 	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
 	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;

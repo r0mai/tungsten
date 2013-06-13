@@ -56,11 +56,15 @@ PatternMap PatternMap::makeDefault() {
 }
 
 void PatternMap::addPattern(const ast::Node& pattern, const ast::Node& replacement) {
-	storage[pattern] = replacement;
+	Storage::iterator location = std::find_if( storage.begin(), storage.end(), [&pattern](const Storage::value_type& p) { return p.first == pattern; } );
+	if ( location != storage.end() ) {
+		storage.erase(location);
+	}
+	storage.push_back( std::make_pair(pattern, replacement) );
 }
 
 boost::optional<ast::Node> PatternMap::getPatternReplacement(const ast::Node& pattern) const {
-	Storage::const_iterator location = storage.find(pattern);
+	Storage::const_iterator location = std::find_if( storage.begin(), storage.end(), [&pattern](const Storage::value_type& p) { return p.first == pattern; } );
 	if ( location == storage.end() ) {
 		return boost::none_t();
 	}
@@ -68,7 +72,10 @@ boost::optional<ast::Node> PatternMap::getPatternReplacement(const ast::Node& pa
 }
 
 void PatternMap::removePattern(const ast::Node& pattern) {
-	storage.erase(pattern);
+	Storage::iterator location = std::find_if( storage.begin(), storage.end(), [&pattern](const Storage::value_type& p) { return p.first == pattern; } );
+	if ( location != storage.end() ) {
+		storage.erase(location);
+	}
 }
 
 bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result, eval::SessionEnvironment& sessionEnvironment) const {

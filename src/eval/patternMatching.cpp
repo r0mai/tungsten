@@ -61,18 +61,43 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 	if ( pattern.isFunctionCall(ids::PatternTest) ) {
 		const ast::Operands& patternTestOperands = pattern.get<ast::FunctionCall>().getOperands();
 		if ( patternTestOperands.size() != 2 ) {
-				sessionEnvironment.raiseMessage( Message(ids::PatternTest, ids::argrx, {
-						ast::Node::make<ast::Identifier>( ids::Blank ),
-						ast::Node::make<math::Rational>( patternTestOperands.size() ),
-						ast::Node::make<math::Rational>( 2 )
-				} ));
-				return false;
+			sessionEnvironment.raiseMessage( Message(ids::PatternTest, ids::argrx, {
+					ast::Node::make<ast::Identifier>( ids::PatternTest ),
+					ast::Node::make<math::Rational>( patternTestOperands.size() ),
+					ast::Node::make<math::Rational>( 2 )
+			} ));
+			return false;
 		}
 		const ast::Node& patternToTest = patternTestOperands[0];
 		const ast::Node& testFunction = patternTestOperands[1];
 
 		return doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) && 
-			sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( testFunction, {expression} ) ) == ast::Node::make<ast::Identifier>(ids::True);
+			sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( testFunction, {expression} ) ).is<ast::Identifier>(ids::True);
+	} else if ( pattern.isFunctionCall(ids::Condition) ) {
+		const ast::Operands& conditionOperands = pattern.get<ast::FunctionCall>().getOperands();
+		if ( conditionOperands.size() < 2 ) {
+			sessionEnvironment.raiseMessage( Message(ids::Condition, ids::argm, {
+					ast::Node::make<ast::Identifier>( ids::Condition ),
+					ast::Node::make<math::Rational>( conditionOperands.size() ),
+					ast::Node::make<math::Rational>( 2 )
+			} ));
+			return false;
+		}
+
+		const ast::Node& patternToTest = conditionOperands[0];
+
+		if ( !doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) ) {
+			return false;
+		}
+
+		for ( unsigned i = 1; i < conditionOperands.size(); ++i ) {
+			ast::Node testExpression = sessionEnvironment.recursiveEvaluate(applyPatternMapImmutable(conditionOperands[i], patternMap));
+			if ( !testExpression.is<ast::Identifier>(ids::True) ) {
+				return false;
+			}
+		}
+		return true;
+
 	}
 	
 	DoesPatternMatchRecursive2Visitor patternMatchVisitor(patternMap, sessionEnvironment);
@@ -110,7 +135,14 @@ bool doesPatternMatchRecursive(const ast::Node& expression, const ast::Node& pat
 	
 	if ( doesPatternMatchRecursive2(expression, *patternPtr, patternMap, sessionEnvironment) ) {
 		if ( patternName ) {
-			patternMap[*patternName] = expression;
+			MatchedPatternMap::iterator patternNameLocation = patternMap.find(*patternName);
+			if ( patternNameLocation == patternMap.end() ) {
+				patternMap[*patternName] = expression;
+			} else if ( patternNameLocation->second != expression ) { //f[n_,n_] doesn't match f[4,5]
+				return false;
+			} else {
+				//nop: everything is fine
+			}
 		}
 		return true;
 	}
