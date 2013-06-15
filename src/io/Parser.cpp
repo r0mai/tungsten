@@ -134,6 +134,14 @@ void applyPostFixOperator(ast::Node& result, const ast::Node& function) {
 	result = ast::Node::make<ast::FunctionCall>(function, {result});
 }
 
+void operatorRepeated(ast::Node& result) { 
+	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Repeated) );
+}
+
+void operatorRepeatedNull(ast::Node& result) { 
+	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::RepeatedNull) );
+}
+
 void operatorFactorial2(ast::Node& result) {
 	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Factorial2) );
 }
@@ -191,6 +199,10 @@ void operatorAnd(ast::Node& result, const ast::Node& rhs) {
 
 void operatorOr(ast::Node& result, const ast::Node& rhs) {
 	leftAssociativeListableOperator( ids::Or, result, rhs );
+}
+
+void operatorAlternatives(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeListableOperator( ids::Alternatives, result, rhs );
 }
 
 void operatorGreaterEqual(ast::Node& result, const ast::Node& rhs) {
@@ -282,13 +294,13 @@ void operatorNot(ast::Node& result, ast::Node operand) {
 	operatorParentheses(result, result);
 }
 
-void makeBlankPattern(ast::Node& result, const boost::optional<std::vector<char>>& name, const boost::optional<std::vector<char>>& headType) {
+void makeBlankPattern(ast::Node& result, const boost::optional<std::vector<char>>& name, const boost::optional<std::vector<char>>& headType, const ast::Identifier& functionName) {
 
 	auto blankPatternLambda = [&] { 
 		if (headType) {
-			return ast::Node::make<ast::FunctionCall>( ids::Blank, {ast::Node::make<ast::Identifier>(headType->begin(), headType->end())} );
+			return ast::Node::make<ast::FunctionCall>( functionName, {ast::Node::make<ast::Identifier>(headType->begin(), headType->end())} );
 		}
-		return ast::Node::make<ast::FunctionCall>( ids::Blank );
+		return ast::Node::make<ast::FunctionCall>( functionName );
 	};
 
 	if ( name ) {
@@ -298,20 +310,12 @@ void makeBlankPattern(ast::Node& result, const boost::optional<std::vector<char>
 	}
 }
 
-void makeSlot(ast::Node& result, boost::optional<math::Integer> n) {
+void makeSlot(ast::Node& result, boost::optional<math::Integer> n, const ast::Identifier& functionName) {
 	if ( !n ) {
 		n = 1;
 	}
 	assert(n && n >= 0);
-	result = ast::Node::make<ast::FunctionCall>( ids::Slot, {ast::Node::make<math::Rational>(*n)} );
-}
-
-void makeSlotSequence(ast::Node& result, boost::optional<math::Integer> n) {
-	if ( !n ) {
-		n = 1;
-	}
-	assert(n && n >= 0);
-	result = ast::Node::make<ast::FunctionCall>( ids::SlotSequence, {ast::Node::make<math::Rational>(*n)} );
+	result = ast::Node::make<ast::FunctionCall>( functionName, {ast::Node::make<math::Rational>(*n)} );
 }
 
 void createFunctionCallFromNode(ast::Node& result, const ast::Node& function) {
@@ -426,8 +430,18 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				"/;" >> patternExpression[phx::bind(&operatorCondition, _val, _1)]);
 
 		patternExpression =
-				identifier[_val = _1] >> ':' >> orExpression[phx::bind(&operatorPattern, _val, _1)] |
-				orExpression[_val = _1];
+				identifier[_val = _1] >> ':' >> alternativesExpression[phx::bind(&operatorPattern, _val, _1)] |
+				alternativesExpression[_val = _1];
+
+		alternativesExpression =
+				repeatedExpression[_val = _1] >> 
+				*( '|' >> repeatedExpression[phx::bind(&operatorAlternatives, _val, _1)]);
+
+		repeatedExpression =
+				orExpression[_val = _1] >> *(
+					lit("...")[phx::bind(&operatorRepeatedNull, _val)] |
+					lit("..")[phx::bind(&operatorRepeated, _val)]
+					);
 
 		orExpression =
 				andExpression[_val = _1] >>
@@ -528,12 +542,15 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
 				'}';
 
+		//TODO remove backtracking here
 		blankPattern =
-				((-variable) >> '_' >> (-variable))[phx::bind(&makeBlankPattern, _val, _1, _2)];
+				( ((-variable) >> "___" >> (-variable))[phx::bind(&makeBlankPattern, _val, _1, _2, ids::BlankNullSequence)] ) |
+				( ((-variable) >> "__" >> (-variable))[phx::bind(&makeBlankPattern, _val, _1, _2, ids::BlankSequence)] ) |
+				( ((-variable) >> '_' >> (-variable))[phx::bind(&makeBlankPattern, _val, _1, _2, ids::Blank)] );
 
 		slotPattern =
-				( "##" >> (-unsignedIntegerParser)[phx::bind(&makeSlotSequence, _val, _1)] ) |
-				( '#' >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1)] );
+				( "##" >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1, ids::SlotSequence)] ) |
+				( '#' >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1, ids::Slot)] );
 				
 
 
@@ -569,6 +586,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> patternTestExpression; // a?b
 	qi::rule<Iterator, ast::Node(), delimiter> replaceAllExpression; // expr /. patt
 	qi::rule<Iterator, ast::Node(), delimiter> conditionExpression; // patt /; test
+	qi::rule<Iterator, ast::Node(), delimiter> alternativesExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> repeatedExpression;
 
 	qi::rule<Iterator, ast::Node()> blankPattern;
 	qi::rule<Iterator, ast::Node()> slotPattern;
