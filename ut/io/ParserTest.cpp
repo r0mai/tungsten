@@ -965,7 +965,7 @@ BOOST_AUTO_TEST_CASE( parsing_blank_times_x ) {
 
 	BOOST_REQUIRE( tree );
 
-	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::FunctionCall>("Blank", {}), ast::Node::make<ast::Identifier>("x")}));
+	BOOST_CHECK_EQUAL( tree.get(), ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::FunctionCall>("Blank", {})}));
 }
 
 

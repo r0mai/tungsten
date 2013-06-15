@@ -282,39 +282,36 @@ void operatorNot(ast::Node& result, ast::Node operand) {
 	operatorParentheses(result, result);
 }
 
-void makeBlankPattern(ast::Node& result, const boost::optional<ast::Node>& name, const boost::optional<ast::Node>& headType) {
-
-	assert( !name || name->is<ast::Identifier>() );
-	assert( !headType || headType->is<ast::Identifier>() );
+void makeBlankPattern(ast::Node& result, const boost::optional<std::vector<char>>& name, const boost::optional<std::vector<char>>& headType) {
 
 	auto blankPatternLambda = [&] { 
 		if (headType) {
-			return ast::Node::make<ast::FunctionCall>( ids::Blank, {*headType} );
+			return ast::Node::make<ast::FunctionCall>( ids::Blank, {ast::Node::make<ast::Identifier>(headType->begin(), headType->end())} );
 		}
 		return ast::Node::make<ast::FunctionCall>( ids::Blank );
 	};
 
 	if ( name ) {
-		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {*name, blankPatternLambda()} );
+		result = ast::Node::make<ast::FunctionCall>( ids::Pattern, {ast::Node::make<ast::Identifier>(name->begin(), name->end()), blankPatternLambda()} );
 	} else {
 		result = blankPatternLambda();
 	}
 }
 
-void makeSlot(ast::Node& result, boost::optional<ast::Node> n) {
+void makeSlot(ast::Node& result, boost::optional<math::Integer> n) {
 	if ( !n ) {
-		n = ast::Node::make<math::Rational>(1);
+		n = 1;
 	}
-	assert(n && n->is<math::Rational>() && math::isInteger(n->get<math::Rational>()) );
-	result = ast::Node::make<ast::FunctionCall>( ids::Slot, {*n} );
+	assert(n && n >= 0);
+	result = ast::Node::make<ast::FunctionCall>( ids::Slot, {ast::Node::make<math::Rational>(*n)} );
 }
 
-void makeSlotSequence(ast::Node& result, boost::optional<ast::Node> n) {
+void makeSlotSequence(ast::Node& result, boost::optional<math::Integer> n) {
 	if ( !n ) {
-		n = ast::Node::make<math::Rational>(1);
+		n = 1;
 	}
-	assert(n && n->is<math::Rational>() && math::isInteger(n->get<math::Rational>()) );
-	result = ast::Node::make<ast::FunctionCall>( ids::SlotSequence, {*n} );
+	assert(n && n >= 0);
+	result = ast::Node::make<ast::FunctionCall>( ids::SlotSequence, {ast::Node::make<math::Rational>(*n)} );
 }
 
 void createFunctionCallFromNode(ast::Node& result, const ast::Node& function) {
@@ -531,15 +528,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				argumentList[phx::bind(&fillFunctionCall, _val, _1)] >>
 				'}';
 
-		//TODO lexeme
 		blankPattern =
-				//((-identifier) >> (!boost::spirit::ascii::space) >> '_' >> (!boost::spirit::ascii::space) >> (-identifier))[phx::bind(&makeBlankPattern, _val, _1, _2)];
-				((-identifier) >> '_' >> (-identifier))[phx::bind(&makeBlankPattern, _val, _1, _2)];
+				((-variable) >> '_' >> (-variable))[phx::bind(&makeBlankPattern, _val, _1, _2)];
 
-		//TODO lexeme
 		slotPattern =
-				( "##" >> (-unsignedInteger)[phx::bind(&makeSlotSequence, _val, _1)] ) |
-				( '#' >> (-unsignedInteger)[phx::bind(&makeSlot, _val, _1)] );
+				( "##" >> (-unsignedIntegerParser)[phx::bind(&makeSlotSequence, _val, _1)] ) |
+				( '#' >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1)] );
 				
 
 
@@ -576,8 +570,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> replaceAllExpression; // expr /. patt
 	qi::rule<Iterator, ast::Node(), delimiter> conditionExpression; // patt /; test
 
-	qi::rule<Iterator, ast::Node(), delimiter> blankPattern;
-	qi::rule<Iterator, ast::Node(), delimiter> slotPattern;
+	qi::rule<Iterator, ast::Node()> blankPattern;
+	qi::rule<Iterator, ast::Node()> slotPattern;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
 	qi::rule<Iterator, ast::Operands(), delimiter> argumentList;

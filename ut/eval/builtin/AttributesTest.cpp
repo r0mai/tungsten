@@ -1766,5 +1766,71 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Optional, BuiltinFunctionFixture ) {
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_PatternSequence, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[PatternSequence]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Repeated, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Repeated]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_RepeatedNull, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[RepeatedNull]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_BlankSequence, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[BlankSequence]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_BlankNullSequence, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[BlankNullSequence]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_OptionsPattern, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[OptionsPattern]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 

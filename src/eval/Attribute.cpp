@@ -168,7 +168,13 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Verbatim, AttributeSet({ids::Protected}))
 		(ids::Alternatives, AttributeSet({ids::Protected}))
 		(ids::Optional, AttributeSet({ids::Protected}))
-		(ids::Except, AttributeSet({ids::Protected}));
+		(ids::Except, AttributeSet({ids::Protected}))
+		(ids::PatternSequence, AttributeSet({ids::Protected}))
+		(ids::Repeated, AttributeSet({ids::Protected}))
+		(ids::RepeatedNull, AttributeSet({ids::Protected}))
+		(ids::BlankSequence, AttributeSet({ids::Protected}))
+		(ids::BlankNullSequence, AttributeSet({ids::Protected}))
+		(ids::OptionsPattern, AttributeSet({ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }
