@@ -174,7 +174,9 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::RepeatedNull, AttributeSet({ids::Protected}))
 		(ids::BlankSequence, AttributeSet({ids::Protected}))
 		(ids::BlankNullSequence, AttributeSet({ids::Protected}))
-		(ids::OptionsPattern, AttributeSet({ids::Protected}));
+		(ids::OptionsPattern, AttributeSet({ids::Protected}))
+		(ids::Longest, AttributeSet({ids::Protected}))
+		(ids::Shortest, AttributeSet({ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }

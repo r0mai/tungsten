@@ -141,12 +141,14 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				}
 			}
 #else
-			for ( unsigned i = 0; i < operands.size(); ++i ) {
+			for ( unsigned i = 0; i < operands.size(); ) {
 				if ( operands[i].isFunctionCall(ids::Sequence) ) {
 					ast::Operands sequenceOperands = operands[i].get<ast::FunctionCall>().getOperands();
 					ast::Operands::iterator sequenceElementPosition = operands.erase( operands.begin() + i );
 					operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
 					i += sequenceOperands.size();
+				} else {
+					++i;
 				}
 			}
 #endif
@@ -184,6 +186,12 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
 		}
 
+		//Check for user defined rules in patternMap
+		ast::Node result;
+		if (sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::FunctionCall>(function, operands), result, sessionEnvironment)) {
+			return sessionEnvironment.recursiveEvaluate(result);
+		}
+
 		//If it is a builtin function => evaulate
 		if ( function.is<ast::Identifier>() ) {
 			builtin::Functions::const_iterator it = sessionEnvironment.builtinFunctions.find(function.get<ast::Identifier>());
@@ -202,12 +210,6 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				return ast::Node::make<ast::FunctionCall>(function, operands);
 			}
 			return *evaluationResult;
-		}
-
-		//Check for user defined rules in patternMap
-		ast::Node result;
-		if (sessionEnvironment.patternMap.applyPatterns(ast::Node::make<ast::FunctionCall>(function, operands), result, sessionEnvironment)) {
-			return sessionEnvironment.recursiveEvaluate(result);
 		}
 
 		//If no rules are defined, simply return

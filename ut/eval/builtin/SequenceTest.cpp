@@ -197,5 +197,17 @@ BOOST_FIXTURE_TEST_CASE( test_f_of_Sequence_of_x_and_y_and_z_with_SequenceHold, 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("f", {ast::Node::make<ast::FunctionCall>("Sequence", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}), ast::Node::make<ast::Identifier>("z")}) );
 }
 
+
+BOOST_FIXTURE_TEST_CASE( test_the_list_Sequence_of_no_arguments__Sequence_of_no_arguments, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("{Sequence[], Sequence[]}");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
