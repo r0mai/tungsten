@@ -33,9 +33,12 @@ ast::Node numericNodeEvaluation(const ast::Node& node, eval::SessionEnvironment&
 			bool doNHoldFirst = hasNHoldFirst || hasNHoldAll;
 			bool doNHoldRest = hasNHoldRest || hasNHoldAll;
 
-			for ( unsigned i = 0; i < functionOperands.size(); ++i ) {
-				if ( ((i != 0 || !doNHoldFirst) && (i == 0 || !doNHoldRest)) ) {
-					toTraverseNodes.push( &functionOperands[i] );
+			{
+				bool first = true;
+				for ( auto it = functionOperands.begin(); it != functionOperands.end(); ++it, first = false ) {
+					if ( ((!first || !doNHoldFirst) && (first || !doNHoldRest)) ) {
+						toTraverseNodes.push( &*it );
+					}
 				}
 			}
 		} else if ( current->is<math::Rational>() ) {
