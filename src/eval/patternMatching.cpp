@@ -45,7 +45,7 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 				return true;
 			case 1:
 				//return doesPatternMatchRecursive(getHead(expression), blankOperands[0], patternMap, sessionEnvironment);
-				return getHead(expression) == blankOperands[0]; //Blank[h] : h cannot contain patterns itself accroding to WM. why?
+				return getHead(expression) == blankOperands.front(); //Blank[h] : h cannot contain patterns itself accroding to WM. why?
 			default:
 				sessionEnvironment.raiseMessage( Message(ids::Blank, ids::argt, {
 						ast::Node::make<ast::Identifier>( ids::Blank ),
@@ -68,8 +68,8 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 			} ));
 			return false;
 		}
-		const ast::Node& patternToTest = patternTestOperands[0];
-		const ast::Node& testFunction = patternTestOperands[1];
+		const ast::Node& patternToTest = patternTestOperands.front();
+		const ast::Node& testFunction = patternTestOperands.back();
 
 		return doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) && 
 			sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( testFunction, {expression} ) ).is<ast::Identifier>(ids::True);
@@ -84,14 +84,14 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 			return false;
 		}
 
-		const ast::Node& patternToTest = conditionOperands[0];
+		const ast::Node& patternToTest = conditionOperands.front();
 
 		if ( !doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) ) {
 			return false;
 		}
 
-		for ( unsigned i = 1; i < conditionOperands.size(); ++i ) {
-			ast::Node testExpression = sessionEnvironment.recursiveEvaluate(applyPatternMapImmutable(conditionOperands[i], patternMap));
+		for ( auto it = std::next(conditionOperands.begin(), 1); it != conditionOperands.end(); ++it ) {
+			ast::Node testExpression = sessionEnvironment.recursiveEvaluate(applyPatternMapImmutable(*it, patternMap));
 			if ( !testExpression.is<ast::Identifier>(ids::True) ) {
 				return false;
 			}
@@ -116,7 +116,7 @@ bool doesPatternMatchRecursive(const ast::Node& expression, const ast::Node& pat
 			} ));
 			return false;
 		}
-		return doesPatternMatchRecursive(expression, holdPatternOperands[0], patternMap, sessionEnvironment);
+		return doesPatternMatchRecursive(expression, holdPatternOperands.front(), patternMap, sessionEnvironment);
 	}
 
 	boost::optional<ast::Identifier> patternName;
@@ -124,9 +124,9 @@ bool doesPatternMatchRecursive(const ast::Node& expression, const ast::Node& pat
 
 	if ( pattern.isFunctionCall(ids::Pattern) ) {
 		const ast::Operands& patternOperands = pattern.get<ast::FunctionCall>().getOperands();
-		if ( patternOperands.size() == 2 && patternOperands[0].is<ast::Identifier>() ) {
-			patternName = patternOperands[0].get<ast::Identifier>();
-			patternPtr = &patternOperands[1];
+		if ( patternOperands.size() == 2 && patternOperands.front().is<ast::Identifier>() ) {
+			patternName = patternOperands.front().get<ast::Identifier>();
+			patternPtr = &patternOperands.back();
 		} else {
 			sessionEnvironment.raiseMessage(Message(ids::Pattern, ids::patvar, {pattern}));
 			return false;
