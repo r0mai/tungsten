@@ -27,10 +27,10 @@ bool FunctionOptions::addFromNode(const ast::Node& node) {
 		return addFromNodeRange( operands.begin(), operands.end() );
 	}
 	if ( functionName == ids::Rule || functionName == ids::RuleDelayed ) {
-		if ( operands.size() != 2 || !operands[0].is<ast::Identifier>() ) {
+		if ( operands.size() != 2 || !operands.front().is<ast::Identifier>() ) {
 			return false;
 		}
-		identifierNodeMap[operands[0].get<ast::Identifier>()] = operands[1];
+		identifierNodeMap[operands.front().get<ast::Identifier>()] = operands.back();
 		return true;
 	}
 	return false;
@@ -46,3 +46,4 @@ const ast::Node& FunctionOptions::getOption(const ast::Identifier& key) const {
 }
 
 }} //namespace tungsten::eval
+

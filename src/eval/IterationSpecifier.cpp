@@ -78,66 +78,86 @@ boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node
 		return boost::none_t();
 
 	case 1:
-		listOperands[0] = sessionEnvironment.recursiveEvaluate(listOperands[0]); 
-		if ( listOperands[0].isFunctionCall(ids::List) ) {
-			iterationSpecifier.iteration = detail::ListIteration( listOperands[0].get<ast::FunctionCall>().getOperands() );
-		} else {
-			iterationSpecifier.iteration = detail::MinMaxIteration(
-				ast::Node::make<math::Rational>(1), //min
-				listOperands[0], //max
-				ast::Node::make<math::Rational>(1) //step
-			);
+		{
+			ast::Node& listOperand0 = listOperands.front();
+			listOperand0 = sessionEnvironment.recursiveEvaluate(listOperand0); 
+			if ( listOperand0.isFunctionCall(ids::List) ) {
+				iterationSpecifier.iteration = detail::ListIteration( listOperand0.get<ast::FunctionCall>().getOperands() );
+			} else {
+				iterationSpecifier.iteration = detail::MinMaxIteration(
+					ast::Node::make<math::Rational>(1), //min
+					listOperand0, //max
+					ast::Node::make<math::Rational>(1) //step
+				);
+			}
 		}
 		break;
 
 	case 2:
-		if ( !listOperands[0].is<ast::Identifier>() ) {
-			return boost::none_t();
+		{
+			ast::Node& listOperand0 = listOperands.front();
+			if ( !listOperand0.is<ast::Identifier>() ) {
+				return boost::none_t();
+			}
+			iterationSpecifier.optionalVariable = listOperand0.get<ast::Identifier>();
+
+			ast::Node& listOperand1 = listOperands.back();
+			listOperand1 = sessionEnvironment.recursiveEvaluate(listOperand1); 
+
+			if ( listOperand1.isFunctionCall(ids::List) ) {
+				iterationSpecifier.iteration = detail::ListIteration( listOperand1.get<ast::FunctionCall>().getOperands() );
+			} else {
+				iterationSpecifier.iteration = detail::MinMaxIteration(
+					ast::Node::make<math::Rational>(1), //min
+					listOperand1, //max
+					ast::Node::make<math::Rational>(1) //step
+				);
+			} 
 		}
-		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
+		break;
+	case 3:
+		{
+			ast::Node& listOperand0 = listOperands.front();
+			if ( !listOperand0.is<ast::Identifier>() ) {
+				return boost::none_t();
+			}
+			iterationSpecifier.optionalVariable = listOperand0.get<ast::Identifier>();
 
-		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); 
+			ast::Node& listOperand1 = listOperands[1];
+			ast::Node& listOperand2 = listOperands.back();
 
-		if ( listOperands[1].isFunctionCall(ids::List) ) {
-			iterationSpecifier.iteration = detail::ListIteration( listOperands[1].get<ast::FunctionCall>().getOperands() );
-		} else {
+			listOperand1 = sessionEnvironment.recursiveEvaluate(listOperand1); 
+			listOperand2 = sessionEnvironment.recursiveEvaluate(listOperand2); 
+
 			iterationSpecifier.iteration = detail::MinMaxIteration(
-				ast::Node::make<math::Rational>(1), //min
-				listOperands[1], //max
+					listOperand1, //min
+					listOperand2, //max
 				ast::Node::make<math::Rational>(1) //step
 			);
-		} 
-		break;
-
-	case 3:
-		if ( !listOperands[0].is<ast::Identifier>() ) {
-			return boost::none_t();
 		}
-		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
-
-		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); 
-		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); 
-
-		iterationSpecifier.iteration = detail::MinMaxIteration(
-				listOperands[1], //min
-				listOperands[2], //max
-			ast::Node::make<math::Rational>(1) //step
-		);
 		break;
 	case 4:
-		if ( !listOperands[0].is<ast::Identifier>() ) {
-			return boost::none_t();
-		}
-		listOperands[1] = sessionEnvironment.recursiveEvaluate(listOperands[1]); 
-		listOperands[2] = sessionEnvironment.recursiveEvaluate(listOperands[2]); 
-		listOperands[3] = sessionEnvironment.recursiveEvaluate(listOperands[3]); 
+		{
+			ast::Node& listOperand0 = listOperands.front();
 
-		iterationSpecifier.optionalVariable = listOperands[0].get<ast::Identifier>();
-		iterationSpecifier.iteration = detail::MinMaxIteration(
-			listOperands[1], //min
-			listOperands[2], //max
-			listOperands[3] //step
-		);
+			if ( !listOperand0.is<ast::Identifier>() ) {
+				return boost::none_t();
+			}
+			ast::Node& listOperand1 = listOperands[1];
+			ast::Node& listOperand2 = listOperands[2];
+			ast::Node& listOperand3 = listOperands.back();
+
+			listOperand1 = sessionEnvironment.recursiveEvaluate(listOperand1); 
+			listOperand2 = sessionEnvironment.recursiveEvaluate(listOperand2); 
+			listOperand3 = sessionEnvironment.recursiveEvaluate(listOperand3); 
+
+			iterationSpecifier.optionalVariable = listOperand0.get<ast::Identifier>();
+			iterationSpecifier.iteration = detail::MinMaxIteration(
+				listOperand1, //min
+				listOperand2, //max
+				listOperand3 //step
+			);
+		}
 		break;
 	}
 	return iterationSpecifier;
