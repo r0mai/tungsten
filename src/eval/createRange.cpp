@@ -41,7 +41,6 @@ boost::optional<ast::Operands> createRange(const ast::Node& min, const ast::Node
 
 	std::size_t resultSize = math::as<std::size_t>(numberOfStepsInteger)+1;
 	ast::Operands result;
-	result.reserve( resultSize );
 	
 	for ( std::size_t i = 0; i < resultSize; ++i ) {
 		result.push_back( sessionEnvironment.recursiveEvaluate( 

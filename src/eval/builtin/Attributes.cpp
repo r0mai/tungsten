@@ -35,7 +35,6 @@ OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment&
 	eval::AttributeSet attributeSet = sessionEnvironment.getAttributeSetForFunction( ast::Node::make<ast::Identifier>(identifier) );
 
 	ast::Operands resultListOperands;
-	resultListOperands.reserve( attributeSet.size() );
 	std::transform( attributeSet.begin(), attributeSet.end(), std::back_inserter(resultListOperands),
 			[](const ast::Identifier& identifier) { return ast::Node::make<ast::Identifier>(identifier); }
 	);

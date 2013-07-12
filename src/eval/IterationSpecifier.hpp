@@ -23,9 +23,9 @@ struct MinMaxIteration {
 
 struct ListIteration {
 	ListIteration();
-	ListIteration(const std::vector<ast::Node>& iterationValues);
+	ListIteration(const ast::Operands& iterationValues);
 
-	std::vector<ast::Node> iterationValues;
+	ast::Operands iterationValues;
 };
 
 } //namespace detail
@@ -35,7 +35,7 @@ public:
 	class Iterator {
 	public:
 		Iterator();
-		Iterator(const std::vector<ast::Node>& iterationValues);
+		Iterator(const ast::Operands& iterationValues);
 
 		ast::Node current() const;
 		bool isEnd() const;
@@ -43,7 +43,7 @@ public:
 
 	private:
 		unsigned currentIndex;
-		std::vector<ast::Node> iterationValues;
+		ast::Operands iterationValues;
 	};
 
 	static boost::optional<IterationSpecifier> fromNode(const ast::Node& node, SessionEnvironment& sessionEnvironment);

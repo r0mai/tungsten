@@ -32,7 +32,7 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 		ast::Operands innerOperands( operands.size() - 1 );
 		innerOperands[0] = operands[0];
-		std::copy( operands.begin() + 2, operands.end(), innerOperands.begin() + 1 );
+		std::copy( std::next(operands.begin(), 2), operands.end(), std::next(innerOperands.begin(), 1) );
 
 		return sessionEnvironment.recursiveEvaluate(
 				ast::Node::make<ast::FunctionCall>(ids::Table, {

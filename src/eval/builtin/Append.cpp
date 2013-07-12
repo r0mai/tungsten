@@ -24,7 +24,6 @@ OptionalNode Append(const ast::Operands& operands, eval::SessionEnvironment& ses
 	result.get<ast::FunctionCall>().getOperands().push_back( operands[1] );
 	
 	ast::Operands resultOperands;
-	resultOperands.reserve( operands[0].get<ast::FunctionCall>().getOperands().size() + 1 );
 	std::copy( operands[0].get<ast::FunctionCall>().getOperands().begin(), operands[0].get<ast::FunctionCall>().getOperands().end(), std::back_inserter(resultOperands) );
 	resultOperands.push_back( operands[1] );
 	
@@ -48,7 +47,6 @@ OptionalNode Prepend(const ast::Operands& operands, eval::SessionEnvironment& se
 		return EvaluationFailure();
 	}
 	ast::Operands resultOperands;
-	resultOperands.reserve( operands[0].get<ast::FunctionCall>().getOperands().size() + 1 );
 	resultOperands.push_back( operands[1] );
 	std::copy( operands[0].get<ast::FunctionCall>().getOperands().begin(), operands[0].get<ast::FunctionCall>().getOperands().end(), std::back_inserter(resultOperands) );
 	

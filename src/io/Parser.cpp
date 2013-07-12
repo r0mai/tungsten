@@ -60,7 +60,7 @@ void removeIfParenthesesIdentityFunction(ast::Node& node) {
 }
 
 
-void createFunctionCall(ast::Node& result, const std::vector<ast::Node>& arguments) {
+void createFunctionCall(ast::Node& result, const ast::Operands& arguments) {
 	removeIfParenthesesIdentityFunction(result);
 	result = ast::Node::make<ast::FunctionCall>(result, arguments);
 }

@@ -24,7 +24,7 @@ MinMaxIteration::MinMaxIteration(const ast::Node& min, const ast::Node& max, con
 
 ListIteration::ListIteration() {}
 
-ListIteration::ListIteration(const std::vector<ast::Node>& iterationValues) :
+ListIteration::ListIteration(const ast::Operands& iterationValues) :
 		iterationValues(iterationValues) {}
 
 } //namespace detail
@@ -45,7 +45,7 @@ void IterationSpecifier::Iterator::advance() {
 IterationSpecifier::Iterator::Iterator() :
 		currentIndex(0), iterationValues() {}
 
-IterationSpecifier::Iterator::Iterator(const std::vector<ast::Node>& iterationValues) :
+IterationSpecifier::Iterator::Iterator(const ast::Operands& iterationValues) :
 		currentIndex(0), iterationValues(iterationValues) {}
 
 

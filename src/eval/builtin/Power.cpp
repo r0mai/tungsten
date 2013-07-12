@@ -151,7 +151,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 		exponent =
 				sessionEnvironment.recursiveEvaluate(
 						ast::Node::make<ast::FunctionCall>(ids::Power,
-								ast::Operands( operands.begin()+1, operands.end() ) ) );
+								ast::Operands( std::next(operands.begin(), 1), operands.end() ) ) );
 	}
 
 	//Special cases:

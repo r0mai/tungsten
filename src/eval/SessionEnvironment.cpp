@@ -144,7 +144,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 			for ( unsigned i = 0; i < operands.size(); ) {
 				if ( operands[i].isFunctionCall(ids::Sequence) ) {
 					ast::Operands sequenceOperands = operands[i].get<ast::FunctionCall>().getOperands();
-					ast::Operands::iterator sequenceElementPosition = operands.erase( operands.begin() + i );
+					ast::Operands::iterator sequenceElementPosition = operands.erase( std::next(operands.begin(), i) ); //TODO optimize std::next out
 					operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
 					i += sequenceOperands.size();
 				} else {
@@ -246,7 +246,7 @@ ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 			attributeMap.hasAttribute(result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), ids::Orderless) )
 	{
 		ast::Operands& operands = result.get<ast::FunctionCall>().getOperands();
-		std::sort( operands.begin(), operands.end(), NodeComparatorLess{} );
+		operands.sort(NodeComparatorLess{});
 	}
 
 	return result;

@@ -52,11 +52,11 @@ OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessi
 	ast::Operands resultOperands = operands[0].get<ast::FunctionCall>().getOperands();
 
 	if ( operands.size() == 1 ) {
-		std::sort( resultOperands.begin(), resultOperands.end(), NodeComparatorLess{} );
+		resultOperands.sort( NodeComparatorLess{} );
 	} else {
 		assert(operands.size() == 2);
 		CustomComparator customComparator{operands[1], sessionEnvironment};
-		std::sort( resultOperands.begin(), resultOperands.end(), customComparator );
+		resultOperands.sort( customComparator );
 	}
 
 	return ast::Node::make<ast::FunctionCall>( operands[0].get<ast::FunctionCall>().getFunction(), resultOperands );

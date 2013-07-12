@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <vector>
+#include <list>
 #include <functional>
 #include <ostream>
 #include <initializer_list>
@@ -12,10 +13,10 @@
 
 #include "NodeFwd.hpp"
 #include "Identifier.hpp"
+#include "Operands.hpp"
 
 namespace tungsten { namespace ast {
 
-typedef std::vector<Node> Operands;
 
 struct FunctionCall :
 		boost::less_than_comparable<FunctionCall,
