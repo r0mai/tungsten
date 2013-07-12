@@ -141,16 +141,24 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				}
 			}
 #else
-			for ( unsigned i = 0; i < operands.size(); ) {
-				if ( operands[i].isFunctionCall(ids::Sequence) ) {
-					ast::Operands sequenceOperands = operands[i].get<ast::FunctionCall>().getOperands();
-					ast::Operands::iterator sequenceElementPosition = operands.erase( std::next(operands.begin(), i) ); //TODO optimize std::next out
-					operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
-					i += sequenceOperands.size();
+			for ( auto it = operands.begin(); it != operands.end(); ) {
+				if ( it->isFunctionCall(ids::Sequence) ) {
+					ast::Operands sequenceOperands = std::move(it->get<ast::FunctionCall>().getOperands());
+					ast::Operands::iterator sequenceElementPosition = operands.erase( it++ ); 
+					operands.splice( sequenceElementPosition, std::move(sequenceOperands) );
 				} else {
-					++i;
+					++it;
 				}
 			}
+		//	for ( auto it = operands.begin(); it != operands.end(); ) {
+		//		if ( it->isFunctionCall(ids::Sequence) ) {
+		//			ast::Operands sequenceOperands = std::move(it->get<ast::FunctionCall>().getOperands());
+		//			ast::Operands::iterator sequenceElementPosition = operands.erase( it++ ); 
+		//			operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
+		//		} else {
+		//			++it;
+		//		}
+		//	}
 #endif
 		}
 
