@@ -120,27 +120,19 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		//Do we evaluate
 		bool doHoldFirst = hasHoldFirst || hasHoldAll;
 		bool doHoldRest = hasHoldRest || hasHoldAll;
+		{	
+			bool first = true;
+			for ( auto it = operands.begin();  it != operands.end(); ++it, first = false ) {
+				if ( ((!first || !doHoldFirst) && (first || !doHoldRest)) || it->isFunctionCall(ids::Evaluate) ) {
+					*it = sessionEnvironment.recursiveEvaluate( *it );
+				}
 
-		for ( unsigned i = 0; i < operands.size(); ++i ) {
-			if ( ((i != 0 || !doHoldFirst) && (i == 0 || !doHoldRest)) || operands[i].isFunctionCall(ids::Evaluate) ) {
-				operands[i] = sessionEnvironment.recursiveEvaluate( operands[i] );
 			}
-
 		}
 
 		//Sequence[] Parameter and Attribute SequenceHold
 		if ( !hasSequenceHold )
 		{
-#if FOR_THE_TIMES_WHEN_STL_IS_CPP11_READY
-			for ( ast::Operands::iterator it = operands.begin(); it != operands.end(); ++it ) {
-				if ( it->isFunctionCall(ids::Sequence) ) {
-					ast::Operands sequenceOperands = it->get<ast::FunctionCall>().getOperands();
-					ast::Operands::iterator sequenceElementPosition = operands.erase( it );
-					it = operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
-					it += sequenceOperands.size();
-				}
-			}
-#else
 			for ( auto it = operands.begin(); it != operands.end(); ) {
 				if ( it->isFunctionCall(ids::Sequence) ) {
 					ast::Operands sequenceOperands = std::move(it->get<ast::FunctionCall>().getOperands());
@@ -150,16 +142,6 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 					++it;
 				}
 			}
-		//	for ( auto it = operands.begin(); it != operands.end(); ) {
-		//		if ( it->isFunctionCall(ids::Sequence) ) {
-		//			ast::Operands sequenceOperands = std::move(it->get<ast::FunctionCall>().getOperands());
-		//			ast::Operands::iterator sequenceElementPosition = operands.erase( it++ ); 
-		//			operands.insert( sequenceElementPosition, sequenceOperands.begin(), sequenceOperands.end() );
-		//		} else {
-		//			++it;
-		//		}
-		//	}
-#endif
 		}
 
 		//Attribute Flat:
