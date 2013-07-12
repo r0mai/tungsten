@@ -21,12 +21,12 @@ ast::Operands flattenOperands(const ast::Node& function, const ast::Operands& op
 	ast::Operands result;
 
 	//TODO eliminate loop, with some clever boost stuff
-	for ( unsigned i = 0; i < operands.size(); ++i ) {
-		if ( operands[i].isFunctionCall(function) ) {
-			const ast::Operands& nestedOperands = flattenOperands(function, operands[i].get<ast::FunctionCall>().getOperands(), level-1);
+	for ( auto it = operands.begin(); it != operands.end(); ++it ) {
+		if ( it->isFunctionCall(function) ) {
+			const ast::Operands& nestedOperands = flattenOperands(function, it->get<ast::FunctionCall>().getOperands(), level-1);
 			result.insert( result.end(), nestedOperands.begin(), nestedOperands.end() );
 		} else {
-			result.push_back( operands[i] );
+			result.push_back( *it );
 		}
 	}
 
