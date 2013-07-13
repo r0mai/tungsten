@@ -15,7 +15,7 @@ OptionalNode TrueQ(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
 	}
 
-	if ( operands[0].is<ast::Identifier>(ids::True) ) {
+	if ( operands.front().is<ast::Identifier>(ids::True) ) {
 		return ast::Node::make<ast::Identifier>(ids::True);
 	}
 	return ast::Node::make<ast::Identifier>(ids::False);
@@ -30,14 +30,14 @@ OptionalNode Not(const ast::Operands& operands, eval::SessionEnvironment& sessio
 		return EvaluationFailure();
 	}
 
-	const ast::Node& operand = operands[0];
+	const ast::Node& operand = operands.front();
 
 	if ( operand.is<ast::Identifier>(ids::True) ) {
 		return ast::Node::make<ast::Identifier>(ids::False);
 	} else if ( operand.is<ast::Identifier>(ids::False) ) {
 		return ast::Node::make<ast::Identifier>(ids::True);
 	} else if ( operand.isFunctionCall(ids::Not) && operand.get<ast::FunctionCall>().getOperands().size() == 1 ) {
-		return operand.get<ast::FunctionCall>().getOperands()[0];
+		return operand.get<ast::FunctionCall>().getOperands().front();
 	} else if ( operand.isFunctionCall(ids::Less) && operand.get<ast::FunctionCall>().getOperands().size() == 2 ) {
 		return ast::Node::make<ast::FunctionCall>( ids::GreaterEqual, operand.get<ast::FunctionCall>().getOperands() );
 	} else if ( operand.isFunctionCall(ids::Greater) && operand.get<ast::FunctionCall>().getOperands().size() == 2 ) {
@@ -109,10 +109,11 @@ OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sess
 		} ));
 		return EvaluationFailure();
 	}
+	const ast::Node& argument = operands.front();
 
-	if ( operands[0].is<ast::Identifier>(ids::True) ) {
+	if ( argument.is<ast::Identifier>(ids::True) ) {
 		return ast::Node::make<math::Rational>(1);
-	} else if ( operands[0].is<ast::Identifier>(ids::False) ) {
+	} else if ( argument.is<ast::Identifier>(ids::False) ) {
 		return ast::Node::make<math::Rational>(0);
 	}
 	return ast::Node::make<ast::FunctionCall>(ids::Boole, operands);

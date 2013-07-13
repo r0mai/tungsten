@@ -8,8 +8,8 @@ OptionalNode CompoundExpression(const ast::Operands& operands, eval::SessionEnvi
 	if ( operands.empty() ) {
 		return ast::Node::make<ast::Identifier>(ids::Null);
 	}
-	for ( unsigned i = 0; i < operands.size()-1; ++i ) {
-		sessionEnvironment.recursiveEvaluate(operands[i]);
+	for ( auto it = operands.begin(), end = std::prev(operands.end()); it != end; ++it ) {
+		sessionEnvironment.recursiveEvaluate(*it);
 	}
 
 	return sessionEnvironment.recursiveEvaluate(operands.back());

@@ -15,8 +15,8 @@ OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
 	}
 
-	const ast::Node& newHead = operands[0];
-	ast::Node expression = operands[1];
+	const ast::Node& newHead = operands.front();
+	ast::Node expression = operands[1]; //[1] because levelspec will come later
 	//TODO levelspec
 
 	if ( expression.is<ast::FunctionCall>() ) {

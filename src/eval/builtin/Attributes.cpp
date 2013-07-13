@@ -16,7 +16,7 @@ OptionalNode Attributes(const ast::Operands& operands, eval::SessionEnvironment&
 		return EvaluationFailure();
 	}
 
-	const ast::Node& operand = operands[0];
+	const ast::Node& operand = operands.front();
 
 	ast::Identifier identifier;
 
