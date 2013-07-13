@@ -15,8 +15,8 @@ OptionalNode Map(const ast::Operands& operands, eval::SessionEnvironment& sessio
 		return EvaluationFailure();
 	}
 
-	const ast::Node& function = operands[0];
-	ast::Node expression = operands[1];
+	const ast::Node& function = operands.front();
+	ast::Node expression = operands[1]; //levelspec is coming later
 
 	if ( expression.is<ast::FunctionCall>() ) {
 		for ( ast::Node& node : expression.get<ast::FunctionCall>().getOperands() ) {

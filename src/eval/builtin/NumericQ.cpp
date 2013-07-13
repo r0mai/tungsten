@@ -75,7 +75,7 @@ OptionalNode NumericQ(const ast::Operands& operands, eval::SessionEnvironment& s
 		return EvaluationFailure();
 	}
 
-	if ( isNodeNumeric( operands[0], sessionEnvironment ) ) {
+	if ( isNodeNumeric( operands.front(), sessionEnvironment ) ) {
 		return ast::Node::make<ast::Identifier>(ids::True);
 	}
 	return ast::Node::make<ast::Identifier>(ids::False);

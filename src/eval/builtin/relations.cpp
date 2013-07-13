@@ -11,10 +11,10 @@ namespace tungsten { namespace eval { namespace builtin {
 
 template<class Func>
 boost::tribool compareNodes(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment, Func func) {
-	for ( unsigned i = 1; i < operands.size(); ++i ) {
+	for ( auto it = std::next(operands.begin()); it != operands.end(); ++it ) {
 
-		ast::Node lhs = numericNodeEvaluation(operands[i-1], sessionEnvironment);
-		ast::Node rhs = numericNodeEvaluation(operands[i], sessionEnvironment);
+		ast::Node lhs = numericNodeEvaluation(*std::prev(it), sessionEnvironment);
+		ast::Node rhs = numericNodeEvaluation(*it, sessionEnvironment);
 
 		if ( !lhs.isNumeric() || !rhs.isNumeric() ) {
 			return boost::indeterminate;
@@ -31,8 +31,8 @@ OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sess
 	if ( operands.size() != 2 ) {
 		return EvaluationFailure();
 	}
-	const ast::Node& lhs = operands[0];
-	const ast::Node& rhs = operands[1];
+	const ast::Node& lhs = operands.front();
+	const ast::Node& rhs = operands.back();
 	boost::tribool result = boost::indeterminate;
 	if ( lhs.is<math::Rational>() && rhs.is<math::Rational>() ) {
 		result = lhs.get<math::Rational>() == rhs.get<math::Rational>();
@@ -61,8 +61,8 @@ OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& se
 	if ( operands.size() != 2 ) {
 		return EvaluationFailure();
 	}
-	const ast::Node& lhs = operands[0];
-	const ast::Node& rhs = operands[1];
+	const ast::Node& lhs = operands.front();
+	const ast::Node& rhs = operands.back();
 	boost::tribool result = boost::indeterminate;
 	if ( lhs.is<math::Rational>() && rhs.is<math::Rational>() ) {
 		result = lhs.get<math::Rational>() != rhs.get<math::Rational>();

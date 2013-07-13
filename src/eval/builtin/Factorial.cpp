@@ -78,7 +78,7 @@ OptionalNode Factorial(const ast::Operands& operands, eval::SessionEnvironment& 
 	}
 	FactorialVisitor factorialVisitor(sessionEnvironment);
 
-	return ast::applyVisitor(operands[0], factorialVisitor);
+	return ast::applyVisitor(operands.front(), factorialVisitor);
 }
 
 OptionalNode Factorial2(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
@@ -89,7 +89,7 @@ OptionalNode Factorial2(const ast::Operands& operands, eval::SessionEnvironment&
 		} ));
 		return EvaluationFailure();
 	}
-	return ast::applyVisitor(operands[0], Factorial2Visitor{});
+	return ast::applyVisitor(operands.front(), Factorial2Visitor{});
 }
 
 }}} //namespace tungsten::eval::builtin

@@ -36,7 +36,7 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 					}
 				} else if ( node.isFunctionCall(ids::Power) &&
 						node.get<ast::FunctionCall>().getOperands().size() == 2 &&
-						isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]) )
+						isSuperficiallyNegative( node.get<ast::FunctionCall>().getOperands().back() ) )
 				{
 					/*do nothing*/
 				} else {
@@ -68,7 +68,7 @@ struct GetNodeNumeratorVisitor : boost::static_visitor<ast::Node> {
 			return ast::Node::make<ast::FunctionCall>( ids::Times, numeratorOperands );
 
 		} else if ( function.is<ast::Identifier>( ids::Power ) ) {
-			if ( operands.size() == 2 && isSuperficiallyNegative(operands[1]) ) {
+			if ( operands.size() == 2 && isSuperficiallyNegative(operands.back()) ) {
 				return ast::Node::make<math::Rational>(1);
 			}
 

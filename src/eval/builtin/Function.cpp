@@ -19,7 +19,7 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 		return EvaluationFailure();
 	}
 
-	ast::Node lamdbaFunction = functionOperands[0];
+	ast::Node lamdbaFunction = functionOperands.front();
 
 	//Replace Slot[n]s
 	std::stack<ast::Node*> toTraverseNodes;
@@ -30,7 +30,7 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 		toTraverseNodes.pop();
 
 		if ( current->isFunctionCall( ids::Slot ) && current->get<ast::FunctionCall>().getOperands().size() == 1 ) {
-			const ast::Node& slotNumber = current->get<ast::FunctionCall>().getOperands()[0];
+			const ast::Node& slotNumber = current->get<ast::FunctionCall>().getOperands().front();
 			if ( !slotNumber.is<math::Rational>() ||
 					!math::isInteger(slotNumber.get<math::Rational>()) ||
 					operands.size() < math::asInteger( slotNumber.get<math::Rational>() ) ||
@@ -49,7 +49,7 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 				}
 			}
 		} else if ( current->isFunctionCall( ids::SlotSequence ) && current->get<ast::FunctionCall>().getOperands().size() == 1 ) {
-			const ast::Node& slotSequenceNumber = current->get<ast::FunctionCall>().getOperands()[0];
+			const ast::Node& slotSequenceNumber = current->get<ast::FunctionCall>().getOperands().front();
 			if ( !slotSequenceNumber.is<math::Rational>() ||
 					!math::isInteger(slotSequenceNumber.get<math::Rational>()) ||
 					operands.size()+1 < math::asInteger( slotSequenceNumber.get<math::Rational>() ) ||

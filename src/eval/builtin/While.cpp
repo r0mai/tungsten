@@ -16,11 +16,11 @@ OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 		return EvaluationFailure();
     }
-    const ast::Node& condition = operands[0];
+    const ast::Node& condition = operands.front();
     const bool hasBody = operands.size() == 2;
     while ( sessionEnvironment.recursiveEvaluate(condition).is<ast::Identifier>(ids::True) ) {
         if (hasBody) {
-            sessionEnvironment.recursiveEvaluate( operands[1] );
+            sessionEnvironment.recursiveEvaluate( operands.back() );
         }
     }
 	return ast::Node::make<ast::Identifier>(ids::Null); 

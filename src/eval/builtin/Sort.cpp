@@ -40,7 +40,7 @@ OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessi
 		return EvaluationFailure();
 	}
 
-	if ( !operands[0].is<ast::FunctionCall>() ) {
+	if ( !operands.front().is<ast::FunctionCall>() ) {
 		sessionEnvironment.raiseMessage( Message(ids::Sort, ids::Normal, {
 				ast::Node::make<math::Rational>( 1 ),
 				ast::Node::make<ast::FunctionCall>( ids::Sort, operands )
@@ -49,17 +49,17 @@ OptionalNode Sort(const ast::Operands& operands, eval::SessionEnvironment& sessi
 		return EvaluationFailure();
 	}
 
-	ast::Operands resultOperands = operands[0].get<ast::FunctionCall>().getOperands();
+	ast::Operands resultOperands = operands.front().get<ast::FunctionCall>().getOperands();
 
 	if ( operands.size() == 1 ) {
 		resultOperands.sort( NodeComparatorLess{} );
 	} else {
 		assert(operands.size() == 2);
-		CustomComparator customComparator{operands[1], sessionEnvironment};
+		CustomComparator customComparator{operands.back(), sessionEnvironment};
 		resultOperands.sort( customComparator );
 	}
 
-	return ast::Node::make<ast::FunctionCall>( operands[0].get<ast::FunctionCall>().getFunction(), resultOperands );
+	return ast::Node::make<ast::FunctionCall>( operands.front().get<ast::FunctionCall>().getFunction(), resultOperands );
 }
 
 
@@ -77,7 +77,7 @@ OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& s
 		return EvaluationFailure();
 	}
 
-	if ( !operands[0].is<ast::FunctionCall>() ) {
+	if ( !operands.front().is<ast::FunctionCall>() ) {
 		sessionEnvironment.raiseMessage( Message(ids::OrderedQ, ids::Normal, {
 				ast::Node::make<math::Rational>( 1 ),
 				ast::Node::make<ast::FunctionCall>( ids::OrderedQ, operands )
@@ -86,7 +86,7 @@ OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& s
 		return EvaluationFailure();
 	}
 
-	ast::Operands resultOperands = operands[0].get<ast::FunctionCall>().getOperands();
+	ast::Operands resultOperands = operands.front().get<ast::FunctionCall>().getOperands();
 
 	bool result = true;
 
@@ -94,7 +94,7 @@ OptionalNode OrderedQ(const ast::Operands& operands, eval::SessionEnvironment& s
 		result = std::is_sorted( resultOperands.begin(), resultOperands.end(), NodeComparatorLess{} );
 	} else {
 		assert(operands.size() == 2);
-		CustomComparator customComparator{operands[1], sessionEnvironment};
+		CustomComparator customComparator{operands.back(), sessionEnvironment};
 		result = std::is_sorted( resultOperands.begin(), resultOperands.end(), customComparator );
 	}
 

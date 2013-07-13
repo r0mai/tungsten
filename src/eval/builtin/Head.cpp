@@ -13,7 +13,7 @@ OptionalNode Head(const ast::Operands& operands, eval::SessionEnvironment& sessi
 		} ));
 		return EvaluationFailure();
 	}
-	return getHead( operands[0] );
+	return getHead( operands.front() );
 }
 
 }}} //namespace tungsten::eval::builtin

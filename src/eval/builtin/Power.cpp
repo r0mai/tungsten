@@ -140,10 +140,10 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	if ( operands.size() == 1 ) {
-		return operands[0];
+		return operands.front();
 	}
 
-	ast::Node base = operands[0];
+	ast::Node base = operands.front();
 	ast::Node exponent = operands[1];
 
 	if ( operands.size() > 2 ) {
@@ -243,7 +243,7 @@ OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 	return sessionEnvironment.recursiveEvaluate(
 			ast::Node::make<ast::FunctionCall>(ids::Power, {
-					operands[0],
+					operands.front(),
 					ast::Node::make<math::Rational>(1,2)
 			})
 		);

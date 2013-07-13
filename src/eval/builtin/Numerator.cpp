@@ -14,7 +14,7 @@ OptionalNode Numerator(const ast::Operands& operands, eval::SessionEnvironment& 
 		return EvaluationFailure();
 	}
 
-	return sessionEnvironment.recursiveEvaluate(getNodeNumerator(operands[0]));
+	return sessionEnvironment.recursiveEvaluate(getNodeNumerator(operands.front()));
 }
 
 }}} //namespace tungsten::eval::builtin

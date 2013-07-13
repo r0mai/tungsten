@@ -16,7 +16,8 @@ OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& se
 		return EvaluationFailure();
 	}
 
-	if ( !operands[0].is<ast::FunctionCall>() ) {
+	const ast::Node& argument = operands.front();
+	if ( !argument.is<ast::FunctionCall>() ) {
 		sessionEnvironment.raiseMessage( Message(ids::Flatten, ids::normal, {
 				ast::Node::make<math::Rational>( 1 ),
 				ast::Node::make<ast::FunctionCall>(ids::Flatten, operands)
@@ -27,23 +28,24 @@ OptionalNode Flatten(const ast::Operands& operands, eval::SessionEnvironment& se
 	unsigned long level = std::numeric_limits<unsigned long>::max();
 
 	if ( operands.size() > 1 ) {
-		if ( !operands[1].is<math::Rational>() || !math::isInteger(operands[1].get<math::Rational>()) || operands[1].get<math::Rational>() < 0 ) {
+		const ast::Node& levelspecNode = operands.back();
+		if ( !levelspecNode.is<math::Rational>() || !math::isInteger(levelspecNode.get<math::Rational>()) || levelspecNode.get<math::Rational>() < 0 ) {
 			sessionEnvironment.raiseMessage( Message(ids::Flatten, ids::flev, {
-					operands[1],
+					levelspecNode,
 					ast::Node::make<math::Rational>( 1 ),
 					ast::Node::make<ast::FunctionCall>(ids::Flatten, operands)
 			} ));
 			return EvaluationFailure();
 		}
-		math::Integer levelNode = math::asInteger( operands[1].get<math::Rational>() );
+		math::Integer levelNode = math::asInteger( levelspecNode.get<math::Rational>() );
 		//If it doesn't fit, max() will be big enough..
 		if ( math::fits<unsigned long>(levelNode) ) {
 			level = math::as<unsigned long>(levelNode);
 		}
 	}
 
-	const ast::Node& operandHead = operands[0].get<ast::FunctionCall>().getFunction();
-	const ast::Operands& operandOperands = operands[0].get<ast::FunctionCall>().getOperands();
+	const ast::Node& operandHead = argument.get<ast::FunctionCall>().getFunction();
+	const ast::Operands& operandOperands = argument.get<ast::FunctionCall>().getOperands();
 
 	return sessionEnvironment.recursiveEvaluate(
 		ast::Node::make<ast::FunctionCall>(operandHead, flattenOperands(operandHead, operandOperands, level))

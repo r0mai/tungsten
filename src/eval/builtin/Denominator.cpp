@@ -15,7 +15,7 @@ OptionalNode Denominator(const ast::Operands& operands, eval::SessionEnvironment
 		return EvaluationFailure();
 	}
 
-	return sessionEnvironment.recursiveEvaluate(getNodeDenominator(operands[0]));
+	return sessionEnvironment.recursiveEvaluate(getNodeDenominator(operands.front()));
 }
 
 }}} //namespace tungsten::eval::builtin

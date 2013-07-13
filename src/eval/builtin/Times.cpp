@@ -49,8 +49,8 @@ struct TimesVisitor : boost::static_visitor<void> {
 
 			if ( functionCall.getOperands()[1].isNumeric() ) {
 				//Issue 1: 2^(1/2) stays in symbolic format, so both operands can be numeric
-				factor = functionCall.getOperands()[0];
-				exponent = functionCall.getOperands()[1];
+				factor = functionCall.getOperands().front();
+				exponent = functionCall.getOperands().back();
 			}
 
 		}

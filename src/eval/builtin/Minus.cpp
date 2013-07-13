@@ -15,7 +15,7 @@ OptionalNode Minus(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 	return sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>(ids::Times, {
 			ast::Node::make<math::Rational>(-1),
-			operands[0]
+			operands.front()
 	}) );
 }
 

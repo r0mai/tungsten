@@ -99,8 +99,8 @@ OptionalNode ReplaceAll(const ast::Operands& operands, eval::SessionEnvironment&
 		return EvaluationFailure();
 	}
 
-	const ast::Node& expression = operands[0];
-	const ast::Node& rules = operands[1];
+	const ast::Node& expression = operands.front();
+	const ast::Node& rules = operands.back();
 
 	ast::Node result = expression;
 	if ( !applyRules( result, rules, sessionEnvironment, ids::ReplaceAll ) ) {
@@ -119,8 +119,8 @@ OptionalNode ReplaceRepeated(const ast::Operands& operands, eval::SessionEnviron
 		return EvaluationFailure();
 	}
 		
-	const ast::Node& expression = operands[0];
-	const ast::Node& rules = operands[1];
+	const ast::Node& expression = operands.front();
+	const ast::Node& rules = operands.back();
 
 	ast::Node result = expression;
 	while ( true ) {

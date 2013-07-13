@@ -15,7 +15,7 @@ OptionalNode SetDelayed(const ast::Operands& operands, eval::SessionEnvironment&
 		return EvaluationFailure();
 	}
 
-	sessionEnvironment.addPattern(operands[0], operands[1]);
+	sessionEnvironment.addPattern(operands.front(), operands.back());
 	return ast::Node::make<ast::Identifier>(ids::Null);
 }
 

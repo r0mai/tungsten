@@ -37,10 +37,10 @@ struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optiona
 				if ( node.is<ast::FunctionCall>() &&
 						node.get<ast::FunctionCall>().getFunction().is<ast::Identifier>( ids::Power ) &&
 						node.get<ast::FunctionCall>().getOperands().size() == 2 &&
-						isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands()[1]) )
+						isSuperficiallyNegative(node.get<ast::FunctionCall>().getOperands().back()) )
 				{
-					const ast::Node& base = node.get<ast::FunctionCall>().getOperands()[0];
-					const ast::Node& exponent = node.get<ast::FunctionCall>().getOperands()[1];
+					const ast::Node& base = node.get<ast::FunctionCall>().getOperands().front();
+					const ast::Node& exponent = node.get<ast::FunctionCall>().getOperands().back();
 					ast::Node negatedExponent;
 
 					//TODO we're basically redoing what isSuperFiciallyNegative does. bad!
@@ -90,16 +90,16 @@ struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optiona
 				return boost::none_t();
 			}
 			if ( denominatorOperands.size() == 1 ) {
-				return denominatorOperands[0];
+				return denominatorOperands.front();
 			}
 			return ast::Node::make<ast::FunctionCall>( ids::Times, denominatorOperands );
 
 		} else if ( function.is<ast::Identifier>( ids::Power ) ) {
-			if ( operands.size() == 2 && isSuperficiallyNegative(operands[1]) ) {
+			if ( operands.size() == 2 && isSuperficiallyNegative(operands.back()) ) {
 
 
-				const ast::Node& base = operands[0];
-				const ast::Node& exponent = operands[1];
+				const ast::Node& base = operands.front();
+				const ast::Node& exponent = operands.back();
 
 				ast::Node negatedExponent;
 

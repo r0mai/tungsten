@@ -16,9 +16,9 @@ OptionalNode Subtract(const ast::Operands& operands, eval::SessionEnvironment& s
 
 	return sessionEnvironment.recursiveEvaluate(
 			ast::Node::make<ast::FunctionCall>(ids::Plus, {
-					operands[0],
+					operands.front(),
 					ast::Node::make<ast::FunctionCall>(ids::Times, {
-						operands[1],
+						operands.back(),
 						ast::Node::make<math::Rational>(-1)
 					})
 			})

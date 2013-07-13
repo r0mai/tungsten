@@ -15,8 +15,8 @@ OptionalNode Set(const ast::Operands& operands, eval::SessionEnvironment& sessio
 		return EvaluationFailure();
 	}
 
-	sessionEnvironment.addPattern(operands[0], operands[1]);
-	return operands[1];
+	sessionEnvironment.addPattern(operands.front(), operands.back());
+	return operands.back();
 }
 
 }}} //namespace tungsten::eval::builtin

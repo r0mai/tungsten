@@ -16,7 +16,7 @@ OptionalNode MatchQ(const ast::Operands& operands, eval::SessionEnvironment& ses
 	}
 
 
-	if ( doesPatternMatch(operands[0], operands[1], sessionEnvironment) ) {
+	if ( doesPatternMatch(operands.front(), operands.back(), sessionEnvironment) ) {
 		return ast::Node::make<ast::Identifier>(ids::True);
 	} else {
 		return ast::Node::make<ast::Identifier>(ids::False);

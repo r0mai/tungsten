@@ -14,12 +14,13 @@ OptionalNode Floor(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 		return EvaluationFailure();
     }
+	const ast::Node& argument = operands.front();
 
-    if ( operands[0].isFunctionCall(ids::Floor) && operands[0].get<ast::FunctionCall>().getOperands().size() == 1 ) {
-        return operands[0];
+    if ( argument.isFunctionCall(ids::Floor) && argument.get<ast::FunctionCall>().getOperands().size() == 1 ) {
+        return argument;
     }    
 
-    ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
+    ast::Node numericNode = numericNodeEvaluation(argument, sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
         return ast::Node::make<ast::FunctionCall>( ids::Floor, operands );
     }
@@ -35,12 +36,13 @@ OptionalNode Ceiling(const ast::Operands& operands, eval::SessionEnvironment& se
 
 		return EvaluationFailure();
     }
+	const ast::Node& argument = operands.front();
  
-    if ( operands[0].isFunctionCall(ids::Ceiling) && operands[0].get<ast::FunctionCall>().getOperands().size() == 1 ) {
-        return operands[0];
+    if ( argument.isFunctionCall(ids::Ceiling) && argument.get<ast::FunctionCall>().getOperands().size() == 1 ) {
+        return argument;
     }    
   
-    ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
+    ast::Node numericNode = numericNodeEvaluation(argument, sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
         return ast::Node::make<ast::FunctionCall>( ids::Ceiling, operands );
     }
@@ -56,12 +58,13 @@ OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 		return EvaluationFailure();
     }
+	const ast::Node& argument = operands.front();
    
-    if ( operands[0].isFunctionCall(ids::Round) && operands[0].get<ast::FunctionCall>().getOperands().size() == 1 ) {
-        return operands[0];
+    if ( argument.isFunctionCall(ids::Round) && argument.get<ast::FunctionCall>().getOperands().size() == 1 ) {
+        return argument;
     }    
 
-    ast::Node numericNode = numericNodeEvaluation(operands[0], sessionEnvironment);
+    ast::Node numericNode = numericNodeEvaluation(argument, sessionEnvironment);
     if ( !numericNode.is<math::Real>() ) {
         return ast::Node::make<ast::FunctionCall>( ids::Round, operands );
     }
