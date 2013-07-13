@@ -23,7 +23,7 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	if ( operands.size() == 1 ) {
-		return sessionEnvironment.recursiveEvaluate(operands[0]);
+		return sessionEnvironment.recursiveEvaluate(operands.front());
 	}
 
 	if ( operands.size() > 2 ) {
@@ -31,7 +31,7 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 		//Table[Table[expr, lspec2, lspec3, ..., lspecn], lspec1]
 
 		ast::Operands innerOperands( operands.size() - 1 );
-		innerOperands[0] = operands[0];
+		innerOperands.front() = operands.front();
 		std::copy( std::next(operands.begin(), 2), operands.end(), std::next(innerOperands.begin(), 1) );
 
 		return sessionEnvironment.recursiveEvaluate(
@@ -44,15 +44,15 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 	assert(operands.size() == 2);
 
-	const ast::Node& expression = operands[0];
-	ast::Node iterationSpecifierNode = operands[1];
+	const ast::Node& expression = operands.front();
+	const ast::Node& iterationSpecifierNode = operands.back();
 
 	//Create IterationSpecifier
 	boost::optional<eval::IterationSpecifier> iteration = eval::IterationSpecifier::fromNode(iterationSpecifierNode, sessionEnvironment);
 
 	if ( !iteration ) {
 		sessionEnvironment.raiseMessage( Message(ids::Table, ids::itform, {
-				operands[1],
+				iterationSpecifierNode,
 				ast::Node::make<math::Rational>( 2 )
 		} ));
 		return EvaluationFailure();
@@ -62,7 +62,7 @@ OptionalNode Table(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 	if ( !iterator ) {
 		sessionEnvironment.raiseMessage( Message(ids::Table, ids::iterb, {
-				operands[1]
+				iterationSpecifierNode,
 		} ));
 		return EvaluationFailure();
 	}
@@ -123,18 +123,18 @@ OptionalNode Range(const ast::Operands& operands, eval::SessionEnvironment& sess
 		assert(false);
 	case 1:
 		min = ast::Node::make<math::Rational>( 1 );
-		max = operands[0];
+		max = operands.front();
 		step = ast::Node::make<math::Rational>( 1 );
 		break;
 	case 2:
-		min = operands[0];
-		max = operands[1];
+		min = operands.front();
+		max = operands.back();
 		step = ast::Node::make<math::Rational>( 1 );
 		break;
 	case 3:
-		min = operands[0];
+		min = operands.front();
 		max = operands[1];
-		step = operands[2];
+		step = operands.back();
 		break;
 	}
 
