@@ -13,21 +13,21 @@ OptionalNode Append(const ast::Operands& operands, eval::SessionEnvironment& ses
 		} ));
 		return EvaluationFailure();
 	}
-	if ( !operands[0].is<ast::FunctionCall>() ) {
+
+	const ast::Node& listToAppend = operands.front();
+	const ast::Node& item = operands.back();
+
+	if ( !listToAppend.is<ast::FunctionCall>() ) {
 		sessionEnvironment.raiseMessage( Message(ids::Append, ids::normal, {
 				ast::Node::make<math::Rational>( 2 ),
 				ast::Node::make<ast::FunctionCall>( ids::Append, operands )
 		} ));
 		return EvaluationFailure();
 	}
-	ast::Node result = operands[0];
-	result.get<ast::FunctionCall>().getOperands().push_back( operands[1] );
+	ast::Node result = listToAppend;
+	result.get<ast::FunctionCall>().getOperands().push_back( item );
 	
-	ast::Operands resultOperands;
-	std::copy( operands[0].get<ast::FunctionCall>().getOperands().begin(), operands[0].get<ast::FunctionCall>().getOperands().end(), std::back_inserter(resultOperands) );
-	resultOperands.push_back( operands[1] );
-	
-	return ast::Node::make<ast::FunctionCall>( operands[0].get<ast::FunctionCall>().getFunction(), std::move(resultOperands) );
+	return result;
 }
 
 OptionalNode Prepend(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
@@ -39,18 +39,21 @@ OptionalNode Prepend(const ast::Operands& operands, eval::SessionEnvironment& se
 		} ));
 		return EvaluationFailure();
 	}
-	if ( !operands[0].is<ast::FunctionCall>() ) {
+
+	const ast::Node& listToPrepend = operands.front();
+	const ast::Node& item = operands.back();
+
+	if ( !listToPrepend.is<ast::FunctionCall>() ) {
 		sessionEnvironment.raiseMessage( Message(ids::Prepend, ids::normal, {
 				ast::Node::make<math::Rational>( 2 ),
 				ast::Node::make<ast::FunctionCall>( ids::Prepend, operands )
 		} ));
 		return EvaluationFailure();
 	}
-	ast::Operands resultOperands;
-	resultOperands.push_back( operands[1] );
-	std::copy( operands[0].get<ast::FunctionCall>().getOperands().begin(), operands[0].get<ast::FunctionCall>().getOperands().end(), std::back_inserter(resultOperands) );
+	ast::Node result = listToPrepend;
+	result.get<ast::FunctionCall>().getOperands().push_front( item );
 	
-	return ast::Node::make<ast::FunctionCall>( operands[0].get<ast::FunctionCall>().getFunction(), std::move(resultOperands) );
+	return result;
 }
 
 }}} //namespace tungsten::eval::builtin
