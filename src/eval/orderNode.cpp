@@ -40,7 +40,7 @@ BaseExponentMap toBaseExponentMap_powerOperands(const ast::Operands& powerOperan
 		//We can't really allow ourselves to do the job of Power[] here
 		result[ast::Node::make<ast::FunctionCall>(ids::Power, powerOperands)] = ast::Node::make<math::Rational>(1);
 	} else {
-		result[powerOperands[0]] = powerOperands[1];
+		result[powerOperands.front()] = powerOperands.back();
 	}
 
 	return result;
@@ -59,7 +59,7 @@ BaseExponentMap toBaseExponentMap_timesOperands(const ast::Operands& timesOperan
 			if ( powerOperands.size() != 2 ) {
 				result[ast::Node::make<ast::FunctionCall>(ids::Power, powerOperands)] = ast::Node::make<math::Rational>(1);
 			} else {
-				result[powerOperands[0]] = powerOperands[1];
+				result[powerOperands.front()] = powerOperands.back();
 			}
 		} else {
 			result[node] = ast::Node::make<math::Rational>(1);

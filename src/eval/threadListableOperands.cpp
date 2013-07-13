@@ -34,29 +34,29 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 		return ThreadListableOperandsReturnType::UNSUCCESSFUL;
 	}
 
-	resultOperands = ast::Operands( targetListSize/*, ast::Node::make<ast::FunctionCall>(function, ast::Operands(operands.size()))*/ );
+	//resultOperands = ast::Operands( targetListSize/*, ast::Node::make<ast::FunctionCall>(function, ast::Operands(operands.size()))*/ );
+	assert( resultOperands.empty() );
+
 
 	for ( unsigned i = 0; i < targetListSize; ++i ) {
 
-		ast::Operands resultListOperands(operands.size());
+		ast::Operands resultListOperands;
 
-		for ( unsigned j = 0; j < operands.size(); ++j ) {
+		for ( const ast::Node& node : operands ) {
 
-			const ast::Node& node = operands[j];
-
-			if ( node.is<ast::FunctionCall>() && node.get<ast::FunctionCall>().getFunction() == head ) {
+			if ( node.isFunctionCall(head) ) {
 
 				const ast::Operands& listOperands = node.get<ast::FunctionCall>().getOperands();
 
 				assert( listOperands.size() == targetListSize );
 
-				resultListOperands[j] = listOperands[i];
+				resultListOperands.push_back(listOperands[i]); //TODO optimizing out this indexing would require a (spare) array of iterators
 
 			} else {
-				resultListOperands[j] = node;
+				resultListOperands.push_back(node);
 			}
 		}
-		resultOperands[i] = ast::Node::make<ast::FunctionCall>(function, resultListOperands);
+		resultOperands.push_back(ast::Node::make<ast::FunctionCall>(function, resultListOperands));
 	}
 
 	return ThreadListableOperandsReturnType::SUCCESSFUL;
