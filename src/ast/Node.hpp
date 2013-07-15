@@ -8,7 +8,6 @@
 #include <type_traits>
 
 #include <boost/variant.hpp>
-#include <boost/operators.hpp>
 
 #include "NodeFwd.hpp"
 #include "FunctionCall.hpp"
@@ -17,9 +16,7 @@
 
 namespace tungsten { namespace ast {
 
-class Node :
-		boost::less_than_comparable<Node,
-		boost::equality_comparable<Node>> {
+class Node {
 public:
 
 	//partially obsolete: TODO Make these use perfect forwarding, this requires partially template specializing constructors
@@ -52,9 +49,13 @@ public:
 	const T& get() const;
 
 	bool operator==(const Node& other) const;
+	inline bool operator!=(const Node& other) const { return !(*this == other); }
 	//Fast operator< to be used in sets, maps
 	//For correct comparsion operator, which correctly implements OrderedQ[] see eval/orderNode.hpp
 	bool operator<(const Node& other) const;
+	inline bool operator>(const Node& other) const { return other < *this; }
+	inline bool operator<=(const Node& other) const { return !(other < *this); }
+	inline bool operator>=(const Node& other) const { return !(*this < other); }
 
 	//string representation of an Node
 	std::string toString() const;

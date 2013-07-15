@@ -9,7 +9,6 @@
 #include <ostream>
 #include <initializer_list>
 
-#include <boost/operators.hpp>
 
 #include "NodeFwd.hpp"
 #include "Identifier.hpp"
@@ -18,9 +17,7 @@
 namespace tungsten { namespace ast {
 
 
-struct FunctionCall :
-		boost::less_than_comparable<FunctionCall,
-		boost::equality_comparable<FunctionCall>> {
+struct FunctionCall {
 
 	FunctionCall();
 	FunctionCall(const FunctionCall& other);
@@ -34,7 +31,11 @@ struct FunctionCall :
 	FunctionCall& operator=(FunctionCall other);
 
 	bool operator==(const FunctionCall& other) const;
+	inline bool operator!=(const FunctionCall& other) const { return !(*this == other); }
 	bool operator<(const FunctionCall& rhs) const;
+	inline bool operator>(const FunctionCall& other) const { return other < *this; }
+	inline bool operator<=(const FunctionCall& other) const { return !(other < *this); }
+	inline bool operator>=(const FunctionCall& other) const { return !(*this < other); }
 
 	Node& getFunction();
 	const Node& getFunction() const;
