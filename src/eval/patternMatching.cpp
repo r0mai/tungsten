@@ -178,8 +178,8 @@ void applyPatternMapMutable(ast::Node& expression, const MatchedPatternMap& patt
 				current = identifierLocation->second;
 			}
 		} else if ( current.is<ast::FunctionCall>() ) {
-			todoStack.push(&current.get<ast::FunctionCall>().getFunction());
-			for ( ast::Node& operand : current.get<ast::FunctionCall>().getOperands() ) {
+			todoStack.push(&current.getM<ast::FunctionCall>().getFunction());
+			for ( ast::Node& operand : current.getM<ast::FunctionCall>().getOperands() ) {
 				todoStack.push(&operand);
 			}
 		}

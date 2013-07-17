@@ -39,7 +39,7 @@ bool applyRulePtrs(ast::Node& expression, const std::vector<RulePtr>& rules, eva
 			}
 		}
 		if ( !matched && current.is<ast::FunctionCall>() ) {
-			ast::FunctionCall& functionCall = current.get<ast::FunctionCall>();
+			ast::FunctionCall& functionCall = current.getM<ast::FunctionCall>();
 			todoStack.push(&functionCall.getFunction());
 			for ( ast::Node& operand : functionCall.getOperands() ) {
 				todoStack.push(&operand);

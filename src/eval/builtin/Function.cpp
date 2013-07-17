@@ -66,8 +66,8 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 		} else if ( current->isFunctionCall(ids::Function) ) {
 			/*do nothing*/
 		} else if ( current->is<ast::FunctionCall>() ) {
-			toTraverseNodes.push( &current->get<ast::FunctionCall>().getFunction() );
-			for ( ast::Node& node : current->get<ast::FunctionCall>().getOperands() ) {
+			toTraverseNodes.push( &current->getM<ast::FunctionCall>().getFunction() );
+			for ( ast::Node& node : current->getM<ast::FunctionCall>().getOperands() ) {
 				toTraverseNodes.push( &node );
 			}
 		}

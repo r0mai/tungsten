@@ -10,8 +10,22 @@
 
 namespace tungsten { namespace ast {
 
-Node::Node(const Storage& storage) : storage(storage) {
+void Node::detach() {
+	Storage* tmp = storagePtr.get();
+	if( tmp != nullptr && !storagePtr.unique() ) {
+		storagePtr = StoragePtr( new Storage( *tmp ) );
+	}
+}
+
+Node::Node(const StoragePtr& storagePtr) : storagePtr(storagePtr) {
 	assert(!is<math::Real>() || boost::math::isfinite(get<math::Real>()));
+}
+
+Node::Node(const Node& other) : storagePtr(other.storagePtr) {}
+
+Node& Node::operator=(const Node& other) {
+	storagePtr = other.storagePtr;
+	return *this;
 }
 
 bool Node::isFunctionCall(const Identifier& head) const {
@@ -42,7 +56,7 @@ math::Real Node::getNumeric() const {
 }
 
 bool Node::operator==(const Node& other) const {
-	return storage == other.storage;
+	return *storagePtr == *other.storagePtr;
 }
 
 //These are used by operator<

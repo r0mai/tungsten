@@ -20,14 +20,12 @@ OptionalNode Append(const ast::Operands& operands, eval::SessionEnvironment& ses
 		} ));
 		return EvaluationFailure();
 	}
-	ast::Node result = operands[0];
-	result.get<ast::FunctionCall>().getOperands().push_back( operands[1] );
-	
+
 	ast::Operands resultOperands;
 	resultOperands.reserve( operands[0].get<ast::FunctionCall>().getOperands().size() + 1 );
 	std::copy( operands[0].get<ast::FunctionCall>().getOperands().begin(), operands[0].get<ast::FunctionCall>().getOperands().end(), std::back_inserter(resultOperands) );
 	resultOperands.push_back( operands[1] );
-	
+
 	return ast::Node::make<ast::FunctionCall>( operands[0].get<ast::FunctionCall>().getFunction(), std::move(resultOperands) );
 }
 
@@ -47,11 +45,12 @@ OptionalNode Prepend(const ast::Operands& operands, eval::SessionEnvironment& se
 		} ));
 		return EvaluationFailure();
 	}
-	ast::Operands resultOperands;
+
+ 	ast::Operands resultOperands;
 	resultOperands.reserve( operands[0].get<ast::FunctionCall>().getOperands().size() + 1 );
 	resultOperands.push_back( operands[1] );
 	std::copy( operands[0].get<ast::FunctionCall>().getOperands().begin(), operands[0].get<ast::FunctionCall>().getOperands().end(), std::back_inserter(resultOperands) );
-	
+
 	return ast::Node::make<ast::FunctionCall>( operands[0].get<ast::FunctionCall>().getFunction(), std::move(resultOperands) );
 }
 
