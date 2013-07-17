@@ -12,7 +12,10 @@ public:
 	template<class... Args>
 	SharedPointer(Args&&... args) : countedData( new CountedData(std::forward<Args>(args)...) ) {}
 
-	SharedPointer(const SharedPointer& other) {
+	SharedPointer(SharedPointer& other) : countedData(other.countedData) {
+		incrementReferece();
+	}
+	SharedPointer(const SharedPointer& other) : countedData(other.countedData) {
 		incrementReferece();
 	}
 
