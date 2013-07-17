@@ -11,9 +11,8 @@
 namespace tungsten { namespace ast {
 
 void Node::detach() {
-	Storage* tmp = storagePtr.get();
-	if( tmp != nullptr && !storagePtr.unique() ) {
-		storagePtr = StoragePtr( new Storage( *tmp ) );
+	if( storagePtr && !storagePtr.unique() ) {
+		storagePtr = std::make_shared<Storage>( *storagePtr );
 	}
 }
 
