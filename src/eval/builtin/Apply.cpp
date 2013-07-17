@@ -20,7 +20,7 @@ OptionalNode Apply(const ast::Operands& operands, eval::SessionEnvironment& sess
 	//TODO levelspec
 
 	if ( expression.is<ast::FunctionCall>() ) {
-		expression.get<ast::FunctionCall>().getFunction() = newHead;
+		expression.getM<ast::FunctionCall>().getFunction() = newHead;
 		expression = sessionEnvironment.recursiveEvaluate(expression);
 	}
 

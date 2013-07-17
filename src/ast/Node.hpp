@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <memory>
 #include <type_traits>
+#include <memory>
 
 #include <boost/variant.hpp>
 
@@ -18,6 +19,9 @@ namespace tungsten { namespace ast {
 
 class Node {
 public:
+
+	Node(const Node& other);
+	Node& operator=(const Node& other);
 
 	//partially obsolete: TODO Make these use perfect forwarding, this requires partially template specializing constructors
 	template<class T, class... Args>
@@ -42,8 +46,9 @@ public:
 	bool isNumeric(const math::Real& test);
 	math::Real getNumeric() const; //returns Real when isNumeric() is true
 
+	//Using this potentially causes a copy. This is why it has a differnt name
 	template<class T>
-	T& get();
+	T& getM();
 
 	template<class T>
 	const T& get() const;
@@ -61,7 +66,7 @@ public:
 	std::string toString() const;
 
 	//Totally arbitrary. default constructed Node should never be used
-	Node() : storage(Identifier("???")) {}
+	Node() : storagePtr(nullptr) {}
 
 	template<class Visitor>
 	friend typename std::remove_reference<Visitor>::type::result_type
@@ -73,9 +78,12 @@ public:
 
 private:
 	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
-	Storage storage;
+	typedef std::shared_ptr<Storage> StoragePtr;
+	StoragePtr storagePtr;
 
-	Node(const Storage& storage);
+	void detach();
+
+	Node(const StoragePtr& storagePtr);
 };
 
 std::ostream& operator<<(std::ostream& os, const Node& node);
@@ -85,7 +93,7 @@ typename std::remove_reference<Visitor>::type::result_type
 applyVisitor(const Node& node, Visitor&& visitor) {
 	return boost::apply_visitor(
 			std::forward<Visitor>(visitor),
-			node.storage);
+			*node.storagePtr);
 }
 
 template<class Visitor>
@@ -93,8 +101,8 @@ typename std::remove_reference<Visitor>::type::result_type
 applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 	return boost::apply_visitor(
 			std::forward<Visitor>(visitor),
-			lhs.storage,
-			rhs.storage);
+			*lhs.storagePtr,
+			*rhs.storagePtr);
 }
 
 //Template implementation:
@@ -106,14 +114,14 @@ Node Node::make(const Args&... args) {
         std::is_same<T, ast::FunctionCall>::value ||
         std::is_same<T, ast::String>::value ||
         std::is_same<T, ast::Identifier>::value, "invalid Node type" );
-	return Node{Storage(T(args...))};
+	return Node{StoragePtr{new Storage(T(args...))}};
 }
 
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
     static_assert( 
         std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
-	return Node{T(arg, initializerList)};
+	return Node{StoragePtr{new Storage(T(arg, initializerList))}};
 }
 
 template<class T>
@@ -124,7 +132,7 @@ bool Node::is() const {
         std::is_same<T, ast::FunctionCall>::value ||
         std::is_same<T, ast::String>::value ||
         std::is_same<T, ast::Identifier>::value, "invalid Node type" );
-	return boost::get<T>(&storage) != nullptr;
+	return boost::get<T>(&*storagePtr) != nullptr;
 }
 
 template<class T>
@@ -139,7 +147,7 @@ bool Node::is(const T& test) const {
 }
 
 template<class T>
-T& Node::get() {
+T& Node::getM() {
     static_assert( 
         std::is_same<T, math::Real>::value ||
         std::is_same<T, math::Rational>::value ||
@@ -147,7 +155,8 @@ T& Node::get() {
         std::is_same<T, ast::String>::value ||
         std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
-	return boost::get<T>(storage);
+	detach();
+	return boost::get<T>(*storagePtr);
 }
 
 template<class T>
@@ -159,7 +168,7 @@ const T& Node::get() const {
         std::is_same<T, ast::String>::value ||
         std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
-	return boost::get<T>(storage);
+	return boost::get<T>(*storagePtr);
 }
 
 }} //namespace tungsten::ast

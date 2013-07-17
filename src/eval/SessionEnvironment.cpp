@@ -235,7 +235,7 @@ ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 			result.get<ast::FunctionCall>().getFunction().is<ast::Identifier>() &&
 			attributeMap.hasAttribute(result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>(), ids::Orderless) )
 	{
-		ast::Operands& operands = result.get<ast::FunctionCall>().getOperands();
+		ast::Operands& operands = result.getM<ast::FunctionCall>().getOperands();
 		operands.sort(NodeComparatorLess{});
 	}
 

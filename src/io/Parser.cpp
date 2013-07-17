@@ -75,7 +75,7 @@ void leftAssociativeListableOperator(const ast::Identifier& functionName, ast::N
 		const ast::Identifier& functionIdentifier = result.get<ast::FunctionCall>().getFunction().get<ast::Identifier>();
 
 		if ( functionIdentifier == functionName ) {
-			result.get<ast::FunctionCall>().getOperands().push_back(rhs);
+			result.getM<ast::FunctionCall>().getOperands().push_back(rhs);
 			return;
 		} else if ( functionIdentifier == parenthesesIdentityFunction ) {
 			removeParenthesesIdentityFunction( result );
@@ -329,7 +329,7 @@ void createFunctionCallFromString(ast::Node& result, const std::string& name) {
 void fillFunctionCall(ast::Node& result, const ast::Operands& operands) {
 	assert( result.is<ast::FunctionCall>() );
 	assert( result.get<ast::FunctionCall>().getOperands().empty() );
-	result.get<ast::FunctionCall>().getOperands() = operands;
+	result.getM<ast::FunctionCall>().getOperands() = operands;
 }
 
 void createPartExpression(ast::Node& indexable, ast::Operands index) {

@@ -20,8 +20,8 @@ ast::Node numericNodeEvaluation(const ast::Node& node, eval::SessionEnvironment&
 
 		if ( current->is<ast::FunctionCall>() ) {
 
-			ast::Node& function = current->get<ast::FunctionCall>().getFunction();
-			ast::Operands& functionOperands = current->get<ast::FunctionCall>().getOperands();
+			ast::Node& function = current->getM<ast::FunctionCall>().getFunction();
+			ast::Operands& functionOperands = current->getM<ast::FunctionCall>().getOperands();
 
 			AttributeSet functionAttributes = sessionEnvironment.getAttributeSetForFunction(function);
 

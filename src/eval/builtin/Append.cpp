@@ -25,7 +25,7 @@ OptionalNode Append(const ast::Operands& operands, eval::SessionEnvironment& ses
 		return EvaluationFailure();
 	}
 	ast::Node result = listToAppend;
-	result.get<ast::FunctionCall>().getOperands().push_back( item );
+	result.getM<ast::FunctionCall>().getOperands().push_back( item );
 	
 	return result;
 }
@@ -51,7 +51,7 @@ OptionalNode Prepend(const ast::Operands& operands, eval::SessionEnvironment& se
 		return EvaluationFailure();
 	}
 	ast::Node result = listToPrepend;
-	result.get<ast::FunctionCall>().getOperands().push_front( item );
+	result.getM<ast::FunctionCall>().getOperands().push_front( item );
 	
 	return result;
 }

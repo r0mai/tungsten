@@ -54,7 +54,7 @@ struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optiona
 						assert( exponent.isFunctionCall(ids::Times) );
 
 						negatedExponent = exponent;
-						ast::Operands& exponentTimesOperands = negatedExponent.get<ast::FunctionCall>().getOperands();
+						ast::Operands& exponentTimesOperands = negatedExponent.getM<ast::FunctionCall>().getOperands();
 
 						ast::Operands::iterator negativeTermIt = boost::find_if( exponentTimesOperands, [](const ast::Node& node) {
 							return node.isNumeric() && node.getNumeric() < 0;
@@ -64,9 +64,9 @@ struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optiona
 						assert( negativeTermIt != exponentTimesOperands.end() );
 
 						if ( exponent.is<math::Rational>() ) {
-							negativeTermIt->get<math::Rational>() *= -1;
+							negativeTermIt->getM<math::Rational>() *= -1;
 						} else if ( exponent.is<math::Real>() ) {
-							negativeTermIt->get<math::Real>() *= -1;
+							negativeTermIt->getM<math::Real>() *= -1;
 						} else {
 							assert(false);
 						}
@@ -114,7 +114,7 @@ struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optiona
 					assert( exponent.isFunctionCall(ids::Times) );
 
 					negatedExponent = exponent;
-					ast::Operands& exponentTimesOperands = negatedExponent.get<ast::FunctionCall>().getOperands();
+					ast::Operands& exponentTimesOperands = negatedExponent.getM<ast::FunctionCall>().getOperands();
 
 					ast::Operands::iterator negativeTermIt = boost::find_if( exponentTimesOperands, [](const ast::Node& node) {
 						return node.isNumeric() && node.getNumeric() < 0;
@@ -124,9 +124,9 @@ struct GetPrintableNodeDenominatorVisitor : boost::static_visitor<boost::optiona
 					assert( negativeTermIt != exponentTimesOperands.end() );
 
 					if ( exponent.is<math::Rational>() ) {
-						negativeTermIt->get<math::Rational>() *= -1;
+						negativeTermIt->getM<math::Rational>() *= -1;
 					} else if ( exponent.is<math::Real>() ) {
-						negativeTermIt->get<math::Real>() *= -1;
+						negativeTermIt->getM<math::Real>() *= -1;
 					} else {
 						assert(false);
 					}
