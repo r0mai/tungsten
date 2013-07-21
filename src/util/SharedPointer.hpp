@@ -29,14 +29,31 @@ public:
 		return *this;
 	}
 
-	Counter useCount() const {
-		return countedData->counter;
-	}
-
 	~SharedPointer() {
 		decrementReference();
 	}
 
+	Counter useCount() const {
+		return countedData->counter;
+	}
+
+	T& get() {
+		assert(countedData);
+		return countedData->data;
+	}
+
+	const T& get() const {
+		assert(countedData);
+		return countedData->data;
+	}
+
+	T& operator*() {
+		return get();
+	}
+
+	const T& operator*() const {
+		return get();
+	}
 private:
 
 	void incrementReferece() {
