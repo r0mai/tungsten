@@ -101,6 +101,9 @@ OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironm
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Export(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+// Defined in timeFunctions.cpp
+OptionalNode AbsoluteTime(const ast::Operands&, eval::SessionEnvironment&);
+
 Functions createFunctions() {
 	Functions result;
 	result[ids::Plus] = &Plus;
@@ -172,6 +175,7 @@ Functions createFunctions() {
 	result[ids::MatchQ] = &MatchQ;
 	result[ids::ReplaceAll] = &ReplaceAll;
 	result[ids::ReplaceRepeated] = &ReplaceRepeated;
+	result[ids::AbsoluteTime] = &AbsoluteTime;
 	return result;
 }
 
