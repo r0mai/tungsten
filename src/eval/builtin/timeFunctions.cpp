@@ -16,8 +16,6 @@ OptionalNode AbsoluteTime(const ast::Operands& operands, eval::SessionEnvironmen
 
 	time_duration diff = pt - epoch;
 
-	std::cout<< diff.total_seconds() << std::endl;
-
 	return ast::Node::make<math::Rational>(boost::lexical_cast<int>(diff.total_seconds()));
 }
 
