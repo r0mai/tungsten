@@ -67,7 +67,7 @@ LIBS = $(BOOST_LIBS) $(MPFR_LIBS) $(GMP_LIBS) $(READLINE_LIBS) -ltermcap
 SHARED_LIBS = $(BOOST_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS) $(READLINE_SHARED_LIBS)
 
 
-!cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
-!linker = |> $(LD) $(LDFLAGS) %f $(LIBS) -o %o |>
+!cxx = |> ^ CXX %f^ $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
+!linker = |> ^ LD %o^ $(LD) $(LDFLAGS) %f $(LIBS) -o %o |>
 !preCompile = |> $(CXX) %f $(PRECOMPILEFLAGS) -I $(INCLUDE_DIRS) -o %o |> %b.pch
 
