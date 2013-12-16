@@ -1,0 +1,12 @@
+.tup
+.tungsten
+doc
+private
+html/sessions
+html/log.txt
+headerDep.sh
+.ycm_extra_conf.py
+.ycm_extra_conf.pyc
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
