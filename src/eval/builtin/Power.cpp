@@ -85,7 +85,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		if ( baseNumeratorRoot ) {
 			if ( *baseNumeratorRoot != 1 ) {
 				ast::Operands timesOperands = {
-						ast::Node::make<math::Rational>(*baseNumeratorRoot), 
+						ast::Node::make<math::Rational>(*baseNumeratorRoot),
 						ast::Node::make<ast::FunctionCall>(ids::Power, {
 							ast::Node::make<math::Rational>(math::denominator(baseExponentation)),
 							 ast::Node::make<math::Rational>(-newExponent)})};
@@ -99,7 +99,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		assert( baseDenominatorRoot );
 		if ( *baseDenominatorRoot != 1 ) {
 			ast::Operands timesOperands = {
-					ast::Node::make<math::Rational>(math::Integer(1), *baseDenominatorRoot), 
+					ast::Node::make<math::Rational>(math::Integer(1), *baseDenominatorRoot),
 					ast::Node::make<ast::FunctionCall>(ids::Power, {
 						ast::Node::make<math::Rational>(math::numerator(baseExponentation)),
 						ast::Node::make<math::Rational>(newExponent)})};

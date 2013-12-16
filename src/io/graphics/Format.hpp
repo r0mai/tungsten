@@ -46,7 +46,7 @@ struct FormatSpecifier : public GraphicsDirective {
 	double fill_opacity;
 	ColorDirective stroke;
 	ColorDirective fill;
-	
+
 };
 
 }}} // namspace tungsten::io::graphics;

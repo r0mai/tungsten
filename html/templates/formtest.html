@@ -26,7 +26,7 @@ $def with (form, name, output, svg, errors, log)
 			display:block; font-size:20px; width:auto!important; padding: 10px;
 	}
 	.errors { background: rgba(190, 74, 51, 0.1); border-width: 1px 0px 1px 0px; border-style: solid; border-color:rgba(190, 74, 51, 0.7);
-			display:block; font-size:20px; width:auto!important; padding: 10px; 
+			display:block; font-size:20px; width:auto!important; padding: 10px;
 	}
 
 </style>
@@ -49,7 +49,7 @@ MathJax.Hub.Config({
 			res += escape('#') + arr[i];
 		}
 		if(res != location.href && arr.length > 1){
-			window.location = res; 
+			window.location = res;
 		}
 	}
 </script>
@@ -64,7 +64,7 @@ MathJax.Hub.Config({
 	<div align="center">
 		<div class="upper">
 		$if name:
-			<p>Your Input:</p><div class="input"> 
+			<p>Your Input:</p><div class="input">
 				<script type="math/tex; mode=display">
 				\begin{align}
 					$name
@@ -103,7 +103,7 @@ MathJax.Hub.Config({
 			<a href="/tungsten/Graphics[Circle[]]">Graphics[Circle[]]</a><br>
 			<a href="/tungsten/Plot[Sin[x], {x, -5, 5, 0.1}]">Plot[Sin[x], {x, -5, 5, 0.1}]</a><br>
 			<a href="/tungsten/Graphics[Table[BezierCurve[{{RandomReal[], RandomReal[]}, {RandomReal[], RandomReal[]}, {RandomReal[], RandomReal[]}, {RandomReal[], RandomReal[]}}], {10}]]">Graphics[Table[BezierCurve[{{RandomReal[], RandomReal[]}, {RandomReal[], RandomReal[]}, {RandomReal[], RandomReal[]}, {RandomReal[], RandomReal[]}}]]]</a><br>
-	</div> 
+	</div>
 </body>
 </html>
 

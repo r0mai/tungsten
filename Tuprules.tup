@@ -41,7 +41,7 @@ BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
 	$(boost_lib_dir)/libboost_system.a \
 	$(boost_lib_dir)/libboost_filesystem.a \
 	$(boost_lib_dir)/libboost_regex.a \
-	$(boost_lib_dir)/libboost_program_options.a	
+	$(boost_lib_dir)/libboost_program_options.a
 BOOST_SHARED_LIBS = $(boost_lib_dir)/libboost_thread.so \
 	$(boost_lib_dir)/libboost_system.so \
 	$(boost_lib_dir)/libboost_filesystem.so \
@@ -70,4 +70,4 @@ SHARED_LIBS = $(BOOST_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS) $(READ
 !cxx = |> $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> $(LD) $(LDFLAGS) %f $(LIBS) -o %o |>
 !preCompile = |> $(CXX) %f $(PRECOMPILEFLAGS) -I $(INCLUDE_DIRS) -o %o |> %b.pch
- 
+

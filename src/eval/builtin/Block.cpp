@@ -32,14 +32,14 @@ OptionalNode Block(const ast::Operands& operands, eval::SessionEnvironment& sess
 		return EvaluationFailure();
 	}
 
-	std::vector<std::pair<ast::Identifier, boost::optional<ast::Node>>> localizedVariables;	
+	std::vector<std::pair<ast::Identifier, boost::optional<ast::Node>>> localizedVariables;
 
 	const ast::Operands& listOperands = operands[0].get<ast::FunctionCall>().getOperands();
 
 	for ( const ast::Node& node : listOperands ) {
 		ast::Identifier localVariable;
 		if ( node.is<ast::Identifier>() ) {
-			localVariable = node.get<ast::Identifier>();	
+			localVariable = node.get<ast::Identifier>();
 		} else if ( (node.isFunctionCall(ids::Set) || node.isFunctionCall(ids::SetDelayed)) ) {
 			if ( node.get<ast::FunctionCall>().getOperands().empty() || !node.get<ast::FunctionCall>().getOperands()[0].is<ast::Identifier>() ) {
 				sessionEnvironment.raiseMessage( Message( ids::Block, ids::lvsym, {
@@ -69,17 +69,17 @@ OptionalNode Block(const ast::Operands& operands, eval::SessionEnvironment& sess
 
 		localizedVariables.push_back(std::make_pair(localVariable, replacement));
 	}
-	
+
 	ast::Node returnNode = sessionEnvironment.recursiveEvaluate( operands[1] );
 
 	for ( const auto& idNodePair : localizedVariables ) {
 		if ( idNodePair.second ) {
-			sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>( idNodePair.first ), *idNodePair.second );	
+			sessionEnvironment.addPattern( ast::Node::make<ast::Identifier>( idNodePair.first ), *idNodePair.second );
 		} else {
-			sessionEnvironment.removePattern( ast::Node::make<ast::Identifier>( idNodePair.first ) );	
+			sessionEnvironment.removePattern( ast::Node::make<ast::Identifier>( idNodePair.first ) );
 		}
 	}
-	
+
 	return sessionEnvironment.recursiveEvaluate( returnNode );
 }
 

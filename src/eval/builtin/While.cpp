@@ -6,7 +6,7 @@ namespace tungsten { namespace eval { namespace builtin {
 
 OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
     if ( operands.empty() || operands.size() > 2 ) {
-        
+
 		sessionEnvironment.raiseMessage( Message(ids::While, ids::argt, {
 				ast::Node::make<ast::Identifier>( ids::While ),
 				ast::Node::make<math::Rational>( operands.size() ),
@@ -23,7 +23,7 @@ OptionalNode While(const ast::Operands& operands, eval::SessionEnvironment& sess
             sessionEnvironment.recursiveEvaluate( operands[1] );
         }
     }
-	return ast::Node::make<ast::Identifier>(ids::Null); 
+	return ast::Node::make<ast::Identifier>(ids::Null);
 }
 
 }}} //namespace tungsten::eval::builtin

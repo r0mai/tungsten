@@ -61,7 +61,7 @@ OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::
 				std::size_t slotSequenceNumberSizeT = math::as<std::size_t>(math::asInteger( slotSequenceNumber.get<math::Rational>() ));
 				assert( slotSequenceNumberSizeT <= operands.size()+1 && slotSequenceNumberSizeT > 0 );
 
-				*current = ast::Node::make<ast::FunctionCall>( ids::Sequence, ast::Operands(operands.begin() + (slotSequenceNumberSizeT - 1), operands.end()) );	
+				*current = ast::Node::make<ast::FunctionCall>( ids::Sequence, ast::Operands(operands.begin() + (slotSequenceNumberSizeT - 1), operands.end()) );
 			}
 		} else if ( current->isFunctionCall(ids::Function) ) {
 			/*do nothing*/

@@ -17,19 +17,19 @@ OptionalNode Part(const ast::Operands& operands, eval::SessionEnvironment& sessi
         return operands[0];
     }
 
-    if ( !operands[1].is<math::Rational>() || !math::isInteger(operands[1].get<math::Rational>()) || 
-        !math::fits<std::ptrdiff_t>(math::asInteger(operands[1].get<math::Rational>())) ) 
+    if ( !operands[1].is<math::Rational>() || !math::isInteger(operands[1].get<math::Rational>()) ||
+        !math::fits<std::ptrdiff_t>(math::asInteger(operands[1].get<math::Rational>())) )
     {
 		sessionEnvironment.raiseMessage( Message(ids::Part, ids::pspec, {
             operands[1]
 		} ));
         return EvaluationFailure();
     }
-    const ast::Node& expr = operands[0]; 
+    const ast::Node& expr = operands[0];
     std::ptrdiff_t index = math::as<std::ptrdiff_t>(math::asInteger(operands[1].get<math::Rational>()));
     if ( index == 0 ) {
         return getHead( expr );
-    } 
+    }
     if ( !expr.is<ast::FunctionCall>() ) {
 		sessionEnvironment.raiseMessage( Message(ids::Part, ids::partd, {
             ast::Node::make<ast::FunctionCall>( ids::Part, operands )
@@ -59,7 +59,7 @@ OptionalNode Length(const ast::Operands& operands, eval::SessionEnvironment& ses
 		} ));
 		return EvaluationFailure();
 	}
-	
+
 	const ast::Node& operand = operands[0];
 
 	if ( !operand.is<ast::FunctionCall>() ) {

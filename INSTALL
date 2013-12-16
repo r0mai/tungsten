@@ -64,14 +64,14 @@ Building tungsten:
 From the root directory of tungsten
 
     tup init
-    
-and then    
+
+and then
 - to build only the binary:
-    
+
     tup upd bin/tungsten
 
 - to build only unit tests:
-    
+
     tup upd ut/unitest
 
 - to build everything (including the web front end):

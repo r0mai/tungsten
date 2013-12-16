@@ -10,7 +10,7 @@
 #include <boost/spirit/include/phoenix.hpp>
 
 namespace tungsten { namespace io {
-/** 
+/**
 \brief Main Namespace for Abstract Syntax Tree Building
 
 **/
@@ -134,11 +134,11 @@ void applyPostFixOperator(ast::Node& result, const ast::Node& function) {
 	result = ast::Node::make<ast::FunctionCall>(function, {result});
 }
 
-void operatorRepeated(ast::Node& result) { 
+void operatorRepeated(ast::Node& result) {
 	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::Repeated) );
 }
 
-void operatorRepeatedNull(ast::Node& result) { 
+void operatorRepeatedNull(ast::Node& result) {
 	applyPostFixOperator( result, ast::Node::make<ast::Identifier>(ids::RepeatedNull) );
 }
 
@@ -296,7 +296,7 @@ void operatorNot(ast::Node& result, ast::Node operand) {
 
 void makeBlankPattern(ast::Node& result, const boost::optional<std::vector<char>>& name, const boost::optional<std::vector<char>>& headType, const ast::Identifier& functionName) {
 
-	auto blankPatternLambda = [&] { 
+	auto blankPatternLambda = [&] {
 		if (headType) {
 			return ast::Node::make<ast::FunctionCall>( functionName, {ast::Node::make<ast::Identifier>(headType->begin(), headType->end())} );
 		}
@@ -425,7 +425,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				":>" >> ruleExpression[phx::bind(&operatorRuleDelayed, _val, _1)] |
 				eps);
 
-		conditionExpression = 
+		conditionExpression =
 				patternExpression[_val = _1] >> *(
 				"/;" >> patternExpression[phx::bind(&operatorCondition, _val, _1)]);
 
@@ -434,7 +434,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				alternativesExpression[_val = _1];
 
 		alternativesExpression =
-				repeatedExpression[_val = _1] >> 
+				repeatedExpression[_val = _1] >>
 				*( '|' >> repeatedExpression[phx::bind(&operatorAlternatives, _val, _1)]);
 
 		repeatedExpression =
@@ -551,7 +551,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 		slotPattern =
 				( "##" >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1, ids::SlotSequence)] ) |
 				( '#' >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1, ids::Slot)] );
-				
+
 
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
@@ -613,12 +613,12 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 boost::optional<ast::Node> parseInput(const std::string& input) {
 	ast::Node result;
-	
+
 	std::string::const_iterator begin = input.cbegin();
 	std::string::const_iterator end = input.cend();
-	
+
 	TungstenGrammar<std::string::const_iterator> grammar;
-	
+
 	bool success = qi::phrase_parse(
 		begin, end,
 		grammar,

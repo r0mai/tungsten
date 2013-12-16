@@ -45,7 +45,7 @@ Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnviron
 			if (eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
 			( center = operands[0].get<ast::FunctionCall>().getOperands()/*!!!*/,/*!!!*/ operands[1].isNumeric() ) &&
 			( radius = operands[1].getNumeric()/*!!!*/,/*!!!*/center.size() == 2  ) &&
-			center[0].isNumeric() && center[1].isNumeric() ) 
+			center[0].isNumeric() && center[1].isNumeric() )
 			{
 				this->center(center[0].getNumeric(), center[1].getNumeric()).radius(radius);
 
@@ -55,7 +55,7 @@ Circle& Circle::fromOperands(const ast::Operands& operands, eval::SessionEnviron
 			break;
 		}
 		default:
-			raise(environment);	
+			raise(environment);
 			break;
 	}
 	return *this;
@@ -71,7 +71,7 @@ BoundingBox Circle::getBoundingBox() const {
 }
 
 std::string Rectangle::toSVGString() const {
-	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6% />)ro") 
+	return (boost::format(R"ro(<rect %1% x="%2%" y="%3%" width="%4%" height="%5%" %6% />)ro")
 			% _translation
 			% _topLeftX
 			% (-_bottomRightY) // flip.
@@ -100,7 +100,7 @@ Rectangle& Rectangle::fromOperands(const ast::Operands& operands, eval::SessionE
 			this->bottomRight(1,1).topLeft(0,0);
 			break;
 		case 1:
-		{	
+		{
 			ast::Operands topLeft;
 			if(eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
 				((topLeft = operands[0].get<ast::FunctionCall>().getOperands())/*!!!*/,/*!!!*/ topLeft.size() == 2 )&&
@@ -114,7 +114,7 @@ Rectangle& Rectangle::fromOperands(const ast::Operands& operands, eval::SessionE
 			break;
 		}
 		case 2:
-		{	
+		{
 			ast::Operands topLeft, bottomRight;
 			if(eval::getHead(operands[0]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
 				eval::getHead(operands[1]) == ast::Node::make<ast::Identifier>(eval::ids::List) &&
@@ -175,7 +175,7 @@ Ellipse& Ellipse::fromOperands(const ast::Operands& operands, eval::SessionEnvir
 			this->center(0.0, 0.0).radius(1.0, 1.0);
 			break;
 		case 1:
-			break;	
+			break;
 		default:
 			raise(environment);
 			break;
@@ -214,7 +214,7 @@ std::string Line::toSVGString() const {
 		"d=\"M"<<points.front().first<<" "<<-points.front().second;
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 					ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
-				});	
+				});
 		ss<<"\"/>"; // end of path string.
 		return ss.str();
 	} else {
@@ -259,15 +259,15 @@ BoundingBox Line::getBoundingBox() const {
 	BoundingBox out = {0.0, 0.0, 0.0, 0.0};
 	if(!points.empty()){
 		out = {
-			points.front().first.convert_to<double>(), 
-			points.front().second.convert_to<double>(), 
+			points.front().first.convert_to<double>(),
+			points.front().second.convert_to<double>(),
 			points.front().first.convert_to<double>(),
 			points.front().second.convert_to<double>()
 		};
 	}
 	out = std::accumulate(points.begin(), points.end(), out, [](BoundingBox& box, const std::pair<math::Real, math::Real>& p){
 		const auto x = p.first.convert_to<double>();
-		const auto y = p.second.convert_to<double>();		
+		const auto y = p.second.convert_to<double>();
 
 			box.minX = std::min(box.minX, x);
 			box.minY = std::min(box.minY, y);
@@ -288,7 +288,7 @@ std::string BezierCurve::toSVGString() const {
 		"d=\"M"<<points.front().first<<" "<<-points.front().second<<" C";
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 					ss<<" "<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
-				});	
+				});
 		ss<<"\"/>"; // end of path string.
 		return ss.str();
 	} else {
@@ -304,7 +304,7 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 		const auto last = points.back();
 		auto it = std::find_if_not(points.rbegin(), points.rend(), [&last](const std::pair<math::Real, math::Real>& p){
 					return p.first == last.first && p.second == last.second;
-				});	
+				});
 		// rationale: atan2 has issues when diffX and diffY are both 0 (ie.: prev == last),
 		// so we find the last point that isn't last.
 		if(it != points.rend()){
@@ -315,7 +315,7 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 			const auto diffY = last.second.convert_to<double>() - previous.second.convert_to<double>();
 			assert(diffX != 0 || diffY != 0);
 			const auto radians = std::atan2(diffY, diffX);
-			
+
 			const auto diameter = std::sqrt((box.maxX - box.minX)*(box.maxX - box.minX) + (box.maxY - box.minY)*(box.maxY - box.minY));
 
 			const auto distance = diameter * 0.01; // const for triangle size.
@@ -337,7 +337,7 @@ std::string Arrow::toBoundedSVGString( const BoundingBox& box) const {
 
 			arrowHead.points = { p2, p1, p3, p2 };
 			arrowHead._format = this->_format;
-					
+
 		} else {
 			std::cout<<"Arrow had to raise."<<std::endl;
 		}
@@ -354,7 +354,7 @@ std::string Polygon::toSVGString() const {
 		"d=\"M"<<points.front().first<<" "<<-points.front().second;
 		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
 					ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
-				});	
+				});
 		ss<<"\" Z/>"; // end of path string.
 		return ss.str();
 	} else {
@@ -369,7 +369,7 @@ std::string Text::toBoundedSVGString(const BoundingBox& box) const {
 	if(!_text.empty()){
 		ss<<"<text x=\""<<_x<<"\" y=\""<<-(_y)<<"\" "<</*_format.toSVGString()<<*/" font-family=\"Verdana\" font-size=\""<<size<<"\" >"<<
 				_text<<"</text>";
-	} 
+	}
 	return ss.str();
 }
 
@@ -391,9 +391,9 @@ Text& Text::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 			}
 		} else {
 			raise(sessionEnvironment);
-		}	
+		}
 	} else {
-		raise(sessionEnvironment);	
+		raise(sessionEnvironment);
 	}
 	return *this;
 }

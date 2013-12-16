@@ -17,7 +17,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 	if(operands.size() == 2 && operands[1].isFunctionCall(ids::List)){
 		const auto& function = operands[0]; // to be called lots and lots of times.
 		const auto& rangeOperands = operands[1].get<ast::FunctionCall>().getOperands();
-		if(rangeOperands.size() == 3 && 
+		if(rangeOperands.size() == 3 &&
 			rangeOperands[0].is<ast::Identifier>() &&
 			numericNodeEvaluation(rangeOperands[1], sessionEnvironment).isNumeric() &&
 			numericNodeEvaluation(rangeOperands[2], sessionEnvironment).isNumeric() ){
@@ -35,10 +35,10 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			const auto distance = maxX - minX;
 
 		//	const math::Real aspectRatio;
-			
+
 			ast::Operands currentLine;				// List[List[x,y], ...] : need to enclose in List.
 			ast::Operands lineVector;	// List[Line[^^^], ...] : need to enclise in List with other objects.
-			
+
 			math::Real advancement = distance/math::Real(768); // I like wierd numbers.
 			math::Real currentX, currentY;
 			//math::Real previousX, previousY;
@@ -63,9 +63,9 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 						maxY = currentY;
 						first = false;
 					}
-					currentLine.push_back(ast::Node::make<ast::FunctionCall>(ids::List, { 
-									ast::Node::make<math::Real>(currentX), 
-									ast::Node::make<math::Real>(currentY)  
+					currentLine.push_back(ast::Node::make<ast::FunctionCall>(ids::List, {
+									ast::Node::make<math::Real>(currentX),
+									ast::Node::make<math::Real>(currentY)
 								}));
 				} else {
 					// break in function Line
@@ -78,7 +78,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 						currentLine.clear();
 					}
 				}
-			} 
+			}
 			if(!currentLine.empty()){
 				lineVector.push_back(
 					ast::Node::make<ast::FunctionCall>(ids::Line, {
@@ -92,7 +92,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 //				std::cout<<"line Vector has something in it!"<<std::endl;
 //				auto lineHelper = io::graphics::GraphicsObject();
 //				io::graphics::makeGraphics(ast::Node::make<ast::FunctionCall>(eval::ids::List, lineVector), sessionEnvironment, lineHelper);
-				
+
 			}
 
 
@@ -169,9 +169,9 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 			// start work on labels.
 			//
-			// 
 			//
-			const math::Real scaleX = ceil(pow(10, floor(log10(distance)))); // 
+			//
+			const math::Real scaleX = ceil(pow(10, floor(log10(distance)))); //
 			const math::Real lineHeight = 0.04 * (maxY - minY);
 #if 0 //disabled, unstable
 			for(math::Real marker = ceil(minX/scaleX); marker <= floor(maxX)/scaleX; marker=ceil(marker+1)){
@@ -193,14 +193,14 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				merged.push_back(ast::Node::make<ast::FunctionCall>(ids::Text, {
 							ast::Node::make<math::Real>(marker*scaleX),
 							ast::Node::make<ast::FunctionCall>(ids::List, {
-								ast::Node::make<math::Real>(marker*scaleX), 
+								ast::Node::make<math::Real>(marker*scaleX),
 								ast::Node::make<math::Real>(axisY)
 							})
 						}));
 			}
 
 
-			const math::Real scaleY = ceil(pow(10, floor(log10(maxY-minY)))); // 
+			const math::Real scaleY = ceil(pow(10, floor(log10(maxY-minY)))); //
 			const math::Real lineWidth = 0.04 * distance;
 			for(math::Real marker = ceil(minY/scaleY); marker <= floor(maxY)/scaleY; marker=ceil(marker+1)){
 				if( (marker - axisY) < 0.9 && (marker - axisY) > -0.9 )
@@ -212,7 +212,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 													ast::Node::make<math::Real>(axisX), ast::Node::make<math::Real>(marker*scaleY)
 												}),
 												ast::Node::make<ast::FunctionCall>(eval::ids::List, {
-													ast::Node::make<math::Real>(axisX+lineWidth), ast::Node::make<math::Real>(marker*scaleY) 
+													ast::Node::make<math::Real>(axisX+lineWidth), ast::Node::make<math::Real>(marker*scaleY)
 												})
 											})
 										});
@@ -228,7 +228,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			}
 #endif
 			// merged now includes all function lines, and axes.
-			const auto GraphicsNode = ast::Node::make<ast::FunctionCall>(ids::Graphics, 
+			const auto GraphicsNode = ast::Node::make<ast::FunctionCall>(ids::Graphics,
 					{ast::Node::make<ast::FunctionCall>(ids::List, merged )});
 			return GraphicsNode;
 
@@ -251,7 +251,7 @@ OptionalNode Export(const ast::Operands& operands, SessionEnvironment& sessionEn
 		}();
 		graphicsObject.exportToSVG(filename);
 		return (operands[0]);
-	} 
+	}
 	return EvaluationFailure();
 }
 

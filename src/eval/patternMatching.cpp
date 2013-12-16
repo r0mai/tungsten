@@ -33,7 +33,7 @@ struct DoesPatternMatchRecursive2Visitor : boost::static_visitor<bool> {
 };
 
 //doesPatternMatchRecursive takes care of pattern naming
-bool doesPatternMatchRecursive2(const ast::Node& expression, 
+bool doesPatternMatchRecursive2(const ast::Node& expression,
 	const ast::Node& pattern,
 	MatchedPatternMap& patternMap,
 	eval::SessionEnvironment& sessionEnvironment)
@@ -71,7 +71,7 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 		const ast::Node& patternToTest = patternTestOperands[0];
 		const ast::Node& testFunction = patternTestOperands[1];
 
-		return doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) && 
+		return doesPatternMatchRecursive(expression, patternToTest, patternMap, sessionEnvironment) &&
 			sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>( testFunction, {expression} ) ).is<ast::Identifier>(ids::True);
 	} else if ( pattern.isFunctionCall(ids::Condition) ) {
 		const ast::Operands& conditionOperands = pattern.get<ast::FunctionCall>().getOperands();
@@ -99,7 +99,7 @@ bool doesPatternMatchRecursive2(const ast::Node& expression,
 		return true;
 
 	}
-	
+
 	DoesPatternMatchRecursive2Visitor patternMatchVisitor(patternMap, sessionEnvironment);
 	return ast::applyVisitor(expression, pattern, patternMatchVisitor);
 }
@@ -132,7 +132,7 @@ bool doesPatternMatchRecursive(const ast::Node& expression, const ast::Node& pat
 			return false;
 		}
 	}
-	
+
 	if ( doesPatternMatchRecursive2(expression, *patternPtr, patternMap, sessionEnvironment) ) {
 		if ( patternName ) {
 			MatchedPatternMap::iterator patternNameLocation = patternMap.find(*patternName);

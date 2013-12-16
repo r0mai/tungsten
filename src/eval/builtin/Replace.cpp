@@ -46,7 +46,7 @@ bool applyRulePtrs(ast::Node& expression, const std::vector<RulePtr>& rules, eva
 			}
 		}
 	}
-	
+
 	return result;
 }
 
@@ -65,8 +65,8 @@ bool applyRules(ast::Node& expression, const ast::Node& rules, eval::SessionEnvi
 				}
 			}
 			expression = ast::Node::make<ast::FunctionCall>(ids::List, expressionList);
-			
-		} else if ( std::all_of( listOperands.begin(), listOperands.end(), [](const ast::Node& node) { 
+
+		} else if ( std::all_of( listOperands.begin(), listOperands.end(), [](const ast::Node& node) {
 				return (node.isFunctionCall(ids::Rule) || node.isFunctionCall(ids::RuleDelayed)) && node.get<ast::FunctionCall>().getOperands().size() == 2;
 			} ) )
 		{
@@ -79,7 +79,7 @@ bool applyRules(ast::Node& expression, const ast::Node& rules, eval::SessionEnvi
 			sessionEnvironment.raiseMessage( Message(caller, ids::rmix, {rules}) );
 			return false;
 		}
-	
+
 	} else if ((rules.isFunctionCall(ids::Rule) || rules.isFunctionCall(ids::RuleDelayed)) && rules.get<ast::FunctionCall>().getOperands().size() == 2 ) {
 		applyRulePtrs(expression, std::vector<RulePtr>(1, std::make_pair(&rules.get<ast::FunctionCall>().getOperands()[0], &rules.get<ast::FunctionCall>().getOperands()[1])), sessionEnvironment);
 	} else {
@@ -118,13 +118,13 @@ OptionalNode ReplaceRepeated(const ast::Operands& operands, eval::SessionEnviron
 		} ));
 		return EvaluationFailure();
 	}
-		
+
 	const ast::Node& expression = operands[0];
 	const ast::Node& rules = operands[1];
 
 	ast::Node result = expression;
 	while ( true ) {
-		ast::Node last = result; 
+		ast::Node last = result;
 		if ( !applyRules( result, rules, sessionEnvironment, ids::ReplaceRepeated ) ) {
 			return EvaluationFailure();
 		}

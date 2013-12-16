@@ -118,10 +118,10 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::CompoundExpression )) {
 			for(unsigned i = 1; i< operands.size(); ++i){
 				result += NodeToTeXFormRecursive(operands[i-1], -1) + ';';
-			} 
+			}
 			if(operands.back() != ast::Node::make<ast::Identifier>(eval::ids::Null))
 				result += NodeToTeXFormRecursive(operands.back(), -1);
-		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Hyperlink ) && operands.size() != 0 && operands.size() <=2 && std::all_of(operands.begin(), operands.end(), 
+		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Hyperlink ) && operands.size() != 0 && operands.size() <=2 && std::all_of(operands.begin(), operands.end(),
 					[](const ast::Node& node){
 						return node.is<ast::String>();
 					}))
@@ -136,13 +136,13 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			} else {
 				label = operands[0].get<ast::String>().getRawString();
 				uri = operands[1].get<ast::String>().getRawString();
-			} 
+			}
 			result += " \\href{" + uri + "}{" + label + "}";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Factorial) && operands.size() == 1){
 			result += NodeToTeXFormRecursive(operands[0], -1) + "! ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Factorial2) && operands.size() == 1){
 			result += NodeToTeXFormRecursive(operands[0], -1) + "!! ";
-		} 
+		}
 		// i dont know.
 		else if (function == ast::Node::make<ast::Identifier>( eval::ids::SetDelayed) && operands.size() == 2){
 			result += NodeToTeXFormRecursive(operands[0], -1) + " := " + NodeToTeXFormRecursive(operands[1], -1);
@@ -160,13 +160,13 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 				const auto assignmentNode = ast::Node::make<ast::FunctionCall>(eval::ids::Set, {
 						operands[1].get<ast::FunctionCall>().getOperands()[0], operands[1].get<ast::FunctionCall>().getOperands()[1]
 						});
-				result+="\\sum_{" + NodeToTeXFormRecursive(assignmentNode, -1) 
+				result+="\\sum_{" + NodeToTeXFormRecursive(assignmentNode, -1)
 								  +	"}^{" +
 								  NodeToTeXFormRecursive(operands[1].get<ast::FunctionCall>().getOperands()[2], -1)
 								  + "}{" +
 								  NodeToTeXFormRecursive(operands[0], 0)
 								  + '}';
-		
+
 		}
 		else {
 

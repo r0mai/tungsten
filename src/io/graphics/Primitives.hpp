@@ -48,15 +48,15 @@ public:
 	Circle() : GraphicsPrimitive() , _x(), _y(), _r(){
 		// set overriding formatting options here.
 		_format.fill.fill(false);
-		_format.stroke.fill(true);	
+		_format.stroke.fill(true);
 	}
-		
+
 	virtual std::string toSVGString() const override ;
-		
+
 	Circle& radius(const math::Real& arg);
-	
+
 	Circle& center(const math::Real& arg1, const math::Real& arg2);
-	
+
 	virtual Circle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 
 	virtual BoundingBox getBoundingBox() const override;
@@ -69,13 +69,13 @@ public:
 	Rectangle() : GraphicsPrimitive() , _topLeftX(), _topLeftY(), _bottomRightX(), _bottomRightY() {
 		_format.fill.fill(true);
 		_format.stroke.fill(false);
-	}	
+	}
 	virtual std::string toSVGString() const override ;
-	
+
 	Rectangle& topLeft(const math::Real& arg1, const math::Real& arg2);
-	
+
 	Rectangle& bottomRight(const math::Real& arg1, const math::Real& arg2);
-	
+
 	virtual Rectangle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 	virtual BoundingBox getBoundingBox() const override;
 };
@@ -85,11 +85,11 @@ class Ellipse : public GraphicsPrimitive {
 public:
 
 	virtual std::string toSVGString() const override;
-	
+
 	Ellipse& center(const math::Real& x, const math::Real& y);
-	
+
 	Ellipse& radius(const math::Real& x, const math::Real& y);
-	
+
 	virtual Ellipse& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 	virtual BoundingBox getBoundingBox() const override;
 
@@ -159,7 +159,7 @@ public:
 	virtual std::string toSVGString() const override { return this->toBoundedSVGString(this->getBoundingBox()); }
 	virtual Text& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 	virtual BoundingBox getBoundingBox() const override;
-	
+
 };
 
 }}} // tungsten::io::graphics

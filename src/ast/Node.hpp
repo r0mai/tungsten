@@ -107,7 +107,7 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 //Template implementation:
 template<class T, class... Args>
 Node Node::make(const Args&... args) {
-    static_assert( 
+    static_assert(
         std::is_same<T, math::Real>::value ||
         std::is_same<T, math::Rational>::value ||
         std::is_same<T, ast::FunctionCall>::value ||
@@ -118,14 +118,14 @@ Node Node::make(const Args&... args) {
 
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
-    static_assert( 
+    static_assert(
         std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
 	return Node{StoragePtr{new Storage(T(arg, initializerList))}};
 }
 
 template<class T>
 bool Node::is() const {
-    static_assert( 
+    static_assert(
         std::is_same<T, math::Real>::value ||
         std::is_same<T, math::Rational>::value ||
         std::is_same<T, ast::FunctionCall>::value ||
@@ -136,7 +136,7 @@ bool Node::is() const {
 
 template<class T>
 bool Node::is(const T& test) const {
-    static_assert( 
+    static_assert(
         std::is_same<T, math::Real>::value ||
         std::is_same<T, math::Rational>::value ||
         std::is_same<T, ast::FunctionCall>::value ||
@@ -147,7 +147,7 @@ bool Node::is(const T& test) const {
 
 template<class T>
 T& Node::getM() {
-    static_assert( 
+    static_assert(
         std::is_same<T, math::Real>::value ||
         std::is_same<T, math::Rational>::value ||
         std::is_same<T, ast::FunctionCall>::value ||
@@ -160,7 +160,7 @@ T& Node::getM() {
 
 template<class T>
 const T& Node::get() const {
-    static_assert( 
+    static_assert(
         std::is_same<T, math::Real>::value ||
         std::is_same<T, math::Rational>::value ||
         std::is_same<T, ast::FunctionCall>::value ||

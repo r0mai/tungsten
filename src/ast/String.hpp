@@ -14,7 +14,7 @@ struct String : std::string {
 	//No constructor inheritance support
 	template<class... Ts>
 	String(Ts&&... args) : std::string(std::forward<Ts>(args)...) {}
-	
+
 	//This returns the string without the " marks
 	const std::string& getRawString() const;
 	std::string& getRawString();

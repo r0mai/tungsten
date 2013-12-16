@@ -37,7 +37,7 @@ void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 	}
 	if(styleDirective) {
 		FormatSpecifier d;
-		// only overwrite parameters actually set by styleDirective. 
+		// only overwrite parameters actually set by styleDirective.
 		// Padding with bools or something like that could be better.
 		this->_format.stroke_width=
 			(styleDirective->stroke_width==d.stroke_width)?
@@ -95,7 +95,7 @@ void GraphicsObject::exportToSVG(const std::string& filename) const {
 
 BoundingBox GraphicsObject::getBoundingBox() const {
 	if(!shapes.empty()){
-		return std::accumulate(shapes.begin(), shapes.end(), shapes.front()->getBoundingBox(), 
+		return std::accumulate(shapes.begin(), shapes.end(), shapes.front()->getBoundingBox(),
 		[](BoundingBox& out, const std::unique_ptr<GraphicsPrimitive>& ptr) {
 			BoundingBox box = ptr->getBoundingBox();
 			out.minX = std::min(out.minX, box.minX);
@@ -133,7 +133,7 @@ void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsOb
 
 			} // end for loop
 		}
-	}	
+	}
 }
 
 void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, GraphicsObject& graphics) {
@@ -225,11 +225,11 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 			if(ops[0].isNumeric() && ops[1].isNumeric() && ops[2].isNumeric())
 				graphics.addModifier(ColorDirective(math::Real(ops[0].getNumeric()*256).convert_to<PT>(), math::Real(ops[1].getNumeric()*256).convert_to<PT>(), math::Real(ops[2].getNumeric()*256).convert_to<PT>()));
 		}
-		
+
 	}
 
 	// Rules here.
-	else if (primitive.isFunctionCall(eval::ids::Rule)) { 
+	else if (primitive.isFunctionCall(eval::ids::Rule)) {
 		// TODO: Also handle more exotic rule types.
 		const auto& ops = primitive.get<ast::FunctionCall>().getOperands();
 		if(ops.size()==2){ // Rules should be of form attribute->value; non binary forms seem weird.
@@ -237,14 +237,14 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		//	const auto& value = ops[1];
 			if(attribute == ast::Node::make<ast::Identifier>(eval::ids::Thickness)) {
 				// push modifier with stroke-width = value;
-				
+
 			} else {
 				e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
 			}
 		} else {
 			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
 		}
-		
+
 	}
 	else {
 		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));

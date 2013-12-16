@@ -32,9 +32,9 @@ void catcher(int param){
 	std::ofstream out("log.txt");
 	std::for_each(logPtr->begin(), logPtr->end(), [&out](const std::string& s){
 				out<<s<<std::endl;
-			});	
+			});
 	out.close();
-	std::exit(param);          
+	std::exit(param);
 
 }
 
@@ -59,7 +59,7 @@ class WebOutput{
 	}
 	std::string getTeXInputString() const {
 		return TeXInput;
-	}	
+	}
 	std::string getSVG() const {
 		return svg;
 	}
@@ -103,7 +103,7 @@ public:
 		std::string output;
 		if(expression){
 			auto evaluated = tungsten::eval::SessionEnvironment::evaluate(input);
-			if(evaluated.is<tungsten::ast::FunctionCall>() && 
+			if(evaluated.is<tungsten::ast::FunctionCall>() &&
 			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
 				// dealing with graphics
 				tungsten::io::graphics::GraphicsObject graphics;
@@ -129,13 +129,13 @@ class WebClassMonolith{
 private:
 	typedef std::string HashType;
 	std::map<HashType, std::shared_ptr<WebSessionEnvironment> > storage;
-	std::vector<std::string> log;	
+	std::vector<std::string> log;
 	boost::upgrade_mutex access;
 	WebClassMonolith(const WebClassMonolith&) = delete;
 	void operator=(const WebClassMonolith&) = delete;
 public:
-	WebClassMonolith() : storage(), access() { 
-		signal(SIGINT, catcher); 
+	WebClassMonolith() : storage(), access() {
+		signal(SIGINT, catcher);
 		// read into log from file.
 		logPtr = &log;
 		std::ifstream file("log.txt");
@@ -144,7 +144,7 @@ public:
 			log.push_back(tmp);
 		}
 	};
-	
+
 	WebOutput evaluate(HashType id, const std::string& input){
 		access.lock_shared(); // get read access.
 		auto it = storage.find(id);
@@ -174,7 +174,7 @@ public:
 		access.unlock_shared(); // release read access.
 		return tmp;
 	}
-	
+
 	void deleteEnvironment(HashType id){
 		access.lock();
 		storage.erase(id);
@@ -185,7 +185,7 @@ public:
 		std::for_each(log.begin(), log.end(), [&str](const std::string& input){
 					str.append(input+"\n");
 				});
-		return str;	
+		return str;
 	}
 };
 

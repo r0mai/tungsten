@@ -17,15 +17,15 @@ struct AbsVisitor : boost::static_visitor<ast::Node> {
 			ast::Node::make<T>(parameter)}
 		);
 	}
-	
+
 	ast::Node operator()(const math::Real& r) {
 		return ast::Node::make<math::Real>( abs(r) );
 	}
-	
+
 	ast::Node operator()(const math::Rational& r) {
 		return ast::Node::make<math::Rational>( abs(r) );
 	}
-	
+
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
 		if ( functionCall.getFunction().is<ast::Identifier>( ids::Abs ) ) {
 			return ast::Node::make<ast::FunctionCall>( ids::Abs, functionCall.getOperands() );
@@ -36,7 +36,7 @@ struct AbsVisitor : boost::static_visitor<ast::Node> {
 		}
 		return operator()<>(functionCall);
 	}
-	
+
 	SessionEnvironment& sessionEnvironment;
 };
 
@@ -53,7 +53,7 @@ OptionalNode Abs(const ast::Operands& operands, eval::SessionEnvironment& sessio
 
 		return EvaluationFailure();
 	}
-	
+
 
 
 }

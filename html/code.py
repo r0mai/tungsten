@@ -35,8 +35,8 @@ def myform(val):
 	return  form.Form( form.Textarea("input", rows="5", cols="40", placeholder="Input here", value=val) )
 
 
-class index: 
-	def getLog(self): 
+class index:
+	def getLog(self):
 		largeString = ""
 		logStringList = (t.getLog().split('\n')[-11:])
 		logStringList.reverse()
@@ -50,8 +50,8 @@ class index:
 
 		return largeString
 
-	
-	def GET(self,name): 
+
+	def GET(self,name):
 		form = myform(name)
 		if name:
 			uid = session.session_id
@@ -75,9 +75,9 @@ class index:
 		return render.formtest(form, input, output, svg, errors.replace('\n', r'<br>'), self.getLog())
 
 
-	def POST(self, name): 
-		form = myform("") 
-		if not form.validates() and not name: 
+	def POST(self, name):
+		form = myform("")
+		if not form.validates() and not name:
 			return render.formtest(form, name,'Invalid input', self.getLog())
 		else:
 			return render.redir(form.d.input)

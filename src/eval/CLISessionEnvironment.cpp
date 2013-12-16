@@ -43,7 +43,7 @@ void CLISessionEnvironment::run() {
 		addToReadlineHistory(input);
 
 		ast::Node result = evaluate(std::string(input));
-		
+
 		if ( !result.is<ast::Identifier>(ids::Null) ) {
 			std::cout << "Out[" << i << "] =   " << result << std::endl;
 		}
@@ -63,8 +63,8 @@ void CLISessionEnvironment::readHistoryFromFile(const std::string& fileName) {
 	if ( historyFile.is_open() ) {
 		std::string line;
 		while ( std::getline(historyFile, line) ) {
-			addToReadlineHistory(line.c_str());	
-		}			
+			addToReadlineHistory(line.c_str());
+		}
 	}
 }
 

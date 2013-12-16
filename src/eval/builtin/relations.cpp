@@ -53,7 +53,7 @@ OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sess
 	} else {
 		return EvaluationFailure();
 	}
-		
+
 }
 
 OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {

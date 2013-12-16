@@ -26,13 +26,13 @@ public:
 	std::string toSVGString() const { return _translation+"\""; }
 
 	Translation& translate(double x, double y=0.0) {
-		_translation += 
+		_translation +=
 		(boost::format("translate(%1%, %2%)")  %x %y).str();
 		return *this;
 	}
 
-	Translation& scale(double sx) { 
-		_translation += 
+	Translation& scale(double sx) {
+		_translation +=
 		(boost::format("scale(%1%)")%sx).str();
 		return *this;
 	}
@@ -44,7 +44,7 @@ public:
 	}
 
 	Translation& rotate(double angle, double cx=0.0, double cy=0.0 ) {
-		_translation += 
+		_translation +=
 		(boost::format("rotate(%1%, %2%, %3%)") %angle %cx % cy).str();
 		return *this;
 	}
@@ -59,7 +59,7 @@ public:
 		_translation +=
 		(boost::format("skewY(%1%) ")%angle).str();
 		return *this;
-	}	
+	}
 };
 
 
@@ -68,7 +68,7 @@ class GraphicsObject {
 	std::vector<std::vector<std::unique_ptr<GraphicsDirective> > > modifiers;
 public:
 	std::string toSVGString() const;
-	void exportToSVG(const std::string& filename) const;	
+	void exportToSVG(const std::string& filename) const;
 	GraphicsObject(const GraphicsObject& g) = delete;
 	GraphicsObject(GraphicsObject&& g) : shapes(std::move(g.shapes)), modifiers(std::move(g.modifiers)) { }
 	GraphicsObject() = default;
@@ -78,13 +78,13 @@ public:
 			modifiers = std::move(g.modifiers);
 		return *this;
 	}
-	
+
 	template<class T, class... Ts>
 	void addShape(const T& shape, const Ts& ...shapes){
 		addShape(shape);
 		addShape(shapes...);
 	}
-	
+
 	template <class T>
 	void addShape(T shape) {
 		static_assert(std::is_base_of<GraphicsPrimitive, T>::value, "You can only add a GraphicsPrimitive");
@@ -101,7 +101,7 @@ public:
 		addModifier(modifier);
 		addModifier(modifiers...);
 	}
-	
+
 	template<class T>
 	void addModifier(const T& modifier) {
 		static_assert(std::is_base_of<GraphicsDirective, T>::value, "You can only add a GraphicsDirective");
@@ -114,10 +114,10 @@ public:
 	void pushModifierVector() {
 		modifiers.emplace_back(std::vector<std::unique_ptr<GraphicsDirective> >());
 	}
-	
+
 	void popModifierVector() {
 		assert(!modifiers.empty()); // can only pop from a vector with elements.
-		modifiers.pop_back();		
+		modifiers.pop_back();
 	}
 
 	BoundingBox getBoundingBox() const;
