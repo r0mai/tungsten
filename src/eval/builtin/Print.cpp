@@ -5,7 +5,7 @@
 namespace tungsten { namespace eval { namespace builtin {
 
 OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
-    sessionEnvironment.printToStdout( operands );
+	sessionEnvironment.printToStdout( operands );
 	return ast::Node::make<ast::Identifier>( ids::Null );
 }
 

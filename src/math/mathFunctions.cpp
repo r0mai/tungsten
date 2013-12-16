@@ -22,30 +22,30 @@ Real gamma(const Real& arg) {
 }
 
 Integer floor(const Real& arg) {
-    Real resultReal;
-    Integer resultInteger;
-    mpfr_floor( resultReal.backend().data(), arg.backend().data() );
-    assert( isInteger( resultReal ) );
-    mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
-    return resultInteger;
+	Real resultReal;
+	Integer resultInteger;
+	mpfr_floor( resultReal.backend().data(), arg.backend().data() );
+	assert( isInteger( resultReal ) );
+	mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
+	return resultInteger;
 }
 
 Integer ceiling(const Real& arg) {
-    Real resultReal;
-    Integer resultInteger;
-    mpfr_ceil( resultReal.backend().data(), arg.backend().data() );
-    assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
-    mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
-    return resultInteger;
+	Real resultReal;
+	Integer resultInteger;
+	mpfr_ceil( resultReal.backend().data(), arg.backend().data() );
+	assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
+	mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
+	return resultInteger;
 }
 
 Integer round(const Real& arg) {
-    Real resultReal;
-    Integer resultInteger;
-    mpfr_rint( resultReal.backend().data(), arg.backend().data(), MPFR_RNDN );
-    assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
-    mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
-    return resultInteger;
+	Real resultReal;
+	Integer resultInteger;
+	mpfr_rint( resultReal.backend().data(), arg.backend().data(), MPFR_RNDN );
+	assert( mpfr_integer_p( resultReal.backend().data() ) != 0 );
+	mpfr_get_z( resultInteger.backend().data(), resultReal.backend().data(), MPFR_RNDN );
+	return resultInteger;
 }
 
 boost::optional<Integer> tryNthRoot(const Integer& base, unsigned long n) {

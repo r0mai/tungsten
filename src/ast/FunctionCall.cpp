@@ -91,7 +91,7 @@ void swap(FunctionCall& fc1, FunctionCall& fc2) {
 std::string FunctionCall::toString() const {
 	assert( function );
 
-    std::stringstream ss;
+	std::stringstream ss;
 	ss << function->toString() << '[';
 	ss << boost::join( operands | boost::adaptors::transformed( boost::mem_fn(&Node::toString) ), ", " );
 	ss << ']';

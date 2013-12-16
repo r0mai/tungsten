@@ -13,21 +13,21 @@ public:
 
 class ColorDirective : public GraphicsDirective {
 public:
-    typedef unsigned short PixelType;
+	typedef unsigned short PixelType;
 private:
-    PixelType _r, _g, _b;
-    bool _fill;
+	PixelType _r, _g, _b;
+	bool _fill;
 public:
-    ColorDirective() = default;
-    ColorDirective(const ColorDirective& ) = default;
-    ColorDirective& operator=(const ColorDirective& ) = default;
-    ColorDirective(const PixelType& r, const PixelType& g, const PixelType& b) : _r(r), _g(g), _b(b) { }
-    PixelType r() const;
-    PixelType g() const;
-    PixelType b() const;
-    ColorDirective& fill(const bool b);
-    bool isFill() const;
-    std::string toSVGString() const ;
+	ColorDirective() = default;
+	ColorDirective(const ColorDirective& ) = default;
+	ColorDirective& operator=(const ColorDirective& ) = default;
+	ColorDirective(const PixelType& r, const PixelType& g, const PixelType& b) : _r(r), _g(g), _b(b) { }
+	PixelType r() const;
+	PixelType g() const;
+	PixelType b() const;
+	ColorDirective& fill(const bool b);
+	bool isFill() const;
+	std::string toSVGString() const ;
 	ColorDirective& setRGB(const PixelType& r, const PixelType& g, const PixelType& b){ _r = r; _g = g; _b = b; return *this; }
 }; // end GraphicsDirective
 

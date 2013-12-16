@@ -54,14 +54,14 @@ IterationSpecifier::IterationSpecifier() {}
 
 ast::Node tryConvertToNumeric(ast::Node node, SessionEnvironment& sessionEnvironment) {
 	node = sessionEnvironment.recursiveEvaluate(node);
-    if ( node.isNumeric() ) {
-        return node;
-    }
-    ast::Node numericNode = numericNodeEvaluation(node, sessionEnvironment);
-    if ( numericNode.isNumeric() ) {
-        return numericNode;
-    }
-    return node;
+	if ( node.isNumeric() ) {
+	    return node;
+	}
+	ast::Node numericNode = numericNodeEvaluation(node, sessionEnvironment);
+	if ( numericNode.isNumeric() ) {
+	    return numericNode;
+	}
+	return node;
 }
 
 boost::optional<IterationSpecifier> IterationSpecifier::fromNode(const ast::Node& node, SessionEnvironment& sessionEnvironment) {

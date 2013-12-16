@@ -333,8 +333,8 @@ void fillFunctionCall(ast::Node& result, const ast::Operands& operands) {
 }
 
 void createPartExpression(ast::Node& indexable, ast::Operands index) {
-    index.insert( index.begin(), indexable );
-    indexable = ast::Node::make<ast::FunctionCall>( ids::Part, index );
+	index.insert( index.begin(), indexable );
+	indexable = ast::Node::make<ast::FunctionCall>( ids::Part, index );
 }
 
 void finishingTouches(ast::Node& result, const ast::Node& wholeExpression) {
@@ -345,25 +345,25 @@ void finishingTouches(ast::Node& result, const ast::Node& wholeExpression) {
 template<class T>
 struct OnlyNumericRealPolicies : qi::strict_real_policies<T> {
 
-    template<class Iterator>
-    static bool parse_exp(Iterator& /*first*/, const Iterator& /*last*/) {
-        return false;
-    }
+	template<class Iterator>
+	static bool parse_exp(Iterator& /*first*/, const Iterator& /*last*/) {
+	    return false;
+	}
 
-    template<class Iterator, class Attribute>
-    static bool parse_exp_n(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
-        return false;
-    }
+	template<class Iterator, class Attribute>
+	static bool parse_exp_n(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
+	    return false;
+	}
 
-    template<class Iterator, class Attribute>
-    static bool parse_inf(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
-        return false;
-    }
+	template<class Iterator, class Attribute>
+	static bool parse_inf(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
+	    return false;
+	}
 
-    template<class Iterator, class Attribute>
-    static bool parse_nan(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
-        return false;
-    }
+	template<class Iterator, class Attribute>
+	static bool parse_nan(Iterator& /*first*/, const Iterator& /*last*/, const Attribute& /*attribute*/) {
+	    return false;
+	}
 
 };
 
@@ -505,7 +505,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 
 		functionCallAndPartExpression =
 				patternTestExpression[_val = _1] >> (
-                    *(("[[" >> argumentList >> "]]")[phx::bind(&createPartExpression, _val, _1)] |
+	                *(("[[" >> argumentList >> "]]")[phx::bind(&createPartExpression, _val, _1)] |
 					('[' >> argumentList >> ']')[phx::bind(&createFunctionCall, _val, _1)]  )
 				);
 
@@ -524,8 +524,8 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 		identifier = variable[phx::bind(&makeIdentifier, _val, _1)];
 
 		unescapedCharacters.add("\\a", '\a')("\\b", '\b')("\\f", '\f')("\\n", '\n')
-                              ("\\r", '\r')("\\t", '\t')("\\v", '\v')
-                              ("\\\\", '\\')/*("\\\'", '\'')*/("\\\"", '\"');
+	                          ("\\r", '\r')("\\t", '\t')("\\v", '\v')
+	                          ("\\\\", '\\')/*("\\\'", '\'')*/("\\\"", '\"');
 
 		unescapedString %=
 				lit('"') >>

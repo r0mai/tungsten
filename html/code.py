@@ -83,4 +83,4 @@ class index:
 			return render.redir(form.d.input)
 
 if __name__=="__main__":
-    app.run()
+	app.run()
