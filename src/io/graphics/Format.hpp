@@ -1,5 +1,5 @@
 #ifndef IO_GRAPHICS_FORMAT_HPP_
-#define IO_FORMAT_HPP_
+#define IO_GRAPHICS_FORMAT_HPP_
 
 #include <string>
 
