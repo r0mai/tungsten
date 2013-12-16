@@ -4,6 +4,7 @@ import os
 import sys
 
 sys.path.append( os.path.dirname(__file__)  )
+sys.path.append( '../build/html' )
 
 from subprocess import Popen, PIPE, STDOUT
 import web
