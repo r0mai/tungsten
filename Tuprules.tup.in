@@ -2,10 +2,7 @@
 
 #toolchain stuff
 
-CXX = clang++
-CXX = g++
-#CXX = g++-4.7
-#CXX = g++-4.6
+CXX = @CXX@
 LD = $(CXX)
 
 #DEGUD CPPFLAGS

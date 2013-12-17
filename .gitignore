@@ -1,5 +1,10 @@
 .tup
 .tungsten
+/Tuprules.tup
+/configure
+/config.status
+/autom4te.cache/
+/config.log
 doc
 private
 html/sessions
