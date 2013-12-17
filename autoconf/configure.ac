@@ -19,7 +19,8 @@ if test "$CXX" = "g++"; then
 		test "$GCC_VERSION_PATCH" != "2"
 	then
 		echo "not good enough, trying clang++"
-		AC_PROG_CXX([clang++])
+		dnl FIXME AC_PROG_CC caches results, can't use it here
+		CXX="clang++"
 	else
 		echo "good"
 	fi
