@@ -46,7 +46,10 @@ def terminal():
 			if s == "shutdown\n":
 				areWeUnderExit = True
 
-			sys.stdout.write(s)
+			#sys.stdout.write(s)
+
+			if s == "users\n":
+				t.getUsers()
 
 
 		if areWeUnderExit:

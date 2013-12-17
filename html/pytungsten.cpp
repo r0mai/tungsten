@@ -1,5 +1,6 @@
 #include <Python.h>
 #include <boost/python.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <string>
 #include <signal.h>
 #include <vector>
@@ -26,7 +27,6 @@ void catcher(int param){
 
 	//  std::exit(param);
 	signal(param, SIG_IGN);
-	signal(SIGINT, catcher);
 	std::cout<<"killed "<<param<<std::endl;
 	//write to file from logPTR.
 	std::ofstream out("log.txt");
@@ -74,6 +74,7 @@ class WebSessionEnvironment : public tungsten::eval::SessionEnvironment {
 private:
 	std::time_t lastAccess;
 	std::vector<std::string> errors;
+	std::deque<std::pair<std::string, int>> runtimes;
 public:
 	WebSessionEnvironment() : lastAccess(std::time(nullptr)), errors() {
 	};
@@ -84,6 +85,10 @@ public:
 	virtual ~WebSessionEnvironment() noexcept override {
 	};
 
+	const std::time_t& getLastAccess() const {
+		return lastAccess;
+	}
+
 	virtual void handleMessageString(const tungsten::ast::String& messageString) override {
 		errors.push_back(messageString.toString());
 	}
@@ -93,9 +98,15 @@ public:
 		// true if over a day old.
 	};
 
+	const std::deque<std::pair<std::string, int>>& getRuntimes() const {
+		return runtimes;
+	}
+
 	WebOutput evaluate(const std::string& input) {
 		time(&lastAccess);
 		errors.clear();
+
+		auto startTime = boost::posix_time::microsec_clock::universal_time();
 
 		boost::optional<tungsten::ast::Node> expression = tungsten::io::parseInput(input);
 		std::string TeXInput;
@@ -119,6 +130,11 @@ public:
 		} else { // if input was bad.
 			TeXInput = "";
 		}
+
+		auto endTime = boost::posix_time::microsec_clock::universal_time();
+
+		auto runtime = (endTime - startTime).total_milliseconds();
+		runtimes.emplace_back(input, runtime);
 		return WebOutput(input, TeXInput, output, svg, errors);
 	};
 };
@@ -144,6 +160,22 @@ public:
 			log.push_back(tmp);
 		}
 	};
+
+	void getUsers() const {
+
+		std::cout<<storage.size()<<" Users in system: "<<std::endl;
+
+		for(const auto& userPair: storage) {
+			std::cout << "User information for hash-id: " << userPair.first << '\n';
+			const auto& runtimes = userPair.second->getRuntimes();
+			for(const auto& runtimePair: runtimes) {
+
+				std::cout << "\t" << runtimePair.first << "\n\t" <<
+					runtimePair.second << "ms\n";
+			}
+			std::cout << std::endl;
+		}
+	}
 
 	WebOutput evaluate(HashType id, const std::string& input){
 		access.lock_shared(); // get read access.
@@ -194,6 +226,7 @@ BOOST_PYTHON_MODULE(pytungsten){
 	using namespace boost::python;
 		class_<WebClassMonolith, boost::noncopyable>("tungsten")
 			.def("evaluate", &WebClassMonolith::evaluate)
+			.def("getUsers", &WebClassMonolith::getUsers)
 			.def("getLog", &WebClassMonolith::getLog)
 		;
 		class_<WebOutput>("WebOutput")
