@@ -4,12 +4,17 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-OptionalNode AbsoluteTime(const ast::Operands& operands, eval::SessionEnvironment& /*sessionEnvironment*/) {
+OptionalNode AbsoluteTime(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	using namespace boost::posix_time;
 	using namespace boost::gregorian;
 
-	if(!operands.empty())
+	if(!operands.empty()) {
+		sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argx, {
+				ast::Node::make<ast::Identifier>(ids::AbsoluteTime),
+				ast::Node::make<math::Rational>(operands.size())
+		} ));
 		return EvaluationFailure();
+	}
 
 	ptime epoch(date(1970, 1, 1));
 	ptime pt = second_clock::universal_time();
