@@ -2,6 +2,9 @@
 
 import os
 import sys
+import signal
+import threading
+import select
 
 sys.path.append( os.path.dirname(__file__)  )
 sys.path.append( '../build/html' )
@@ -28,6 +31,28 @@ curdir = os.path.dirname(__file__)
 session = web.session.Session(app, web.session.DiskStore(os.path.join(curdir,'sessions')),)
 
 application = app.wsgifunc()
+
+
+def terminal():
+	areWeUnderExit = False
+	while True:
+		s = ""
+		timeout = 1
+		rlist, _, _ = select.select([sys.stdin], [], [], timeout)
+
+		if rlist:
+			s = sys.stdin.readline()
+
+			if s == "shutdown\n":
+				areWeUnderExit = True
+
+			sys.stdout.write(s)
+
+
+		if areWeUnderExit:
+			print "Exiting"
+			os.kill(os.getpid(), signal.SIGINT)
+			break
 
 
 
@@ -83,4 +108,6 @@ class index:
 			return render.redir(form.d.input)
 
 if __name__=="__main__":
+	terminalThread = threading.Thread(None, terminal)
+	terminalThread.start()
 	app.run()
