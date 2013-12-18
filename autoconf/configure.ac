@@ -2,6 +2,8 @@ AC_INIT([tungsten],[version-0.1],[https://github.com/r0mai/tungsten])
 
 AC_LANG(C++)
 
+m4_include([autoconf/m4/boost.m4])
+
 AC_PROG_CXX([g++ clang++])
 AC_PROG_CC([gcc clang])
 if test "$CXX" = "g++"; then
@@ -41,5 +43,7 @@ else
 	AC_SUBST(OPTIMIZATION_FLAG, [-O0])
 fi
 
-AC_OUTPUT(Tuprules.tup)
+BOOST_REQUIRE([1.54.0])
+
+AC_OUTPUT([Tuprules.tup])
 
