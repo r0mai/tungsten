@@ -6,10 +6,8 @@ CXX = @CXX@
 LD = $(CXX)
 
 #DEGUD CPPFLAGS
-CPPFLAGS = -std=c++0x -Wall -Wextra -O0 -g -fPIC
-
-#RELEASE CPPFLAGS
-#CPPFLAGS = -std=c++0x -Wall -Wextra -O2 -g -fPIC
+OPTIMIZATION_FLAG = @OPTIMIZATION_FLAG@
+CPPFLAGS = -std=c++0x -Wall -Wextra $(OPTIMIZATION_FLAG) -g -fPIC
 
 LDFLAGS =
 

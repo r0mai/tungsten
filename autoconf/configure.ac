@@ -33,5 +33,13 @@ dnl Check for MPFR
 AC_CHECK_HEADERS([mpfr.h], , [AC_MSG_ERROR([mpfr.h not found, see http://mpfr.org/])])
 AC_CHECK_LIB(mpfr, mpfr_add, ,[AC_MSG_ERROR([MPFR not found, see http://mpfr.org/])])
 
+dnl Optional optimization
+AC_ARG_ENABLE(optimized, AS_HELP_STRING(--enable-optimized, [Compile with optimizations enabled (default is NO)]),,enableval="no")
+if test ${enableval} == "yes"; then
+	AC_SUBST(OPTIMIZATION_FLAG, [-O2])
+else
+	AC_SUBST(OPTIMIZATION_FLAG, [-O0])
+fi
+
 AC_OUTPUT(Tuprules.tup)
 
