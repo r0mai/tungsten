@@ -51,6 +51,9 @@ else
 fi
 
 BOOST_REQUIRE([1.54.0])
+BOOST_FORMAT
+BOOST_VARIANT
+BOOST_BIND
 
 AC_OUTPUT([Tuprules.tup])
 
