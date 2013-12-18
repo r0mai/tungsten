@@ -29,5 +29,9 @@ AC_CHECK_HEADERS([gmp.h], , [AC_MSG_ERROR([gmp.h not found, see http://gmplib.or
 AC_CHECK_LIB(gmp, __gmpz_init, , [AC_MSG_ERROR([GNU MP not found, see http://gmplib.org/])])
 AC_CHECK_LIB(gmp, __gmpz_2fac_ui, ,	[AC_MSG_ERROR([GNU MP not found, or not 5.1.0 or up, see http://gmplib.org/])])
 
+dnl Check for MPFR
+AC_CHECK_HEADERS([mpfr.h], , [AC_MSG_ERROR([mpfr.h not found, see http://mpfr.org/])])
+AC_CHECK_LIB(mpfr, mpfr_add, ,[AC_MSG_ERROR([MPFR not found, see http://mpfr.org/])])
+
 AC_OUTPUT(Tuprules.tup)
 
