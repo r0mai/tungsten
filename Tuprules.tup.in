@@ -1,11 +1,9 @@
-.gitignore
 
-#toolchain stuff
+.gitignore
 
 CXX = @CXX@
 LD = $(CXX)
 
-#DEGUD CPPFLAGS
 OPTIMIZATION_FLAG = @OPTIMIZATION_FLAG@
 ASSERTIONS_FLAG = @ASSERTIONS_FLAG@
 CPPFLAGS = -std=c++0x -Wall -Wextra $(OPTIMIZATION_FLAG) $(ASSERTIONS_FLAG) -g -fPIC
@@ -33,35 +31,33 @@ source_dir = $(TUP_CWD)/src
 
 INCLUDE_DIRS += $(source_dir)
 
-BOOST_LIBS = $(boost_lib_dir)/libboost_thread.a \
-	$(boost_lib_dir)/libboost_system.a \
-	$(boost_lib_dir)/libboost_filesystem.a \
-	$(boost_lib_dir)/libboost_regex.a \
-	$(boost_lib_dir)/libboost_program_options.a
+BOOST_LIBS += -lboost_thread
+BOOST_LIBS += -lboost_system
+BOOST_LIBS += -lboost_filesystem
+BOOST_LIBS += -lboost_regex
+BOOST_LIBS += -lboost_program_options
+
 BOOST_SHARED_LIBS = $(boost_lib_dir)/libboost_thread.so \
 	$(boost_lib_dir)/libboost_system.so \
 	$(boost_lib_dir)/libboost_filesystem.so \
 	$(boost_lib_dir)/libboost_regex.so \
 	$(boost_lib_dir)/libboost_program_options.so
 
-PNG_LIBS = $(png_lib_dir)/libpng.a
+PNG_LIBS = -lpng
 PNG_SHARED_LIBS = $(png_lib_dir)/libpng.so
 
-GMP_LIBS = $(gmp_lib_dir)/libgmp.a
+GMP_LIBS = -lgmp
 GMP_SHARED_LIBS = $(gmp_lib_dir)/libgmp.so
 
-MPFR_LIBS = $(mpfr_lib_dir)/libmpfr.a
+MPFR_LIBS = -lmpfr
 MPFR_SHARED_LIBS = $(mpfr_lib_dir)/libmpfr.so
 
-READLINE_LIBS = $(readline_lib_dir)/libreadline.a
+READLINE_LIBS = -lreadline
 READLINE_SHARED_LIBS = $(readline_lib_dir)/libreadline.so
 
-#LIBS = $(BOOST_LIBS) $(PNG_LIBS) $(MPFR_LIBS) $(GMP_LIBS)
 LIBS = $(BOOST_LIBS) $(MPFR_LIBS) $(GMP_LIBS) $(READLINE_LIBS) -ltermcap
 
-#SHARED_LIBS = $(BOOST_SHARED_LIBS) $(PNG_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS)
 SHARED_LIBS = $(BOOST_SHARED_LIBS) $(MPFR_SHARED_LIBS) $(GMP_SHARED_LIBS) $(READLINE_SHARED_LIBS)
-
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPPFLAGS) -I $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LDFLAGS) %f $(LIBS) -o %o |>
