@@ -75,6 +75,7 @@ private:
 	std::time_t lastAccess;
 	std::vector<std::string> errors;
 	std::deque<std::pair<std::string, int>> runtimes;
+	std::string ip = "";
 public:
 	WebSessionEnvironment() : lastAccess(std::time(nullptr)), errors() {
 	};
@@ -87,6 +88,14 @@ public:
 
 	const std::time_t& getLastAccess() const {
 		return lastAccess;
+	}
+
+	const std::string& getIp() const {
+		return ip;
+	}
+
+	void setIp(std::string ip_) {
+		ip = std::move(ip_);
 	}
 
 	virtual void handleMessageString(const tungsten::ast::String& messageString) override {
@@ -168,6 +177,7 @@ public:
 		for(const auto& userPair: storage) {
 
 			std::cout << "User information for hash-id: " << userPair.first << '\n';
+			std::cout << "Ip: " << userPair.second->getIp() << std::endl;
 			const auto& runtimes = userPair.second->getRuntimes();
 
 			std::uintmax_t totalRuntime = 0;
@@ -183,6 +193,15 @@ public:
 				std::cout << "\tTotal: " << totalRuntime << "ms\n";
 			}
 			std::cout << std::endl;
+		}
+	}
+
+	void setIp(HashType id, std::string ip) {
+		access.lock();
+
+		if(storage.find(id) != storage.end()) {
+			// id is already present in storage, it may not be in some cases.
+			storage[id]->setIp(std::move(ip));
 		}
 	}
 
@@ -237,6 +256,7 @@ BOOST_PYTHON_MODULE(pytungsten){
 			.def("evaluate", &WebClassMonolith::evaluate)
 			.def("getUsers", &WebClassMonolith::getUsers)
 			.def("getLog", &WebClassMonolith::getLog)
+			.def("setIp", &WebClassMonolith::setIp);
 		;
 		class_<WebOutput>("WebOutput")
 			.def("getOutputString", &WebOutput::getOutputString)
