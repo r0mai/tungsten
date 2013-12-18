@@ -45,7 +45,7 @@ fi
 
 AC_ARG_ENABLE(assertions, AS_HELP_STRING(--enable-assertions, [Compile with runtime assertions enabled (default is YES)]),,enableval="yes")
 if test ${enableval} == "yes"; then
-	AC_SUBST(ASSERTIONS_FLAG, [])
+	AC_SUBST(ASSERTIONS_FLAG, [ ])
 else
 	AC_SUBST(ASSERTIONS_FLAG, [-DNDEBUG])
 fi
