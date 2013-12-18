@@ -2,8 +2,6 @@ AC_INIT([tungsten],[version-0.1],[https://github.com/r0mai/tungsten])
 
 AC_LANG(C++)
 
-m4_include([autoconf/m4/ax_gcc_version.m4])
-
 AC_PROG_CXX([g++ clang++])
 AC_PROG_CC([gcc clang])
 if test "$CXX" = "g++"; then
