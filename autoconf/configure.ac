@@ -33,7 +33,7 @@ AC_CHECK_LIB(gmp, __gmpz_2fac_ui, ,	[AC_MSG_ERROR([GNU MP not found, or not 5.1.
 
 dnl Check for MPFR
 AC_CHECK_HEADERS([mpfr.h], , [AC_MSG_ERROR([mpfr.h not found, see http://mpfr.org/])])
-AC_CHECK_LIB(mpfr, mpfr_add, ,[AC_MSG_ERROR([MPFR not found, see http://mpfr.org/])])
+AC_CHECK_LIB(mpfr, mpfr_add, , [AC_MSG_ERROR([MPFR not found, see http://mpfr.org/])])
 
 dnl Optional optimization
 AC_ARG_ENABLE(optimized, AS_HELP_STRING(--enable-optimized, [Compile with optimizations enabled (default is NO)]),,enableval="no")
@@ -41,6 +41,13 @@ if test ${enableval} == "yes"; then
 	AC_SUBST(OPTIMIZATION_FLAG, [-O2])
 else
 	AC_SUBST(OPTIMIZATION_FLAG, [-O0])
+fi
+
+AC_ARG_ENABLE(assertions, AS_HELP_STRING(--enable-assertions, [Compile with runtime assertions enabled (default is YES)]),,enableval="yes")
+if test ${enableval} == "yes"; then
+	AC_SUBST(ASSERTIONS_FLAG, [])
+else
+	AC_SUBST(ASSERTIONS_FLAG, [-DNDEBUG])
 fi
 
 BOOST_REQUIRE([1.54.0])
