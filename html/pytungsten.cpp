@@ -166,12 +166,21 @@ public:
 		std::cout<<storage.size()<<" Users in system: "<<std::endl;
 
 		for(const auto& userPair: storage) {
+
 			std::cout << "User information for hash-id: " << userPair.first << '\n';
 			const auto& runtimes = userPair.second->getRuntimes();
+
+			std::uintmax_t totalRuntime = 0;
+
 			for(const auto& runtimePair: runtimes) {
 
 				std::cout << "\t" << runtimePair.first << "\n\t" <<
 					runtimePair.second << "ms\n";
+				totalRuntime += runtimePair.second;
+			}
+
+			if(!runtimes.empty()) {
+				std::cout << "\tTotal: " << totalRuntime << "ms\n";
 			}
 			std::cout << std::endl;
 		}
