@@ -24,14 +24,10 @@ if test "$CXX" = "g++"; then
 	fi
 fi
 
-
-
-AC_CHECK_LIB(gmp, __gmpz_init, ,
-	[AC_MSG_ERROR([GNU MP not found, see http://gmplib.org/])])
-
-AC_CHECK_LIB(gmp, __gmpz_2fac_ui, ,
-	[AC_MSG_ERROR(
-		[GNU MP not found, or not 5.1.0 or up, see http://gmplib.org/])])
+AC_CHECK_HEADERS([gmp.h], , [AC_MSG_ERROR([gmp.h not found, see http://gmplib.org/])])
+AC_CHECK_HEADERS([gmpxx.h], , [AC_MSG_ERROR([gmpxx.h not found, see http://gmplib.org/])])
+AC_CHECK_LIB(gmp, __gmpz_init, , [AC_MSG_ERROR([GNU MP not found, see http://gmplib.org/])])
+AC_CHECK_LIB(gmp, __gmpz_2fac_ui, ,	[AC_MSG_ERROR([GNU MP not found, or not 5.1.0 or up, see http://gmplib.org/])])
 
 AC_OUTPUT(Tuprules.tup)
 
