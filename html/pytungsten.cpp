@@ -9,6 +9,7 @@
 #include <fstream>
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
+#include <mutex>
 
 #include "io/Parser.hpp"
 #include "io/NodeToTeXForm.hpp"
@@ -76,6 +77,7 @@ private:
 	std::vector<std::string> errors;
 	std::deque<std::pair<std::string, int>> runtimes;
 	std::string ip = "";
+	std::mutex evalLock;
 public:
 	WebSessionEnvironment() : lastAccess(std::time(nullptr)), errors() {
 	};
@@ -122,20 +124,30 @@ public:
 		std::string svg;
 		std::string output;
 		if(expression){
-			auto evaluated = tungsten::eval::SessionEnvironment::evaluate(input);
+
+			tungsten::ast::Node evaluated;
+
+			{
+				std::lock_guard<std::mutex> lock(evalLock);
+				evaluated = tungsten::eval::SessionEnvironment::evaluate(*expression);
+			}
+
 			if(evaluated.is<tungsten::ast::FunctionCall>() &&
-			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics)) {
+			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Graphics))
+			{
 				// dealing with graphics
 				tungsten::io::graphics::GraphicsObject graphics;
 				makeGraphics(evaluated, *this, graphics);
 				svg = graphics.toSVGString();
 			} else if (evaluated.is<tungsten::ast::FunctionCall>() && false &&
-			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Table)) {
+			evaluated.get<tungsten::ast::FunctionCall>().getFunction().is<tungsten::ast::Identifier>(tungsten::eval::ids::Table))
+			{
 				// todo table here (also remove false)
 			} else { // no graphics or tables
 				output = tungsten::io::NodeToTeXForm(evaluated);
 			}
 			TeXInput = tungsten::io::NodeToTeXForm(*expression); // create TeX
+
 		} else { // if input was bad.
 			TeXInput = "";
 		}
@@ -203,6 +215,7 @@ public:
 			// id is already present in storage, it may not be in some cases.
 			storage[id]->setIp(std::move(ip));
 		}
+		access.unlock();
 	}
 
 	WebOutput evaluate(HashType id, const std::string& input){
