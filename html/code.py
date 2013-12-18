@@ -49,7 +49,11 @@ def terminal():
 			#sys.stdout.write(s)
 
 			if s == "users\n":
-				t.getUsers()
+			        t.getUsers()
+
+                        if s == "reload\n":
+                                thisFileName = __file__;
+                                os.execlp("python", "python", thisFileName, "8081")
 
 
 		if areWeUnderExit:

@@ -180,6 +180,7 @@ public:
 		while(std::getline(file, tmp)){
 			log.push_back(tmp);
 		}
+		std::cout<<"Tungsten imported, build time was: "<<__DATE__<<" "<<__TIME__<<std::endl;
 	};
 
 	void getUsers() const {
