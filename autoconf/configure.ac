@@ -3,10 +3,11 @@ AC_INIT([tungsten],[version-0.1],[https://github.com/r0mai/tungsten])
 AC_LANG(C++)
 
 m4_include([autoconf/m4/boost.m4])
+m4_include([autoconf/m4/ax_lib_readline.m4])
 
 AC_PROG_CXX([g++ clang++])
 AC_PROG_CC([gcc clang])
-if test "$CXX" = "g++"; then
+if test "$CXX" == "g++"; then
 
 	GCC_VERSION=`g++ -dumpversion`
 
@@ -25,6 +26,14 @@ if test "$CXX" = "g++"; then
 		echo "good"
 	fi
 fi
+
+dnl Check for readline
+AX_LIB_READLINE
+if test "$ax_cv_lib_readline" == "no"; then
+	AC_MSG_ERROR([readline not found])
+fi
+
+AC_SUBST(READLINE_LDFLAGS, [$ax_cv_lib_readline])
 
 dnl Check for GMP and GMPXX
 AC_CHECK_HEADERS([gmp.h], , [AC_MSG_ERROR([gmp.h not found, see http://gmplib.org/])])
