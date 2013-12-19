@@ -38,7 +38,7 @@ AC_SUBST(READLINE_LDFLAGS, [$ax_cv_lib_readline])
 dnl Check for GMP and GMPXX
 AC_CHECK_HEADERS([gmp.h], , [AC_MSG_ERROR([gmp.h not found, see http://gmplib.org/])])
 AC_CHECK_LIB(gmp, __gmpz_init, , [AC_MSG_ERROR([GNU MP not found, see http://gmplib.org/])], [-L/usr/local/lib/])
-AC_CHECK_LIB(gmp, __gmpz_2fac_ui, ,	[AC_MSG_ERROR([GNU MP not found, or not 5.1.0 or up, see http://gmplib.org/])], [-L/usr/local/lib/])
+AC_CHECK_LIB(gmp, __gmpz_2fac_ui, , [AC_MSG_ERROR([GNU MP not found, or not 5.1.0 or up, see http://gmplib.org/])], [-L/usr/local/lib/])
 
 dnl Check for MPFR
 AC_CHECK_HEADERS([mpfr.h], , [AC_MSG_ERROR([mpfr.h not found, see http://mpfr.org/])])
