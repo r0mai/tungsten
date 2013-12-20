@@ -4,6 +4,7 @@
 #define MATH_REAL_HPP_
 
 #include <boost/multiprecision/mpfr.hpp>
+#include <boost/type_traits/has_nothrow_copy.hpp>
 
 namespace tungsten { namespace math {
 
@@ -21,5 +22,11 @@ Real previousReal(Real real);
 
 }} //namespace tungsten::math
 
+namespace boost {
+
+template <>
+struct has_nothrow_copy<tungsten::math::Real> : mpl::true_ {};
+
+}
 
 #endif /* MATH_REAL_HPP_ */

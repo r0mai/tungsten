@@ -9,6 +9,7 @@
 #include <initializer_list>
 
 #include <boost/operators.hpp>
+#include <boost/type_traits/has_nothrow_copy.hpp>
 
 #include "NodeFwd.hpp"
 #include "Identifier.hpp"
@@ -55,5 +56,11 @@ std::ostream& operator<<(std::ostream& os, const FunctionCall& fc);
 
 }} //namespace tungsten::ast
 
+namespace boost {
+
+template <>
+struct has_nothrow_copy<tungsten::ast::FunctionCall> : mpl::true_ {};
+
+}
 
 #endif /* AST_FUNCTIONCALL_HPP_ */

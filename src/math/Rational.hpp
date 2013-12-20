@@ -8,6 +8,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/multiprecision/gmp.hpp>
+#include <boost/type_traits/has_nothrow_copy.hpp>
 
 #include "Integer.hpp"
 
@@ -36,5 +37,11 @@ boost::optional<T> rationalToBuiltinInteger(const Rational& rational) {
 
 }} //namespace tungsten::math
 
+namespace boost {
+
+template <>
+struct has_nothrow_copy<tungsten::math::Rational> : mpl::true_ {};
+
+}
 
 #endif /* MATH_RATIONAL_HPP_ */

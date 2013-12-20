@@ -6,6 +6,8 @@
 #include <utility>
 #include <ostream>
 
+#include <boost/type_traits/has_nothrow_copy.hpp>
+
 namespace tungsten { namespace ast {
 
 //String type //note: std::string should be used when strings outside an Ast needed
@@ -27,4 +29,12 @@ std::ostream& operator<<(std::ostream& os, const String& string);
 
 }} //namespace tungsten::ast
 
+namespace boost {
+
+template <>
+struct has_nothrow_copy<tungsten::ast::String> : mpl::true_ {};
+
+}
+
 #endif /* AST_STRING_HPP_ */
+

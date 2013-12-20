@@ -5,6 +5,8 @@
 #include <string>
 #include <utility>
 
+#include <boost/type_traits/has_nothrow_copy.hpp>
+
 namespace tungsten { namespace ast {
 
 struct Identifier : std::string {
@@ -18,5 +20,12 @@ struct Identifier : std::string {
 std::ostream& operator<<(std::ostream& os, const Identifier& identifier);
 
 }} //namespace tungsten::ast
+
+namespace boost {
+
+template <>
+struct has_nothrow_copy<tungsten::ast::Identifier> : mpl::true_ {};
+
+}
 
 #endif /* AST_IDENTIFIER_HPP_ */
