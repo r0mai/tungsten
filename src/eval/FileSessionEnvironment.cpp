@@ -2,6 +2,7 @@
 #include "FileSessionEnvironment.hpp"
 
 #include <fstream>
+#include <iostream>
 
 #include "Identifiers.hpp"
 

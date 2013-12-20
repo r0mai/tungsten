@@ -1,5 +1,6 @@
 #include <fstream>
 #include <algorithm>
+#include <iostream>
 #include <boost/math/constants/constants.hpp>
 #include "functions.hpp"
 #include "eval/getHead.hpp"

@@ -2,6 +2,7 @@
 #include "math/Real.hpp"
 #include "eval/numericNodeEvaluation.hpp"
 #include <sstream>
+#include <iostream>
 #include <algorithm>
 #include <boost/math/constants/constants.hpp>
 
