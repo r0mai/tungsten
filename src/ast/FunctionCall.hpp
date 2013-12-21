@@ -8,7 +8,6 @@
 #include <ostream>
 #include <initializer_list>
 
-#include <boost/operators.hpp>
 #include <boost/type_traits/has_nothrow_copy.hpp>
 
 #include "NodeFwd.hpp"
@@ -18,9 +17,7 @@ namespace tungsten { namespace ast {
 
 typedef std::vector<Node> Operands;
 
-struct FunctionCall :
-		boost::less_than_comparable<FunctionCall,
-		boost::equality_comparable<FunctionCall>> {
+struct FunctionCall {
 
 	FunctionCall();
 	FunctionCall(const FunctionCall& other);
@@ -35,6 +32,10 @@ struct FunctionCall :
 
 	bool operator==(const FunctionCall& other) const;
 	bool operator<(const FunctionCall& rhs) const;
+	inline bool operator!=(const FunctionCall& other) const { return !(*this == other); }
+	inline bool operator>(const FunctionCall& rhs) const { return rhs < *this; }
+	inline bool operator<=(const FunctionCall& rhs) const { return !(rhs < *this); }
+	inline bool operator>=(const FunctionCall& rhs) const { return !(*this < rhs); }
 
 	Node& getFunction();
 	const Node& getFunction() const;

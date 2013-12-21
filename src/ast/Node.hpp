@@ -9,7 +9,6 @@
 #include <memory>
 
 #include <boost/variant.hpp>
-#include <boost/operators.hpp>
 
 #include "NodeFwd.hpp"
 #include "FunctionCall.hpp"
@@ -18,9 +17,7 @@
 
 namespace tungsten { namespace ast {
 
-class Node :
-		boost::less_than_comparable<Node,
-		boost::equality_comparable<Node>> {
+class Node {
 public:
 
 	Node(const Node& other);
@@ -59,8 +56,12 @@ public:
 	bool operator==(const Node& other) const;
 	//Fast operator< to be used in sets, maps
 	//For correct comparsion operator, which correctly implements OrderedQ[] see eval/orderNode.hpp
-	bool operator<(const Node& other) const;
+	bool operator<(const Node& rhs) const;
 
+	inline bool operator!=(const Node& other) const { return !(*this == other); }
+	inline bool operator>(const Node& rhs) const { return rhs < *this; }
+	inline bool operator<=(const Node& rhs) const { return !(rhs < *this); }
+	inline bool operator>=(const Node& rhs) const { return !(*this < rhs); }
 	//string representation of an Node
 	std::string toString() const;
 
