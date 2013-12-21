@@ -73,6 +73,9 @@ ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 
 ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
 	//TODO history
+
+	assert( reapStack.empty() );
+
 	return recursiveEvaluate(node);
 }
 

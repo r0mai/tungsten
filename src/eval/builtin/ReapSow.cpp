@@ -18,6 +18,13 @@ OptionalNode Reap(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 	ast::Operands sowed = sessionEnvironment.popReapStack();
 
+	if ( sowed.empty() ) {
+
+		return ast::Node::make<ast::FunctionCall>("List", {
+					resultExpression,
+					ast::Node::make<ast::FunctionCall>("List")
+				});
+	}
 	return ast::Node::make<ast::FunctionCall>("List", {
 				resultExpression,
 				ast::Node::make<ast::FunctionCall>("List", {
