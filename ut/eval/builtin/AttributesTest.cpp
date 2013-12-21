@@ -6,1882 +6,216 @@
 BOOST_AUTO_TEST_SUITE( AttributesTest )
 
 using namespace tungsten;
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_List, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[List]");
 
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Locked"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Plus, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Plus]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Flat"), ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("OneIdentity"), ast::Node::make<ast::Identifier>("Orderless"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Times, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Times]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Flat"), ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("OneIdentity"), ast::Node::make<ast::Identifier>("Orderless"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Power, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Power]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("OneIdentity"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Abs, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Abs]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Divide, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Divide]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Numerator, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Numerator]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Denominator, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Denominator]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Replace, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Replace]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Set, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Set]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldFirst"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("SequenceHold")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_SetDelayed, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[SetDelayed]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("SequenceHold")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_RandomReal, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[RandomReal]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_DirectedInfinity, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[DirectedInfinity]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Overflow, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Overflow]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Thread, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Thread]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Pattern, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Pattern]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldFirst"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Blank, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Blank]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Integer, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Integer]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Rational, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Rational]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Real, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Real]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_String, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[String]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Symbol, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Symbol]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Locked"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Head, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Head]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Table, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Table]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_CompoundExpression, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[CompoundExpression]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Minus, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Minus]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Subtract, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Subtract]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Apply, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Apply]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_sine, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sin]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_cosine, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Cos]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_tangent, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Tan]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_cotangent, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Cot]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_cosecant, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Csc]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_secant, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sec]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_arc_sine, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ArcSin]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_arc_cosine, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ArcCos]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_arc_tangent, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ArcTan]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_arc_cotangent, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ArcCot]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_arc_cosecant, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ArcCsc]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_arc_secant, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ArcSec]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Factorial, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Factorial]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Factorial2, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Factorial2]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_square_root, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sqrt]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Rule, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Rule]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("SequenceHold")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_RuleDelayed, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[RuleDelayed]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldRest"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("SequenceHold")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Flatten, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Flatten]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Sort, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sort]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Normal, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Normal]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Sequence, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sequence]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Evaluate, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Evaluate]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_N, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[N]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_NumericQ, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[NumericQ]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Complex, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Complex]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_OrderedQ, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[OrderedQ]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Function, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Function]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Slot, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Slot]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("NHoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_SlotSequence, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[SlotSequence]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("NHoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Equal, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Equal]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Unequal, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Unequal]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Less, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Less]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_LessEqual, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[LessEqual]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Greater, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Greater]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_GreaterEqual, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[GreaterEqual]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_If, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[If]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldRest"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_TrueQ, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[TrueQ]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_And, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[And]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Flat"), ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("OneIdentity"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Or, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Or]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Flat"), ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("OneIdentity"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Not, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Not]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Boole, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Boole]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_While, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[While]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Attributes, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Attributes]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Print, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Print]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Part, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Part]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("NHoldRest"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Span, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Span]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Floor, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Floor]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Ceiling, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Ceiling]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Round, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Round]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_IntegerPart, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[IntegerPart]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_FractionalPart, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[FractionalPart]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("NumericFunction"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Hold, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Hold]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Append, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Append]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_AppendTo, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[AppendTo]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldFirst"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Prepend, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Prepend]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_PrependTo, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[PrependTo]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldFirst"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Length, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Length]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldComplete, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldComplete]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAllComplete"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Plot, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Plot]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Graphics, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Graphics]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Export, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Export]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Circle, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Circle]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Rectangle, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Rectangle]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Red, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Red]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Hue, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Hue]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Blue, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Blue]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Green, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Green]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Black, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Black]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_White, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[White]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_None, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[None]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_RGBColor, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[RGBColor]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Gray, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Gray]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Cyan, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Cyan]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Magenta, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Magenta]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Yellow, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Yellow]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Brown, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Brown]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Orange, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Orange]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Pink, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Pink]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Purple, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Purple]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Thick, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Thick]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Thin, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Thin]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Thickness, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Thickness]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Disk, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Disk]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Line, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Line]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Point, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Point]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_BezierCurve, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[BezierCurve]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Arrow, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Arrow]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Polygon, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Polygon]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_E, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[E]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Pi, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Pi]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Degree, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Degree]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_GoldenRatio, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[GoldenRatio]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_EulerGamma, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[EulerGamma]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Catalan, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Catalan]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Khinchin, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Khinchin]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_I, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[I]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Locked"), ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Glaisher, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Glaisher]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Constant"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Null, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Null]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_infinity, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Infinity]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected"), ast::Node::make<ast::Identifier>("ReadProtected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Indeterminate, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Indeterminate]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_True, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[True]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Locked"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_False, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[False]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Locked"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Flat, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Flat]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Listable, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Listable]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_NumericFunction, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[NumericFunction]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_OneIdentity, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[OneIdentity]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Orderless, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Orderless]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Protected, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Protected]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_ReadProtected, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ReadProtected]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_SequenceHold, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[SequenceHold]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldFirst, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldFirst]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldRest, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldRest]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldAll, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldAll]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_NHoldAll, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[NHoldAll]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_NHoldFirst, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[NHoldFirst]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_NHoldRest, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[NHoldRest]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldAllComplete, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldAllComplete]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_General, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[General]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Syntax, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Syntax]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Range, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Range]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Listable"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Block, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Block]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Map, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Map]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_MatchQ, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[MatchQ]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_PatternTest, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[PatternTest]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldRest"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_HoldPattern, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[HoldPattern]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_ReplaceAll, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ReplaceAll]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_ReplaceRepeated, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[ReplaceRepeated]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Condition, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Condition]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldAll"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Verbatim, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Verbatim]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Alternatives, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Alternatives]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Except, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Except]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Optional, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Optional]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_PatternSequence, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[PatternSequence]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Repeated, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Repeated]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_RepeatedNull, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[RepeatedNull]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_BlankSequence, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[BlankSequence]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_BlankNullSequence, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[BlankNullSequence]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_OptionsPattern, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[OptionsPattern]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Longest, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Longest]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Shortest, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Shortest]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_AbsoluteTime, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[AbsoluteTime]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Sow, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Reap]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldFirst"), ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
-
-BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Reap, BuiltinFunctionFixture ) {
-	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sow]");
-
-	BOOST_REQUIRE( result );
-
-	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
-
-	BOOST_CHECK_EQUAL( *result, expected );
-}
+#define TUNGSTEN_ATTRIBUTES_TEST_CASE(symbol, ...) \
+	BOOST_FIXTURE_TEST_CASE( test_Attributes_of_ ## symbol, BuiltinFunctionFixture ) { \
+		boost::optional<ast::Node> result = parseAndEvaluate("Attributes[" #symbol "]"); \
+		BOOST_REQUIRE( result ); \
+		std::vector<ast::Identifier> attributes = __VA_ARGS__; \
+		ast::Operands attributeOperands; \
+		std::transform(attributes.begin(), attributes.end(), std::back_inserter(attributeOperands), \
+		   	[](const std::string& str) { return ast::Node::make<ast::Identifier>(str); }); \
+		ast::Node expected = ast::Node::make<ast::FunctionCall>("List", attributeOperands); \
+		BOOST_CHECK_EQUAL( *result, expected ); \
+	}
+
+TUNGSTEN_ATTRIBUTES_TEST_CASE(List, {"Locked", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Plus, {"Flat", "Listable", "NumericFunction", "OneIdentity", "Orderless", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Times, {"Flat", "Listable", "NumericFunction", "OneIdentity", "Orderless", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Power, {"Listable", "NumericFunction", "OneIdentity", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Abs, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Divide, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Numerator, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Denominator, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Replace, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Set, {"HoldFirst", "Protected", "SequenceHold"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(SetDelayed, {"HoldAll", "Protected", "SequenceHold"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(RandomReal, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(DirectedInfinity, {"Listable", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Overflow, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Thread, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Pattern, {"HoldFirst", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Blank, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Integer, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Rational, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Real, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(String, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Symbol, {"Locked", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Head, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Table, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(CompoundExpression, {"HoldAll", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Minus, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Subtract, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Apply, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sin, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Cos, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Tan, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Cot, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Csc, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sec, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ArcSin, {"Listable", "NumericFunction", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ArcCos, {"Listable", "NumericFunction", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ArcTan, {"Listable", "NumericFunction", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ArcCot, {"Listable", "NumericFunction", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ArcCsc, {"Listable", "NumericFunction", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ArcSec, {"Listable", "NumericFunction", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Factorial, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Factorial2, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sqrt, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Rule, {"Protected", "SequenceHold"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(RuleDelayed, {"HoldRest", "Protected", "SequenceHold"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Flatten, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sort, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Normal, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sequence, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Evaluate, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(N, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(NumericQ, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Complex, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(OrderedQ, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Function, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Slot, {"NHoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(SlotSequence, {"NHoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Equal, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Unequal, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Less, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LessEqual, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Greater, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(GreaterEqual, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(If, {"HoldRest", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(TrueQ, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(And, {"Flat", "HoldAll", "OneIdentity", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Or, {"Flat", "HoldAll", "OneIdentity", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Not, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Boole, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(While, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Attributes, {"HoldAll", "Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Print, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Part, {"NHoldRest", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Span, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Floor, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Ceiling, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Round, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(IntegerPart, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(FractionalPart, {"Listable", "NumericFunction", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Hold, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Append, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(AppendTo, {"HoldFirst", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Prepend, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(PrependTo, {"HoldFirst", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Length, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(HoldComplete, {"HoldAllComplete", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Range, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Block, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Map, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sum, {"HoldAll", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(MatchQ, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(HoldPattern, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(PatternTest, {"HoldRest", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ReplaceAll, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ReplaceRepeated, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Condition, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Verbatim, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Alternatives, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Optional, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Except, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(PatternSequence, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Repeated, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(RepeatedNull, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(BlankSequence, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(BlankNullSequence, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(OptionsPattern, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Longest, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Shortest, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(AbsoluteTime, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Reap, {"HoldFirst", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Sow, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Hyperlink, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Plot, {"HoldAll", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Graphics, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Export, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Circle, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Rectangle, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Red, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Green, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Blue, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Black, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(White, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Gray, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Cyan, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Magenta, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Yellow, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Brown, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Orange, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Pink, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Purple, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightRed, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightGreen, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightBlue, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightGray, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightCyan, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightMagenta, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightYellow, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightBrown, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightOrange, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightPink, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(LightPurple, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Transparent, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Thick, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Thin, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Dashed, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Dotted, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(DotDashed, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Hue, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(None, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(RGBColor, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(GrayLevel, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Thickness, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Disk, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Line, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Point, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(BezierCurve, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Arrow, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Polygon, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Text, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Small, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Large, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Dashing, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Tiny, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(E, {"Constant", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Pi, {"Constant", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Degree, {"Constant", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(GoldenRatio, {"Constant", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(EulerGamma, {"Constant", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Catalan, {"Constant", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Khinchin, {"Constant", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(I, {"Locked", "Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Glaisher, {"Constant", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Null, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Infinity, {"Protected", "ReadProtected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ComplexInfinity, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Indeterminate, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(True, {"Locked", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(False, {"Locked", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Flat, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Listable, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(NumericFunction, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(OneIdentity, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Orderless, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Protected, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ReadProtected, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(SequenceHold, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(HoldFirst, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(HoldRest, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(HoldAll, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(NHoldAll, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(NHoldFirst, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(NHoldRest, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(HoldAllComplete, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Constant, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Locked, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(General, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Syntax, {"Protected"})
 
 BOOST_AUTO_TEST_SUITE_END()
 
