@@ -1863,7 +1863,25 @@ BOOST_FIXTURE_TEST_CASE( test_Attributes_of_AbsoluteTime, BuiltinFunctionFixture
 	BOOST_CHECK_EQUAL( *result, expected );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Sow, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Reap]");
 
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("HoldFirst"), ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_Attributes_of_Reap, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Attributes[Sow]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<ast::FunctionCall>("List", {ast::Node::make<ast::Identifier>("Protected")});
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

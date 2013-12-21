@@ -252,6 +252,28 @@ ast::Node SessionEnvironment::recursiveEvaluate(const ast::Node& node) {
 	return result;
 }
 
+bool SessionEnvironment::isReapStackEmpty() const {
+	return reapStack.empty();
+}
+
+void SessionEnvironment::pushReapStack() {
+	reapStack.push_back(ast::Operands{});
+}
+
+ast::Operands SessionEnvironment::popReapStack() {
+	assert(!isReapStackEmpty());
+	ast::Operands top = reapStack.back();
+	reapStack.pop_back();
+	return top;
+}
+
+
+void SessionEnvironment::sowToReapStack(const ast::Node& node) {
+	assert(!isReapStackEmpty());
+	reapStack.back().push_back(node);
+}
+
 }} //namespace tungsten::eval
+
 
 

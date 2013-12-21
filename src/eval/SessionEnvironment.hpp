@@ -16,6 +16,7 @@ namespace tungsten { namespace eval {
 
 class SessionEnvironment {
 public:
+
 	SessionEnvironment();
 	virtual ~SessionEnvironment();
 
@@ -41,11 +42,19 @@ public:
 	//should not be called from the outside
 	ast::Node recursiveEvaluate(const ast::Node& node);
 
+	bool isReapStackEmpty() const;
+	void pushReapStack();
+	ast::Operands popReapStack();
+	void sowToReapStack(const ast::Node& node);
+
 protected:
 	AttributeMap attributeMap;
 	const builtin::Functions builtinFunctions;
 	PatternMap patternMap;
 	RandomEngine randomEngine;
+
+	typedef std::vector<ast::Operands> ReapStack;
+	ReapStack reapStack;
 
 private:
 	struct EvaluateVisitor;
