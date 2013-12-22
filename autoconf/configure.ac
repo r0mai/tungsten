@@ -67,7 +67,11 @@ fi
 if test "x${optimized_enabled}" == "xyes" || test "x${lto_enabled}" == "xyes"; then
 	AC_SUBST(OPTIMIZATION_FLAG, [-O2])
 else
-	AC_SUBST(OPTIMIZATION_FLAG, [-O0])
+	if test "${CXX}" == "g++"; then
+		AC_SUBST(OPTIMIZATION_FLAG, [-Og])
+	else
+		AC_SUBST(OPTIMIZATION_FLAG, [-O0])
+	fi
 fi
 
 if test "x${assertions_enabled}" == "xyes"; then
