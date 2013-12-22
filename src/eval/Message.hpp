@@ -23,8 +23,6 @@ public:
 	const ast::String& getTag() const;
 	const ast::Operands& getArguments() const;
 
-	ast::String toErrorString() const;
-
 private:
 	//symbol::tag <e1,e2,...,eN>
 	ast::Identifier symbol;
