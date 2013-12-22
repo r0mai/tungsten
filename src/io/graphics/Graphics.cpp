@@ -30,11 +30,14 @@ void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 
 	auto colorDirective = dynamic_cast<const ColorDirective*>(&directive);
 	auto styleDirective = dynamic_cast<const FormatSpecifier*>(&directive);
+	auto grayLevelDirective = dynamic_cast<const GrayLevelDirective*>(&directive);
+
 	if(colorDirective) {
 		this->_format.stroke.setRGB(colorDirective->r(), colorDirective->g(), colorDirective->b());
 		//this->_format.stroke.fill(true);
 		this->_format.fill.setRGB(colorDirective->r(), colorDirective->g(), colorDirective->b());
 	}
+
 	if(styleDirective) {
 		FormatSpecifier d;
 		// only overwrite parameters actually set by styleDirective.
@@ -45,6 +48,11 @@ void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
 		this->_format.stroke_opacity=
 			(styleDirective->stroke_opacity==d.stroke_opacity)?
 			this->_format.stroke_opacity:styleDirective->stroke_opacity;
+	}
+
+	if(grayLevelDirective) {
+		this->_format.stroke *= *grayLevelDirective;
+		this->_format.fill *= *grayLevelDirective;
 	}
 }
 
@@ -205,8 +213,38 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 		graphics.addModifier(ColorDirective(255, 192, 203));
 	} else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Purple)) {
 		graphics.addModifier(ColorDirective(128, 0, 128));
-	}
+	} else if(primitive.isFunctionCall(eval::ids::GrayLevel)) {
 
+		const auto& functionCall = primitive.get<ast::FunctionCall>();
+		const auto& operands = functionCall.getOperands();
+		const auto& size = operands.size();
+		if(std::all_of(operands.begin(), operands.end(), [](const ast::Node& node) {
+				return node.isNumeric();
+			}))
+		{
+
+
+			switch(size) {
+				case 0:
+					break;
+				case 1: {
+					const auto& value = operands.front().getNumeric();
+					graphics.addModifier(GrayLevelDirective(value));
+						}
+					break;
+				case 2:
+					break;
+				default:
+					e.raiseMessage(eval::Message(eval::ids::GrayLevel, eval::ids::argx, {
+								ast::Node::make<ast::Identifier>(eval::ids::GrayLevel),
+								ast::Node::make<math::Rational>(size)
+								} ));
+					break;
+			}
+		} else {
+		}
+
+	}
 
 	else if(primitive == ast::Node::make<ast::Identifier>(eval::ids::Thick)) {
 		FormatSpecifier f;

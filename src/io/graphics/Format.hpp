@@ -2,6 +2,7 @@
 #define IO_GRAPHICS_FORMAT_HPP_
 
 #include <string>
+#include "../../math/Real.hpp"
 
 namespace tungsten { namespace io { namespace graphics {
 
@@ -9,6 +10,16 @@ namespace tungsten { namespace io { namespace graphics {
 class GraphicsDirective {
 public:
 	virtual ~GraphicsDirective() { }
+};
+
+class GrayLevelDirective: public GraphicsDirective {
+private:
+
+	math::Real level;
+public:
+	GrayLevelDirective() = default;
+	GrayLevelDirective(math::Real r) : level(std::move(r)) { }
+	const math::Real& getLevel() const { return level; }
 };
 
 class ColorDirective : public GraphicsDirective {
@@ -29,7 +40,17 @@ public:
 	bool isFill() const;
 	std::string toSVGString() const ;
 	ColorDirective& setRGB(const PixelType& r, const PixelType& g, const PixelType& b){ _r = r; _g = g; _b = b; return *this; }
-}; // end GraphicsDirective
+
+	ColorDirective& operator*=(const GrayLevelDirective& gld) {
+		auto level = gld.getLevel().convert_to<double>();
+		_r *= level;
+		_g *= level;
+		_b *= level;
+		return *this;
+	}
+
+}; // end ColorDirective
+
 
 
 /* format Specifier */
