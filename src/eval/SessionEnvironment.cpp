@@ -294,11 +294,10 @@ void SessionEnvironment::pushReapStack() {
 
 ast::Operands SessionEnvironment::popReapStack() {
 	assert(!isReapStackEmpty());
-	ast::Operands top = reapStack.back();
+	ast::Operands top{std::move(reapStack.back())};
 	reapStack.pop_back();
 	return top;
 }
-
 
 void SessionEnvironment::sowToReapStack(const ast::Node& node) {
 	assert(!isReapStackEmpty());
