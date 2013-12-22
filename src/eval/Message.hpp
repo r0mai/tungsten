@@ -4,9 +4,13 @@
 
 #include <ast/Node.hpp>
 
+#include <map>
 #include <initializer_list>
 
 namespace tungsten { namespace eval {
+
+typedef std::map<ast::String, ast::String> ErrorMessageStringMap;
+ErrorMessageStringMap createErrorMessageStringMap();
 
 //This class represents the messages which gets raised during evaluation
 class Message {
@@ -18,6 +22,8 @@ public:
 	const ast::Identifier& getSymbol() const;
 	const ast::String& getTag() const;
 	const ast::Operands& getArguments() const;
+
+	ast::String toErrorString() const;
 
 private:
 	//symbol::tag <e1,e2,...,eN>

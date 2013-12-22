@@ -7,10 +7,12 @@
 #include <iostream>
 
 #include <boost/bind.hpp>
+#include <boost/format.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/find.hpp>
 
 #include "io/Parser.hpp"
+#include "io/NodeToInputForm.hpp"
 #include "Identifiers.hpp"
 #include "threadListableOperands.hpp"
 #include "flattenOperands.hpp"
@@ -19,13 +21,40 @@
 namespace tungsten { namespace eval {
 
 SessionEnvironment::SessionEnvironment() :
-		attributeMap(AttributeMap::makeDefault()), builtinFunctions(builtin::createFunctions()), patternMap(PatternMap::makeDefault()) {}
+		attributeMap(AttributeMap::makeDefault()),
+		builtinFunctions(builtin::createFunctions()),
+		patternMap(PatternMap::makeDefault()),
+		errorMessageStringMap(createErrorMessageStringMap()) {}
 
 SessionEnvironment::~SessionEnvironment() {}
 
 void SessionEnvironment::raiseMessage(const Message& message) {
 	//TODO add to list
-	handleMessageString( message.getSymbol() + "::" + message.getTag() );
+	const ast::String& tag = message.getTag();
+	const ast::String& symbol = message.getSymbol();
+	const ast::Operands& arguments = message.getArguments();
+
+	ast::String errorString = symbol + "::" + tag + " : ";
+
+	auto mapIter = errorMessageStringMap.find(tag);
+	if ( mapIter == errorMessageStringMap.end() ) {
+		errorString += " -- Message String not found -- ";
+		for ( const ast::Node& arg : arguments ) {
+			errorString += "(" + io::NodeToInputForm(arg) + ")";
+		}
+	} else {
+		try {
+			const ast::String& formatString = mapIter->second;
+			boost::format format(formatString);
+			for ( const ast::Node& arg : arguments ) {
+				format % io::NodeToInputForm(arg);
+			}
+			errorString += format.str();
+		} catch ( const boost::io::format_error& error ) {
+			errorString += " -- Invalid Message String format. Please report --";
+		}
+	}
+	handleMessageString(errorString);
 }
 
 void SessionEnvironment::addPattern(const ast::Node& pattern, const ast::Node& replacement) {

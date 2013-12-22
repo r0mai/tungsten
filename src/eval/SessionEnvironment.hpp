@@ -51,6 +51,7 @@ protected:
 	AttributeMap attributeMap;
 	const builtin::Functions builtinFunctions;
 	PatternMap patternMap;
+	ErrorMessageStringMap errorMessageStringMap;
 	RandomEngine randomEngine;
 
 	typedef std::vector<ast::Operands> ReapStack;
