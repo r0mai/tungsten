@@ -89,8 +89,9 @@ class index:
 			uid = session.session_id
 			o = t.evaluate(uid,name.encode('ascii', 'ignore'))
 			output = o.getOutputString()
-                        ip = web.ctx.env['HTTP_X_FORWARDED_FOR']
-                        t.setIp(uid, ip);
+                        if web.ctx.has_key('HTTP_X_FORWARDED_FOR'):
+                            ip = web.ctx.env['HTTP_X_FORWARDED_FOR']
+                            t.setIp(uid, ip);
 
 			if output == "\\text{Null}":
 				output = "\\verb|No Output|"
