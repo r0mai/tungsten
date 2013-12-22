@@ -127,7 +127,7 @@ Rectangle& Rectangle::fromOperands(const ast::Operands& operands, eval::SessionE
 				this->topLeft(topLeft[0].getNumeric(), topLeft[1].getNumeric())
 					.bottomRight(bottomRight[0].getNumeric(), bottomRight[1].getNumeric());
 			} else {
-				raise(environment);
+				//raise(environment);
 			}
 			break;
 		}

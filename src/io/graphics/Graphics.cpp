@@ -23,7 +23,7 @@ GraphicsPrimitive& GraphicsPrimitive::translate(const Translation& trans) {
 }
 
 void GraphicsPrimitive::raise(eval::SessionEnvironment& environment) const {
-	environment.raiseMessage(eval::Message(eval::ids::General, eval::ids::Graphics, {} ));
+	environment.raiseMessage(eval::Message(eval::ids::Graphics, eval::ids::argx, {} ));
 }
 
 void GraphicsPrimitive::modify(const GraphicsDirective& directive) {
@@ -115,7 +115,7 @@ void makeGraphics(const ast::Node& node, eval::SessionEnvironment& e, GraphicsOb
 	if(eval::getHead(node) == ast::Node::make<ast::Identifier>(eval::ids::Graphics)) {
 	// Graphics[] should have exactly 1 parameter.
 		if(node.get<ast::FunctionCall>().getOperands().size()!=1){
-			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
+			e.raiseMessage(eval::Message(eval::ids::Graphics, eval::ids::argx, {}));
 			std::cout<<"Invalid number of operands in Graphics"<<std::endl;
 		}
 		else if (eval::getHead(node.get<ast::FunctionCall>().getOperands()[0]) != ast::Node::make<ast::Identifier>(eval::ids::List) ) {
@@ -239,15 +239,18 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 				// push modifier with stroke-width = value;
 
 			} else {
-				e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
+				e.raiseMessage(eval::Message(eval::ids::Graphics, eval::ids::argx, {} ));
 			}
 		} else {
-			e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {}));
+			e.raiseMessage(eval::Message(eval::ids::Graphics, eval::ids::argx, {}));
 		}
 
 	}
 	else {
-		e.raiseMessage(eval::Message(eval::ids::General, eval::ids::argx, {} ));
+		e.raiseMessage(eval::Message(eval::ids::Graphics, eval::ids::argx, {
+					ast::Node::make<ast::Identifier>( eval::ids::Graphics ),
+				  	primitive
+		} ));
 		//std::cout<<"Invalid graphics primitive occured!"<<std::endl;
 	}
 }
