@@ -44,16 +44,33 @@ dnl Check for MPFR
 AC_CHECK_HEADERS([mpfr.h], , [AC_MSG_ERROR([mpfr.h not found, see http://mpfr.org/])])
 AC_CHECK_LIB(mpfr, mpfr_add, , [AC_MSG_ERROR([MPFR not found, see http://mpfr.org/])], [-L/usr/local/lib/])
 
+lto_enabled="no"
+optimized_enabled="no"
+assertions_enabled="yes"
+
+AC_ARG_ENABLE(lto, AS_HELP_STRING(--enable-lto, [Compile with link time optimizations enabled. Implies --enable-optimized (default is NO)]),,enableval="no")
+lto_enabled="${enableval}"
+
 dnl Optional optimization
 AC_ARG_ENABLE(optimized, AS_HELP_STRING(--enable-optimized, [Compile with optimizations enabled (default is NO)]),,enableval="no")
-if test ${enableval} == "yes"; then
+optimized_enabled="${enableval}"
+
+AC_ARG_ENABLE(assertions, AS_HELP_STRING(--enable-assertions, [Compile with runtime assertions enabled (default is YES)]),,enableval="yes")
+assertions_enabled="${assertions_enabled}"
+
+if test "x${lto_enabled}" == "xyes"; then
+	AC_SUBST(LTO_FLAG, [-flto])
+else
+	AC_SUBST(LTO_FLAG, [ ])
+fi
+
+if test "x${optimized_enabled}" == "xyes" || test "x${lto_enabled}" == "xyes"; then
 	AC_SUBST(OPTIMIZATION_FLAG, [-O2])
 else
 	AC_SUBST(OPTIMIZATION_FLAG, [-O0])
 fi
 
-AC_ARG_ENABLE(assertions, AS_HELP_STRING(--enable-assertions, [Compile with runtime assertions enabled (default is YES)]),,enableval="yes")
-if test ${enableval} == "yes"; then
+if test "x${assertions_enabled}" == "xyes"; then
 	AC_SUBST(ASSERTIONS_FLAG, [ ])
 else
 	AC_SUBST(ASSERTIONS_FLAG, [-DNDEBUG])
