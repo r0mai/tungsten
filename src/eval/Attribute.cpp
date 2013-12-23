@@ -204,7 +204,8 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Tiny, AttributeSet({ids::Protected}))
 		(ids::ComplexInfinity, AttributeSet({ids::Protected}))
 		(ids::Constant, AttributeSet({ids::Protected}))
-		(ids::Locked, AttributeSet({ids::Protected}));
+		(ids::Locked, AttributeSet({ids::Protected}))
+		(ids::Timing, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}));
 
 	return AttributeMap(attributeStorage);
 }

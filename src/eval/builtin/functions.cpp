@@ -103,6 +103,7 @@ OptionalNode Export(const ast::Operands& operands, eval::SessionEnvironment& ses
 
 // Defined in timeFunctions.cpp
 OptionalNode AbsoluteTime(const ast::Operands&, eval::SessionEnvironment&);
+OptionalNode Timing(const ast::Operands&, eval::SessionEnvironment&);
 
 // Defined in ReapSow.cpp
 OptionalNode Reap(const ast::Operands&, eval::SessionEnvironment&);
@@ -182,6 +183,7 @@ Functions createFunctions() {
 	result[ids::AbsoluteTime] = &AbsoluteTime;
 	result[ids::Reap] = &Reap;
 	result[ids::Sow] = &Sow;
+	result[ids::Timing] = &Timing;
 	return result;
 }
 
