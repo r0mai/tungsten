@@ -41,19 +41,34 @@ boost::optional<ast::Operands> createRange(const ast::Node& min, const ast::Node
 
 	std::size_t resultSize = math::as<std::size_t>(numberOfStepsInteger)+1;
 	ast::Operands result;
-	result.reserve( resultSize );
+	result.reserve(resultSize);
 
-	for ( std::size_t i = 0; i < resultSize; ++i ) {
-		result.push_back( sessionEnvironment.recursiveEvaluate(
-			ast::Node::make<ast::FunctionCall>(ids::Plus, {
-				min,
-				ast::Node::make<ast::FunctionCall>(ids::Times, {
-					ast::Node::make<math::Rational>( i ),
-					step,
+	if ( min.is<math::Rational>() && step.is<math::Rational>() ) {
+		const math::Rational& minRational = min.get<math::Rational>();
+		const math::Rational& stepRational = step.get<math::Rational>();
+		for ( std::size_t i = 0; i < resultSize; ++i ) {
+			result.push_back(ast::Node::make<math::Rational>(minRational + i * stepRational));
+		}
+	} else if ( min.isNumeric() && step.isNumeric() ) {
+		math::Real minReal = min.getNumeric();
+		math::Real stepReal = step.getNumeric();
+		for ( std::size_t i = 0; i < resultSize; ++i ) {
+			result.push_back(ast::Node::make<math::Real>(minReal + i * stepReal));
+		}
+	} else {
+		for ( std::size_t i = 0; i < resultSize; ++i ) {
+			result.push_back( sessionEnvironment.recursiveEvaluate(
+				ast::Node::make<ast::FunctionCall>(ids::Plus, {
+					min,
+					ast::Node::make<ast::FunctionCall>(ids::Times, {
+						ast::Node::make<math::Rational>( i ),
+						step,
+					})
 				})
-			})
-		));
+			));
+		}
 	}
+
 	return result;
 
 }
