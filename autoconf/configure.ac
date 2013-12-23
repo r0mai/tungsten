@@ -56,7 +56,7 @@ AC_ARG_ENABLE(optimized, AS_HELP_STRING(--enable-optimized, [Compile with optimi
 optimized_enabled="${enableval}"
 
 AC_ARG_ENABLE(assertions, AS_HELP_STRING(--enable-assertions, [Compile with runtime assertions enabled (default is YES)]),,enableval="yes")
-assertions_enabled="${assertions_enabled}"
+assertions_enabled="${enableval}"
 
 if test "x${lto_enabled}" == "xyes"; then
 	AC_SUBST(LTO_FLAG, [-flto])
