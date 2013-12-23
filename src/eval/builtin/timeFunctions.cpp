@@ -13,9 +13,10 @@ OptionalNode AbsoluteTime(const ast::Operands& operands, eval::SessionEnvironmen
 	using namespace boost::gregorian;
 
 	if(!operands.empty()) {
-		sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argx, {
+		sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argrx, {
 				ast::Node::make<ast::Identifier>(ids::AbsoluteTime),
-				ast::Node::make<math::Rational>(operands.size())
+				ast::Node::make<math::Rational>(operands.size()),
+				ast::Node::make<math::Rational>(0)
 		} ));
 		return EvaluationFailure();
 	}
