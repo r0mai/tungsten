@@ -5,6 +5,8 @@
 #include <map>
 #include <cctype>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "Identifiers.hpp"
 
 namespace tungsten { namespace eval {
@@ -100,8 +102,6 @@ void insertDummyCoefficient(BaseExponentMap& baseExponentMap) {
 bool compareBaseExponentMaps(BaseExponentMap lhs, BaseExponentMap rhs) {
 	assert( !lhs.empty() && !rhs.empty() );
 
-//	std::cout << "lhs:\n" << lhs << "rhs:\n" << rhs << std::flush;
-
 	insertDummyCoefficient(lhs);
 	insertDummyCoefficient(rhs);
 
@@ -109,8 +109,6 @@ bool compareBaseExponentMaps(BaseExponentMap lhs, BaseExponentMap rhs) {
 	BaseExponentMap::const_reverse_iterator rhsIt = rhs.rbegin();
 
 	while (true) {
-
-		//std::cout << "inhere" << std::endl;
 
 		if ( lhsIt == lhs.rend() && rhsIt == rhs.rend() ) {
 			break;
@@ -344,14 +342,8 @@ bool dictionaryStringLess(const std::string& lhs, const std::string& rhs) {
 	//because wm treats upper-lower case letters equally (sort-of)
 	//x -> X -> xx
 
-	std::string lowerCaseLhs = lhs;
-	std::string lowerCaseRhs = rhs;
-
-	std::transform(lowerCaseLhs.begin(), lowerCaseLhs.end(), lowerCaseLhs.begin(), ::tolower);
-	std::transform(lowerCaseRhs.begin(), lowerCaseRhs.end(), lowerCaseRhs.begin(), ::tolower);
-
-	if ( lowerCaseLhs != lowerCaseRhs ) {
-		return lowerCaseLhs < lowerCaseRhs;
+	if ( !boost::iequals(lhs, rhs) ) {
+		return boost::ilexicographical_compare(lhs, rhs);
 	}
 
 	std::string::const_iterator first1 = lhs.begin();
