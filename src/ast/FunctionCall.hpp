@@ -12,10 +12,9 @@
 
 #include "NodeFwd.hpp"
 #include "Identifier.hpp"
+#include "Operands.hpp"
 
 namespace tungsten { namespace ast {
-
-typedef std::vector<Node> Operands;
 
 struct FunctionCall {
 
