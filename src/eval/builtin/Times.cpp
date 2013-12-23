@@ -14,6 +14,7 @@
 
 #include "eval/RealRationalNumber.hpp"
 #include "eval/SessionEnvironment.hpp"
+#include "eval/classifyOperands.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
@@ -129,12 +130,47 @@ struct TimesVisitor : boost::static_visitor<void> {
 };
 
 OptionalNode Times(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
-	TimesVisitor timesVisitor(sessionEnvironment);
-	for ( const ast::Node& node : operands ) {
-		ast::applyVisitor( node, timesVisitor );
-	}
+	eval::NumericalClassification numericalClassification =
+		eval::classifyNumerically(operands);
 
-	return timesVisitor.resultToNode();
+	switch (numericalClassification) {
+		default:
+			assert(false);
+			return EvaluationFailure();
+		case NumericalClassification::HAS_SYMBOLIC:
+			{
+				TimesVisitor timesVisitor(sessionEnvironment);
+				for ( const ast::Node& node : operands ) {
+					ast::applyVisitor( node, timesVisitor );
+				}
+
+				return timesVisitor.resultToNode();
+			}
+		case NumericalClassification::ALL_RATIONAL:
+			{
+				math::Rational result = 1;
+				for ( const ast::Node& node : operands ) {
+					result *= node.get<math::Rational>();
+				}
+				return ast::Node::make<math::Rational>(result);
+			}
+		case NumericalClassification::ALL_REAL:
+			{
+				math::Real result = 1;
+				for ( const ast::Node& node : operands ) {
+					result *= node.get<math::Real>();
+				}
+				return ast::Node::make<math::Real>(result);
+			}
+		case NumericalClassification::ALL_NUMERIC:
+			{
+				math::Real result = 1;
+				for ( const ast::Node& node : operands ) {
+					result *= node.getNumeric();
+				}
+				return ast::Node::make<math::Real>(result);
+			}
+	}
 }
 
 }}} //namespace tungsten::eval::builtin
