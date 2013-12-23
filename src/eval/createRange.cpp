@@ -29,7 +29,7 @@ boost::optional<ast::Operands> createRange(const ast::Node& min, const ast::Node
 		return boost::none_t();
 	}
 	assert( math::isInteger(numberOfStepsNode.get<math::Rational>()) );
-	const math::Integer& numberOfStepsInteger = math::asInteger(numberOfStepsNode.get<math::Rational>());
+	math::Integer numberOfStepsInteger = math::asInteger(numberOfStepsNode.get<math::Rational>());
 
 	if ( numberOfStepsInteger < 0 ) {
 		return ast::Operands();
