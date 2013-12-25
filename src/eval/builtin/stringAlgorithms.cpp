@@ -53,7 +53,30 @@ OptionalNode Characters(const ast::Operands& operands, eval::SessionEnvironment&
 }
 
 OptionalNode StringJoin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
-	return EvaluationFailure();
+	//TODO this actually should do some joining even if some operands are not Strings
+	bool failed = false;
+	std::size_t i = 1;
+	for ( const ast::Node& operand : operands ) {
+		if ( !operand.is<ast::String>() ) {
+			sessionEnvironment.raiseMessage( Message(ids::StringReverse, ids::string, {
+					ast::Node::make<math::Rational>( i ),
+					ast::Node::make<ast::FunctionCall>( ids::StringReverse, operands )
+			} ));
+			failed = true;
+		}
+		++i;
+	}
+
+	if ( failed ) {
+		return EvaluationFailure();
+	}
+
+	ast::String result;
+
+	for ( const ast::Node& operand : operands ) {
+		result += operand.get<ast::String>();
+	}
+	return ast::Node::make<ast::String>(result);
 }
 
 OptionalNode StringInsert(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {

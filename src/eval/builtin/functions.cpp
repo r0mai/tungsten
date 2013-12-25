@@ -196,6 +196,7 @@ Functions createFunctions() {
 	result[ids::ByteCount] = &ByteCount;
 	result[ids::StringLength] = &StringLength;
 	result[ids::Characters] = &Characters;
+	result[ids::StringJoin] = &StringJoin;
 	result[ids::StringTake] = &StringTake;
 	result[ids::StringDrop] = &StringDrop;
 	result[ids::StringInsert] = &StringInsert;

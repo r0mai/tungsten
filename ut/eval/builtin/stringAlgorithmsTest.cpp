@@ -138,5 +138,39 @@ BOOST_FIXTURE_TEST_CASE( test_StringReverse_of_abc_string, BuiltinFunctionFixtur
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("cba") );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_StringJoin_of_no_arguments, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("StringJoin[]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_StringJoin_of_a_single_argument, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("StringJoin[\"a\"]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("a") );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_StringJoin_of_a_multiple_arguments_1, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("\"a\" <> \"b\"");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("ab") );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_StringJoin_of_a_multiple_arguments_2, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("\"a\" <> \"b\" <> \"cd\"");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("abcd") );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 

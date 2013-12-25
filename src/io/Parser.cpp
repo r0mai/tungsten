@@ -180,6 +180,10 @@ void operatorMinus(ast::Node& result, ast::Node rhs) {
 	operatorPlus( result, ast::Node::make<ast::FunctionCall>(ids::Times, {ast::Node::make<math::Rational>(-1), rhs}) );
 }
 
+void operatorStringJoin(ast::Node& result, const ast::Node& rhs) {
+	leftAssociativeListableOperator( ids::StringJoin, result, rhs );
+}
+
 void operatorTimes(ast::Node& result, const ast::Node& rhs) {
 	leftAssociativeListableOperator( ids::Times, result, rhs );
 }
@@ -482,9 +486,13 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 				'+' >> unaryPlusMinusOperator[_val = _1];
 
 		powerExpression =
-				factorialExpression[_val = _1] >> (
+				stringJoinExpression[_val = _1] >> (
 						'^' >> powerExpression[phx::bind(&operatorPower, _val, _1)] |
 						eps);
+
+		stringJoinExpression =
+				factorialExpression[_val = _1] >>
+				*( "<>" >> factorialExpression[phx::bind(&operatorStringJoin, _val, _1)]);
 
 		factorialExpression =
 				applyExpression[_val = _1] >> *(
@@ -588,6 +596,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::rule<Iterator, ast::Node(), delimiter> conditionExpression; // patt /; test
 	qi::rule<Iterator, ast::Node(), delimiter> alternativesExpression;
 	qi::rule<Iterator, ast::Node(), delimiter> repeatedExpression;
+	qi::rule<Iterator, ast::Node(), delimiter> stringJoinExpression;
 
 	qi::rule<Iterator, ast::Node()> blankPattern;
 	qi::rule<Iterator, ast::Node()> slotPattern;
