@@ -49,7 +49,7 @@ std::string& String::getRawString() {
 }
 
 std::size_t String::getByteCount() const {
-	return sizeof(char)*size();
+	return sizeof(char)*capacity();
 }
 
 std::ostream& operator<<(std::ostream& os, const String& string) {
