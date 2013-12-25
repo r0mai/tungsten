@@ -15,6 +15,8 @@ struct Identifier : std::string {
 	Identifier(Ts&&... args) : std::string(std::forward<Ts>(args)...) {}
 
 	std::string toString() const;
+
+	std::size_t getByteCount() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Identifier& identifier);

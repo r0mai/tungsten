@@ -28,6 +28,7 @@ OptionalNode Print(const ast::Operands& operands, eval::SessionEnvironment& sess
 OptionalNode Block(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Map(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode MatchQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ByteCount(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Replace.cpp
 OptionalNode Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -184,6 +185,7 @@ Functions createFunctions() {
 	result[ids::Reap] = &Reap;
 	result[ids::Sow] = &Sow;
 	result[ids::Timing] = &Timing;
+	result[ids::ByteCount] = &ByteCount;
 	return result;
 }
 

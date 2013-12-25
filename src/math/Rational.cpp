@@ -48,4 +48,9 @@ std::string toString(const Rational& rational) {
 	return rational.str();
 }
 
+size_t getByteCount(const Rational& rational){
+	//maybe _mp_alloc here?
+	return mpq_numref(rational.backend().data())->_mp_alloc*sizeof(mp_limb_t) + mpq_denref(rational.backend().data())->_mp_alloc*sizeof(mp_limb_t);
+}
+
 }} //namespace tungsten::math

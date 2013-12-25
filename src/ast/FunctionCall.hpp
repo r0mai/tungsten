@@ -44,6 +44,8 @@ struct FunctionCall {
 
 	std::string toString() const;
 
+	std::size_t getByteCount() const;
+
 	friend void swap(FunctionCall& fc1, FunctionCall& fc2);
 
 private:

@@ -128,4 +128,17 @@ std::ostream& operator<<(std::ostream& os, const Node& node) {
 	return os;
 }
 
+struct GetByteCountVisitor : boost::static_visitor<std::size_t> {
+	template<class T>
+	std::size_t operator()(const T& t) const {
+		return t.getByteCount();
+   	}
+	std::size_t operator()(const math::Rational& rational) const { return math::getByteCount(rational); }
+	std::size_t operator()(const math::Real& real) const { return math::getByteCount(real); }
+};
+
+std::size_t Node::getByteCount() const {
+	return applyVisitor(*this, GetByteCountVisitor{});
+}
+
 }} //namespace tungsten::ast

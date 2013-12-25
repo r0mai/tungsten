@@ -98,6 +98,11 @@ std::string FunctionCall::toString() const {
 	return ss.str();
 }
 
+std::size_t FunctionCall::getByteCount() const {
+	return function->getByteCount() + std::accumulate(operands.begin(), operands.end(), std::size_t(0),
+			[](std::size_t sum, const Node& node) { return sum + node.getByteCount(); });
+}
+
 std::ostream& operator<<(std::ostream& os, const FunctionCall& fc) {
 	os << fc.toString();
 	return os;

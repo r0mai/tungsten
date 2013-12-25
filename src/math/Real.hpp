@@ -20,6 +20,8 @@ Real nextReal(Real real);
 
 Real previousReal(Real real);
 
+size_t getByteCount(const Real& real);
+
 }} //namespace tungsten::math
 
 namespace boost {

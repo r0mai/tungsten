@@ -5,6 +5,10 @@ namespace tungsten { namespace ast {
 
 std::string Identifier::toString() const { return *this; }
 
+std::size_t Identifier::getByteCount() const {
+	return sizeof(char)*size();
+}
+
 std::ostream& operator<<(std::ostream& os, const Identifier& identifier) {
 	os << identifier.toString();
 	return os;

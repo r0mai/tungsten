@@ -30,4 +30,8 @@ Real previousReal(Real real) {
 	return real;
 }
 
+size_t getByteCount(const Real& real) {
+	return sizeof(mp_limb_t) * (real.backend().data()->_mpfr_prec / 8);
+}
+
 }} //namespace tungsten::math

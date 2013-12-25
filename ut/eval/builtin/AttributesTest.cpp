@@ -217,6 +217,7 @@ TUNGSTEN_ATTRIBUTES_TEST_CASE(Locked, {"Protected"})
 TUNGSTEN_ATTRIBUTES_TEST_CASE(General, {"Protected"})
 TUNGSTEN_ATTRIBUTES_TEST_CASE(Syntax, {"Protected"})
 TUNGSTEN_ATTRIBUTES_TEST_CASE(Timing, {"HoldAll", "Protected", "SequenceHold"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(ByteCount, {"Protected"})
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -23,6 +23,8 @@ struct String : std::string {
 
 	//For debug purposes, returns a pretty version of the string with escapes and "s
 	std::string toString() const;
+
+	std::size_t getByteCount() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const String& string);

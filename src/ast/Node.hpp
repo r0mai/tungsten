@@ -76,6 +76,8 @@ public:
 	friend typename std::remove_reference<Visitor>::type::result_type
 	applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor);
 
+	std::size_t getByteCount() const;
+
 private:
 	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
 	typedef std::shared_ptr<Storage> StoragePtr;

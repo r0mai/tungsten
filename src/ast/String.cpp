@@ -48,6 +48,10 @@ std::string& String::getRawString() {
 	return *this;
 }
 
+std::size_t String::getByteCount() const {
+	return sizeof(char)*size();
+}
+
 std::ostream& operator<<(std::ostream& os, const String& string) {
 	os << string.toString();
 	return os;

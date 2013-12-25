@@ -27,6 +27,8 @@ Rational power(const Rational& base, long exponent);
 
 std::string toString(const Rational& rational);
 
+size_t getByteCount(const Rational& rational);
+
 template<class T>
 boost::optional<T> rationalToBuiltinInteger(const Rational& rational) {
 	if ( isInteger(rational) && fits<T>( asInteger(rational) ) ) {
