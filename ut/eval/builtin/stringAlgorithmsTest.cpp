@@ -105,6 +105,38 @@ BOOST_FIXTURE_TEST_CASE( test_Characters_of_Identifier, BuiltinFunctionFixture )
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Characters", {ast::Node::make<ast::Identifier>("x")}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_StringReverse_of_an_empty_string, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("StringReverse[\"\"]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_StringReverse_of_a_string, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("StringReverse[\"a\"]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("a") );
+}
+
+
+BOOST_FIXTURE_TEST_CASE( test_StringReverse_of_ab_string, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("StringReverse[\"ab\"]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("ba") );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_StringReverse_of_abc_string, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("StringReverse[\"abc\"]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::String>("cba") );
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

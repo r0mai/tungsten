@@ -69,7 +69,26 @@ OptionalNode StringTake(const ast::Operands& operands, eval::SessionEnvironment&
 }
 
 OptionalNode StringReverse(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
-	return EvaluationFailure();
+	if ( operands.size() != 1 ) {
+		sessionEnvironment.raiseMessage( Message(ids::StringReverse, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::StringReverse ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+		return EvaluationFailure();
+	}
+	const ast::Node& operand = operands.front();
+
+	if ( !operand.is<ast::String>() ) {
+		sessionEnvironment.raiseMessage( Message(ids::StringReverse, ids::string, {
+				ast::Node::make<math::Rational>( 1 ),
+				ast::Node::make<ast::FunctionCall>( ids::StringReverse, operands )
+		} ));
+		return EvaluationFailure();
+	}
+
+	ast::String string = operand.get<ast::String>();
+	std::reverse(string.begin(), string.end());
+	return ast::Node::make<ast::String>(string);
 }
 
 }}} //namespace tungsten::eval::builtin
