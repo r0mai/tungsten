@@ -28,7 +28,28 @@ OptionalNode StringLength(const ast::Operands& operands, eval::SessionEnvironmen
 }
 
 OptionalNode Characters(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
-	return EvaluationFailure();
+	if ( operands.size() != 1 ) {
+		sessionEnvironment.raiseMessage( Message(ids::Characters, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Characters ),
+				ast::Node::make<math::Rational>( operands.size() )
+		} ));
+		return EvaluationFailure();
+	}
+	const ast::Node& operand = operands.front();
+
+	if ( !operand.is<ast::String>() ) {
+		return ast::Node::make<ast::FunctionCall>(ids::Characters, operands);
+	}
+
+	const ast::String& string = operand.get<ast::String>();
+	ast::Operands resultOperands;
+	resultOperands.reserve(string.size());
+
+	for ( char ch : string ) {
+		resultOperands.push_back( ast::Node::make<ast::String>(1, ch) );
+	}
+
+	return ast::Node::make<ast::FunctionCall>(ids::List, std::move(resultOperands));
 }
 
 OptionalNode StringJoin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
