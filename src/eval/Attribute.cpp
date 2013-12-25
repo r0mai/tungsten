@@ -206,7 +206,14 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Constant, AttributeSet({ids::Protected}))
 		(ids::Locked, AttributeSet({ids::Protected}))
 		(ids::Timing, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}))
-		(ids::ByteCount, AttributeSet({ids::Protected}));
+		(ids::ByteCount, AttributeSet({ids::Protected}))
+		(ids::StringLength, AttributeSet({ids::Listable, ids::Protected}))
+		(ids::StringTake, AttributeSet({ids::Protected}))
+		(ids::StringDrop, AttributeSet({ids::Protected}))
+		(ids::Characters, AttributeSet({ids::Listable, ids::Protected}))
+		(ids::StringInsert, AttributeSet({ids::Protected}))
+		(ids::StringReverse, AttributeSet({ids::Listable, ids::Protected}))
+		(ids::StringJoin, AttributeSet({ids::Flat, ids::OneIdentity, ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }

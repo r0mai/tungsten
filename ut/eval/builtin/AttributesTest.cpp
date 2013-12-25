@@ -218,6 +218,13 @@ TUNGSTEN_ATTRIBUTES_TEST_CASE(General, {"Protected"})
 TUNGSTEN_ATTRIBUTES_TEST_CASE(Syntax, {"Protected"})
 TUNGSTEN_ATTRIBUTES_TEST_CASE(Timing, {"HoldAll", "Protected", "SequenceHold"})
 TUNGSTEN_ATTRIBUTES_TEST_CASE(ByteCount, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(StringLength, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(Characters, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(StringTake, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(StringDrop, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(StringInsert, {"Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(StringReverse, {"Listable", "Protected"})
+TUNGSTEN_ATTRIBUTES_TEST_CASE(StringJoin, {"Flat", "OneIdentity", "Protected"})
 
 BOOST_AUTO_TEST_SUITE_END()
 

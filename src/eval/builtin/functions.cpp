@@ -75,7 +75,6 @@ OptionalNode Function(const ast::Operands& operands, eval::SessionEnvironment& s
 // These are defined in sum.cpp
 OptionalNode Sum(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
-
 // Defined in relations.cpp
 OptionalNode Equal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Unequal(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -84,14 +83,14 @@ OptionalNode Greater(const ast::Operands& operands, eval::SessionEnvironment& se
 OptionalNode LessEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode GreaterEqual(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
-//Defined in booleanFunctions.cpp
+// Defined in booleanFunctions.cpp
 OptionalNode TrueQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Not(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode And(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Or(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
-//Defined in numericFunctions.cpp
+// Defined in numericFunctions.cpp
 OptionalNode Floor(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Ceiling(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -109,6 +108,15 @@ OptionalNode Timing(const ast::Operands&, eval::SessionEnvironment&);
 // Defined in ReapSow.cpp
 OptionalNode Reap(const ast::Operands&, eval::SessionEnvironment&);
 OptionalNode Sow(const ast::Operands&, eval::SessionEnvironment&);
+
+// Defined in stringAlgorithms.cpp
+OptionalNode StringLength(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Characters(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode StringJoin(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode StringInsert(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode StringTake(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode StringDrop(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode StringReverse(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 Functions createFunctions() {
 	Functions result;
@@ -186,6 +194,12 @@ Functions createFunctions() {
 	result[ids::Sow] = &Sow;
 	result[ids::Timing] = &Timing;
 	result[ids::ByteCount] = &ByteCount;
+	result[ids::StringLength] = &StringLength;
+	result[ids::Characters] = &Characters;
+	result[ids::StringTake] = &StringTake;
+	result[ids::StringDrop] = &StringDrop;
+	result[ids::StringInsert] = &StringInsert;
+	result[ids::StringReverse] = &StringReverse;
 	return result;
 }
 

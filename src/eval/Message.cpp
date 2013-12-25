@@ -51,7 +51,8 @@ ErrorMessageStringMap createErrorMessageStringMap() {
 		(ids::lvset, "Local variable specification %1% contains %2%, which is an assignment to %3%; only assignments to symbols are allowed.")
 		(ids::patvar, "First element in pattern %1% is not a valid pattern name.")
 		(ids::rmix, "Elements of %1% are a mixture of lists and nonlists.")
-		(ids::reps, "%1% is neither a list of replacement rules nor a valid dispatch table, and so cannot be used for replacing.");
+		(ids::reps, "%1% is neither a list of replacement rules nor a valid dispatch table, and so cannot be used for replacing.")
+		(ids::string, "String expected at position %1% in %2%.");
 }
 
 }} //namespace tungsten::eval
