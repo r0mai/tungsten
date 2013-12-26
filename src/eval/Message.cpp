@@ -52,7 +52,11 @@ ErrorMessageStringMap createErrorMessageStringMap() {
 		(ids::patvar, "First element in pattern %1% is not a valid pattern name.")
 		(ids::rmix, "Elements of %1% are a mixture of lists and nonlists.")
 		(ids::reps, "%1% is neither a list of replacement rules nor a valid dispatch table, and so cannot be used for replacing.")
-		(ids::string, "String expected at position %1% in %2%.");
+		(ids::string, "String expected at position %1% in %2%.")
+		(ids::mseqs, "Sequence specification (+n, -n, {+n}, {-n}, {m, n}, or {m, n, s}) or a list of sequence specifications expected at position %2% in %1%.")
+		(ids::strse, "String or list of strings expected at position %1% in %2%.")
+		(ids::drop, "Cannot drop positions %1% through %2% in \"%3%\".")
+		(ids::take, "Cannot take positions %1% through %2% in \"%3%\".");
 }
 
 }} //namespace tungsten::eval
