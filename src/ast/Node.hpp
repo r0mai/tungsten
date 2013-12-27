@@ -42,6 +42,9 @@ public:
 	bool isFunctionCall(const Identifier& head) const;
 	bool isFunctionCall(const Node& head) const;
 
+	bool isInteger() const;
+	math::Integer getInteger() const;
+
 	bool isNumeric() const; //isReal() || isRational()
 	bool isNumeric(const math::Real& test);
 	math::Real getNumeric() const; //returns Real when isNumeric() is true

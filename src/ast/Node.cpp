@@ -46,6 +46,15 @@ bool Node::isNumeric(const math::Real& test) {
 	return isNumeric() && getNumeric() == test;
 }
 
+bool Node::isInteger() const {
+	return is<math::Rational>() && math::isInteger(get<math::Rational>());
+}
+
+math::Integer Node::getInteger() const {
+	assert( isInteger() );
+	return math::asInteger(get<math::Rational>());
+}
+
 math::Real Node::getNumeric() const {
 	assert( isNumeric() );
 	if ( is<math::Real>() ) {
