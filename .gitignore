@@ -14,4 +14,5 @@ headerDep.sh
 .ycm_extra_conf.pyc
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]
+.fuse_hidden*
 
