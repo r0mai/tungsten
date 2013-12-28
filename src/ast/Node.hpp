@@ -14,6 +14,7 @@
 #include "FunctionCall.hpp"
 #include "NodeTypes.hpp"
 #include "util/make_unique.hpp"
+#include "math/Integer.hpp"
 
 namespace tungsten { namespace ast {
 

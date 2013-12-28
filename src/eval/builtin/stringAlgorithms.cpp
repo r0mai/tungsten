@@ -1,9 +1,98 @@
 
+#include <vector>
+
 #include "functions.hpp"
 
 #include "eval/SessionEnvironment.hpp"
+#include "math/Integer.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
+
+typedef std::vector<ast::String> StringVector;
+
+boost::optional<StringVector> parseStringOrStringList(const ast::Node& node) {
+	if ( node.is<ast::String>() ) {
+		return StringVector{ node.get<ast::String>() };
+	}
+
+	if ( !node.isFunctionCall(ids::List) ) {
+		return boost::none_t{};
+	}
+
+	const ast::Operands& operands = node.get<ast::FunctionCall>().getOperands();
+
+	StringVector result;
+	result.reserve(operands.size());
+
+	for ( const ast::Node& operand : operands ) {
+		if ( !operand.is<ast::String>() ) {
+			return boost::none_t{};
+		}
+		result.push_back(operand.get<ast::String>());
+	}
+
+	return result;
+}
+
+//represents n
+struct SingleSequence {
+	SingleSequence() = default;
+	SingleSequence(int index) : index(index) {}
+	int index;
+};
+
+//represents {n}, {m, n}, {m, n, s}
+struct ThroughSequence {
+	ThroughSequence() = default;
+	ThroughSequence(int min, int max, int step) : min(min), max(max), step(step) {}
+	int min, max, step;
+};
+
+typedef boost::variant<SingleSequence, ThroughSequence> SequenceSpecificationVariant;
+
+boost::optional<SequenceSpecificationVariant> parseSequenceSpecification(const ast::Node& node) {
+	if ( node.isInteger() ) {
+		math::Integer index = node.getInteger();
+		if ( !math::fits<int>(index) ) {
+			return boost::none_t{};
+		}
+		return SequenceSpecificationVariant{SingleSequence(math::as<int>(index))};
+	}
+
+	if ( node.isFunctionCall(ids::List) ) {
+		const ast::Operands& operands = node.get<ast::FunctionCall>().getOperands();
+		if ( operands.size() < 1 || operands.size() > 3 ) {
+			return boost::none_t{};
+		}
+
+		std::vector<int> intOperands;
+		intOperands.reserve(operands.size());
+
+		for ( const ast::Node& node : operands ) {
+			if ( !node.isInteger() ) {
+				return boost::none_t{};
+			}
+			math::Integer nodeInteger = node.getInteger();
+			if ( !math::fits<int>(nodeInteger) ) {
+				return boost::none_t{};
+			}
+			intOperands.push_back(math::as<int>(nodeInteger));
+		}
+
+		switch (intOperands.size()) {
+		default:
+			assert(false);
+		case 1:
+			return SequenceSpecificationVariant{ThroughSequence{intOperands[0], intOperands[0], 1}};
+		case 2:
+			return SequenceSpecificationVariant{ThroughSequence{intOperands[0], intOperands[1], 1}};
+		case 3:
+			return SequenceSpecificationVariant{ThroughSequence{intOperands[0], intOperands[1], intOperands[2]}};
+		}
+	}
+
+	return boost::none_t{};
+}
 
 OptionalNode StringLength(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
 	if ( operands.size() != 1 ) {
