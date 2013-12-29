@@ -168,15 +168,15 @@ OptionalNode StringJoin(const ast::Operands& operands, eval::SessionEnvironment&
 	return ast::Node::make<ast::String>(result);
 }
 
-OptionalNode StringInsert(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode StringInsert(const ast::Operands& /* operands */, eval::SessionEnvironment& /* sessionEnvironment */) {
 	return EvaluationFailure();
 }
 
-OptionalNode StringDrop(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode StringDrop(const ast::Operands& /* operands */, eval::SessionEnvironment& /* sessionEnvironment */) {
 	return EvaluationFailure();
 }
 
-OptionalNode StringTake(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+OptionalNode StringTake(const ast::Operands& /* operands */, eval::SessionEnvironment& /* sessionEnvironment */) {
 	return EvaluationFailure();
 }
 
