@@ -371,10 +371,25 @@ struct OnlyNumericRealPolicies : qi::strict_real_policies<T> {
 
 };
 
-typedef boost::spirit::ascii::space_type delimiter;
-
 template<class Iterator>
-struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delimiter> {
+struct TungstenSkipper : public qi::grammar<Iterator> {
+	TungstenSkipper() : TungstenSkipper::base_type(skip) {
+
+		using boost::spirit::ascii::space;
+		using boost::spirit::ascii::print;
+
+		skip = space |
+			"(*" >> *(skip | (anyText - "*)")) >> "*)";
+
+		anyText = print;
+
+	}
+	qi::rule<Iterator> skip;
+	qi::rule<Iterator> anyText;
+};
+
+template<class Iterator, class Skipper = TungstenSkipper<Iterator>>
+struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), Skipper> {
 
 	TungstenGrammar() : TungstenGrammar::base_type(start) {
 
@@ -573,50 +588,50 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), delim
 	qi::real_parser< math::Real, OnlyNumericRealPolicies<math::Real> > realParser;
 
 
-	qi::rule<Iterator, ast::Node(), delimiter> start;
-	qi::rule<Iterator, ast::Node(), delimiter> expression;
-	qi::rule<Iterator, ast::Node(), delimiter> compoundExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> relationalExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> equalsToExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> postFixAtExpression; // expr1 // expr2
-	qi::rule<Iterator, ast::Node(), delimiter> ruleExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> patternExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> additiveExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> multiplicativeExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> powerExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> applyExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> prefixAtExpression; // expr1 @ expr2
-	qi::rule<Iterator, ast::Node(), delimiter> factorialExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> lamdaFunctionExpression; // expr &
-	qi::rule<Iterator, ast::Node(), delimiter> notExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> andExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> orExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> patternTestExpression; // a?b
-	qi::rule<Iterator, ast::Node(), delimiter> replaceAllExpression; // expr /. patt
-	qi::rule<Iterator, ast::Node(), delimiter> conditionExpression; // patt /; test
-	qi::rule<Iterator, ast::Node(), delimiter> alternativesExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> repeatedExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> stringJoinExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> start;
+	qi::rule<Iterator, ast::Node(), Skipper> expression;
+	qi::rule<Iterator, ast::Node(), Skipper> compoundExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> relationalExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> equalsToExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> postFixAtExpression; // expr1 // expr2
+	qi::rule<Iterator, ast::Node(), Skipper> ruleExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> patternExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> additiveExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> multiplicativeExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> powerExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> applyExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> prefixAtExpression; // expr1 @ expr2
+	qi::rule<Iterator, ast::Node(), Skipper> factorialExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> lamdaFunctionExpression; // expr &
+	qi::rule<Iterator, ast::Node(), Skipper> notExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> andExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> orExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> patternTestExpression; // a?b
+	qi::rule<Iterator, ast::Node(), Skipper> replaceAllExpression; // expr /. patt
+	qi::rule<Iterator, ast::Node(), Skipper> conditionExpression; // patt /; test
+	qi::rule<Iterator, ast::Node(), Skipper> alternativesExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> repeatedExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> stringJoinExpression;
 
 	qi::rule<Iterator, ast::Node()> blankPattern;
 	qi::rule<Iterator, ast::Node()> slotPattern;
 
 	qi::rule<Iterator, std::vector<char>()> variable;
-	qi::rule<Iterator, ast::Operands(), delimiter> argumentList;
+	qi::rule<Iterator, ast::Operands(), Skipper> argumentList;
 
 	qi::symbols<ast::String::value_type, ast::String::value_type> unescapedCharacters;
 	qi::rule<Iterator, ast::String()> unescapedString;
-	qi::rule<Iterator, ast::Node(), delimiter> string;
+	qi::rule<Iterator, ast::Node(), Skipper> string;
 
-	qi::rule<Iterator, ast::Node(), delimiter> identifier;
-	qi::rule<Iterator, ast::Node(), delimiter> signedInteger;
-	qi::rule<Iterator, ast::Node(), delimiter> unsignedInteger;
-	qi::rule<Iterator, ast::Node(), delimiter> real;
-	qi::rule<Iterator, ast::Node(), delimiter> functionCallAndPartExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> list;
-	qi::rule<Iterator, ast::Node(), delimiter> unaryPlusMinusOperator;
-	qi::rule<Iterator, ast::Node(), delimiter> parenthesizedExpression;
-	qi::rule<Iterator, ast::Node(), delimiter> primary;
+	qi::rule<Iterator, ast::Node(), Skipper> identifier;
+	qi::rule<Iterator, ast::Node(), Skipper> signedInteger;
+	qi::rule<Iterator, ast::Node(), Skipper> unsignedInteger;
+	qi::rule<Iterator, ast::Node(), Skipper> real;
+	qi::rule<Iterator, ast::Node(), Skipper> functionCallAndPartExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> list;
+	qi::rule<Iterator, ast::Node(), Skipper> unaryPlusMinusOperator;
+	qi::rule<Iterator, ast::Node(), Skipper> parenthesizedExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> primary;
 
 };
 
@@ -631,7 +646,7 @@ boost::optional<ast::Node> parseInput(const std::string& input) {
 	bool success = qi::phrase_parse(
 		begin, end,
 		grammar,
-		delimiter(),
+		TungstenSkipper<std::string::const_iterator>(),
 		result);
 	if(success && begin == end){
 		return result;
