@@ -75,9 +75,9 @@ class index:
 		for l in logStringList:
 			if l:
 				if len(l) < 100:
-					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l+"</a><br>"
+					tmpString = "<a href=\"http://matthiasvegh.com/tungsten/"+l+"\">"+l+"</a><br>"
 				else:
-					tmpString = "<a href=\"http://matthiasvegh.dyndns.org/tungsten/"+l+"\">"+l[:97]+"...</a><br>"
+					tmpString = "<a href=\"http://matthiasvegh.com/tungsten/"+l+"\">"+l[:97]+"...</a><br>"
 				largeString+=tmpString
 
 		return largeString
