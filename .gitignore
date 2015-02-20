@@ -15,4 +15,6 @@ headerDep.sh
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]
 .fuse_hidden*
-
+docs/_build
+docs/_static
+docs/_templates
