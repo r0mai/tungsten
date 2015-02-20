@@ -4,8 +4,6 @@ project(tungsten)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-set(Boost_USE_STATIC_LIBS OFF)
-
 find_package(Boost COMPONENTS
     program_options system unit_test_framework python thread)
 find_package(GMP)
