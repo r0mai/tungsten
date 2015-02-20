@@ -4,6 +4,8 @@ project(tungsten)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+
 find_package(Boost COMPONENTS
     program_options system unit_test_framework python thread)
 find_package(GMP)
