@@ -6,15 +6,16 @@ import signal
 import threading
 import select
 
-sys.path.append( os.path.dirname(__file__)  )
-sys.path.append( '../build/html' )
+sys.path.append(os.path.dirname(__file__))
+sys.path.append('../build/html' )
+sys.path.append(os.path.join(os.path.dirname(__file__), '../build'))
 
 from subprocess import Popen, PIPE, STDOUT
 import web
 import string
 from django.utils.encoding import smart_str, smart_unicode
 from web import form
-import pytungsten
+import libpytungsten
 import ctypes
 import unicodedata
 import uuid
@@ -23,7 +24,7 @@ import uuid
 
 web.config.debug = False
 render = web.template.render( os.path.join(os.path.dirname(__file__), 'templates/' ) )
-t = pytungsten.tungsten()
+t = libpytungsten.tungsten()
 
 urls = ('/(.*)', 'index')
 app = web.application(urls, globals())

@@ -263,7 +263,7 @@ public:
 	}
 };
 
-BOOST_PYTHON_MODULE(pytungsten){
+BOOST_PYTHON_MODULE(libpytungsten) {
 
 	using namespace boost::python;
 		class_<WebClassMonolith, boost::noncopyable>("tungsten")

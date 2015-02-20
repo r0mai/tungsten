@@ -4,7 +4,7 @@ project(tungsten)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
 
 find_package(Boost COMPONENTS
     program_options system unit_test_framework python thread)
@@ -13,7 +13,7 @@ find_package(MPFR)
 find_package(Readline)
 find_package(PythonLibs)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
 
 include_directories(src)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
