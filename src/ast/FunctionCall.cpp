@@ -1,5 +1,6 @@
 
 #include <sstream>
+#include <numeric>
 
 #include <boost/bind/mem_fn.hpp>
 #include <boost/algorithm/string/join.hpp>
