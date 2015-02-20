@@ -1,6 +1,0 @@
-.gitignore
-
-include_rules
-
-: foreach *.cpp |> !cxx |>
-: *.o ../src/*.o |> !linker |> tungsten

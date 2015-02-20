@@ -1,8 +1,0 @@
-.gitignore
-
-include_rules
-
-LIBS += $(boost_lib_dir)/libboost_unit_test_framework.a
-
-: foreach ast/*.cpp eval/*.cpp io/*.cpp io/graphics/*.cpp eval/builtin/*.cpp math/*.cpp *.cpp |> !cxx |>
-: *.o ../src/*.o |> !linker |> unitTest
