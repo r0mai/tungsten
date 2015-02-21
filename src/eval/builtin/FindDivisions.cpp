@@ -2,6 +2,7 @@
 
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
+#include "math/mathFunctions.hpp"
 
 namespace tungsten { namespace eval { namespace builtin {
 
@@ -48,10 +49,10 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		return EvaluationFailure();
 	}
 
-	const math::Real left = listParams[0].getNumeric();
-	const math::Real right = listParams[1].getNumeric();
+	const math::Rational left = math::findRationalNear(listParams[0].getNumeric());
+	const math::Rational right = math::findRationalNear(listParams[1].getNumeric());
 
-	std::vector<math::Real> intermediates;
+	std::vector<math::Rational> intermediates;
 
 	// Impl here
 
@@ -60,7 +61,7 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 
 	ast::Operands elements;
 	for(auto& intermediate: intermediates) {
-		elements.push_back(ast::Node::make<math::Real>(intermediate));
+		elements.push_back(ast::Node::make<math::Rational>(intermediate));
 	}
 	return ast::Node::make<ast::FunctionCall>(ids::List, elements);
 }
