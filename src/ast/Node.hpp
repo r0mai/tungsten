@@ -33,6 +33,13 @@ public:
 	static Node make(const U& arg, std::initializer_list<Node> initializerList);
 
 	template<class T>
+	static Node make_list(std::initializer_list<T> initializerList);
+
+	// For empty lists
+	template<class T=void>
+	static Node make_list();
+
+	template<class T>
 	bool is() const;
 
 	template<class T>
@@ -128,6 +135,18 @@ Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
 	static_assert(
 	    std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
 	return Node{StoragePtr{new Storage(T(arg, initializerList))}};
+}
+
+template<class T>
+Node Node::make_list(std::initializer_list<T> initializerList) {
+	return Node::make<FunctionCall>("List", initializerList);
+}
+
+template<class T>
+Node Node::make_list() {
+	static_assert(
+		std::is_same<T, void>::value, "template parameter for make_list with no parameters can not be specified");
+	return Node::make<FunctionCall>("List", {});
 }
 
 template<class T>

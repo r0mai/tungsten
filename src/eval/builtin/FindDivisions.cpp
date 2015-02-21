@@ -32,7 +32,7 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		return EvaluationFailure();
 	}
 
-	return ast::Node::make<ast::FunctionCall>("List", {});
+	return ast::Node::make_list();
 }
 
 }}} // namespace tungsten::eval::builtin
