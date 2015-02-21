@@ -33,11 +33,11 @@ public:
 	static Node make(const U& arg, std::initializer_list<Node> initializerList);
 
 	template<class T>
-	static Node make_list(std::initializer_list<T> initializerList);
+	static Node makeList(std::initializer_list<T> initializerList);
 
 	// For empty lists
 	template<class T=void>
-	static Node make_list();
+	static Node makeList();
 
 	template<class T>
 	bool is() const;
@@ -138,12 +138,12 @@ Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
 }
 
 template<class T>
-Node Node::make_list(std::initializer_list<T> initializerList) {
+Node Node::makeList(std::initializer_list<T> initializerList) {
 	return Node::make<FunctionCall>("List", initializerList);
 }
 
 template<class T>
-Node Node::make_list() {
+Node Node::makeList() {
 	static_assert(
 		std::is_same<T, void>::value, "template parameter for make_list with no parameters can not be specified");
 	return Node::make<FunctionCall>("List", {});
