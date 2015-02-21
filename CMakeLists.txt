@@ -15,6 +15,8 @@ find_package(PythonLibs)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include_directories(src)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 include_directories(SYSTEM ${GMP_INCLUDE_DIR})
