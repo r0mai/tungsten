@@ -64,22 +64,27 @@ set(UT_SOURCES
     ${UT_MATH_SOURCES}
     ${UT_UTIL_SOURCES})
 
-add_executable(tungsten ${SRC_SOURCES} ${BIN_SOURCES})
+add_library(tungsten_src STATIC ${SRC_SOURCES})
+
+add_executable(tungsten ${BIN_SOURCES})
 target_link_libraries(tungsten
+    tungsten_src
     ${GMP_LIBRARIES}
     ${MPFR_LIBRARIES}
     ${Boost_LIBRARIES}
     ${READLINE_LIBRARY})
 
-add_executable(unitTest ${SRC_SOURCES} ${UT_SOURCES})
+add_executable(unitTest ${UT_SOURCES})
 target_link_libraries(unitTest
+    tungsten_src
     ${GMP_LIBRARIES}
     ${MPFR_LIBRARIES}
     ${Boost_LIBRARIES}
     ${READLINE_LIBRARY})
 
-add_library(pytungsten SHARED ${SRC_SOURCES} ${HTML_SOURCES})
+add_library(pytungsten SHARED ${HTML_SOURCES})
 target_link_libraries(pytungsten
+    tungsten_src
     ${GMP_LIBRARIES}
     ${MPFR_LIBRARIES}
     ${Boost_LIBRARIES}
