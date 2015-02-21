@@ -94,6 +94,7 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::PrependTo, AttributeSet({ids::HoldFirst, ids::Protected}))
 		(ids::Length, AttributeSet({ids::Protected}))
 		(ids::HoldComplete, AttributeSet({ids::HoldAllComplete, ids::Protected}))
+		(ids::FindDivisions, AttributeSet({ids::ReadProtected, ids::Protected}))
 		(ids::Plot, AttributeSet({ids::HoldAll, ids::Protected}))
 		(ids::Graphics, AttributeSet({ids::Protected, ids::ReadProtected}))
 		(ids::Export, AttributeSet({ids::Protected, ids::ReadProtected}))

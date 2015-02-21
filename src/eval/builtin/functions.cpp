@@ -101,6 +101,9 @@ OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironm
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Export(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+// Defined in FindDivisions.cpp
+OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 // Defined in timeFunctions.cpp
 OptionalNode AbsoluteTime(const ast::Operands&, eval::SessionEnvironment&);
 OptionalNode Timing(const ast::Operands&, eval::SessionEnvironment&);
@@ -158,6 +161,7 @@ Functions createFunctions() {
 	result[ids::Flatten] = &Flatten;
 	result[ids::Sort] = &Sort;
 	result[ids::Plot] = &Plot;
+	result[ids::FindDivisions] = &FindDivisions;
 	result[ids::Evaluate] = &Evaluate;
 	result[ids::N] = &N;
 	result[ids::NumericQ] = &NumericQ;
