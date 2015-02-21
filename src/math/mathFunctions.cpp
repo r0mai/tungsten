@@ -48,6 +48,14 @@ Integer round(const Real& arg) {
 	return resultInteger;
 }
 
+Rational evaluateContinuedFraction(std::vector<Integer> cf) {
+	if( cf.empty() ) { return 0; }
+	const Integer first = cf[0];
+	cf.erase(cf.begin());
+	if ( cf.empty() ) { return first; }
+	return first + Rational{1} / evaluateContinuedFraction(cf);
+}
+
 void getContinuedFractionImpl(const Real& r, std::vector<Integer>& out) {
 	Integer i = floor(r);
 	Real f = r - Real{i};

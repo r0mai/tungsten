@@ -35,6 +35,11 @@ Integer round(const Real& arg);
 std::vector<Integer> getContinuedFraction(const Real& arg);
 
 /*
+ * Evaluate a continued fraction
+ */
+Rational evaluateContinuedFraction(std::vector<Integer> cf);
+
+/*
  * Returns a valid optional if base^(1/n) is an integer
  */
 boost::optional<Integer> tryNthRoot(const Integer& base, unsigned long n);
