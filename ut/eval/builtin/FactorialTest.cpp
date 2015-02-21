@@ -139,6 +139,22 @@ BOOST_FIXTURE_TEST_CASE( test_minus_1_double_factorial , BuiltinFunctionFixture 
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(1) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_minus_3_double_factorial , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(-3)!!");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(-1) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_minus_5_double_factorial , BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(-5)!!");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<math::Rational>(1,3) );
+}
+
 
 BOOST_FIXTURE_TEST_CASE( test_the_quantity_minus_1_over_2_double_factorial , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("(-2^(-1))!!");

@@ -55,17 +55,34 @@ struct FactorialVisitor : boost::static_visitor<ast::Node> {
 };
 
 struct Factorial2Visitor : boost::static_visitor<ast::Node> {
+
+	Factorial2Visitor(SessionEnvironment& sessionEnvironment)
+	: sessionEnvironment(sessionEnvironment) {}
+
 	template<class T>
 	ast::Node operator()(const T& node) const {
 		return ast::Node::make<ast::FunctionCall>(ids::Factorial2, {ast::Node::make<T>(node)});
 	}
 
 	ast::Node operator()(const math::Rational& rational) const {
-		if ( math::isInteger(rational) && math::fits<unsigned long>(math::asInteger(rational)) ) {
-			return ast::Node::make<math::Rational>(math::factorial2(math::as<unsigned long>(math::asInteger(rational))));
+		if (math::isInteger(rational)) {
+			if (math::fits<unsigned long>(math::asInteger(rational))) {
+				return ast::Node::make<math::Rational>(math::factorial2(
+						math::as<unsigned long>(math::asInteger(rational))));
+			} else if (math::fits<long>(math::asInteger(rational))) {
+				const auto nPlusTwo =
+					ast::Node::make<ast::FunctionCall>(
+					ids::Plus,
+					{ast::Node::make<math::Rational>(rational),
+					 ast::Node::make<math::Rational>(2)});
+				return sessionEnvironment.recursiveEvaluate(ast::Node::make<ast::FunctionCall>(ids::Divide,
+					{ast::Node::make<ast::FunctionCall>(ids::Factorial2, {nPlusTwo}), nPlusTwo}));
+			}
 		}
 		return operator()<>(rational);
 	}
+
+	SessionEnvironment& sessionEnvironment;
 };
 
 OptionalNode Factorial(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
@@ -89,8 +106,8 @@ OptionalNode Factorial2(const ast::Operands& operands, eval::SessionEnvironment&
 		} ));
 		return EvaluationFailure();
 	}
-	return ast::applyVisitor(operands[0], Factorial2Visitor{});
+	Factorial2Visitor factorial2Visitor(sessionEnvironment);
+	return ast::applyVisitor(operands[0], factorial2Visitor);
 }
 
 }}} //namespace tungsten::eval::builtin
-
