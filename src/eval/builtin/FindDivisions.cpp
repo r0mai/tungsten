@@ -1,3 +1,5 @@
+#include <boost/lexical_cast.hpp>
+
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
 
@@ -14,7 +16,7 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 	}
 
 	const auto range = operands[0];
-	const auto n = operands[1];
+	const auto numberOfElements = operands[1];
 
 	if ( !range.isFunctionCall(ids::List) || range.get<ast::FunctionCall>().getOperands().size() != 2) {
 		sessionEnvironment.raiseMessage( Message(ids::FindDivisions, ids::fdargs, {
@@ -24,9 +26,9 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		return EvaluationFailure();
 	}
 
-	if ( !n.isNumeric() ) {
+	if ( !numberOfElements.is<math::Rational>() || !math::isInteger(numberOfElements.get<math::Rational>()) ) {
 		sessionEnvironment.raiseMessage( Message(ids::FindDivisions, ids::fdargs, {
-				n,
+				numberOfElements,
 				ast::Node::make<ast::FunctionCall>( ids::FindDivisions, operands )
 		} ));
 		return EvaluationFailure();
@@ -46,9 +48,15 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		return EvaluationFailure();
 	}
 
+	const math::Real left = listParams[0].getNumeric();
+	const math::Real right = listParams[1].getNumeric();
+
 	std::vector<math::Real> intermediates;
 
 	// Impl here
+
+	intermediates.push_back(left);
+	intermediates.push_back(right);
 
 	ast::Operands elements;
 	for(auto& intermediate: intermediates) {
