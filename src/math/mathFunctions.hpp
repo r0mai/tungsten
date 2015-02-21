@@ -29,6 +29,12 @@ Integer ceiling(const Real& arg);
  */
 Integer round(const Real& arg);
 
+
+/*
+ * Find a rough rational approximation
+ */
+Rational findRationalNear(const Real& arg);
+
 /*
  * Get continued fraction of a Real
  */

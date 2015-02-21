@@ -48,6 +48,15 @@ Integer round(const Real& arg) {
 	return resultInteger;
 }
 
+Rational findRationalNear(const Real& arg) {
+	Integer below = floor(arg);
+	Integer above = floor(arg);
+
+	if ( Real{below} == arg ) { return below; }
+	if ( Real{above} == arg ) { return above; }
+	return evaluateContinuedFraction(getContinuedFraction(arg));
+}
+
 Rational evaluateContinuedFraction(std::vector<Integer> cf) {
 	if( cf.empty() ) { return 0; }
 	const Integer first = cf[0];

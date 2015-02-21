@@ -1,11 +1,31 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <boost/math/constants/constants.hpp>
+
 #include "math/mathFunctions.hpp"
 
 BOOST_AUTO_TEST_SUITE( MathFunctionsTest )
 
 using namespace tungsten;
+
+BOOST_AUTO_TEST_CASE( RationalNear_of_Integer_should_be_integer ) {
+	math::Rational x = 10;
+	math::Real xr = x;
+	BOOST_CHECK_EQUAL(math::findRationalNear(xr), x);
+}
+
+BOOST_AUTO_TEST_CASE( RationalNear_of_Rational_should_be_integer ) {
+	math::Rational x(10, 3);
+	math::Real xr = x;
+	BOOST_CHECK_EQUAL(math::findRationalNear(xr), x);
+}
+
+BOOST_AUTO_TEST_CASE( RationalNear_of_Pi_should_be_close_to_Pi ) {
+	math::Real realPi = boost::math::constants::pi<double>();
+	const auto result = math::findRationalNear(realPi);
+	BOOST_CHECK_LE(abs(realPi - result), math::Real(1e-04));
+}
 
 BOOST_AUTO_TEST_CASE( getContinuedFraction_of_3_245_should_be_3_4_12_4 ) {
 	math::Rational x(649, 200); // 3+49/200 == 3.245
