@@ -30,6 +30,11 @@ Integer ceiling(const Real& arg);
 Integer round(const Real& arg);
 
 /*
+ * Get continued fraction of a Real
+ */
+std::vector<Integer> getContinuedFraction(const Real& arg);
+
+/*
  * Returns a valid optional if base^(1/n) is an integer
  */
 boost::optional<Integer> tryNthRoot(const Integer& base, unsigned long n);

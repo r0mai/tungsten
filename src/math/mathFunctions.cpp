@@ -48,6 +48,22 @@ Integer round(const Real& arg) {
 	return resultInteger;
 }
 
+void getContinuedFractionImpl(const Real& r, std::vector<Integer>& out) {
+	Integer i = floor(r);
+	Real f = r - Real{i};
+	out.push_back(i);
+	if (f < Real{1e-4}) { return; }
+	getContinuedFractionImpl(1/f, out);
+}
+
+std::vector<Integer> getContinuedFraction(const Real& arg) {
+	std::vector<Integer> answer;
+
+	getContinuedFractionImpl(arg, answer);
+
+	return answer;
+}
+
 boost::optional<Integer> tryNthRoot(const Integer& base, unsigned long n) {
 	Integer result;
 	if ( mpz_root(result.backend().data(), base.backend().data(), n) != 0 ) {
