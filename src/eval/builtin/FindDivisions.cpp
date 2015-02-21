@@ -16,7 +16,7 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 	const auto range = operands[0];
 	const auto n = operands[1];
 
-	if ( !range.is<ast::FunctionCall>() ) {
+	if ( !range.isFunctionCall(ids::List) || range.get<ast::FunctionCall>().getOperands().size() != 2) {
 		sessionEnvironment.raiseMessage( Message(ids::FindDivisions, ids::fdargs, {
 				range,
 				ast::Node::make<ast::FunctionCall>( ids::FindDivisions, operands )
@@ -32,7 +32,29 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		return EvaluationFailure();
 	}
 
-	return ast::Node::make_list();
+	std::vector<ast::Node> listParams = range.get<ast::FunctionCall>().getOperands();
+
+	auto endIt = std::find_if_not(listParams.begin(), listParams.end(), [](const ast::Node& param) {
+			return param.isNumeric();
+	});
+
+	if (endIt != listParams.end()) {
+		sessionEnvironment.raiseMessage( Message(ids::FindDivisions, ids::fdargs, {
+				*endIt,
+				ast::Node::make<ast::FunctionCall>( ids::FindDivisions, operands )
+		} ));
+		return EvaluationFailure();
+	}
+
+	std::vector<math::Real> intermediates;
+
+	// Impl here
+
+	ast::Operands elements;
+	for(auto& intermediate: intermediates) {
+		elements.push_back(ast::Node::make<math::Real>(intermediate));
+	}
+	return ast::Node::make<ast::FunctionCall>(ids::List, elements);
 }
 
 }}} // namespace tungsten::eval::builtin

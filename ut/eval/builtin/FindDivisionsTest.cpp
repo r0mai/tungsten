@@ -3,10 +3,12 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Fixture.hpp"
+#include "ast/Identifier.hpp"
 
 BOOST_AUTO_TEST_SUITE( FindDivisionsTest )
 
 using namespace tungsten;
+using namespace eval;
 
 // FindDivisions ----
 
@@ -15,7 +17,7 @@ BOOST_FIXTURE_TEST_CASE( test_0_1_5_finddivisions, BuiltinFunctionFixture ) {
 
 	BOOST_REQUIRE( result );
 
-	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("List", {
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>(ids::List, {
 				ast::Node::make<math::Rational>(0),
 				ast::Node::make<math::Rational>(1, 5),
 				ast::Node::make<math::Rational>(2, 5),
