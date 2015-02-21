@@ -49,6 +49,8 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 			maxY = 0.0;
 			bool first=true; // signifies whether this is the first valid point on the function.
 
+			const auto oldPatternForVariable = sessionEnvironment.getPatternReplacement(variable);
+
 			for(unsigned i=0; i<768; ++i){
 				currentX = i*advancement+minX;
 				sessionEnvironment.addPattern(variable, ast::Node::make<math::Real>(currentX));
@@ -80,6 +82,9 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 					}
 				}
 			}
+
+			sessionEnvironment.removePattern(variable);
+
 			if(!currentLine.empty()){
 				lineVector.push_back(
 					ast::Node::make<ast::FunctionCall>(ids::Line, {
@@ -96,6 +101,12 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 			}
 
+			if(oldPatternForVariable) {
+				// if was already assigned, restore
+				sessionEnvironment.addPattern(variable, *oldPatternForVariable);
+			} else {
+				sessionEnvironment.removePattern(variable);
+			}
 
 			if( abs(maxY - minY) <= boost::math::constants::phi<double>()*abs(maxX-minX) ){
 				// graph is very wide.
