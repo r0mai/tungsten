@@ -42,6 +42,7 @@ ErrorMessageStringMap createErrorMessageStringMap() {
 		(ids::normal, "Nonatomic expression expected at position %1% in %2%.")
 		(ids::flev, "The level argument %1% in position %2% of %3% should be a non-negative integer or Infinity giving the levels to flatten through or a list of lists of levels to flatten together.")
 		(ids::slot, "%1% (in %2%) should contain a non-negative integer.")
+		(ids::fdargs, "The argument %1% in %2% is not supported.")
 		(ids::ssle, "Symbol, string, or HoldPattern[symbol] expected at position %2% in %1%.")
 		(ids::pspec, "Part specification %1% is neither an integer nor a list of integers.")
 		(ids::partd, "Part specification %1% is longer than depth of object.")
