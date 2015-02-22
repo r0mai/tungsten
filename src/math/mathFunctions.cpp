@@ -77,7 +77,7 @@ void getContinuedFractionImpl(const Real& r, std::vector<Integer>& out) {
 	Integer i = floor(r);
 	Real f = r - Real{i};
 	out.push_back(i);
-	if (f < Real{1e-20}) { return; }
+	if (f < Real{1e-5} || (out.size() > 100)) { return; }
 	getContinuedFractionImpl(1/f, out);
 }
 

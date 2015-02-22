@@ -61,6 +61,14 @@ BOOST_AUTO_TEST_CASE( getContinuedFraction_of_Integer_should_be_one_element_long
 	BOOST_CHECK_EQUAL(result.size(), 1);
 }
 
+BOOST_AUTO_TEST_CASE( getContinuedFraction_of_Piplus1_should_be_similiar_to_that_of_Pi ) {
+	math::Real realPi = boost::math::constants::pi<double>();
+	math::Real piPlusOne = realPi + 1;
+	const auto result1 = math::getContinuedFraction(realPi);
+	const auto result2 = math::getContinuedFraction(piPlusOne);
+	BOOST_CHECK_EQUAL_COLLECTIONS(result1.begin()+1, result1.end(), result2.begin()+1, result2.end());
+}
+
 BOOST_AUTO_TEST_CASE( evaluateContinuedFraction_of_0_1_should_be_1 ) {
 	const auto result = math::evaluateContinuedFraction( { 0, 1 } );
 	BOOST_CHECK_EQUAL(result, 1);
