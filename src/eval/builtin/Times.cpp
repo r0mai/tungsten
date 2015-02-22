@@ -117,6 +117,15 @@ struct TimesVisitor : boost::static_visitor<void> {
 			return operands[0];
 		}
 
+		std::vector<ast::Node> infinities;
+		std::copy_if(operands.begin(), operands.end(), std::back_inserter(infinities), [](const ast::Node& node) {
+				return node.isFunctionCall(ids::DirectedInfinity) or
+						node.isFunctionCall(ids::Infinity) or
+						node.isFunctionCall(ids::ComplexInfinity);
+		});
+
+		if (!infinities.empty()) { return infinities.front(); }
+
 		return ast::Node::make<ast::FunctionCall>(ids::Times, operands);
 
 	}
