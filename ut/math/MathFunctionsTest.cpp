@@ -27,6 +27,18 @@ BOOST_AUTO_TEST_CASE( RationalNear_of_Pi_should_be_close_to_Pi ) {
 	BOOST_CHECK_LE(abs(realPi - result), math::Real(1e-04));
 }
 
+BOOST_AUTO_TEST_CASE( RationalNear_of_Pi_with_01_tolerance_should_be_22_7 ) {
+	math::Real realPi = boost::math::constants::pi<double>();
+	const auto result = math::findRationalNear(realPi, 0.01);
+	BOOST_CHECK_EQUAL(result, math::Rational(22,7));
+}
+
+BOOST_AUTO_TEST_CASE( RationalNear_of_Pi_with_001_tolerance_should_be_333_106 ) {
+	math::Real realPi = boost::math::constants::pi<double>();
+	const auto result = math::findRationalNear(realPi, 0.001);
+	BOOST_CHECK_EQUAL(result, math::Rational(333,106));
+}
+
 BOOST_AUTO_TEST_CASE( getContinuedFraction_of_3_245_should_be_3_4_12_4 ) {
 	math::Rational x(649, 200); // 3+49/200 == 3.245
 	const std::vector<math::Integer> expected = {3, 4, 12, 3, 1};

@@ -33,7 +33,7 @@ Integer round(const Real& arg);
 /*
  * Find a rough rational approximation
  */
-Rational findRationalNear(const Real& arg);
+Rational findRationalNear(const Real& arg, const Real& dx=1e-4);
 
 /*
  * Get continued fraction of a Real
@@ -44,7 +44,7 @@ std::vector<Integer> getContinuedFraction(const Real& arg);
  * Evaluate a continued fraction
  */
 Rational evaluateContinuedFraction(std::vector<Integer> cf);
-Rational evaluateContinuedFraction(std::vector<Integer>::iterator begin, std::vector<Integer>::iterator end);
+Rational evaluateContinuedFraction(std::vector<Integer>::const_iterator begin, std::vector<Integer>::const_iterator end);
 
 /*
  * Returns a valid optional if base^(1/n) is an integer

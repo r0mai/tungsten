@@ -48,20 +48,24 @@ Integer round(const Real& arg) {
 	return resultInteger;
 }
 
-Rational findRationalNear(const Real& arg) {
-	Integer below = floor(arg);
-	Integer above = floor(arg);
-
-	if ( Real{below} == arg ) { return below; }
-	if ( Real{above} == arg ) { return above; }
-	return evaluateContinuedFraction(getContinuedFraction(arg));
+Rational findRationalNear(const Real& arg, const Real& dx) {
+	const auto continuedFraction = getContinuedFraction(arg);
+	Rational approximation;
+	for(auto it=continuedFraction.begin()+1; it <= continuedFraction.end(); ++it) {
+		approximation = evaluateContinuedFraction(continuedFraction.begin(), it);
+		auto den = denominator(approximation);
+		if(abs( approximation-arg ) < dx/den*den) {
+			break;
+		}
+	}
+	return approximation;
 }
 
 Rational evaluateContinuedFraction(std::vector<Integer> cf) {
 	return evaluateContinuedFraction(cf.begin(), cf.end());
 }
 
-Rational evaluateContinuedFraction(std::vector<Integer>::iterator begin, std::vector<Integer>::iterator end) {
+Rational evaluateContinuedFraction(std::vector<Integer>::const_iterator begin, std::vector<Integer>::const_iterator end) {
 	if( begin == end ) { return 0; }
 	const Integer first = *begin;
 	++begin;
@@ -73,7 +77,7 @@ void getContinuedFractionImpl(const Real& r, std::vector<Integer>& out) {
 	Integer i = floor(r);
 	Real f = r - Real{i};
 	out.push_back(i);
-	if (f < Real{1e-4}) { return; }
+	if (f < Real{1e-20}) { return; }
 	getContinuedFractionImpl(1/f, out);
 }
 
