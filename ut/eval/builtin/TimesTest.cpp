@@ -196,6 +196,86 @@ BOOST_FIXTURE_TEST_CASE( Real_exponent_doesnt_alter_other_Rational_exponents, Bu
 	}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( Negative_Infinity_Times_Positive_Infinity_should_be_Negative_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[-1] * DirectedInfinity[1]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+		ast::Node::make<math::Real>(-1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Positive_Infinity_Times_Negative_Infinity_should_be_Negative_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[1] * DirectedInfinity[-1]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+		ast::Node::make<math::Real>(-1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Positive_Infinity_Times_Positive_Infinity_should_be_Positive_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[1] * DirectedInfinity[1]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+		ast::Node::make<math::Real>(1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Negative_Infinity_Times_Negative_Infinity_should_be_Positive_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[-1] * DirectedInfinity[-1]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+		ast::Node::make<math::Real>(1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Negative_Infinity_Times_Undirected_Infinity_should_be_Undirected_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[-1] * DirectedInfinity[]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Positive_Infinity_Times_Undirected_Infinity_should_be_Undirected_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[1] * DirectedInfinity[]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Undirected_Infinity_Times_Negative_Infinity_should_be_Undirected_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[] * DirectedInfinity[-1]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Undirected_Infinity_Times_Positive_Infinity_should_be_Undirected_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[] * DirectedInfinity[1]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
+BOOST_FIXTURE_TEST_CASE( Undirected_Infinity_Times_Undirected_Infinity_should_be_Undirected_Infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[] * DirectedInfinity[]");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
 //Test for Issue 1
 BOOST_FIXTURE_TEST_CASE( Times_Sqrt_2_test, BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Times[Sqrt[2]]");

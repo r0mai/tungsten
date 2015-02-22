@@ -113,18 +113,49 @@ struct TimesVisitor : boost::static_visitor<void> {
 			return ast::Node::make<math::Rational>(1);
 		}
 
-		if ( operands.size() == 1 ) {
-			return operands[0];
+		ast::Operands prunedOperands;
+
+		for(auto& node: operands) {
+			if(node.isFunctionCall(ids::Power) && node.get<ast::FunctionCall>().getOperands()[0].isFunctionCall(ids::DirectedInfinity)) {
+				const auto infinityPower = node.get<ast::FunctionCall>();
+				const auto infinity = infinityPower.getOperands()[0].get<ast::FunctionCall>();
+				const auto power = infinityPower.getOperands()[1].getNumeric();
+				if(!infinity.getOperands().empty()) {
+					prunedOperands.push_back(ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, {
+								ast::Node::make<math::Real>(math::power(infinity.getOperands()[0].getNumeric(), power))
+					}));
+				} else {
+					prunedOperands.push_back(ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { }));
+				}
+			} else {
+				prunedOperands.push_back(std::move(node));
+			}
 		}
+
+		std::swap(operands, prunedOperands);
 
 		std::vector<ast::Node> infinities;
 		std::copy_if(operands.begin(), operands.end(), std::back_inserter(infinities), [](const ast::Node& node) {
-				return node.isFunctionCall(ids::DirectedInfinity) or
-						node.isFunctionCall(ids::Infinity) or
-						node.isFunctionCall(ids::ComplexInfinity);
+				return node.isFunctionCall(ids::DirectedInfinity);
 		});
 
-		if (!infinities.empty()) { return infinities.front(); }
+		if (!infinities.empty()) {
+			auto prod = ast::Node::make<math::Real>(1);
+			for(const auto& infinity: infinities) {
+				const auto& infOperands = infinity.get<ast::FunctionCall>().getOperands();
+				if ( !infOperands.empty() ) {
+					const auto& direction = infOperands[0];
+					prod =  ast::Node::make<math::Real>( prod.getNumeric() * direction.getNumeric() );
+				} else {
+					return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { } );
+				}
+			}
+			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { prod });
+		}
+
+		if ( operands.size() == 1 ) {
+			return operands[0];
+		}
 
 		return ast::Node::make<ast::FunctionCall>(ids::Times, operands);
 
