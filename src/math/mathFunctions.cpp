@@ -97,10 +97,12 @@ std::vector<Integer> getContinuedFraction(const Real& arg) {
 	std::vector<Integer> answer;
 
 	Real f;
+	Real r = arg;
 	do {
-		Integer i = floor(arg);
-		f = arg - Real{i};
+		Integer i = floor(r);
+		f = r - Real{i};
 		answer.push_back(i);
+		r = 1/f;
 	} while (f >= Real{1e-5} && answer.size() <= 100);
 
 	return answer;
