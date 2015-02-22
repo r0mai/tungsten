@@ -93,18 +93,15 @@ Rational evaluateContinuedFraction(std::vector<Integer>::const_iterator begin, s
 	return first + Rational{1} / evaluateContinuedFraction(begin, end);
 }
 
-void getContinuedFractionImpl(const Real& r, std::vector<Integer>& out) {
-	Integer i = floor(r);
-	Real f = r - Real{i};
-	out.push_back(i);
-	if (f < Real{1e-5} || (out.size() > 100)) { return; }
-	getContinuedFractionImpl(1/f, out);
-}
-
 std::vector<Integer> getContinuedFraction(const Real& arg) {
 	std::vector<Integer> answer;
 
-	getContinuedFractionImpl(arg, answer);
+	Real f;
+	do {
+		Integer i = floor(arg);
+		f = arg - Real{i};
+		answer.push_back(i);
+	} while (f >= Real{1e-5} && answer.size() <= 100);
 
 	return answer;
 }
