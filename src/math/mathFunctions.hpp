@@ -44,6 +44,7 @@ std::vector<Integer> getContinuedFraction(const Real& arg);
  * Evaluate a continued fraction
  */
 Rational evaluateContinuedFraction(std::vector<Integer> cf);
+Rational evaluateContinuedFraction(std::vector<Integer>::iterator begin, std::vector<Integer>::iterator end);
 
 /*
  * Returns a valid optional if base^(1/n) is an integer

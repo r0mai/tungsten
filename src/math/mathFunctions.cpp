@@ -58,11 +58,15 @@ Rational findRationalNear(const Real& arg) {
 }
 
 Rational evaluateContinuedFraction(std::vector<Integer> cf) {
-	if( cf.empty() ) { return 0; }
-	const Integer first = cf[0];
-	cf.erase(cf.begin());
-	if ( cf.empty() ) { return first; }
-	return first + Rational{1} / evaluateContinuedFraction(cf);
+	return evaluateContinuedFraction(cf.begin(), cf.end());
+}
+
+Rational evaluateContinuedFraction(std::vector<Integer>::iterator begin, std::vector<Integer>::iterator end) {
+	if( begin == end ) { return 0; }
+	const Integer first = *begin;
+	++begin;
+	if ( begin == end ) { return first; }
+	return first + Rational{1} / evaluateContinuedFraction(begin, end);
 }
 
 void getContinuedFractionImpl(const Real& r, std::vector<Integer>& out) {
