@@ -74,9 +74,7 @@ Rational findRationalNear(const Real& arg, const Real& dx) {
 
 
 	const auto newDen = denominator(closestRound);
-	std::cerr<<"closestRound is: "<<closestRound<<std::endl;
 	if(abs( closestRound-arg) < dx/newDen*newDen) {
-		std::cerr<<"found better than approximation: "<< approximation << " "<<closestRound<<std::endl;
 		return closestRound;
 	}
 
