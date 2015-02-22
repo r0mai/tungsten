@@ -1,4 +1,5 @@
 #include <boost/lexical_cast.hpp>
+#include <boost/multiprecision/integer.hpp>
 
 #include "functions.hpp"
 #include "eval/SessionEnvironment.hpp"
@@ -57,7 +58,29 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 	// Impl here
 
 	intermediates.push_back(left);
-	intermediates.push_back(right);
+
+	const math::Rational distance = right - left;
+
+	std::vector<math::Rational> multipliersbase = {1, 2, 5};
+	std::vector<math::Rational> multipliers;
+
+	for(int i=-2;i<2;++i) {
+		std::vector<math::Rational> newValues(multipliersbase.begin(), multipliersbase.end());
+		math::Rational magnitude = math::power(math::Rational{10}, i);
+		for(auto& nv: newValues) { nv*=magnitude; }
+		multipliers.insert(multipliers.end(), newValues.begin(), newValues.end());
+	}
+
+	const auto multiplierIt = std::find_if(multipliers.begin(), multipliers.end(), [&](const math::Rational& multiplier) {
+			// return true if multiplier would result in less ticks that requested
+			return (math::Real{distance}/multiplier) < numberOfElements.getNumeric();
+	});
+
+
+	const auto multiplier = *(multiplierIt-1);
+	for(math::Rational next = left + multiplier; next <= right ; next += multiplier) {
+		intermediates.push_back(next);
+	}
 
 	ast::Operands elements;
 	for(auto& intermediate: intermediates) {
