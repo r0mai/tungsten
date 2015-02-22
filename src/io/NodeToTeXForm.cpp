@@ -188,7 +188,12 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 			return "";
 		}
 
-		std::string result = NodeToTeXFormRecursive(operands[0], 1);
+		std::string result;
+		if ( operands[0] == ast::Node::make<math::Rational>(-1) ) {
+			result = "-";
+		} else {
+			result = NodeToTeXFormRecursive(operands[0], 1);
+		}
 
 		for ( unsigned i = 1; i < operands.size(); ++i ) {
 			const ast::Node& prev = operands[i-1];
