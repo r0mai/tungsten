@@ -50,8 +50,10 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		return EvaluationFailure();
 	}
 
-	const math::Rational left = math::findRationalNear(listParams[0].getNumeric());
-	const math::Rational right = math::findRationalNear(listParams[1].getNumeric());
+	const math::Real precision = (listParams[1].getNumeric() - listParams[0].getNumeric())/numberOfElements.getInteger();
+
+	const math::Rational left = math::findRationalNear(listParams[0].getNumeric(), precision);
+	const math::Rational right = math::findRationalNear(listParams[1].getNumeric(), precision);
 
 	std::vector<math::Rational> intermediates;
 

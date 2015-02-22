@@ -58,6 +58,28 @@ Rational findRationalNear(const Real& arg, const Real& dx) {
 			break;
 		}
 	}
+
+	// we are already in range, let's see if we can make it a bit prettier
+
+	const auto num = numerator(approximation);
+	const auto den = denominator(approximation);
+
+	const auto distanceFromRound = num%den;
+	const auto closestRound = [&]() -> decltype(num) {
+		if(distanceFromRound > den/2) {
+			return (den-distanceFromRound+num) / den;
+		}
+		return (num-distanceFromRound) / den;
+	}();
+
+
+	const auto newDen = denominator(closestRound);
+	std::cerr<<"closestRound is: "<<closestRound<<std::endl;
+	if(abs( closestRound-arg) < dx/newDen*newDen) {
+		std::cerr<<"found better than approximation: "<< approximation << " "<<closestRound<<std::endl;
+		return closestRound;
+	}
+
 	return approximation;
 }
 
