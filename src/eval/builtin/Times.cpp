@@ -113,26 +113,9 @@ struct TimesVisitor : boost::static_visitor<void> {
 			return ast::Node::make<math::Rational>(1);
 		}
 
-		ast::Operands prunedOperands;
-
-		for(auto& node: operands) {
-			if(node.isFunctionCall(ids::Power) && node.get<ast::FunctionCall>().getOperands()[0].isFunctionCall(ids::DirectedInfinity)) {
-				const auto infinityPower = node.get<ast::FunctionCall>();
-				const auto infinity = infinityPower.getOperands()[0].get<ast::FunctionCall>();
-				const auto power = infinityPower.getOperands()[1].getNumeric();
-				if(!infinity.getOperands().empty()) {
-					prunedOperands.push_back(ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, {
-								ast::Node::make<math::Real>(math::power(infinity.getOperands()[0].getNumeric(), power))
-					}));
-				} else {
-					prunedOperands.push_back(ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { }));
-				}
-			} else {
-				prunedOperands.push_back(std::move(node));
-			}
+		if ( operands.size() == 1 ) {
+			return operands[0];
 		}
-
-		std::swap(operands, prunedOperands);
 
 		std::vector<ast::Node> infinities;
 		std::copy_if(operands.begin(), operands.end(), std::back_inserter(infinities), [](const ast::Node& node) {
@@ -151,10 +134,6 @@ struct TimesVisitor : boost::static_visitor<void> {
 				}
 			}
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { prod });
-		}
-
-		if ( operands.size() == 1 ) {
-			return operands[0];
 		}
 
 		return ast::Node::make<ast::FunctionCall>(ids::Times, operands);

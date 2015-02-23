@@ -130,6 +130,22 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		return operator()(math::Real(base), exponent);
 	}
 
+	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
+		if(function.getFunction() != ast::Node::make<ast::Identifier>(ids::DirectedInfinity)) {
+			return ast::Node::make<ast::FunctionCall>(ids::Power, {
+					ast::Node::make<ast::FunctionCall>(function),
+					ast::Node::make<math::Real>(exponent)
+			});
+		}
+		if(function.getOperands().empty()) {
+			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { });
+		}
+		assert(function.getOperands().size() == 1);
+		return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, {
+				ast::Node::make<math::Real>(math::power(function.getOperands().front().getNumeric(), exponent))
+		});
+	}
+
 	SessionEnvironment& sessionEnvironment;
 };
 
