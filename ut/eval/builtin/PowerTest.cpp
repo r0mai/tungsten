@@ -286,6 +286,62 @@ BOOST_FIXTURE_TEST_CASE( test_the_quantity_a_to_the_power_of_b_to_the_power_of_5
 	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::FunctionCall>("Power", {ast::Node::make<ast::Identifier>("a"), ast::Node::make<ast::Identifier>("b")}), ast::Node::make<math::Real>(5.)}) );
 }
 
+BOOST_FIXTURE_TEST_CASE( test_the_square_of_undirected_infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[]^2");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_the_cube_of_undirected_infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[]^3");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", { }) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_the_square_of_positive_infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[1]^2");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+				ast::Node::make<math::Real>(1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_the_cube_of_positive_infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[1]^3");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+				ast::Node::make<math::Real>(1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_the_square_of_negative_infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[-1]^2");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+				ast::Node::make<math::Real>(1)
+	}) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_the_cube_of_negative_infinity, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("DirectedInfinity[-1]^3");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("DirectedInfinity", {
+				ast::Node::make<math::Real>(-1)
+	}) );
+}
+
 //These tests functionality in Times as well
 BOOST_FIXTURE_TEST_CASE( test_0_over_0 , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0/0");
