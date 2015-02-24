@@ -89,8 +89,16 @@ struct TimesVisitor : boost::static_visitor<void> {
 
 		//TODO this could be moved to operator()(const math::Rational& rational) when rational == 0
 		ast::Node constantFactorNode = constantFactor.toNode();
-		if ( constantFactorNode == ast::Node::make<math::Rational>(0) || constantFactorNode == ast::Node::make<math::Real>(0) ) {
-			return constantFactorNode;
+
+		auto isSpecial = [](const ast::Node& node) { return node.isFunctionCall(ids::DirectedInfinity); };
+		bool areSpecialsPresent = std::find_if(exponentMap.begin(), exponentMap.end(), [&isSpecial](const std::pair<const ast::Node, RealRationalNumber> p) {
+				return isSpecial(p.first);
+		}) != exponentMap.end();
+
+		if ( !areSpecialsPresent ) {
+			if ( constantFactorNode == ast::Node::make<math::Rational>(0) || constantFactorNode == ast::Node::make<math::Real>(0) ) {
+				return constantFactorNode;
+			}
 		}
 
 		if ( constantFactorNode != ast::Node::make<math::Rational>(1) ) {
@@ -123,6 +131,12 @@ struct TimesVisitor : boost::static_visitor<void> {
 		});
 
 		if (!infinities.empty()) {
+
+			if(std::find_if(operands.begin(), operands.end(), [](const ast::Node& node) {
+				return node.isNumeric() && node.getNumeric() == math::Real(0);
+			}) != operands.end()) {
+				return ast::Node::make<ast::Identifier>(ids::Indeterminate);
+			}
 			auto prod = ast::Node::make<math::Real>(1);
 			for(const auto& infinity: infinities) {
 				const auto& infOperands = infinity.get<ast::FunctionCall>().getOperands();
