@@ -57,7 +57,10 @@ ErrorMessageStringMap createErrorMessageStringMap() {
 		(ids::mseqs, "Sequence specification (+n, -n, {+n}, {-n}, {m, n}, or {m, n, s}) or a list of sequence specifications expected at position %2% in %1%.")
 		(ids::strse, "String or list of strings expected at position %1% in %2%.")
 		(ids::drop, "Cannot drop positions %1% through %2% in \"%3%\".")
-		(ids::take, "Cannot take positions %1% through %2% in \"%3%\".");
+		(ids::take, "Cannot take positions %1% through %2% in \"%3%\".")
+		(ids::write, "Tag %1% in %2% is Protected.")
+		(ids::setraw, "Cannot assign to raw object %1%.")
+		(ids::wrsym, "Symbol %1% is Protected.");
 }
 
 }} //namespace tungsten::eval
