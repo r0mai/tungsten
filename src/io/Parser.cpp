@@ -512,7 +512,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), Skipp
 		factorialExpression =
 				applyExpression[_val = _1] >> *(
 						lit("!!")[phx::bind(&operatorFactorial2, _val)] |
-						lexeme[lit("!")[phx::bind(&operatorFactorial, _val)] >> &(!lit('=') | lit("=="))]
+						lexeme[lit("!") >> &(!lit('=') | lit("=="))][phx::bind(&operatorFactorial, _val)]
 						);
 
 		applyExpression =
