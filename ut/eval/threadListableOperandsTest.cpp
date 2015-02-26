@@ -4,7 +4,13 @@
 #include "eval/Identifiers.hpp"
 #include "eval/threadListableOperands.hpp"
 
-BOOST_AUTO_TEST_SUITE( threadListableOperandsTest )
+#include "UnitTestSessionEnvironment.hpp"
+
+struct Fixture {
+	UnitTestEnvironment sessionEnvironment;
+};
+
+BOOST_FIXTURE_TEST_SUITE( threadListableOperandsTest, Fixture )
 
 using namespace tungsten;
 
@@ -17,6 +23,7 @@ BOOST_AUTO_TEST_CASE( threading_not_applicable_on_empty_FunctionCall ) {
 	eval::ThreadListableOperandsReturnType returnValue = eval::threadListableOperands(
 		ast::FunctionCall("f"),
 		resultOperands,
+		sessionEnvironment,
 		ast::Node::make<ast::Identifier>("g")
 	);
 
@@ -33,6 +40,7 @@ BOOST_AUTO_TEST_CASE( threading_successful_FunctionCall_with_empty_Head_inside )
 	eval::ThreadListableOperandsReturnType returnValue = eval::threadListableOperands(
 		ast::FunctionCall("f", {ast::Node::make<ast::FunctionCall>("g")}),
 		resultOperands,
+		sessionEnvironment,
 		ast::Node::make<ast::Identifier>("g")
 	);
 

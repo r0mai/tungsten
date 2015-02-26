@@ -8,7 +8,7 @@
 
 namespace tungsten { namespace eval {
 
-ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall, ast::Operands& resultOperands, const ast::Node& head) {
+ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall, ast::Operands& resultOperands, SessionEnvironment& sessionEnvironment, const ast::Node& head) {
 
 	const ast::Node& function = functionCall.getFunction();
 	const ast::Operands& operands = functionCall.getOperands();
@@ -58,6 +58,12 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 			}
 		}
 		resultOperands[i] = ast::Node::make<ast::FunctionCall>(function, resultListOperands);
+	}
+
+	if ( std::all_of(resultOperands.begin(), resultOperands.end(), isEvaluationOfNodeThreadSafe) ) {
+		std::for_each(resultOperands.begin(), resultOperands.end(), [&](ast::Node& node) {
+			node = sessionEnvironment.recursiveEvaluate(node);
+		});
 	}
 
 	return ThreadListableOperandsReturnType::SUCCESSFUL;

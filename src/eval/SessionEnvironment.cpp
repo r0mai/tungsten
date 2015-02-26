@@ -198,7 +198,8 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 			ThreadListableOperandsReturnType returnValue = threadListableOperands(
 					ast::FunctionCall(function, operands),
-					listOperands
+					listOperands,
+					sessionEnvironment
 				);
 
 			if ( returnValue == ThreadListableOperandsReturnType::UNSUCCESSFUL ) {

@@ -5,6 +5,7 @@
 
 #include "ast/Node.hpp"
 #include "Identifiers.hpp"
+#include "SessionEnvironment.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -18,6 +19,7 @@ enum class ThreadListableOperandsReturnType {
 //Otherwise the result ast::Operands should be put into a FunctionCall(head)
 ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall,
 		ast::Operands& resultOperands,
+		SessionEnvironment& sessionEnvironment,
 		const ast::Node& head = ast::Node::make<ast::Identifier>(ids::List));
 
 bool isEvaluationOfNodeThreadSafe(const ast::Node&);
