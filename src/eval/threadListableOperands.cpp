@@ -4,6 +4,7 @@
 #include <boost/range/algorithm/find_if.hpp>
 
 #include "ast/Node.hpp"
+#include "Attribute.hpp"
 
 namespace tungsten { namespace eval {
 
@@ -61,6 +62,39 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 
 	return ThreadListableOperandsReturnType::SUCCESSFUL;
 
+}
+
+class ThreadSafetyVisitor : public boost::static_visitor<bool> {
+
+public:
+	ThreadSafetyVisitor( ) {
+		static const AttributeMap instance = AttributeMap::makeDefault();
+		attributeMap = &instance;
+   	}
+
+	template<typename T>
+	bool operator()(const T&) {
+		// TODO assert T is one of our types
+		return true;
+	}
+
+	bool operator()(const ast::FunctionCall& function) {
+		if ( attributeMap->hasAttribute(function.getFunction().get<ast::Identifier>(),
+					ids::ThreadSafe)) {
+			const auto& operands = function.getOperands();
+			return std::all_of(operands.begin(), operands.end(), *this);
+		} else {
+			return false;
+		}
+	}
+
+private:
+	const AttributeMap* attributeMap;
+};
+
+bool isEvaluationOfNodeThreadSafe(const ast::Node& node) {
+	ThreadSafetyVisitor visitor;
+	return ast::applyVisitor(node, visitor);
 }
 
 }} //namespace tungsten::eval

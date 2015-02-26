@@ -20,6 +20,8 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 		ast::Operands& resultOperands,
 		const ast::Node& head = ast::Node::make<ast::Identifier>(ids::List));
 
+bool isEvaluationOfNodeThreadSafe(const ast::Node&);
+
 }} //namespace tungsten::eval
 
 #endif /* EVAL_THREADLISTABLEOPERANDS_HPP_ */
