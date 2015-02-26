@@ -82,7 +82,7 @@ public:
 		if ( attributeMap->hasAttribute(function.getFunction().get<ast::Identifier>(),
 					ids::ThreadSafe)) {
 			const auto& operands = function.getOperands();
-			return std::all_of(operands.begin(), operands.end(), *this);
+			return std::all_of(operands.begin(), operands.end(), isEvaluationOfNodeThreadSafe);
 		} else {
 			return false;
 		}

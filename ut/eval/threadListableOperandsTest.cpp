@@ -63,4 +63,77 @@ BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_true_for_identifier
 	BOOST_CHECK( returnValue );
 }
 
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_true_for_plus_with_no_arguments ) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {}));
+	BOOST_CHECK( returnValue );
+}
+
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_false_for_unknown_functions ) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>("ASDFASDF", {}));
+	BOOST_CHECK( !returnValue );
+}
+
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_false_for_plus_with_unknown_functioncall_arguments ) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+			ast::Node::make<ast::FunctionCall>("ASDFASDF", {})
+	}));
+	BOOST_CHECK( !returnValue );
+}
+
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_true_for_recursive_Pluses ) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+			ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+					ast::Node::make<math::Real>(1),
+					ast::Node::make<math::Rational>(2)
+			}),
+			ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+					ast::Node::make<ast::String>("three"),
+					ast::Node::make<ast::Identifier>(eval::ids::DirectedInfinity)
+			})
+	}));
+	BOOST_CHECK( returnValue );
+}
+
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_false_for_recursive_Pluses_if_a_leaf_is_unknown ) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+			ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+					ast::Node::make<math::Real>(1),
+					ast::Node::make<math::Rational>(2)
+			}),
+			ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+					ast::Node::make<ast::String>("three"),
+					ast::Node::make<ast::FunctionCall>("ASDFASDF", {})
+			})
+	}));
+	BOOST_CHECK( !returnValue );
+}
+
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_false_for_recursive_Pluses_if_a_midnode_is_unknown ) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+			ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+					ast::Node::make<math::Real>(1),
+					ast::Node::make<math::Rational>(2)
+			}),
+			ast::Node::make<ast::FunctionCall>("ASDFASDF", {
+					ast::Node::make<ast::String>("three"),
+					ast::Node::make<ast::Identifier>(eval::ids::DirectedInfinity)
+			})
+	}));
+	BOOST_CHECK( !returnValue );
+}
+
+BOOST_AUTO_TEST_CASE( isEvaluationOfNodeThreadSafe_should_be_false_for_recursive_Pluses_if_a_midnode_is_known_not_to_be_safe) {
+	bool returnValue = eval::isEvaluationOfNodeThreadSafe(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+			ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
+					ast::Node::make<math::Real>(1),
+					ast::Node::make<math::Rational>(2)
+			}),
+			ast::Node::make<ast::FunctionCall>(eval::ids::Set, {
+					ast::Node::make<ast::String>("three"),
+					ast::Node::make<ast::Identifier>(eval::ids::DirectedInfinity)
+			})
+	}));
+	BOOST_CHECK( !returnValue );
+}
+
 BOOST_AUTO_TEST_SUITE_END()
