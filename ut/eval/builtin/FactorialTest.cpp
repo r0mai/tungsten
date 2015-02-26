@@ -231,6 +231,22 @@ BOOST_FIXTURE_TEST_CASE( test_6_double_factorial , BuiltinFunctionFixture ) {
 }
 
 
+BOOST_FIXTURE_TEST_CASE( test_factorial_should_have_lower_precedence_than_unequals, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("5!=120");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>(eval::ids::True) );
+}
+
+BOOST_FIXTURE_TEST_CASE( test_factorial_should_work_with_equals, BuiltinFunctionFixture ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("5!==120");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result,ast::Node::make<ast::Identifier>(eval::ids::True) );
+}
+
 BOOST_FIXTURE_TEST_CASE( test_the_list_x__y_double_factorial , BuiltinFunctionFixture ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("{x, y}!!");
 
