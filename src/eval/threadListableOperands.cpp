@@ -6,6 +6,8 @@
 #include "ast/Node.hpp"
 #include "Attribute.hpp"
 
+#include <parallel/algorithm>
+
 namespace tungsten { namespace eval {
 
 ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall& functionCall, ast::Operands& resultOperands, SessionEnvironment& sessionEnvironment, const ast::Node& head) {
@@ -61,7 +63,7 @@ ThreadListableOperandsReturnType threadListableOperands(const ast::FunctionCall&
 	}
 
 	if ( std::all_of(resultOperands.begin(), resultOperands.end(), isEvaluationOfNodeThreadSafe) ) {
-		std::for_each(resultOperands.begin(), resultOperands.end(), [&](ast::Node& node) {
+		__gnu_parallel::for_each(resultOperands.begin(), resultOperands.end(), [&](ast::Node& node) {
 			node = sessionEnvironment.recursiveEvaluate(node);
 		});
 	}
