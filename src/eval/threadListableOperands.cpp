@@ -74,7 +74,13 @@ public:
 
 	template<typename T>
 	bool operator()(const T&) {
-		// TODO assert T is one of our types
+		static_assert(
+				std::is_same<T, math::Real>::value ||
+				std::is_same<T, math::Rational>:: value ||
+				std::is_same<T, ast::FunctionCall>::value ||
+				std::is_same<T, ast::String>::value ||
+				std::is_same<T, ast::Identifier>::value,
+				"Can only check the thread safety of a known node variant");
 		return true;
 	}
 
