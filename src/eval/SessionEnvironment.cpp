@@ -198,7 +198,8 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 
 			ThreadListableOperandsReturnType returnValue = threadListableOperands(
 					ast::FunctionCall(function, operands),
-					listOperands
+					listOperands,
+					sessionEnvironment
 				);
 
 			if ( returnValue == ThreadListableOperandsReturnType::UNSUCCESSFUL ) {
@@ -207,7 +208,7 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 				//Fallthrough
 			} else {
 				assert( returnValue == ThreadListableOperandsReturnType::SUCCESSFUL );
-				return sessionEnvironment.recursiveEvaluate( ast::Node::make<ast::FunctionCall>(ids::List, listOperands) );
+				return ast::Node::make<ast::FunctionCall>(ids::List, listOperands);
 			}
 		}
 

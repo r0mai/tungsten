@@ -6,6 +6,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
+if(ENABLE_MULTITHREADING)
+    add_definitions(-DTUNGSTEN_USE_MULITTHREADING)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+endif()
+
 find_package(Boost COMPONENTS
     program_options system unit_test_framework python thread)
 find_package(GMP)
