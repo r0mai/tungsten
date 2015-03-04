@@ -18,7 +18,7 @@ find_package(MPFR)
 find_package(Readline)
 find_package(PythonLibs)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -fPIC")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
