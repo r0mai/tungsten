@@ -365,10 +365,13 @@ std::string Polygon::toSVGString() const {
 
 std::string Text::toBoundedSVGString(const BoundingBox& box) const {
 	std::stringstream ss;
-	const auto height = box.maxY - box.minY;
-	const auto size = 0.04 * height;
+	const auto permissibleHeight = box.maxY - box.minY;
+	const auto permissibleWidth = box.maxX - box.minX;
+	const auto charSizeRatio = 7./13.;
+	const auto heightBasedOnWidth = permissibleWidth / _text.size() * charSizeRatio;
+	const auto size = std::min(permissibleHeight, heightBasedOnWidth);
 	if(!_text.empty()){
-		ss<<"<text x=\""<<_x<<"\" y=\""<<-(_y)<<"\" "<</*_format.toSVGString()<<*/" font-family=\"Verdana\" font-size=\""<<size<<"\" >"<<
+		ss<<"<text x=\""<<_x<<"\" y=\""<<-(_y)<<"\" "<</*_format.toSVGString()<<*/" font-family=\"Verdana\" font-size=\""<<size<<"\" dominant-baseline=\"middle\" alignment-baseline=\"central\" text-anchor=\"middle\">"<<
 				_text<<"</text>";
 	}
 	return ss.str();
@@ -400,7 +403,9 @@ Text& Text::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 }
 
 BoundingBox Text::getBoundingBox() const {
-	return {_x, _y, _x, _y};
+	const auto halfHeight = 0.5;
+	const auto halfWidth = _text.size() * 2 * halfHeight /2;
+	return {_x - halfWidth, _y - halfHeight, _x + halfWidth, _y + halfHeight };
 }
 
 
