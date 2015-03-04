@@ -396,6 +396,10 @@ Text& Text::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 		} else {
 			raise(sessionEnvironment);
 		}
+	} else if(operands.size()==1) {
+		_text = operands[0].toString();
+		_x = 0.0;
+		_y = 0.0;
 	} else {
 		raise(sessionEnvironment);
 	}
