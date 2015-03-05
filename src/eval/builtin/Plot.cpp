@@ -206,6 +206,32 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				}));
 			}
 
+
+			const auto yDivisions = sessionEnvironment.recursiveEvaluate(
+					ast::Node::make<ast::FunctionCall>(ids::FindDivisions, {
+							ast::Node::make<ast::FunctionCall>(ids::List, {
+									ast::Node::make<math::Real>(minY),
+									ast::Node::make<math::Real>(maxY)
+							}),
+							ast::Node::make<math::Rational>(8)
+					})
+			).get<ast::FunctionCall>().getOperands();
+
+			for(const auto& tick: yDivisions) {
+				merged.push_back(ast::Node::make<ast::FunctionCall>(ids::Line, {
+						ast::Node::make<ast::FunctionCall>(ids::List, {
+							ast::Node::make<ast::FunctionCall>(ids::List, {
+									ast::Node::make<math::Real>(0.01 * (maxX - minX)),
+									ast::Node::make<math::Real>(tick.getNumeric())
+							}),
+							ast::Node::make<ast::FunctionCall>(ids::List, {
+									ast::Node::make<math::Real>(-0.01 * (maxX - minX)),
+									ast::Node::make<math::Real>(tick.getNumeric())
+							})
+						})
+				}));
+			}
+
 			// merged now includes all function lines, and axes.
 			const auto GraphicsNode = ast::Node::make<ast::FunctionCall>(ids::Graphics,
 					{ast::Node::make<ast::FunctionCall>(ids::List, merged )});
