@@ -193,6 +193,25 @@ BoundingBox Ellipse::getBoundingBox() const {
 	return {minX-stroke, minY-stroke, maxX+stroke, maxY+stroke};
 }
 
+namespace detail {
+
+using Point = std::pair<math::Real, math::Real>;
+using Line = std::pair<Point, Point>;
+
+bool isPointOnLine(Point p, Line l) {
+	const auto lineDy = l.second.second - l.first.second;
+	const auto lineDx = l.second.first - l.first.first;
+
+	const auto pointDy = p.second - l.first.second;
+	const auto pointDx = p.first - l.first.first;
+
+	if(lineDx == 0 || pointDx == 0) return false;
+
+	return (lineDy/lineDx) == (pointDy/pointDx);
+}
+
+}
+
 std::string Line::toSVGString() const {
 //
 // The following commands are available for path data:
@@ -213,9 +232,15 @@ std::string Line::toSVGString() const {
 		ss<<"<path "<<
 		_format.toSVGString()<<
 		"d=\"M"<<points.front().first<<" "<<-points.front().second;
-		std::for_each(points.begin()+1, points.end(), [&ss](const std::pair<math::Real, math::Real>& p){
-					ss<<" L"<<p.first.convert_to<double>()<<" "<<-p.second.convert_to<double>();
-				});
+
+		for(auto it = points.begin() + 1; it != points.end() -1; ++it) {
+			if( not detail::isPointOnLine(*it, {it[-1], it[1]})) {
+				ss << " L" << it->first.convert_to<double>()
+					<< " " << -it->second.convert_to<double>();
+			}
+		}
+		ss << " L" << points.back().first
+			<< " " << -points.back().second;
 		ss<<"\"/>"; // end of path string.
 		return ss.str();
 	} else {
@@ -250,7 +275,6 @@ Line& Line::fromOperands(const ast::Operands& operands, eval::SessionEnvironment
 			raise(environment);
 		}
 	} else {
-		std::cout<<"Line got "<<operands.size()<<" Operands"<<std::endl;
 		raise(environment);
 	}
 	return *this;
