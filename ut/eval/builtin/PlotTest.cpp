@@ -74,7 +74,8 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( Plot_should_have_line_for_linear_function, range,
 	BOOST_REQUIRE( functionLine.isFunctionCall( eval::ids::Line ));
 	const auto lineOperands = functionLine.get<ast::FunctionCall>().getOperands();
 
-	BOOST_REQUIRE_GE( lineOperands.size(), 2 );
+	BOOST_REQUIRE( !lineOperands.empty() );
+	BOOST_CHECK_EQUAL( lineOperands.size(), 1);
 	BOOST_REQUIRE( lineOperands.front().isFunctionCall(eval::ids::List));
 	const auto start = lineOperands.front().get<ast::FunctionCall>().getOperands().front();
 	const auto finish = lineOperands.front().get<ast::FunctionCall>().getOperands().back();

@@ -66,16 +66,31 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 						maxY = currentY;
 						first = false;
 					}
-					currentLine.push_back(ast::Node::make<ast::FunctionCall>(ids::List, {
-									ast::Node::make<math::Real>(currentX),
-									ast::Node::make<math::Real>(currentY)
-								}));
+					const auto isOnPreviousLine = [&currentLine](math::Real x, math::Real y) {
+						math::Real previousX = currentLine.rbegin()[0].get<ast::FunctionCall>().getOperands()[0].getNumeric();
+						math::Real previousY = currentLine.rbegin()[0].get<ast::FunctionCall>().getOperands()[1].getNumeric();
+						math::Real previousPreviousX = currentLine.rbegin()[1].get<ast::FunctionCall>().getOperands()[0].getNumeric();
+						math::Real previousPreviousY = currentLine.rbegin()[1].get<ast::FunctionCall>().getOperands()[1].getNumeric();
+
+						return (y-previousY)/(x-previousX) == (y-previousPreviousY)/(x-previousPreviousX);
+					};
+					if(currentLine.size() < 2 || !isOnPreviousLine(currentX, currentY)) {
+						currentLine.push_back(ast::Node::make<ast::FunctionCall>(ids::List, {
+										ast::Node::make<math::Real>(currentX),
+										ast::Node::make<math::Real>(currentY)
+									}));
+					} else {
+						currentLine.back() = ast::Node::make<ast::FunctionCall>(ids::List, {
+								ast::Node::make<math::Real>(currentX),
+								ast::Node::make<math::Real>(currentY)
+								});
+					}
 				} else {
 					// break in function Line
 					if(!currentLine.empty()){
 						lineVector.push_back(
 							ast::Node::make<ast::FunctionCall>(ids::Line, {
-								ast::Node::make<ast::FunctionCall>(ids::List, currentLine)
+								ast::Node::make<ast::FunctionCall>(ids::List, std::move(currentLine))
 							})
 						);
 						currentLine.clear();
