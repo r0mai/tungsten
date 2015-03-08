@@ -2,13 +2,14 @@
 #include <boost/test/unit_test.hpp>
 
 #include <io/graphics/Primitives.hpp>
+#include "../../eval/UnitTestSessionEnvironment.hpp"
 #include "../../eval/builtin/Fixture.hpp"
 
 BOOST_FIXTURE_TEST_SUITE( PrimitivesTest, BuiltinFunctionFixture )
 
 using namespace tungsten;
 
-BOOST_AUTO_TEST_CASE( Line_of_two_points_should_have_two_points_in_svg ) {
+BOOST_AUTO_TEST_CASE( Line_of_two_points_should_have_two_points ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Line[{{0,0},{1,1}}]");
 
 	BOOST_REQUIRE( result );
@@ -42,6 +43,83 @@ BOOST_AUTO_TEST_CASE( Line_of_two_points_should_have_two_points_in_svg ) {
 	BOOST_CHECK_EQUAL( startPoint[1].getNumeric(), 0 );
 	BOOST_CHECK_EQUAL( endPoint[0].getNumeric(), 1 );
 	BOOST_CHECK_EQUAL( endPoint[1].getNumeric(), 1 );
+}
+
+
+BOOST_AUTO_TEST_CASE( BoundingBox_of_two_point_line_should_same_as_points ) {
+
+	UnitTestEnvironment environment;
+	auto line = io::graphics::Line{}.fromOperands({
+			ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(0),
+							ast::Node::make<math::Real>(0)
+					}),
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(1),
+							ast::Node::make<math::Real>(1)
+					})
+			})
+	}, environment);
+
+	const auto boundingBox = line.getBoundingBox();
+	BOOST_CHECK_EQUAL(boundingBox.minX, 0);
+	BOOST_CHECK_EQUAL(boundingBox.minY, 0);
+	BOOST_CHECK_EQUAL(boundingBox.maxX, 1);
+	BOOST_CHECK_EQUAL(boundingBox.maxY, 1);
+
+}
+
+BOOST_AUTO_TEST_CASE( Svg_string_of_two_point_line_test ) {
+
+	UnitTestEnvironment environment;
+	auto line = io::graphics::Line{}.fromOperands({
+			ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(0),
+							ast::Node::make<math::Real>(0)
+					}),
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(1),
+							ast::Node::make<math::Real>(1)
+					})
+			})
+	}, environment);
+
+	const auto svgString = line.toSVGString();
+
+	const auto expected = R"phi(<path stroke-width="1" stroke-opacity="1" fill-opacity="1" fill="none" stroke="rgb(0, 0, 0)" vector-effect="non-scaling-stroke" d="M0 0 L1 -1"/>)phi";
+
+	BOOST_CHECK_EQUAL(svgString, expected);
+
+}
+
+BOOST_AUTO_TEST_CASE( Svg_string_of_three_point_line_test ) {
+
+	UnitTestEnvironment environment;
+	auto line = io::graphics::Line{}.fromOperands({
+			ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(0),
+							ast::Node::make<math::Real>(0)
+					}),
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(1),
+							ast::Node::make<math::Real>(1)
+					}),
+					ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+							ast::Node::make<math::Real>(2),
+							ast::Node::make<math::Real>(0)
+					})
+			})
+	}, environment);
+
+	const auto svgString = line.toSVGString();
+
+	const auto expected = R"phi(<path stroke-width="1" stroke-opacity="1" fill-opacity="1" fill="none" stroke="rgb(0, 0, 0)" vector-effect="non-scaling-stroke" d="M0 0 L1 -1 L2 0"/>)phi";
+
+	BOOST_CHECK_EQUAL(svgString, expected);
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
