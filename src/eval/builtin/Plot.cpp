@@ -123,7 +123,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				sessionEnvironment.removePattern(variable);
 			}
 
-			if( abs(maxY - minY) <= boost::math::constants::phi<double>()*abs(maxX-minX) ){
+			if( (maxX - minX) / (maxY - minY) > boost::math::constants::phi<double>() ){
 				// graph is very wide.
 //				std::cout<<"wide"<<std::endl;
 				const auto height = abs(maxY - minY);
@@ -133,7 +133,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				maxY += differenceByTwo;
 				minY -= differenceByTwo;
 
-			} else if( abs(maxX - minX) <= abs(maxY-minY) / boost::math::constants::phi<double>() ) {
+			} else if( (maxY - minY) / (maxX - minX) > boost::math::constants::phi<double>() ) {
 				//graph is very tall
 //				std::cout<<"tall"<<std::endl;
 				const auto width = abs(maxX - minX);
@@ -143,10 +143,7 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				maxX += differenceByTwo;
 				minX -= differenceByTwo;
 
-			} else {
-				std::cout<<"goldilocks"<<std::endl;
 			}
-
 
 
 			// line vector is now an array of Line[]-s
@@ -157,13 +154,13 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 
 			math::Real axisX, axisY;
 
-			if( minX < 0.0 && 0.0 < maxX ){
+			if( minX <= 0.0 && 0.0 <= maxX ){
 				axisX = 0.0;
 			} else {
 				axisX = minX;
 			}
 
-			if( minY < 0.0 && 0.0 < maxY ){
+			if( minY <= 0.0 && 0.0 <= maxY ){
 				axisY = 0.0;
 			} else {
 				axisY = minY;
@@ -211,11 +208,11 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 						ast::Node::make<ast::FunctionCall>(ids::List, {
 							ast::Node::make<ast::FunctionCall>(ids::List, {
 									ast::Node::make<math::Real>(tick.getNumeric()),
-									ast::Node::make<math::Real>(0.01 * (maxY - minY))
+									ast::Node::make<math::Real>(0.01 * (maxY - minY)+axisY)
 							}),
 							ast::Node::make<ast::FunctionCall>(ids::List, {
 									ast::Node::make<math::Real>(tick.getNumeric()),
-									ast::Node::make<math::Real>(-0.01 * (maxY - minY))
+									ast::Node::make<math::Real>(-0.01 * (maxY - minY)+axisY)
 							})
 						})
 				}));
@@ -236,12 +233,12 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 				merged.push_back(ast::Node::make<ast::FunctionCall>(ids::Line, {
 						ast::Node::make<ast::FunctionCall>(ids::List, {
 							ast::Node::make<ast::FunctionCall>(ids::List, {
-									ast::Node::make<math::Real>(0.01 * (maxX - minX)),
+									ast::Node::make<math::Real>(0.01 * (maxX - minX)+axisX),
 									ast::Node::make<math::Real>(tick.getNumeric())
 							}),
 							ast::Node::make<ast::FunctionCall>(ids::List, {
 									ast::Node::make<math::Real>(-0.01 * (maxX - minX)),
-									ast::Node::make<math::Real>(tick.getNumeric())
+									ast::Node::make<math::Real>(tick.getNumeric()+axisX)
 							})
 						})
 				}));
