@@ -98,5 +98,107 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( Plot_should_have_line_for_linear_function, range,
 	// 0.15 above is 0.15%
 }
 
+BOOST_AUTO_TEST_CASE_TEMPLATE( Plot_should_place_x_axis_in_correct_location_for_linear_function, range, linear_test_values ) {
+	const auto coeffecient = range::first::value;
+	const auto rangeBegin = range::second::first::value;
+	const auto rangeEnd = range::second::second::value;
+
+	std::stringstream ss;
+	ss << "Plot[" << coeffecient << "*x, {x, " << rangeBegin << ", " << rangeEnd << "}]";
+
+	boost::optional<ast::Node> result = parseAndEvaluate(ss.str());
+	BOOST_REQUIRE( result );
+	BOOST_REQUIRE( result->isFunctionCall( eval::ids::Graphics ));
+
+	const auto operands = result->get<ast::FunctionCall>().getOperands();
+
+	BOOST_REQUIRE_EQUAL( operands.size(), 1);
+	BOOST_REQUIRE( operands.front().isFunctionCall( eval::ids::List ));
+
+	const auto listOperands = operands.front().get<ast::FunctionCall>().getOperands();
+
+	BOOST_REQUIRE_GE( listOperands.size(), 3 );
+	const auto functionLine = listOperands[0];
+	const auto xLine = listOperands[1];
+	const auto yLine = listOperands[2];
+
+	BOOST_REQUIRE( xLine.isFunctionCall( eval::ids::Line ));
+	const auto axisOperands = xLine.get<ast::FunctionCall>().getOperands();
+
+	BOOST_REQUIRE( !axisOperands.empty() );
+	BOOST_CHECK_EQUAL( axisOperands.size(), 1);
+	BOOST_REQUIRE( axisOperands.front().isFunctionCall(eval::ids::List));
+	const auto start = axisOperands.front().get<ast::FunctionCall>().getOperands().front();
+	const auto finish = axisOperands.front().get<ast::FunctionCall>().getOperands().back();
+
+	BOOST_REQUIRE(start.isFunctionCall( eval::ids::List ));
+	BOOST_REQUIRE(finish.isFunctionCall( eval::ids::List ));
+
+	BOOST_REQUIRE_EQUAL(start.get<ast::FunctionCall>().getOperands().size(), 2);
+	BOOST_REQUIRE_EQUAL(finish.get<ast::FunctionCall>().getOperands().size(), 2);
+
+	const math::Real startX = start.get<ast::FunctionCall>().getOperands().front().getNumeric();
+	const math::Real startY = start.get<ast::FunctionCall>().getOperands().back().getNumeric();
+	const math::Real endX = finish.get<ast::FunctionCall>().getOperands().front().getNumeric();
+	const math::Real endY = finish.get<ast::FunctionCall>().getOperands().back().getNumeric();
+
+	BOOST_CHECK_CLOSE(0, startX.convert_to<double>(), 0.15);
+	BOOST_CHECK_CLOSE(0, startY.convert_to<double>(), 0.15);
+	BOOST_CHECK_CLOSE(rangeEnd, endX.convert_to<double>(), 0.15);
+	BOOST_CHECK_CLOSE(0, endY.convert_to<double>(), 0.15);
+	// 0.15 above is 0.15%
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( Plot_should_place_y_axis_in_correct_location_for_linear_function, range, linear_test_values ) {
+	const auto coeffecient = range::first::value;
+	const auto rangeBegin = range::second::first::value;
+	const auto rangeEnd = range::second::second::value;
+
+	std::stringstream ss;
+	ss << "Plot[" << coeffecient << "*x, {x, " << rangeBegin << ", " << rangeEnd << "}]";
+
+	boost::optional<ast::Node> result = parseAndEvaluate(ss.str());
+	BOOST_REQUIRE( result );
+	BOOST_REQUIRE( result->isFunctionCall( eval::ids::Graphics ));
+
+	const auto operands = result->get<ast::FunctionCall>().getOperands();
+
+	BOOST_REQUIRE_EQUAL( operands.size(), 1);
+	BOOST_REQUIRE( operands.front().isFunctionCall( eval::ids::List ));
+
+	const auto listOperands = operands.front().get<ast::FunctionCall>().getOperands();
+
+	BOOST_REQUIRE_GE( listOperands.size(), 3 );
+	const auto functionLine = listOperands[0];
+	const auto xLine = listOperands[1];
+	const auto yLine = listOperands[2];
+
+	BOOST_REQUIRE( yLine.isFunctionCall( eval::ids::Line ));
+	const auto axisOperands = yLine.get<ast::FunctionCall>().getOperands();
+
+	BOOST_REQUIRE( !axisOperands.empty() );
+	BOOST_CHECK_EQUAL( axisOperands.size(), 1);
+	BOOST_REQUIRE( axisOperands.front().isFunctionCall(eval::ids::List));
+	const auto start = axisOperands.front().get<ast::FunctionCall>().getOperands().front();
+	const auto finish = axisOperands.front().get<ast::FunctionCall>().getOperands().back();
+
+	BOOST_REQUIRE(start.isFunctionCall( eval::ids::List ));
+	BOOST_REQUIRE(finish.isFunctionCall( eval::ids::List ));
+
+	BOOST_REQUIRE_EQUAL(start.get<ast::FunctionCall>().getOperands().size(), 2);
+	BOOST_REQUIRE_EQUAL(finish.get<ast::FunctionCall>().getOperands().size(), 2);
+
+	const math::Real startX = start.get<ast::FunctionCall>().getOperands().front().getNumeric();
+	const math::Real startY = start.get<ast::FunctionCall>().getOperands().back().getNumeric();
+	const math::Real endX = finish.get<ast::FunctionCall>().getOperands().front().getNumeric();
+	const math::Real endY = finish.get<ast::FunctionCall>().getOperands().back().getNumeric();
+
+	BOOST_CHECK_CLOSE(0, startX.convert_to<double>(), 0.15);
+	BOOST_CHECK_CLOSE(std::min(rangeBegin*coeffecient, rangeEnd*coeffecient), startY.convert_to<double>(), 0.15);
+	BOOST_CHECK_CLOSE(0, endX.convert_to<double>(), 0.15);
+	BOOST_CHECK_CLOSE(std::max(rangeBegin*coeffecient, rangeEnd*coeffecient), endY.convert_to<double>(), 0.15);
+	// 0.15 above is 0.15%
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
