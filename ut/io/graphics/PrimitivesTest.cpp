@@ -1,5 +1,6 @@
 
 #include <boost/test/unit_test.hpp>
+#include <boost/format.hpp>
 
 #include <io/graphics/Primitives.hpp>
 #include "../../eval/UnitTestSessionEnvironment.hpp"
@@ -20,6 +21,37 @@ BOOST_AUTO_TEST_CASE( Circle_with_no_params_should_be_centered_on_origin_with_ra
 	BOOST_CHECK_EQUAL(circle.radius(), 1);
 
 }
+
+namespace mp = boost::mpl;
+
+using CircleTestParameters = mp::list<
+		mp::pair<mp::pair<mp::int_<0>, mp::int_<0>>, mp::int_<1>>,
+		mp::pair<mp::pair<mp::int_<1>, mp::int_<1>>, mp::int_<1>>,
+		mp::pair<mp::pair<mp::int_<-1>, mp::int_<1>>, mp::int_<1>>
+>;
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( Circle_parameters_should_appear_in_svg, params, CircleTestParameters ) {
+	const auto x = params::first::first::value;
+	const auto y = params::first::second::value;
+	const auto r = params::second::value;
+	UnitTestEnvironment environment;
+	auto circle = io::graphics::Circle{}.fromOperands({
+			ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+					ast::Node::make<math::Real>(x),
+					ast::Node::make<math::Real>(y)
+			}),
+			ast::Node::make<math::Real>(r)
+	}, environment);
+
+	BOOST_REQUIRE_EQUAL(circle.center().first, x);
+	BOOST_REQUIRE_EQUAL(circle.center().second, y);
+	BOOST_REQUIRE_EQUAL(circle.radius(), r);
+
+	const auto expected = (boost::format(R"phi(<circle  cx="%1%" cy="%2%" r="%3%" stroke-width="1" stroke-opacity="1" fill-opacity="1" fill="none" stroke="rgb(0, 0, 0)" vector-effect="non-scaling-stroke"  />)phi") % x % -y % r).str();
+
+	BOOST_CHECK_EQUAL(circle.toSVGString(), expected);
+}
+
 
 BOOST_AUTO_TEST_CASE( Line_of_two_points_should_have_two_points ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Line[{{0,0},{1,1}}]");
