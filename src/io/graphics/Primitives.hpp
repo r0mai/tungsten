@@ -54,8 +54,10 @@ public:
 	virtual std::string toSVGString() const override ;
 
 	Circle& radius(const math::Real& arg);
+	math::Real radius() const { return _r; }
 
 	Circle& center(const math::Real& arg1, const math::Real& arg2);
+	std::pair<math::Real, math::Real> center() const { return std::make_pair(_x, _y); }
 
 	virtual Circle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 

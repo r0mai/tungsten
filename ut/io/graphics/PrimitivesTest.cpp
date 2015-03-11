@@ -9,6 +9,18 @@ BOOST_FIXTURE_TEST_SUITE( PrimitivesTest, BuiltinFunctionFixture )
 
 using namespace tungsten;
 
+BOOST_AUTO_TEST_CASE( Circle_with_no_params_should_be_centered_on_origin_with_radius_of_one ) {
+	UnitTestEnvironment environment;
+
+	auto circle = io::graphics::Circle{}.fromOperands({
+	}, environment);
+
+	BOOST_CHECK_EQUAL(circle.center().first, 0);
+	BOOST_CHECK_EQUAL(circle.center().second, 0);
+	BOOST_CHECK_EQUAL(circle.radius(), 1);
+
+}
+
 BOOST_AUTO_TEST_CASE( Line_of_two_points_should_have_two_points ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Line[{{0,0},{1,1}}]");
 
@@ -71,6 +83,7 @@ BOOST_AUTO_TEST_CASE( BoundingBox_of_two_point_line_should_same_as_points ) {
 }
 
 BOOST_AUTO_TEST_CASE( Svg_string_of_two_point_line_test ) {
+
 
 	UnitTestEnvironment environment;
 	auto line = io::graphics::Line{}.fromOperands({
