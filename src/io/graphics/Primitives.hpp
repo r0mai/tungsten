@@ -75,8 +75,10 @@ public:
 	virtual std::string toSVGString() const override ;
 
 	Rectangle& topLeft(const math::Real& arg1, const math::Real& arg2);
+	std::pair<math::Real, math::Real> topLeft() const { return std::make_pair(_topLeftX, _topLeftY); };
 
 	Rectangle& bottomRight(const math::Real& arg1, const math::Real& arg2);
+	std::pair<math::Real, math::Real> bottomRight() const { return std::make_pair(_bottomRightX, _bottomRightY); };
 
 	virtual Rectangle& fromOperands(const ast::Operands& operands, eval::SessionEnvironment& environment);
 	virtual BoundingBox getBoundingBox() const override;

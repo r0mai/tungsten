@@ -53,6 +53,19 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( Circle_parameters_should_appear_in_svg, params, C
 }
 
 
+BOOST_AUTO_TEST_CASE( Rectangle_with_no_params_should_be_centered_on_origin_with_sides_of_one ) {
+	UnitTestEnvironment environment;
+
+	auto rectangle = io::graphics::Rectangle{}.fromOperands({
+	}, environment);
+
+	BOOST_CHECK_EQUAL(rectangle.topLeft().first, 0);
+	BOOST_CHECK_EQUAL(rectangle.topLeft().second, 0);
+	BOOST_CHECK_EQUAL(rectangle.bottomRight().first, 1);
+	BOOST_CHECK_EQUAL(rectangle.bottomRight().first, 1);
+
+}
+
 BOOST_AUTO_TEST_CASE( Line_of_two_points_should_have_two_points ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Line[{{0,0},{1,1}}]");
 
