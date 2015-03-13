@@ -1,5 +1,6 @@
 
 #include "eval/SessionEnvironment.hpp"
+#include "eval/overload.hpp"
 
 #include <chrono>
 
@@ -8,25 +9,34 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-OptionalNode AbsoluteTime(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+struct AbsoluteTimeImpl {
+
+template<typename... Ts>
+OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, Ts&&...) {
+	sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argrx, {
+			ast::Node::make<ast::Identifier>(ids::AbsoluteTime),
+			ast::Node::make<math::Rational>(sizeof...(Ts)),
+			ast::Node::make<math::Rational>(0)
+	} ));
+	return EvaluationFailure();
+}
+
+OptionalNode operator()(eval::SessionEnvironment&) {
 	using namespace boost::posix_time;
 	using namespace boost::gregorian;
-
-	if(!operands.empty()) {
-		sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argrx, {
-				ast::Node::make<ast::Identifier>(ids::AbsoluteTime),
-				ast::Node::make<math::Rational>(operands.size()),
-				ast::Node::make<math::Rational>(0)
-		} ));
-		return EvaluationFailure();
-	}
-
 	ptime epoch(date(1970, 1, 1));
 	ptime pt = second_clock::universal_time();
 
 	time_duration diff = pt - epoch;
 
 	return ast::Node::make<math::Rational>(boost::lexical_cast<int>(diff.total_seconds()));
+}
+
+};
+
+OptionalNode AbsoluteTime(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	eval::Dispatcher<AbsoluteTimeImpl> dispatcher(sessionEnvironment);
+	return dispatcher(operands);
 }
 
 OptionalNode Timing(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
