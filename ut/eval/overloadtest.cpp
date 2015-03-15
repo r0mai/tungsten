@@ -2,6 +2,7 @@
 #include "../eval/UnitTestSessionEnvironment.hpp"
 #include "../eval/builtin/Fixture.hpp"
 #include <boost/test/unit_test.hpp>
+#include <boost/mpl/list.hpp>
 
 BOOST_FIXTURE_TEST_SUITE( OverloadTest, BuiltinFunctionFixture )
 
@@ -62,6 +63,43 @@ BOOST_AUTO_TEST_CASE( unaryTest ) {
 
 	BOOST_REQUIRE(UnaryTester{}(environment, math::Real{0}));
 	BOOST_CHECK(dispatcher({ast::Node::make<math::Real>(0)}));
+}
+
+// areAllOfSameType tests here
+
+BOOST_AUTO_TEST_CASE( EmptyRangeShouldBeOfSameType ) {
+	BOOST_CHECK_EQUAL( eval::areAllOfSameType({}), true );
+}
+
+BOOST_AUTO_TEST_CASE( SingleElementRangeShouldBeOfSameType ) {
+	BOOST_CHECK_EQUAL( eval::areAllOfSameType({ast::Node::make<math::Rational>(0)}), true );
+}
+
+using NumericTypes =
+	boost::mpl::list<math::Real, math::Rational>;
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( TwoCorrespondingNumericsShouldBeOfSameType, TypeParam, NumericTypes ) {
+	BOOST_CHECK_EQUAL( eval::areAllOfSameType({
+			ast::Node::make<TypeParam>(0),
+			ast::Node::make<TypeParam>(1)
+	}), true);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( ThreeCorrespondingNumericsShouldBeOfSameType, TypeParam, NumericTypes ) {
+	BOOST_CHECK_EQUAL( eval::areAllOfSameType({
+			ast::Node::make<TypeParam>(0),
+			ast::Node::make<TypeParam>(1),
+			ast::Node::make<TypeParam>(2)
+	}), true);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( FourCorrespondingNumericsShouldBeOfSameType, TypeParam, NumericTypes ) {
+	BOOST_CHECK_EQUAL( eval::areAllOfSameType({
+			ast::Node::make<TypeParam>(0),
+			ast::Node::make<TypeParam>(1),
+			ast::Node::make<TypeParam>(2),
+			ast::Node::make<TypeParam>(3)
+	}), true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

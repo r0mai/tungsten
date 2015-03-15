@@ -5,6 +5,8 @@
 
 namespace tungsten { namespace eval {
 
+bool areAllOfSameType(const ast::Operands& operands);
+
 template<typename Implementation>
 class Dispatcher {
 public:
@@ -15,7 +17,6 @@ public:
 		naryVisitor v(sessionEnvironment);
 		switch(operands.size()) {
 			case 0:
-				std::cerr<<"calling nullary"<<std::endl;
 				return v();
 			case 1:
 				return ast::applyVisitor(operands[0], v);
