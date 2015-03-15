@@ -102,5 +102,40 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( FourCorrespondingNumericsShouldBeOfSameType, Type
 	}), true);
 }
 
+// castToCommonTypeTests
+BOOST_AUTO_TEST_CASE_TEMPLATE( OneElementListOfNumericShouldCastToNumeric, TypeParam, NumericTypes ) {
+	ast::Operands listOfReals;
+
+	listOfReals.push_back(ast::Node::make<TypeParam>(0));
+	auto result = eval::castListToCommonType(listOfReals);
+	BOOST_REQUIRE(boost::get<std::vector<TypeParam>>(&result));
+	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[0], 0);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( TwoElementListOfNumericShouldCastToNumeric, TypeParam, NumericTypes ) {
+	ast::Operands listOfReals;
+
+	listOfReals.push_back(ast::Node::make<TypeParam>(0));
+	listOfReals.push_back(ast::Node::make<TypeParam>(10));
+	auto result = eval::castListToCommonType(listOfReals);
+	BOOST_REQUIRE(boost::get<std::vector<TypeParam>>(&result));
+	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[0], 0);
+	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[1], 10);
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE( ThreeElementListOfNumericShouldCastToNumeric, TypeParam, NumericTypes ) {
+	ast::Operands listOfReals;
+
+	listOfReals.push_back(ast::Node::make<TypeParam>(0));
+	listOfReals.push_back(ast::Node::make<TypeParam>(10));
+	listOfReals.push_back(ast::Node::make<TypeParam>(150));
+	auto result = eval::castListToCommonType(listOfReals);
+	BOOST_REQUIRE(boost::get<std::vector<TypeParam>>(&result));
+	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[0], 0);
+	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[1], 10);
+	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[2], 150);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 

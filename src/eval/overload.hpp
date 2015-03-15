@@ -6,6 +6,13 @@
 namespace tungsten { namespace eval {
 
 bool areAllOfSameType(const ast::Operands& operands);
+boost::variant<
+		std::vector<math::Real>,
+		std::vector<math::Rational>,
+		std::vector<ast::Identifier>,
+		std::vector<ast::String>,
+		std::vector<ast::FunctionCall>
+> castListToCommonType(const ast::Operands& operands);
 
 template<typename Implementation>
 class Dispatcher {
