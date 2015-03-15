@@ -45,6 +45,21 @@ private:
 			return Implementation{}.template operator()<typename std::decay<Ts>::type...>(sessionEnvironment, ts...);
 		}
 
+		boost::optional<ast::Node> operator()(const ast::FunctionCall& f) {
+			if ( f.getFunction() == ast::Node::make<ast::Identifier>(ids::List) ) {
+				if ( areAllOfSameType(f.getOperands()) ) {
+					const auto commonTyped = castListToCommonType(f.getOperands());
+					return boost::apply_visitor(*this, commonTyped);
+				}
+			}
+			return Implementation{}.template operator()<ast::FunctionCall>(sessionEnvironment, f);
+		}
+
+		template<typename T>
+		boost::optional<ast::Node> operator()(const T& list) {
+			return Implementation{}.template operator()<T>(sessionEnvironment, list);
+		}
+
 		SessionEnvironment& sessionEnvironment;
 	};
 
