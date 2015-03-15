@@ -65,6 +65,34 @@ BOOST_AUTO_TEST_CASE( unaryTest ) {
 	BOOST_CHECK(dispatcher({ast::Node::make<math::Real>(0)}));
 }
 
+namespace Binary {
+
+template<typename... Ts>
+boost::optional<ast::Node> binary(eval::SessionEnvironment&, const Ts&...) {
+	return boost::none;
+}
+
+boost::optional<ast::Node> binary(eval::SessionEnvironment&, const math::Real&, const math::Real&) {
+	return ast::Node::make<math::Rational>(0);
+}
+
+} // namespace Binary
+
+struct BinaryTester {
+	template<typename... Ts>
+	boost::optional<ast::Node> operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&... ts) {
+		return Binary::binary(sessionEnvironment, ts...);
+	}
+};
+
+BOOST_AUTO_TEST_CASE( binaryTest ) {
+	UnitTestEnvironment environment;
+	eval::Dispatcher<BinaryTester> dispatcher(environment);
+
+	BOOST_REQUIRE(BinaryTester{}(environment, math::Real{0}, math::Real{0}));
+	BOOST_CHECK(dispatcher({ast::Node::make<math::Real>(0), ast::Node::make<math::Real>(0)}));
+}
+
 // areAllOfSameType tests here
 
 BOOST_AUTO_TEST_CASE( EmptyRangeShouldBeOfSameType ) {
