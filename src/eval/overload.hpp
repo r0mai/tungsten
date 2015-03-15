@@ -20,9 +20,7 @@ public:
 			case 1:
 				return ast::applyVisitor(operands[0], v);
 			case 2:
-				return v(operands[0], operands[1]);
-			case 3:
-				return v(operands[0], operands[1], operands[2]);
+				return ast::applyVisitor(operands[0], operands[1], v);
 			default:
 				return v(operands);
 		}
