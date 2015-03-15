@@ -9,10 +9,10 @@
 
 namespace tungsten { namespace eval { namespace builtin {
 
-struct AbsoluteTimeImpl {
+namespace detail {
 
 template<typename... Ts>
-OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&...) {
+OptionalNode getTime(eval::SessionEnvironment& sessionEnvironment, const Ts&...) {
 	sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argrx, {
 			ast::Node::make<ast::Identifier>(ids::AbsoluteTime),
 			ast::Node::make<math::Rational>(sizeof...(Ts)),
@@ -21,7 +21,7 @@ OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&.
 	return EvaluationFailure();
 }
 
-OptionalNode operator()(eval::SessionEnvironment&) {
+OptionalNode getTime(eval::SessionEnvironment&) {
 	using namespace boost::posix_time;
 	using namespace boost::gregorian;
 	ptime epoch(date(1970, 1, 1));
@@ -31,6 +31,14 @@ OptionalNode operator()(eval::SessionEnvironment&) {
 
 	return ast::Node::make<math::Rational>(boost::lexical_cast<int>(diff.total_seconds()));
 }
+
+} // namespace detail
+
+struct AbsoluteTimeImpl {
+	template<typename... Ts>
+	OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&... ts) {
+		return detail::getTime(sessionEnvironment, ts...);
+	}
 
 };
 
