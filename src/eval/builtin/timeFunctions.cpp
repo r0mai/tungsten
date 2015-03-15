@@ -12,7 +12,7 @@ namespace tungsten { namespace eval { namespace builtin {
 struct AbsoluteTimeImpl {
 
 template<typename... Ts>
-OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, Ts&&...) {
+OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&...) {
 	sessionEnvironment.raiseMessage( Message(ids::AbsoluteTime, ids::argrx, {
 			ast::Node::make<ast::Identifier>(ids::AbsoluteTime),
 			ast::Node::make<math::Rational>(sizeof...(Ts)),

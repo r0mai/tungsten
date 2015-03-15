@@ -11,13 +11,14 @@ public:
 	Dispatcher() = delete;
 	Dispatcher(SessionEnvironment& sessionEnvironment) : sessionEnvironment(sessionEnvironment) { }
 
-	auto operator()(const ast::Operands& operands) {
+	boost::optional<ast::Node> operator()(const ast::Operands& operands) {
 		naryVisitor v(sessionEnvironment);
 		switch(operands.size()) {
 			case 0:
+				std::cerr<<"calling nullary"<<std::endl;
 				return v();
 			case 1:
-				return v(operands[0]);
+				return ast::applyVisitor(operands[0], v);
 			case 2:
 				return v(operands[0], operands[1]);
 			case 3:
@@ -31,11 +32,11 @@ private:
 
 	SessionEnvironment& sessionEnvironment;
 
-	struct naryVisitor : boost::static_visitor<ast::Node> {
+	struct naryVisitor : boost::static_visitor<boost::optional<ast::Node>> {
 		naryVisitor(SessionEnvironment& sessionEnvironment): sessionEnvironment(sessionEnvironment) { }
 		template<typename... Ts>
-		auto operator()(Ts&&...ts) {
-			return Implementation{}(sessionEnvironment, std::forward<Ts>(ts)...);
+		boost::optional<ast::Node> operator()(const Ts&...ts) {
+			return Implementation{}.template operator()<typename std::decay<Ts>::type...>(sessionEnvironment, ts...);
 		}
 
 		SessionEnvironment& sessionEnvironment;
