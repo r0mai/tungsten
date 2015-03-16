@@ -163,6 +163,26 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( ThreeElementListOfNumericShouldCastToNumeric, Typ
 	BOOST_CHECK_EQUAL(boost::get<std::vector<TypeParam>>(result)[2], 150);
 }
 
+BOOST_AUTO_TEST_CASE( SinglePrimitiveTypeShouldBeAcquiredCorrectly ) {
+	const auto result = eval::detail::getTypeNames<int>();
+	BOOST_REQUIRE(!result.empty());
+	BOOST_CHECK_EQUAL(result.front(), "int");
+}
+
+BOOST_AUTO_TEST_CASE( SingleTemplatedTypeShouldBeAcquiredCorrectly ) {
+	const auto result = eval::detail::getTypeNames<std::pair<int, int>>();
+	BOOST_REQUIRE(!result.empty());
+	BOOST_CHECK_EQUAL(result.front(), "std::pair<int, int>");
+}
+
+
+BOOST_AUTO_TEST_CASE( TwoPrimitiveTypesShouldBeAcquiredCorrectly ) {
+	const auto result = eval::detail::getTypeNames<int, bool>();
+	BOOST_REQUIRE(!result.empty());
+	BOOST_CHECK_EQUAL(result.front(), "int");
+	BOOST_CHECK_EQUAL(result.back(), "bool");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

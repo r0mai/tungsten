@@ -2,6 +2,10 @@
 #define EVAL_OVERLOAD_HPP_
 #include "ast/Node.hpp"
 #include "eval/SessionEnvironment.hpp"
+#include <map>
+#include <string>
+#include <vector>
+#include <boost/type_index.hpp>
 
 namespace tungsten { namespace eval {
 
@@ -13,6 +17,31 @@ boost::variant<
 		std::vector<ast::String>,
 		std::vector<ast::FunctionCall>
 > castListToCommonType(const ast::Operands& operands);
+
+namespace detail {
+
+template<typename... Ts>
+std::vector<std::string> getTypeNames() {
+	return { std::string(boost::typeindex::type_id<Ts>().pretty_name())... };
+}
+
+template<typename... Ts>
+std::string getTypePackString() {
+	const auto typeStringPack = getTypeNames<Ts...>();
+	if(typeStringPack.empty()) { return ""; }
+	if(typeStringPack.size() == 0) { return typeStringPack.front(); }
+
+	std::string result = typeStringPack.front();
+
+	for(int i=1; i<typeStringPack.size(); ++i) {
+		result += ", " + typeStringPack[i];
+	}
+
+	return result;
+
+}
+
+} // namespace detail
 
 template<typename Implementation>
 class Dispatcher {
