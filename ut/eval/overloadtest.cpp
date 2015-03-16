@@ -11,7 +11,6 @@ using namespace tungsten;
 namespace Nullary {
 	template<typename... Ts>
 	boost::optional<ast::Node> nullary(eval::SessionEnvironment&, const Ts&...) {
-		std::cerr<<__PRETTY_FUNCTION__<<std::endl;
 		return boost::none;
 	}
 
