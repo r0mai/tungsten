@@ -114,6 +114,25 @@ OptionalNode continuedFraction<math::Real>(eval::SessionEnvironment& sessionEnvi
 
 }
 
+template<>
+OptionalNode continuedFraction<math::Real, math::Rational>(eval::SessionEnvironment& sessionEnvironment, const math::Real& r, const math::Rational& n) {
+	if(n < 0 || ! math::isInteger(n)) {
+		return EvaluationFailure();
+	}
+	auto cf = math::getContinuedFraction(r);
+
+	auto elementsToKeep = n.convert_to<std::size_t>();
+
+	ast::Operands result;
+	result.reserve(std::min(cf.size(), elementsToKeep));
+
+	for(int i=0; i<std::min(cf.size(), elementsToKeep); ++i) {
+		result.push_back(ast::Node::make<math::Rational>(std::move(cf[i])));
+	}
+
+	return ast::Node::make<ast::FunctionCall>(ids::List, result);
+}
+
 } // namespace ContinuedFractionImpl
 
 struct ContinuedFractionType {
