@@ -103,6 +103,7 @@ OptionalNode Export(const ast::Operands& operands, eval::SessionEnvironment& ses
 
 // Defined in FindDivisions.cpp
 OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode ContinuedFraction(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in timeFunctions.cpp
 OptionalNode AbsoluteTime(const ast::Operands&, eval::SessionEnvironment&);
@@ -161,7 +162,6 @@ Functions createFunctions() {
 	result[ids::Flatten] = &Flatten;
 	result[ids::Sort] = &Sort;
 	result[ids::Plot] = &Plot;
-	result[ids::FindDivisions] = &FindDivisions;
 	result[ids::Evaluate] = &Evaluate;
 	result[ids::N] = &N;
 	result[ids::NumericQ] = &NumericQ;
@@ -205,6 +205,8 @@ Functions createFunctions() {
 	result[ids::StringDrop] = &StringDrop;
 	result[ids::StringInsert] = &StringInsert;
 	result[ids::StringReverse] = &StringReverse;
+	result[ids::FindDivisions] = &FindDivisions;
+	result[ids::ContinuedFraction] = &ContinuedFraction;
 	return result;
 }
 

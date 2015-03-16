@@ -2,6 +2,7 @@
 #include <boost/multiprecision/integer.hpp>
 
 #include "functions.hpp"
+#include "eval/overload.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "math/mathFunctions.hpp"
 
@@ -89,6 +90,42 @@ OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironme
 		elements.push_back(ast::Node::make<math::Rational>(intermediate));
 	}
 	return ast::Node::make<ast::FunctionCall>(ids::List, elements);
+}
+
+namespace ContinuedFractionImpl {
+
+template<typename... Ts>
+OptionalNode continuedFraction(eval::SessionEnvironment& sessionEnvironment, const Ts&...) {
+	return EvaluationFailure();
+}
+
+template<>
+OptionalNode continuedFraction<math::Real>(eval::SessionEnvironment& sessionEnvironment, const math::Real& r) {
+	auto cf = math::getContinuedFraction(r);
+
+	ast::Operands result;
+	result.reserve(cf.size());
+
+	for(auto& element: cf) {
+		result.push_back(ast::Node::make<math::Rational>(std::move(element)));
+	}
+
+	return ast::Node::make<ast::FunctionCall>(ids::List, result);
+
+}
+
+} // namespace ContinuedFractionImpl
+
+struct ContinuedFractionType {
+	template<typename... Ts>
+	OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&... ts) {
+		return ContinuedFractionImpl::continuedFraction<typename std::decay<Ts>::type...>(sessionEnvironment, ts...);
+	}
+};
+
+
+OptionalNode ContinuedFraction(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	return eval::Dispatcher<ContinuedFractionType>{sessionEnvironment}(operands);
 }
 
 }}} // namespace tungsten::eval::builtin
