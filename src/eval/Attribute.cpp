@@ -94,7 +94,6 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::PrependTo, AttributeSet({ids::HoldFirst, ids::Protected}))
 		(ids::Length, AttributeSet({ids::Protected}))
 		(ids::HoldComplete, AttributeSet({ids::HoldAllComplete, ids::Protected}))
-		(ids::FindDivisions, AttributeSet({ids::ReadProtected, ids::Protected}))
 		(ids::Plot, AttributeSet({ids::HoldAll, ids::Protected}))
 		(ids::Graphics, AttributeSet({ids::Protected, ids::ReadProtected}))
 		(ids::Export, AttributeSet({ids::Protected, ids::ReadProtected}))
@@ -214,7 +213,9 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Characters, AttributeSet({ids::Listable, ids::ThreadSafe, ids::Protected}))
 		(ids::StringInsert, AttributeSet({ids::Protected}))
 		(ids::StringReverse, AttributeSet({ids::Listable, ids::ThreadSafe, ids::Protected}))
-		(ids::StringJoin, AttributeSet({ids::Flat, ids::OneIdentity, ids::Protected}));
+		(ids::StringJoin, AttributeSet({ids::Flat, ids::OneIdentity, ids::Protected}))
+		(ids::FindDivisions, AttributeSet({ids::ReadProtected, ids::Protected}))
+		(ids::ContinuedFraction, AttributeSet({ids::ReadProtected, ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }
