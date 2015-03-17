@@ -147,4 +147,39 @@ OptionalNode ContinuedFraction(const ast::Operands& operands, eval::SessionEnvir
 	return eval::Dispatcher<ContinuedFractionType>{sessionEnvironment}(operands);
 }
 
+namespace FromContinuedFractionImpl {
+template<typename... Ts>
+OptionalNode fromContinuedFraction(eval::SessionEnvironment& sessionEnvironment, const Ts&...) {
+	return EvaluationFailure();
+}
+
+template<>
+OptionalNode fromContinuedFraction<std::vector<math::Rational>>(eval::SessionEnvironment& sessionEnvironment, const std::vector<math::Rational>& list) {
+
+	std::vector<math::Integer> elements;
+	elements.reserve(list.size());
+
+	for(int i=0; i<list.size(); ++i) {
+		if(!math::isInteger(list[i])) {
+		   	return EvaluationFailure();
+	   	}
+		elements.push_back(list[i].convert_to<math::Integer>());
+	}
+
+	return ast::Node::make<math::Rational>(math::evaluateContinuedFraction(std::move(elements)));
+}
+
+} // namespace FromContinuedFractionImpl
+
+struct FromContinuedFractionType {
+	template<typename... Ts>
+	OptionalNode operator()(eval::SessionEnvironment& sessionEnvironment, const Ts&... ts) {
+		return FromContinuedFractionImpl::fromContinuedFraction<typename std::decay<Ts>::type...>(sessionEnvironment, ts...);
+	}
+};
+
+OptionalNode FromContinuedFraction(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	return eval::Dispatcher<FromContinuedFractionType>{sessionEnvironment}(operands);
+}
+
 }}} // namespace tungsten::eval::builtin

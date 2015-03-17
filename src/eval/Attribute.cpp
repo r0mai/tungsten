@@ -215,7 +215,8 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::StringReverse, AttributeSet({ids::Listable, ids::ThreadSafe, ids::Protected}))
 		(ids::StringJoin, AttributeSet({ids::Flat, ids::OneIdentity, ids::Protected}))
 		(ids::FindDivisions, AttributeSet({ids::ReadProtected, ids::Protected}))
-		(ids::ContinuedFraction, AttributeSet({ids::ReadProtected, ids::Protected}));
+		(ids::ContinuedFraction, AttributeSet({ids::ReadProtected, ids::Protected}))
+		(ids::FromContinuedFraction, AttributeSet({ids::ReadProtected, ids::Protected}));
 
 	return AttributeMap(attributeStorage);
 }

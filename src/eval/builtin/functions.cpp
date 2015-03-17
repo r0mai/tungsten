@@ -104,6 +104,7 @@ OptionalNode Export(const ast::Operands& operands, eval::SessionEnvironment& ses
 // Defined in FindDivisions.cpp
 OptionalNode FindDivisions(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ContinuedFraction(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode FromContinuedFraction(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in timeFunctions.cpp
 OptionalNode AbsoluteTime(const ast::Operands&, eval::SessionEnvironment&);
@@ -207,6 +208,7 @@ Functions createFunctions() {
 	result[ids::StringReverse] = &StringReverse;
 	result[ids::FindDivisions] = &FindDivisions;
 	result[ids::ContinuedFraction] = &ContinuedFraction;
+	result[ids::FromContinuedFraction] = &FromContinuedFraction;
 	return result;
 }
 
