@@ -13,22 +13,10 @@ struct AreTypesEqualVisitor: boost::static_visitor<bool> {
 };
 
 struct PushBackVisitor: boost::static_visitor<void> {
-	boost::variant<
-		std::vector<math::Real>,
-		std::vector<math::Rational>,
-		std::vector<ast::Identifier>,
-		std::vector<ast::String>,
-		std::vector<ast::FunctionCall>
-	>& storage;
+	SameTypeOperands& storage;
 
 	PushBackVisitor(
-		boost::variant<
-			std::vector<math::Real>,
-			std::vector<math::Rational>,
-			std::vector<ast::Identifier>,
-			std::vector<ast::String>,
-			std::vector<ast::FunctionCall>
-		>& storage) : storage(storage) { }
+		SameTypeOperands& storage) : storage(storage) { }
 
 	template<typename T>
 	void operator()(const T& t) {
@@ -56,22 +44,24 @@ bool areAllOfSameType(const ast::Operands& operands) {
 
 }
 
-boost::variant<
-		std::vector<math::Real>,
-		std::vector<math::Rational>,
-		std::vector<ast::Identifier>,
-		std::vector<ast::String>,
-		std::vector<ast::FunctionCall>
-> castListToCommonType(const ast::Operands& operands) {
+bool areAllListsOfSameType(const std::vector<SameTypeOperands>& operandLists) {
+	if(operandLists.size() < 2) { return true; }
+
+	auto equalityVisitor = detail::AreTypesEqualVisitor{};
+
+	for(int i = 1; i<operandLists.size(); ++i) {
+		if (!boost::apply_visitor(equalityVisitor, operandLists[i-1], operandLists[i])) {
+			return false;
+		}
+	}
+	return true;
+
+}
+
+SameTypeOperands castListToCommonType(const ast::Operands& operands) {
 	assert(!operands.empty() && "Cannot cast empty vector to common type");
 
-	boost::variant<
-			std::vector<math::Real>,
-			std::vector<math::Rational>,
-			std::vector<ast::Identifier>,
-			std::vector<ast::String>,
-			std::vector<ast::FunctionCall>
-	> returnValue;
+	SameTypeOperands returnValue;
 
 	detail::PushBackVisitor visitor(returnValue);
 	for(const auto& operand: operands) {

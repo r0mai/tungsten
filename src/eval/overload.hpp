@@ -9,14 +9,20 @@
 
 namespace tungsten { namespace eval {
 
-bool areAllOfSameType(const ast::Operands& operands);
+
+using SameTypeOperands =
 boost::variant<
 		std::vector<math::Real>,
 		std::vector<math::Rational>,
 		std::vector<ast::Identifier>,
 		std::vector<ast::String>,
 		std::vector<ast::FunctionCall>
-> castListToCommonType(const ast::Operands& operands);
+>;
+
+bool areAllOfSameType(const ast::Operands& operands);
+bool areAllListsOfSameType(const std::vector<SameTypeOperands>& operandLists);
+
+SameTypeOperands castListToCommonType(const ast::Operands& operands);
 
 namespace detail {
 
@@ -24,6 +30,27 @@ template<typename... Ts>
 std::vector<std::string> getTypeNames() {
 	return { std::string(boost::typeindex::type_id<Ts>().pretty_name())... };
 }
+
+template<typename... Ts>
+struct AllEqual : std::false_type { };
+
+template<typename Head1, typename Head2, typename... Tail>
+struct AllEqual<Head1, Head2, Tail...> {
+	static constexpr bool value = std::is_same<Head1, Head2>::value &&
+			AllEqual<Head2, Tail...>::value;
+};
+
+template<typename Head>
+struct AllEqual<Head> : std::true_type { };
+
+template<typename... Ts>
+struct AllEqualTo : std::false_type { };
+
+template<typename T, typename Head, typename... Tail>
+struct AllEqualTo<T, Head, Tail...> {
+	static constexpr bool value = std::is_same<T, Head>::value &&
+			AllEqual<Head, Tail...>::value;
+};
 
 template<typename... Ts>
 std::string getTypePackString() {
@@ -40,6 +67,9 @@ std::string getTypePackString() {
 	return result;
 
 }
+
+template<typename T>
+const T& addConst(const T& t) { return t; }
 
 } // namespace detail
 
@@ -70,18 +100,31 @@ private:
 	struct naryVisitor : boost::static_visitor<boost::optional<ast::Node>> {
 		naryVisitor(SessionEnvironment& sessionEnvironment): sessionEnvironment(sessionEnvironment) { }
 		template<typename... Ts>
-		boost::optional<ast::Node> operator()(const Ts&...ts) {
+		typename std::enable_if<!detail::AllEqualTo<ast::FunctionCall, Ts...>::value, boost::optional<ast::Node>>::type
+		operator()(const Ts&...ts) {
 			return Implementation{}.template operator()<typename std::decay<Ts>::type...>(sessionEnvironment, ts...);
 		}
 
-		boost::optional<ast::Node> operator()(const ast::FunctionCall& f) {
-			if ( f.getFunction() == ast::Node::make<ast::Identifier>(ids::List) ) {
-				if ( areAllOfSameType(f.getOperands()) ) {
-					const auto commonTyped = castListToCommonType(f.getOperands());
-					return boost::apply_visitor(*this, commonTyped);
+		template<typename T, typename... Ts>
+		typename std::enable_if<detail::AllEqualTo<ast::FunctionCall, T, Ts...>::value, boost::optional<ast::Node>>::type
+		operator()(const T& t, const Ts&... ts) {
+			std::vector<bool> areLists = {
+					t.getFunction() == ast::Node::make<ast::Identifier>(ids::List),
+					ts.getFunction() == ast::Node::make<ast::Identifier>(ids::List)...
+			};
+			if ( std::all_of(areLists.begin(), areLists.end(), [](bool b) { return b; }) ) {
+				std::vector<bool> areOfSameTypes = {
+						areAllOfSameType(t.getOperands()),
+						areAllOfSameType(ts.getOperands())...
+				};
+				if ( std::all_of(areOfSameTypes.begin(), areOfSameTypes.end(), [](bool b) { return b;}) ) {
+					return boost::apply_visitor(*this,
+							detail::addConst(castListToCommonType(t.getOperands())),
+							detail::addConst(castListToCommonType(ts.getOperands()))...
+					);
 				}
 			}
-			return Implementation{}.template operator()<ast::FunctionCall>(sessionEnvironment, f);
+			return Implementation{}.template operator()<ast::FunctionCall>(sessionEnvironment, t, ts...);
 		}
 
 		template<typename T>
