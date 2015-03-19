@@ -92,6 +92,37 @@ BOOST_AUTO_TEST_CASE( binaryTest ) {
 	BOOST_CHECK(dispatcher({ast::Node::make<math::Real>(0), ast::Node::make<math::Real>(0)}));
 }
 
+namespace list1 {
+
+template<typename... Ts>
+boost::optional<ast::Node> list1(eval::SessionEnvironment&, const Ts&...) {
+	return boost::none;
+}
+
+boost::optional<ast::Node> list1(eval::SessionEnvironment&, const std::vector<math::Real>& l) {
+	return ast::Node::make<math::Real>(0);
+}
+
+} // namespace list1
+
+struct List1Tester {
+	template<typename... Ts>
+	auto operator()(eval::SessionEnvironment& sessionenvironment, const Ts&... ts) {
+		return list1::list1(sessionenvironment, ts...);
+	}
+};
+
+BOOST_AUTO_TEST_CASE( unaryListTest ) {
+	UnitTestEnvironment environment;
+	eval::Dispatcher<List1Tester> dispatcher(environment);
+
+	BOOST_REQUIRE(List1Tester{}(environment, std::vector<math::Real>{}));
+	const auto node = ast::Node::make<ast::FunctionCall>(eval::ids::List, {
+			ast::Node::make<math::Real>(0)
+	});
+	BOOST_CHECK(dispatcher({node}));
+}
+
 // areAllOfSameType tests here
 
 BOOST_AUTO_TEST_CASE( EmptyRangeShouldBeOfSameType ) {

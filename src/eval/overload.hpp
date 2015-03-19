@@ -4,6 +4,7 @@
 #include "eval/SessionEnvironment.hpp"
 #include <map>
 #include <string>
+#include <iostream>
 #include <vector>
 #include <boost/type_index.hpp>
 
@@ -48,8 +49,8 @@ struct AllEqualTo : std::false_type { };
 
 template<typename T, typename Head, typename... Tail>
 struct AllEqualTo<T, Head, Tail...> {
-	static constexpr bool value = std::is_same<T, Head>::value &&
-			AllEqual<Head, Tail...>::value;
+	static constexpr bool value = std::is_same<T, typename std::decay<Head>::type>::value &&
+			AllEqual<T, Tail...>::value;
 };
 
 template<typename... Ts>
@@ -125,11 +126,6 @@ private:
 				}
 			}
 			return Implementation{}.template operator()<ast::FunctionCall>(sessionEnvironment, t, ts...);
-		}
-
-		template<typename T>
-		boost::optional<ast::Node> operator()(const T& list) {
-			return Implementation{}.template operator()<T>(sessionEnvironment, list);
 		}
 
 		SessionEnvironment& sessionEnvironment;
