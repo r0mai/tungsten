@@ -76,14 +76,20 @@ template<> struct NodeTypeToInt<math::Rational> {
 template<> struct NodeTypeToInt<math::Real> {
 	static const int value = 2;
 };
-template<> struct NodeTypeToInt<String> {
+template<> struct NodeTypeToInt<math::ComplexReal> {
 	static const int value = 3;
 };
-template<> struct NodeTypeToInt<Identifier> {
+template<> struct NodeTypeToInt<math::ComplexRational> {
 	static const int value = 4;
 };
-template<> struct NodeTypeToInt<FunctionCall> {
+template<> struct NodeTypeToInt<String> {
 	static const int value = 5;
+};
+template<> struct NodeTypeToInt<Identifier> {
+	static const int value = 6;
+};
+template<> struct NodeTypeToInt<FunctionCall> {
+	static const int value = 7;
 };
 
 
@@ -144,6 +150,8 @@ struct GetByteCountVisitor : boost::static_visitor<std::size_t> {
    	}
 	std::size_t operator()(const math::Rational& rational) const { return math::getByteCount(rational); }
 	std::size_t operator()(const math::Real& real) const { return math::getByteCount(real); }
+	std::size_t operator()(const math::ComplexRational& rational) const { return math::getByteCount(rational); }
+	std::size_t operator()(const math::ComplexReal& real) const { return math::getByteCount(real); }
 };
 
 std::size_t Node::getByteCount() const {

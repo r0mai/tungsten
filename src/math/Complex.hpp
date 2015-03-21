@@ -14,6 +14,9 @@ typedef std::complex<Integer> ComplexInteger;
 typedef std::complex<Rational> ComplexRational;
 typedef std::complex<Real> ComplexReal;
 
+size_t getByteCount(const ComplexRational& rational);
+size_t getByteCount(const ComplexReal& real);
+
 }} //namespace tungsten::math
 
 #endif /* MATH_COMPLEX_HPP_ */

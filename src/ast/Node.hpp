@@ -90,7 +90,10 @@ public:
 	std::size_t getByteCount() const;
 
 private:
-	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
+	typedef boost::variant<
+			math::ComplexReal, math::ComplexRational,
+			math::Real, math::Rational,
+			FunctionCall, String, Identifier> Storage;
 	typedef std::shared_ptr<Storage> StoragePtr;
 	StoragePtr storagePtr;
 
