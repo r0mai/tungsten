@@ -13,6 +13,14 @@ struct GetHeadVisitor : boost::static_visitor<ast::Node> {
 		return ast::Node::make<ast::Identifier>(ids::Rational);
 	}
 
+	ast::Node operator()(const math::ComplexRational& /*rational*/) const {
+		return ast::Node::make<ast::Identifier>(ids::Complex);
+	}
+
+	ast::Node operator()(const math::ComplexReal& /*real*/) const {
+		return ast::Node::make<ast::Identifier>(ids::Complex);
+	}
+
 	ast::Node operator()(const math::Real& /*real*/) const {
 		return ast::Node::make<ast::Identifier>(ids::Real);
 	}

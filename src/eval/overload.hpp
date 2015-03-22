@@ -15,6 +15,8 @@ using SameTypeOperands =
 boost::variant<
 		std::vector<math::Real>,
 		std::vector<math::Rational>,
+		std::vector<math::ComplexReal>,
+		std::vector<math::ComplexRational>,
 		std::vector<ast::Identifier>,
 		std::vector<ast::String>,
 		std::vector<ast::FunctionCall>
