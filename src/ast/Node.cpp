@@ -92,12 +92,39 @@ template<> struct NodeTypeToInt<FunctionCall> {
 	static const int value = 7;
 };
 
+namespace detail {
+	template<typename T>
+	bool less(const T& lhs, const T& rhs) {
+		return std::less<T>()(lhs, rhs);
+	}
+} // namespace detail
 
 struct CompareLessVisitor : boost::static_visitor<bool> {
 
+	template<typename T>
+	typename std::enable_if<(
+			std::is_same<T, math::ComplexReal>::value ||
+			std::is_same<T, math::ComplexRational>::value
+			), bool>::type
+	less(const T& lhs, const T& rhs) const {
+		if (lhs.real() != rhs.real()) {
+			return lhs.real() < rhs.real();
+		}
+		return lhs.imag() < rhs.imag();
+	}
+
+	template<typename T>
+	typename std::enable_if<!(
+			std::is_same<T, math::ComplexReal>::value ||
+			std::is_same<T, math::ComplexRational>::value
+			), bool>::type
+	less(const T& lhs, const T& rhs) const {
+		return detail::less<T>(lhs, rhs);
+	}
+
 	template<class T>
 	bool operator()(const T& lhs, const T& rhs) const {
-		return lhs < rhs;
+		return less(lhs, rhs);
 	}
 
 	template<class T, class U>
