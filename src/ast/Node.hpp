@@ -127,6 +127,8 @@ Node Node::make(const Args&... args) {
 	static_assert(
 	    std::is_same<T, math::Real>::value ||
 	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
 	    std::is_same<T, ast::FunctionCall>::value ||
 	    std::is_same<T, ast::String>::value ||
 	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
@@ -157,6 +159,8 @@ bool Node::is() const {
 	static_assert(
 	    std::is_same<T, math::Real>::value ||
 	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
 	    std::is_same<T, ast::FunctionCall>::value ||
 	    std::is_same<T, ast::String>::value ||
 	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
@@ -168,6 +172,8 @@ bool Node::is(const T& test) const {
 	static_assert(
 	    std::is_same<T, math::Real>::value ||
 	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
 	    std::is_same<T, ast::FunctionCall>::value ||
 	    std::is_same<T, ast::String>::value ||
 	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
@@ -179,6 +185,8 @@ T& Node::getM() {
 	static_assert(
 	    std::is_same<T, math::Real>::value ||
 	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
 	    std::is_same<T, ast::FunctionCall>::value ||
 	    std::is_same<T, ast::String>::value ||
 	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
@@ -192,6 +200,8 @@ const T& Node::get() const {
 	static_assert(
 	    std::is_same<T, math::Real>::value ||
 	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
 	    std::is_same<T, ast::FunctionCall>::value ||
 	    std::is_same<T, ast::String>::value ||
 	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );

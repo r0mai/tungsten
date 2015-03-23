@@ -128,6 +128,14 @@ struct SessionEnvironment::EvaluateVisitor : boost::static_visitor<ast::Node> {
 		return ast::Node::make<math::Rational>(rational);
 	}
 
+	ast::Node operator()(const math::ComplexReal& real) {
+		return ast::Node::make<math::ComplexReal>(real);
+	}
+
+	ast::Node operator()(const math::ComplexRational& rational) {
+		return ast::Node::make<math::ComplexRational>(rational);
+	}
+
 	ast::Node operator()(const ast::FunctionCall& functionCall) {
 		ast::Node function = sessionEnvironment.recursiveEvaluate(functionCall.getFunction());
 		ast::Operands operands(functionCall.getOperands());
