@@ -26,6 +26,8 @@ public:
 	RealRationalNumber();
 	RealRationalNumber(const math::Real& real);
 	RealRationalNumber(const math::Rational& rational);
+	RealRationalNumber(const math::ComplexReal& real);
+	RealRationalNumber(const math::ComplexRational& rational);
 
 	/**
 	 * node.isNumeric() must be true (<=> node.is<math::Real>() || node.is<math::Rational>())
@@ -37,16 +39,12 @@ public:
 	template<class T>
 	bool is() const;
 
-	typedef std::function<math::Rational(const math::Rational&, const math::Rational&)> RationalOperation;
-	typedef std::function<math::Real(const math::Real&, const math::Real&)> RealOperation;
-
 	static RealRationalNumber doOperation(
 			const RealRationalNumber& x,
-			const RealRationalNumber& y,
-			RationalOperation rationalOperation,
-			RealOperation realOperation);
+			const RealRationalNumber& y);
+
 private:
-	typedef boost::variant<math::Real, math::Rational> Number;
+	typedef boost::variant<math::Real, math::Rational, math::ComplexReal, math::ComplexRational> Number;
 	Number number;
 };
 
