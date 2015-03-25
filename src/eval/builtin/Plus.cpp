@@ -30,6 +30,14 @@ struct PlusVisitor : boost::static_visitor<void> {
 		doAddition(constantTerm, rational);
 	}
 
+	void operator()(const math::ComplexReal& real) {
+		doAddition(constantTerm, real);
+	}
+
+	void operator()(const math::ComplexRational rational) {
+		doAddition(constantTerm, rational);
+	}
+
 	void operator()(const ast::String& string) {
 		insertOrAddInMap(ast::Node::make<ast::String>(string), math::Rational(1));
 	}
@@ -84,9 +92,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 	}
 
 	void doAddition(RealRationalNumber& value, const RealRationalNumber& toAdd) {
-		value = RealRationalNumber::doOperation( value, toAdd,
-						[](const math::Rational& x, const math::Rational& y) { return x+y; },
-						[](const math::Real& x, const math::Real& y) { return x+y; } );
+		value = RealRationalNumber::doOperation( value, toAdd );
 	}
 
 	ast::Node resultToNode() const {
