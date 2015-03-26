@@ -92,7 +92,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 	}
 
 	void doAddition(RealRationalNumber& value, const RealRationalNumber& toAdd) {
-		value = RealRationalNumber::doOperation( value, toAdd );
+		value = RealRationalNumber::doPlus( value, toAdd );
 	}
 
 	ast::Node resultToNode() const {

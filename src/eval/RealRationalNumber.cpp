@@ -73,6 +73,7 @@ getImaginaryPart(const T& t) {
 
 } // namespace detail
 
+template<typename Op>
 struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 	template<class T, class U>
 	typename std::enable_if<
@@ -80,8 +81,8 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::ComplexReal{detail::getRealPart(x)+detail::getRealPart(y),
-				detail::getImaginaryPart(x)+detail::getImaginaryPart(y)};
+		return math::ComplexReal{Op{}(detail::getRealPart(x), detail::getRealPart(y)),
+				Op{}(detail::getImaginaryPart(x), detail::getImaginaryPart(y))};
 	}
 
 	template<class T, class U>
@@ -90,8 +91,8 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			!detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::ComplexReal{detail::getRealPart(x)+detail::getRealPart(y),
-				detail::getImaginaryPart(x)+detail::getImaginaryPart(y)};
+		return math::ComplexReal{Op{}(detail::getRealPart(x), detail::getRealPart(y)),
+				Op{}(detail::getImaginaryPart(x), detail::getImaginaryPart(y))};
 	}
 
 	template<class T, class U>
@@ -100,7 +101,7 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::Real{x+y};
+		return math::Real{Op{}(x, y)};
 	}
 
 	template<class T, class U>
@@ -109,16 +110,37 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			!detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::Rational{x+y};
+		return math::Rational{Op{}(x, y)};
 	}
 
 };
 
-RealRationalNumber RealRationalNumber::doOperation(
+struct Plus {
+	template<typename T, typename U>
+	auto operator()(const T& x, const U& y) {
+		return x+y;
+	}
+};
+
+struct Times {
+	template<typename T, typename U>
+	auto operator()(const T& x, const U& y) {
+		return x*y;
+	}
+};
+
+RealRationalNumber RealRationalNumber::doPlus(
 			const RealRationalNumber& x,
 			const RealRationalNumber& y)
 {
-	return boost::apply_visitor(DoOperationVisitor{}, x.number, y.number);
+	return boost::apply_visitor(DoOperationVisitor<Plus>{}, x.number, y.number);
+}
+
+RealRationalNumber RealRationalNumber::doTimes(
+			const RealRationalNumber& x,
+			const RealRationalNumber& y)
+{
+	return boost::apply_visitor(DoOperationVisitor<Times>{}, x.number, y.number);
 }
 struct ToNodeVisitor : boost::static_visitor<ast::Node> {
 	ast::Node operator()(const math::Rational& rational) const {

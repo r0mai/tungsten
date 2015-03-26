@@ -39,7 +39,11 @@ public:
 	template<class T>
 	bool is() const;
 
-	static RealRationalNumber doOperation(
+	static RealRationalNumber doPlus(
+			const RealRationalNumber& x,
+			const RealRationalNumber& y);
+
+	static RealRationalNumber doTimes(
 			const RealRationalNumber& x,
 			const RealRationalNumber& y);
 
