@@ -30,6 +30,14 @@ struct TimesVisitor : boost::static_visitor<void> {
 		doMultiplication(constantFactor, rational);
 	}
 
+	void operator()(const math::ComplexReal& real) {
+		doMultiplication(constantFactor, real);
+	}
+
+	void operator()(const math::ComplexRational& rational) {
+		doMultiplication(constantFactor, rational);
+	}
+
 	void operator()(const ast::String& string) {
 		insertOrMultiplyInMap(ast::Node::make<ast::String>(string), math::Rational(1));
 	}
@@ -68,15 +76,11 @@ struct TimesVisitor : boost::static_visitor<void> {
 	}
 
 	void doMultiplication(RealRationalNumber& value, const RealRationalNumber& toMultiply) {
-		value = RealRationalNumber::doOperation( value, toMultiply,
-						[](const math::Rational& x, const math::Rational& y) { return x*y; },
-						[](const math::Real& x, const math::Real& y) { return x*y; } );
+		value = RealRationalNumber::doTimes( value, toMultiply );
 	}
 
 	void doAddition(RealRationalNumber& value, const RealRationalNumber& toMultiply) {
-		value = RealRationalNumber::doOperation( value, toMultiply,
-						[](const math::Rational& x, const math::Rational& y) { return x+y; },
-						[](const math::Real& x, const math::Real& y) { return x+y; } );
+		value = RealRationalNumber::doTimes( value, toMultiply );
 	}
 
 	ast::Node resultToNode() const {
