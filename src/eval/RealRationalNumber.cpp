@@ -8,8 +8,8 @@ namespace tungsten { namespace eval {
 RealRationalNumber::RealRationalNumber() : number(math::Rational(0)) {}
 RealRationalNumber::RealRationalNumber(const math::Real& real) : number(real) {}
 RealRationalNumber::RealRationalNumber(const math::Rational& rational) : number(rational) {}
-//RealRationalNumber::RealRationalNumber(const math::ComplexReal& real) : number(real) {}
-//RealRationalNumber::RealRationalNumber(const math::ComplexRational& rational) : number(rational) {}
+RealRationalNumber::RealRationalNumber(const math::ComplexReal& real) : number(real) {}
+RealRationalNumber::RealRationalNumber(const math::ComplexRational& rational) : number(rational) {}
 
 RealRationalNumber::RealRationalNumber(const ast::Node& node) {
 	assert(node.isNumeric());
