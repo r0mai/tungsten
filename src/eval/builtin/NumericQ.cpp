@@ -20,6 +20,14 @@ struct IsNumericVisitor : boost::static_visitor<bool> {
 		return true;
 	}
 
+	bool operator()(const math::ComplexReal& /*real*/) const {
+		return true;
+	}
+
+	bool operator()(const math::ComplexRational& /*rational*/) const {
+		return true;
+	}
+
 	bool operator()(const ast::Identifier& identifier) const {
 		return identifier == ids::E ||
 				identifier == ids::Pi ||
