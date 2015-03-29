@@ -1,6 +1,7 @@
 
 #include "RealRationalNumber.hpp"
 #include "ast/NodeTypes.hpp"
+#include "ast/Node.hpp"
 #include <cassert>
 
 namespace tungsten { namespace eval {
@@ -12,12 +13,16 @@ RealRationalNumber::RealRationalNumber(const math::ComplexReal& real) : number(r
 RealRationalNumber::RealRationalNumber(const math::ComplexRational& rational) : number(rational) {}
 
 RealRationalNumber::RealRationalNumber(const ast::Node& node) {
-	assert(node.isNumeric());
-	//TODO we could put this out into a visitor
-	if ( node.is<math::Rational>() ) {
-		number = node.get<math::Rational>();
-	} else {
+	if (node.is<math::Real>()) {
 		number = node.get<math::Real>();
+	} else if (node.is<math::Rational>()) {
+		number = node.get<math::Rational>();
+	} else if (node.is<math::ComplexReal>()) {
+		number = node.get<math::ComplexReal>();
+	} else if ( node.is<math::ComplexRational>()) {
+		number = node.get<math::ComplexRational>();
+	} else {
+		assert(false);
 	}
 }
 
@@ -91,7 +96,7 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			!detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::ComplexReal{Op{}(detail::getRealPart(x), detail::getRealPart(y)),
+		return math::ComplexRational{Op{}(detail::getRealPart(x), detail::getRealPart(y)),
 				Op{}(detail::getImaginaryPart(x), detail::getImaginaryPart(y))};
 	}
 

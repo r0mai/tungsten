@@ -54,8 +54,9 @@ private:
 
 template<class T>
 bool RealRationalNumber::is() const {
-	static_assert( std::is_same<T, math::Real>::value || std::is_same<T, math::Rational>::value,
-			"Only Reals or Rational allowed as T");
+	static_assert( std::is_same<T, math::Real>::value || std::is_same<T, math::Rational>::value ||
+			std::is_same<T, math::ComplexReal>::value || std::is_same<T, math::ComplexRational>::value,
+			"Only ComplexRational, ComplexReal, Real or Rational allowed as T");
 
 	return boost::get<T>(&number) != nullptr;
 }

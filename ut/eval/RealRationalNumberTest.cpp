@@ -125,4 +125,18 @@ BOOST_AUTO_TEST_CASE( Real_Real_doPlus_results_in_Real ) {
 	BOOST_CHECK_EQUAL( node.get<math::Real>(), 15 );
 }
 
+BOOST_AUTO_TEST_CASE( ComplexRational_Rational_do_Plus_results_in_ComplexRational ) {
+	eval::RealRationalNumber x(ast::Node::make<math::ComplexRational>(4, 1));
+	eval::RealRationalNumber y(ast::Node::make<math::Rational>(5));
+
+	eval::RealRationalNumber z = eval::RealRationalNumber::doPlus(x, y);
+
+	BOOST_CHECK( z.is<math::ComplexRational>() );
+
+	ast::Node node = z.toNode();
+
+	BOOST_REQUIRE( node.is<math::ComplexRational>() );
+	BOOST_CHECK_EQUAL(node.get<math::ComplexRational>(), math::ComplexRational(9, 1));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
