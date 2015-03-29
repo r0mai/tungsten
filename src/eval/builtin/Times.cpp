@@ -80,7 +80,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 	}
 
 	void doAddition(RealRationalNumber& value, const RealRationalNumber& toMultiply) {
-		value = RealRationalNumber::doTimes( value, toMultiply );
+		value = RealRationalNumber::doPlus( value, toMultiply );
 	}
 
 	ast::Node resultToNode() const {
