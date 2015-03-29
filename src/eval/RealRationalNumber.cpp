@@ -12,19 +12,8 @@ RealRationalNumber::RealRationalNumber(const math::Rational& rational) : number(
 RealRationalNumber::RealRationalNumber(const math::ComplexReal& real) : number(real) {}
 RealRationalNumber::RealRationalNumber(const math::ComplexRational& rational) : number(rational) {}
 
-RealRationalNumber::RealRationalNumber(const ast::Node& node) {
-	if (node.is<math::Real>()) {
-		number = node.get<math::Real>();
-	} else if (node.is<math::Rational>()) {
-		number = node.get<math::Rational>();
-	} else if (node.is<math::ComplexReal>()) {
-		number = node.get<math::ComplexReal>();
-	} else if ( node.is<math::ComplexRational>()) {
-		number = node.get<math::ComplexRational>();
-	} else {
-		assert(false);
-	}
-}
+RealRationalNumber::RealRationalNumber(const ast::Node& node) :
+		number(node.get<math::Real, math::Rational, math::ComplexReal, math::ComplexRational>()) { }
 
 namespace detail {
 template<typename T, typename U>

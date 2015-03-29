@@ -45,6 +45,9 @@ public:
 	template<class T>
 	bool is(const T& test) const;
 
+	template<class T, class U, class... Ts>
+	bool is() const;
+
 	//These returns true, if this is a FunctionCall, and it's function is 'head'
 	//Doesn't do anything with the operands
 	bool isFunctionCall(const Identifier& head) const;
@@ -63,6 +66,9 @@ public:
 
 	template<class T>
 	const T& get() const;
+
+	template<class T, class U, class... Ts>
+	boost::variant<T, U, Ts...> get() const;
 
 	bool operator==(const Node& other) const;
 	//Fast operator< to be used in sets, maps
@@ -180,6 +186,11 @@ bool Node::is(const T& test) const {
 	return is<T>() && get<T>() == test;
 }
 
+template<class T, class U, class... Ts>
+bool Node::is() const {
+	return Node::is<T>() || Node::is<U, Ts...>();
+}
+
 template<class T>
 T& Node::getM() {
 	static_assert(
@@ -207,6 +218,26 @@ const T& Node::get() const {
 	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
 	return boost::get<T>(*storagePtr);
+}
+
+template<class T, class U, class... Ts>
+boost::variant<T, U, Ts...> Node::get() const {
+	assert( (is<T, U, Ts...>()) );
+	using returnType = boost::variant<T, U, Ts...>;
+	using optionalReturn = boost::optional<returnType>;
+
+	std::vector<optionalReturn> matches = {
+			is<T>()?optionalReturn{get<T>()}:boost::none,
+			is<U>()?optionalReturn{get<U>()}:boost::none,
+			is<Ts>()?optionalReturn{get<Ts>()}:boost::none...
+	};
+
+	for(auto& match: matches) {
+		if(match != boost::none) {
+			return *match;
+		}
+	}
+	assert(false);
 }
 
 }} //namespace tungsten::ast
