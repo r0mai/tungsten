@@ -146,10 +146,18 @@ struct ToNodeVisitor : boost::static_visitor<ast::Node> {
 		return ast::Node::make<math::Real>(real);
 	}
 	ast::Node operator()(const math::ComplexRational& rational) const {
-		return ast::Node::make<math::ComplexRational>(rational);
+		if(rational.imag()) {
+			return ast::Node::make<math::ComplexRational>(rational);
+		} else {
+			return ast::Node::make<math::Rational>(rational.real());
+		}
 	}
 	ast::Node operator()(const math::ComplexReal& real) const {
-		return ast::Node::make<math::ComplexReal>(real);
+		if(real.imag()) {
+			return ast::Node::make<math::ComplexReal>(real);
+		} else {
+			return ast::Node::make<math::Real>(real.real());
+		}
 	}
 };
 
