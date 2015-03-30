@@ -30,7 +30,7 @@ public:
 	RealRationalNumber(const math::ComplexRational& rational);
 
 	/**
-	 * node.isNumeric() must be true (<=> node.is<math::Real>() || node.is<math::Rational>())
+	 * Node has to be some sort of number
 	 */
 	RealRationalNumber(const ast::Node& node);
 

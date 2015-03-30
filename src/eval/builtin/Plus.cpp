@@ -43,7 +43,14 @@ struct PlusVisitor : boost::static_visitor<void> {
 	}
 
 	void operator()(const ast::Identifier& identifier) {
-		insertOrAddInMap(ast::Node::make<ast::Identifier>(identifier), math::Rational(1));
+		if(identifier == eval::ids::I) {
+			math::ComplexRational i;
+			i.real(0);
+			i.imag(1);
+			doAddition(constantTerm, i);
+		} else {
+			insertOrAddInMap(ast::Node::make<ast::Identifier>(identifier), math::Rational(1));
+		}
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {

@@ -75,8 +75,9 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::ComplexReal{Op{}(detail::getRealPart(x), detail::getRealPart(y)),
-				Op{}(detail::getImaginaryPart(x), detail::getImaginaryPart(y))};
+		const auto left = math::ComplexReal{detail::getRealPart(x), detail::getImaginaryPart(x)};
+		const auto right = math::ComplexReal{detail::getRealPart(y), detail::getImaginaryPart(y)};
+		return math::ComplexReal{Op{}(left, right)};
 	}
 
 	template<class T, class U>
@@ -85,8 +86,9 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 			!detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		return math::ComplexRational{Op{}(detail::getRealPart(x), detail::getRealPart(y)),
-				Op{}(detail::getImaginaryPart(x), detail::getImaginaryPart(y))};
+		const auto left = math::ComplexRational{detail::getRealPart(x), detail::getImaginaryPart(x)};
+		const auto right = math::ComplexRational{detail::getRealPart(y), detail::getImaginaryPart(y)};
+		return math::ComplexRational{Op{}(left, right)};
 	}
 
 	template<class T, class U>
