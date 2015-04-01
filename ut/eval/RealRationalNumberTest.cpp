@@ -1,6 +1,5 @@
 
 #include <boost/test/unit_test.hpp>
-
 #include <functional>
 
 #include "eval/RealRationalNumber.hpp"
@@ -137,6 +136,20 @@ BOOST_AUTO_TEST_CASE( ComplexRational_Rational_do_Plus_results_in_ComplexRationa
 
 	BOOST_REQUIRE( node.is<math::ComplexRational>() );
 	BOOST_CHECK_EQUAL(node.get<math::ComplexRational>(), math::ComplexRational(9, 1));
+}
+
+BOOST_AUTO_TEST_CASE( ComplexRational_Real_do_Plus_results_in_ComplexReal ) {
+	eval::RealRationalNumber x(ast::Node::make<math::ComplexRational>(4, 1));
+	eval::RealRationalNumber y(ast::Node::make<math::Real>(5));
+
+	eval::RealRationalNumber z = eval::RealRationalNumber::doPlus(x, y);
+
+	BOOST_CHECK( z.is<math::ComplexReal>() );
+
+	ast::Node node = z.toNode();
+
+	BOOST_REQUIRE( node.is<math::ComplexReal>() );
+	BOOST_CHECK_EQUAL(node.get<math::ComplexReal>(), math::ComplexReal(9, 1));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -2,6 +2,7 @@
 #include "RealRationalNumber.hpp"
 #include "ast/NodeTypes.hpp"
 #include "ast/Node.hpp"
+#include <iostream>
 #include <cassert>
 
 namespace tungsten { namespace eval {
@@ -35,7 +36,7 @@ struct areOperandsIrrational {
 };
 
 template<typename T>
-struct RemoveComplex;
+struct RemoveComplex { using type = T; };
 
 template<typename T>
 struct RemoveComplex<std::complex<T>> { using type = T; };
@@ -55,7 +56,7 @@ getRealPart(const T& t) {
 template<typename T>
 typename std::enable_if<!areOperandsComplex<T, T>::value, T>::type
 getImaginaryPart(const T& t) {
-	return T{};
+	return T{0};
 }
 
 template<typename T>
