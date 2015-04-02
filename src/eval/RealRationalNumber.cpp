@@ -2,7 +2,7 @@
 #include "RealRationalNumber.hpp"
 #include "ast/NodeTypes.hpp"
 #include "ast/Node.hpp"
-#include <iostream>
+
 #include <cassert>
 
 namespace tungsten { namespace eval {
