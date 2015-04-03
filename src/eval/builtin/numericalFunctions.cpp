@@ -77,6 +77,32 @@ OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironm
 	//TODO
 	return ast::Node::make<ast::FunctionCall>( ids::FractionalPart, operands );
 }
+
+struct ReVisitor: boost::static_visitor<ast::Node> {
+
+	template<typename T>
+	ast::Node operator()(const T& t) const {
+		return ast::Node::make<typename math::detail::RemoveComplex<T>::type>(
+				math::detail::getRealPart(t));
+	}
+
+};
+
+OptionalNode Re(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1) {
+		sessionEnvironment.raiseMessage( Message(ids::Re, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Re ),
+				ast::Node::make<math::Rational>( operands.size() )
+		}));
+		return EvaluationFailure();
+	}
+	if ( operands[0].is<math::Rational, math::ComplexRational,
+			math::Real, math::ComplexReal>() ) {
+		return ast::applyVisitor(operands.front(), ReVisitor{});
+	} else {
+		return EvaluationFailure();
+	}
+}
 }}} //namespace tungsten::eval::builtin
 
 

@@ -16,86 +16,34 @@ RealRationalNumber::RealRationalNumber(const math::ComplexRational& rational) : 
 RealRationalNumber::RealRationalNumber(const ast::Node& node) :
 		number(node.get<math::Real, math::Rational, math::ComplexReal, math::ComplexRational>()) { }
 
-namespace detail {
-template<typename T, typename U>
-struct areOperandsComplex {
-	static constexpr bool value =
-			std::is_same<T, math::ComplexReal>::value ||
-			std::is_same<T, math::ComplexRational>::value ||
-			std::is_same<U, math::ComplexReal>::value ||
-			std::is_same<U, math::ComplexRational>::value;
-};
-
-template<typename T, typename U>
-struct areOperandsIrrational {
-	static constexpr bool value =
-			std::is_same<T, math::Real>::value ||
-			std::is_same<T, math::ComplexReal>::value ||
-			std::is_same<U, math::Real>::value ||
-			std::is_same<U, math::ComplexReal>::value;
-};
-
-template<typename T>
-struct RemoveComplex { using type = T; };
-
-template<typename T>
-struct RemoveComplex<std::complex<T>> { using type = T; };
-
-template<typename T>
-typename std::enable_if<!areOperandsComplex<T, T>::value, T>::type
-getRealPart(const T& t) {
-	return t;
-}
-
-template<typename T>
-typename std::enable_if<areOperandsComplex<T, T>::value, typename RemoveComplex<T>::type>::type
-getRealPart(const T& t) {
-	return std::real(t);
-}
-
-template<typename T>
-typename std::enable_if<!areOperandsComplex<T, T>::value, T>::type
-getImaginaryPart(const T& t) {
-	return T{0};
-}
-
-template<typename T>
-typename std::enable_if<areOperandsComplex<T, T>::value, typename RemoveComplex<T>::type>::type
-getImaginaryPart(const T& t) {
-	return std::imag(t);
-}
-
-
-} // namespace detail
-
 template<typename Op>
 struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 	template<class T, class U>
 	typename std::enable_if<
-			detail::areOperandsComplex<T, U>::value &&
-			detail::areOperandsIrrational<T, U>::value
+			math::detail::areOperandsComplex<T, U>::value &&
+			math::detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		const auto left = math::ComplexReal{detail::getRealPart(x), detail::getImaginaryPart(x)};
-		const auto right = math::ComplexReal{detail::getRealPart(y), detail::getImaginaryPart(y)};
+		const auto left = math::ComplexReal{math::detail::getRealPart(x), math::detail::getImaginaryPart(x)};
+		const auto right = math::ComplexReal{math::detail::getRealPart(y), math::detail::getImaginaryPart(y)};
 		return math::ComplexReal{Op{}(left, right)};
 	}
 
 	template<class T, class U>
 	typename std::enable_if<
-			detail::areOperandsComplex<T, U>::value &&
-			!detail::areOperandsIrrational<T, U>::value
+			math::detail::areOperandsComplex<T, U>::value &&
+			!math::detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
-		const auto left = math::ComplexRational{detail::getRealPart(x), detail::getImaginaryPart(x)};
-		const auto right = math::ComplexRational{detail::getRealPart(y), detail::getImaginaryPart(y)};
+		const auto left = math::ComplexRational{math::detail::getRealPart(x), math::detail::getImaginaryPart(x)};
+		const auto right = math::ComplexRational{math::detail::getRealPart(y), math::detail::getImaginaryPart(y)};
 		return math::ComplexRational{Op{}(left, right)};
 	}
 
 	template<class T, class U>
 	typename std::enable_if<
-			!detail::areOperandsComplex<T, U>::value &&
-			detail::areOperandsIrrational<T, U>::value
+			!math::detail::areOperandsComplex<T, U>::value &&
+			math::detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
 		return math::Real{Op{}(x, y)};
@@ -103,8 +51,8 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 
 	template<class T, class U>
 	typename std::enable_if<
-			!detail::areOperandsComplex<T, U>::value &&
-			!detail::areOperandsIrrational<T, U>::value
+			!math::detail::areOperandsComplex<T, U>::value &&
+			!math::detail::areOperandsIrrational<T, U>::value
 	, RealRationalNumber>::type
 	operator()(const T& x, const U& y) const {
 		return math::Rational{Op{}(x, y)};
