@@ -98,6 +98,7 @@ OptionalNode IntegerPart(const ast::Operands& operands, eval::SessionEnvironment
 OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Re(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Im(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Complex(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -186,6 +187,7 @@ Functions createFunctions() {
 	result[ids::FractionalPart] = &FractionalPart;
 	result[ids::Re] = &Re;
 	result[ids::Im] = &Im;
+	result[ids::Complex] = &Complex;
 	result[ids::Export] = &Export;
 	result[ids::Append] = &Append;
 	result[ids::Prepend] = &Prepend;

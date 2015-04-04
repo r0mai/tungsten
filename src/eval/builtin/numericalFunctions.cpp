@@ -132,6 +132,22 @@ OptionalNode Im(const ast::Operands& operands, eval::SessionEnvironment& session
 	}
 }
 
+OptionalNode Complex(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 2 ) {
+		return EvaluationFailure();
+	}
+	bool areAllReal = std::all_of(operands.begin(), operands.end(), [](const ast::Node& node) { return node.isNumeric(); });
+	if(areAllReal) {
+		return ast::Node::make<ast::FunctionCall>(ids::Plus, {
+				operands.front(),
+				ast::Node::make<ast::FunctionCall>(ids::Times, {
+						operands.back(),
+						ast::Node::make<ast::Identifier>(ids::I)
+				})});
+	}
+	return EvaluationFailure();
+}
+
 }}} //namespace tungsten::eval::builtin
 
 
