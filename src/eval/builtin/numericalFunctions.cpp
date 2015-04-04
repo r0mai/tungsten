@@ -103,6 +103,35 @@ OptionalNode Re(const ast::Operands& operands, eval::SessionEnvironment& session
 		return EvaluationFailure();
 	}
 }
+
+struct ImVisitor: boost::static_visitor<ast::Node> {
+
+	template<typename T>
+	ast::Node operator()(const T& t) const {
+		return ast::Node::make<typename math::detail::RemoveComplex<T>::type>(
+				math::detail::getImaginaryPart(t));
+	}
+
+};
+
+OptionalNode Im(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1) {
+		sessionEnvironment.raiseMessage( Message(ids::Re, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Re ),
+				ast::Node::make<math::Rational>( operands.size() )
+		}));
+		return EvaluationFailure();
+	}
+	if ( operands[0].is<math::Rational, math::ComplexRational,
+			math::Real, math::ComplexReal>() ) {
+		const auto numerical = operands.front().get<math::Rational, math::Real,
+						math::ComplexRational, math::ComplexReal>();
+		return boost::apply_visitor(ImVisitor{}, numerical);
+	} else {
+		return EvaluationFailure();
+	}
+}
+
 }}} //namespace tungsten::eval::builtin
 
 
