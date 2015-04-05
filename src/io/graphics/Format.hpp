@@ -49,6 +49,8 @@ public:
 		return *this;
 	}
 
+	static ColorDirective fromHSV(math::Real h, math::Real s, math::Real v);
+
 }; // end ColorDirective
 
 
