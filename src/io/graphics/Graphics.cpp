@@ -3,6 +3,7 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include "Graphics.hpp"
+#include <math/mathFunctions.hpp>
 #include <algorithm>
 #include <cmath>
 namespace tungsten { namespace io { namespace graphics {
@@ -264,6 +265,14 @@ void addGraphics(const ast::Node& primitive, eval::SessionEnvironment& e, Graphi
 				graphics.addModifier(ColorDirective(math::Real(ops[0].getNumeric()*256).convert_to<PT>(), math::Real(ops[1].getNumeric()*256).convert_to<PT>(), math::Real(ops[2].getNumeric()*256).convert_to<PT>()));
 		}
 
+	} else if(primitive.isFunctionCall(eval::ids::Hue) ) {
+		if(primitive.get<ast::FunctionCall>().getOperands().size()==1) {
+			const auto op = primitive.get<ast::FunctionCall>().getOperands().front();
+			if(op.isNumeric()) {
+				const math::Real fractionalPart = op.getNumeric() - math::floor(op.getNumeric());
+				graphics.addModifier(ColorDirective::fromHSV(fractionalPart*360.f, 1, 1));
+			}
+		}
 	}
 
 	// Rules here.
