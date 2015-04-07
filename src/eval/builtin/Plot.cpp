@@ -87,18 +87,16 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 					}
 				} else {
 					// break in function Line
-					if(!currentLine.empty()){
+					if(currentLine.size() >1){
 						lineVector.push_back(
 							ast::Node::make<ast::FunctionCall>(ids::Line, {
 								ast::Node::make<ast::FunctionCall>(ids::List, std::move(currentLine))
 							})
 						);
-						currentLine.clear();
 					}
+					currentLine.clear();
 				}
 			}
-
-			sessionEnvironment.removePattern(variable);
 
 			if(!currentLine.empty()){
 				lineVector.push_back(
@@ -107,13 +105,6 @@ OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessi
 					})
 				);
 				currentLine.clear();
-			}
-
-			if(!lineVector.empty()){
-//				std::cout<<"line Vector has something in it!"<<std::endl;
-//				auto lineHelper = io::graphics::GraphicsObject();
-//				io::graphics::makeGraphics(ast::Node::make<ast::FunctionCall>(eval::ids::List, lineVector), sessionEnvironment, lineHelper);
-
 			}
 
 			if(oldPatternForVariable) {
