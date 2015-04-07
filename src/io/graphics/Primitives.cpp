@@ -227,7 +227,7 @@ std::string Line::toSVGString() const {
 // Z = closepath
 // Capital letters means absolutely positioned, lower cases means relatively positioned.
 //
-	if(!points.empty()){
+	if(points.size() > 1){
 		std::stringstream ss;
 		ss<<"<path "<<
 		_format.toSVGString()<<
