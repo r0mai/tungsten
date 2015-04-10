@@ -522,6 +522,7 @@ BOOST_AUTO_TEST_CASE( test_Re_of_rational_plus_float_I ) {
 	BOOST_CHECK_EQUAL( *result, expected );
 }
 
+
 BOOST_AUTO_TEST_CASE( test_Re_of_real_plus_I ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Re[2.0+I]");
 
@@ -531,6 +532,62 @@ BOOST_AUTO_TEST_CASE( test_Re_of_real_plus_I ) {
 
 	BOOST_CHECK_EQUAL( *result, expected );
 }
+
+
+BOOST_AUTO_TEST_CASE( test_Im_of_rational_zero ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Im[0]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(0);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_AUTO_TEST_CASE( test_Im_of_real_zero ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Im[0.0]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Real>(0);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_AUTO_TEST_CASE( test_Im_of_I ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Im[I]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(1);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_AUTO_TEST_CASE( test_Im_of_minus_I ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Im[-I]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(-1);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
+
+BOOST_AUTO_TEST_CASE( test_Im_of_1_plus_I ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("Im[1-I]");
+
+	BOOST_REQUIRE( result );
+
+	ast::Node expected = ast::Node::make<math::Rational>(-1);
+
+	BOOST_CHECK_EQUAL( *result, expected );
+}
+
 
 
 BOOST_AUTO_TEST_SUITE_END()

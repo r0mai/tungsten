@@ -127,7 +127,9 @@ OptionalNode Im(const ast::Operands& operands, eval::SessionEnvironment& session
 		const auto numerical = operands.front().get<math::Rational, math::Real,
 						math::ComplexRational, math::ComplexReal>();
 		return boost::apply_visitor(ImVisitor{}, numerical);
-	} else {
+	} else if ( operands[0].is<ast::Identifier>(eval::ids::I) ) {
+		return ast::Node::make<math::Rational>(1);
+	} else{
 		return EvaluationFailure();
 	}
 }
