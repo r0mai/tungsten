@@ -69,6 +69,9 @@ getImaginaryPart(const T& t) {
 
 } // namespace detail
 
+ComplexRational power(const ComplexRational& base, unsigned long exponent);
+ComplexReal power(const ComplexReal& base, const ComplexReal& exponent);
+
 }} //namespace tungsten::math
 
 #endif /* MATH_COMPLEX_HPP_ */

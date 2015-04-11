@@ -109,6 +109,34 @@ BOOST_AUTO_TEST_CASE( Real_power_test ) {
 	BOOST_CHECK_EQUAL( math::power(math::Real(2), math::Real(3)), 8.0 );
 }
 
+BOOST_AUTO_TEST_CASE( Complex_rational_power_test ) {
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(1, 0), 0), math::ComplexRational(1) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(0, 1), 0), math::ComplexRational(1) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(0, 1), 1), math::ComplexRational(0, 1) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(0, 1), 2), math::ComplexRational(-1, 0) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(0, -1), 2), math::ComplexRational(-1, 0) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(1, 1), 2), math::ComplexRational(0, 2) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(1, -1), 2), math::ComplexRational(0, -2) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(-1, 1), 2), math::ComplexRational(0, -2) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(-1, -1), 2), math::ComplexRational(0, 2) );
+}
+
+BOOST_AUTO_TEST_CASE( Complex_real_power_test ) {
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, 0), math::ComplexReal(0)), math::ComplexReal(1) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(0, 1), math::ComplexReal(0)), math::ComplexReal(1) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(0, 1), math::ComplexReal(1)), math::ComplexReal(0, 1) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(0, 1), math::ComplexReal(2)), math::ComplexReal(-1, 0) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(0, -1), math::ComplexReal(2)), math::ComplexReal(-1, 0) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, 1), math::ComplexReal(2)), math::ComplexReal(0, 2) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, -1), math::ComplexReal(2)), math::ComplexReal(0, -2) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(-1, 1), math::ComplexReal(2)), math::ComplexReal(0, -2) );
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(-1, -1), math::ComplexReal(2)), math::ComplexReal(0, 2) );
+
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, 0), math::ComplexReal(0, 1)), math::ComplexReal(1, 0));
+	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, 0), math::ComplexReal(0, -1)), math::ComplexReal(1, 0));
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
