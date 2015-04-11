@@ -130,6 +130,24 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		return operator()(math::Real(base), exponent);
 	}
 
+	ast::Node operator()(const math::ComplexReal& base, const math::ComplexReal& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base, exponent));
+	}
+
+	ast::Node operator()(const math::ComplexReal& base, const math::Real& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base, exponent));
+	}
+
+	ast::Node operator()(const math::ComplexReal& base, const math::Rational& exponent) {
+			return ast::Node::make<math::ComplexReal>(math::power(base,
+							math::ComplexReal{exponent, math::Real{0}}));
+	}
+
+	ast::Node operator()(const math::ComplexReal& base, const math::ComplexRational& exponent) {
+			return ast::Node::make<math::ComplexReal>(math::power(base,
+							math::ComplexReal{exponent}));
+	}
+
 	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
 		if(function.getFunction() != ast::Node::make<ast::Identifier>(ids::DirectedInfinity)) {
 			return ast::Node::make<ast::FunctionCall>(ids::Power, {
