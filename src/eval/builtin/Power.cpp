@@ -111,10 +111,8 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Real& base, const math::Real& exponent) {
-		//TODO complex case needs to be handled here
 		if ( base < 0 && !math::isInteger(exponent) ) {
-			//Complex result:
-			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
+			return operator()(math::ComplexReal{base, 0}, math::ComplexReal{exponent, 0});
 		}
 		return ast::Node::make<math::Real>(math::power(base, exponent));
 	}
