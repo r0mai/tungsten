@@ -115,6 +115,12 @@ BOOST_AUTO_TEST_CASE( Complex_real_ln_test ) {
 	BOOST_CHECK_CLOSE(std::imag(result).convert_to<float>(), 1.57, 1.f);
 }
 
+BOOST_AUTO_TEST_CASE( Complex_real_exp_test ) {
+	const auto result = math::exp(math::ComplexReal{0, 2});
+	BOOST_CHECK_CLOSE(std::real(result).convert_to<float>(), -0.416, 1.f);
+	BOOST_CHECK_CLOSE(std::imag(result).convert_to<float>(), 0.91, 1.f);
+}
+
 BOOST_AUTO_TEST_CASE( Complex_rational_power_test ) {
 	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(1, 0), 0), math::ComplexRational(1) );
 	BOOST_CHECK_EQUAL( math::power(math::ComplexRational(0, 1), 0), math::ComplexRational(1) );

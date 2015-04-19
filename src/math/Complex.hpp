@@ -70,6 +70,7 @@ getImaginaryPart(const T& t) {
 } // namespace detail
 
 ComplexReal ln(const ComplexReal& z);
+ComplexReal exp(const ComplexReal& z);
 ComplexRational power(const ComplexRational& base, unsigned long exponent);
 ComplexReal power(const ComplexReal& base, const ComplexReal& exponent);
 

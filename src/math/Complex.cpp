@@ -36,16 +36,16 @@ ComplexReal ln(const ComplexReal& z) {
 }
 
 ComplexReal exp(const ComplexReal& z) {
-	// E^(a+ib) = E^a * Cos[b] + i*E^a*Sin[a]
+	// E^(a+ib) = E^a * Cos[b] + i*E^a*Sin[b]
 
 	const math::Real a = z.real();
 	const math::Real b = z.imag();
 
 	const math::Real cos_b = boost::multiprecision::cos(b);
-	const math::Real sin_a = boost::multiprecision::sin(a);
+	const math::Real sin_b = boost::multiprecision::sin(b);
 	const math::Real exp_a = boost::multiprecision::exp(a);
 
-	return ComplexReal{exp_a*cos_b, exp_a*sin_a};
+	return ComplexReal{exp_a*cos_b, exp_a*sin_b};
 }
 
 ComplexRational power(const ComplexRational& base, unsigned long exponent) {
