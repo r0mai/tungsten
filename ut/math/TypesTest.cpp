@@ -8,7 +8,9 @@
 BOOST_AUTO_TEST_SUITE( MathTypesTest )
 
 using namespace tungsten;
-
+#define CHECK_COMPLEX_CLOSE(complex_, real_, imag_) \
+	BOOST_CHECK_CLOSE((complex_).real().convert_to<float>(), (real_), 1.0); \
+	BOOST_CHECK_CLOSE((complex_).imag().convert_to<float>(), (imag_), 1.0);
 
 BOOST_AUTO_TEST_CASE( Integer_fitsUL_works ) {
 	math::Integer maxUL = std::numeric_limits<unsigned long>::max();
@@ -146,6 +148,9 @@ BOOST_AUTO_TEST_CASE( Complex_real_power_test ) {
 
 	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, 0), math::ComplexReal(0, 1)), math::ComplexReal(1, 0));
 	BOOST_CHECK_EQUAL( math::power(math::ComplexReal(1, 0), math::ComplexReal(0, -1)), math::ComplexReal(1, 0));
+
+	CHECK_COMPLEX_CLOSE( math::power(math::ComplexReal(-2, 0), math::ComplexReal(0.5, 0)), 0, 1.414);
+	CHECK_COMPLEX_CLOSE( math::power(math::ComplexReal(-4, 0), math::ComplexReal(0.5, 0)), 0, 2);
 
 }
 
