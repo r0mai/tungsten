@@ -1,9 +1,10 @@
-
+#include <iostream>
 #include "functions.hpp"
 
 #include <cassert>
 
 #include <boost/range/algorithm/transform.hpp>
+#include <boost/variant/get.hpp>
 
 #include "math/mathFunctions.hpp"
 #include "eval/SessionEnvironment.hpp"
@@ -137,13 +138,35 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::ComplexReal& base, const math::Rational& exponent) {
-			return ast::Node::make<math::ComplexReal>(math::power(base,
+		return ast::Node::make<math::ComplexReal>(math::power(base,
 							math::ComplexReal{exponent, math::Real{0}}));
 	}
 
 	ast::Node operator()(const math::ComplexReal& base, const math::ComplexRational& exponent) {
 			return ast::Node::make<math::ComplexReal>(math::power(base,
 							math::ComplexReal{exponent}));
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::ComplexReal& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base,
+					exponent));
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::Real& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(
+					math::ComplexReal{base},
+					math::ComplexReal{exponent}));
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::Rational& exponent) {
+		if(math::isInteger(exponent) && exponent > 0) {
+			return ast::Node::make<math::ComplexRational>(math::power(base, math::asInteger(exponent).convert_to<unsigned long>()));
+		}
+		return operator()<>(base, exponent);
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::ComplexRational& exponent) {
+		return operator()<>(base, exponent);
 	}
 
 	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
@@ -187,6 +210,14 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	//Special cases:
+	if( base.is<ast::Identifier>(ids::I) ) {
+		base = ast::Node::make<math::ComplexRational>(math::ImaginaryUnit<math::Rational>());
+	}
+
+	if( exponent.is<ast::Identifier>(ids::I) ) {
+		exponent = ast::Node::make<math::ComplexRational>(math::ImaginaryUnit<math::Rational>());
+	}
+
 	//c.isInteger() : (a*b)^c => a^c * b^c
 	if ( exponent.is<math::Rational>() && math::isInteger(exponent.get<math::Rational>()) &&
 			base.is<ast::FunctionCall>() && base.get<ast::FunctionCall>().getFunction().is<ast::Identifier>(ids::Times) )

@@ -10,6 +10,11 @@
 
 namespace tungsten { namespace math {
 
+template<typename T>
+std::complex<T> ImaginaryUnit() {
+	return {T{0}, T{1}};
+}
+
 typedef std::complex<Integer> ComplexInteger;
 typedef std::complex<Rational> ComplexRational;
 typedef std::complex<Real> ComplexReal;
