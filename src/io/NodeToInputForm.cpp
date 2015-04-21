@@ -34,6 +34,8 @@ struct NodeToInputFormVisitor : boost::static_visitor<InputFormString> {
 	}
 
 	InputFormString operator()(const math::ComplexReal& real) const {
+		if(!real.imag())
+			return math::toString(real.real());
 		return ast::applyVisitor(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
 					ast::Node::make<math::Real>(std::real(real)),
 					ast::Node::make<ast::FunctionCall>(eval::ids::Times, {
@@ -44,6 +46,8 @@ struct NodeToInputFormVisitor : boost::static_visitor<InputFormString> {
 	}
 
 	InputFormString operator()(const math::ComplexRational& rational) const {
+		if(!rational.imag())
+			return math::toString(rational.real());
 		return ast::applyVisitor(ast::Node::make<ast::FunctionCall>(eval::ids::Plus, {
 					ast::Node::make<math::Real>(std::real(rational)),
 					ast::Node::make<ast::FunctionCall>(eval::ids::Times, {
