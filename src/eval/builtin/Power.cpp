@@ -292,7 +292,18 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	PowerVisitor powerVisitor{sessionEnvironment};
-	return ast::applyVisitor( base, exponent, powerVisitor );
+	const auto result = ast::applyVisitor( base, exponent, powerVisitor );
+	if (result.is<math::ComplexReal>()) {
+		const auto real = result.get<math::ComplexRational>();
+		if(std::imag(real)) return result;
+		return ast::Node::make<math::Real>(std::real(real));
+	} else if (result.is<math::ComplexRational>()) {
+		const auto rational = result.get<math::ComplexRational>();
+		if(std::imag(rational)) return result;
+		return ast::Node::make<math::Rational>(std::real(rational));
+	} else {
+		return result;
+	}
 }
 
 OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
