@@ -210,14 +210,6 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	//Special cases:
-	if( base.is<ast::Identifier>(ids::I) ) {
-		base = ast::Node::make<math::ComplexRational>(math::ImaginaryUnit<math::Rational>());
-	}
-
-	if( exponent.is<ast::Identifier>(ids::I) ) {
-		exponent = ast::Node::make<math::ComplexRational>(math::ImaginaryUnit<math::Rational>());
-	}
-
 	//c.isInteger() : (a*b)^c => a^c * b^c
 	if ( exponent.is<math::Rational>() && math::isInteger(exponent.get<math::Rational>()) &&
 			base.is<ast::FunctionCall>() && base.get<ast::FunctionCall>().getFunction().is<ast::Identifier>(ids::Times) )

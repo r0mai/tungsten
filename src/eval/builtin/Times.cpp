@@ -43,14 +43,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 	}
 
 	void operator()(const ast::Identifier& identifier) {
-		if(identifier == eval::ids::I) {
-			math::ComplexRational i;
-			i.real(0);
-			i.imag(1);
-			doMultiplication(constantFactor, i);
-		} else {
-			insertOrMultiplyInMap(ast::Node::make<ast::Identifier>(identifier), math::Rational(1));
-		}
+		insertOrMultiplyInMap(ast::Node::make<ast::Identifier>(identifier), math::Rational(1));
 	}
 
 	void operator()(const ast::FunctionCall& functionCall) {
