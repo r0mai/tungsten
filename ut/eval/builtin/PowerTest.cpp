@@ -358,6 +358,22 @@ BOOST_AUTO_TEST_CASE( test_the_cube_of_positive_i ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::ComplexRational>(0, -1) );
 }
 
+BOOST_AUTO_TEST_CASE( test_the_numeric_square_of_numeric_positive_i ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(0.0+1.0I)^(2.0)");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::ComplexReal>(-1) );
+}
+
+BOOST_AUTO_TEST_CASE( test_the_numeric_square_of_rational_positive_i ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(0.0+1.0I)^(2.0)");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::ComplexReal>(-1) );
+}
+
 //These tests functionality in Times as well
 BOOST_AUTO_TEST_CASE( test_0_over_0  ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0/0");

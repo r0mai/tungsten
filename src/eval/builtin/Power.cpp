@@ -286,7 +286,7 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	PowerVisitor powerVisitor{sessionEnvironment};
 	const auto result = ast::applyVisitor( base, exponent, powerVisitor );
 	if (result.is<math::ComplexReal>()) {
-		const auto real = result.get<math::ComplexRational>();
+		const auto real = result.get<math::ComplexReal>();
 		if(std::imag(real)) return result;
 		return ast::Node::make<math::Real>(std::real(real));
 	} else if (result.is<math::ComplexRational>()) {
