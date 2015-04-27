@@ -166,7 +166,23 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::ComplexRational& base, const math::ComplexRational& exponent) {
-		return operator()<>(base, exponent);
+		return operator()(base, std::real(exponent));
+	}
+
+	ast::Node operator()(const math::Real& base, const math::ComplexRational& exponent) {
+		return operator()(math::ComplexReal{base}, exponent);
+	}
+
+	ast::Node operator()(const math::Real& base, const math::ComplexReal& exponent) {
+		return operator()(math::ComplexReal{base}, exponent);
+	}
+
+	ast::Node operator()(const math::Rational& base, const math::ComplexRational& exponent) {
+		return operator()(math::ComplexRational{base}, exponent);
+	}
+
+	ast::Node operator()(const math::Rational& base, const math::ComplexReal& exponent) {
+		return operator()(math::ComplexRational{base}, exponent);
 	}
 
 	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
