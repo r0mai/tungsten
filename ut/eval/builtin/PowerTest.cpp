@@ -382,6 +382,62 @@ BOOST_AUTO_TEST_CASE( test_the_rational_I_th_power_of_numeric_1 ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Real>(1) );
 }
 
+BOOST_AUTO_TEST_CASE( test_the_rational_square_of_numeric_pi_plus_I ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(3.14+I)^2");
+
+	BOOST_REQUIRE( result );
+	BOOST_REQUIRE( result->is<math::ComplexReal>() );
+
+	const float realPart = std::real(result->get<math::ComplexReal>()).convert_to<float>();
+	const float imagPart = std::imag(result->get<math::ComplexReal>()).convert_to<float>();
+
+	BOOST_CHECK_CLOSE(realPart, 8.8596, 1.f);
+	BOOST_CHECK_CLOSE(imagPart, 6.28, 1.f);
+
+}
+
+BOOST_AUTO_TEST_CASE( test_the_rational_square_of_numeric_pi_minus_I ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(3.14-I)^2");
+
+	BOOST_REQUIRE( result );
+	BOOST_REQUIRE( result->is<math::ComplexReal>() );
+
+	const float realPart = std::real(result->get<math::ComplexReal>()).convert_to<float>();
+	const float imagPart = std::imag(result->get<math::ComplexReal>()).convert_to<float>();
+
+	BOOST_CHECK_CLOSE(realPart, 8.8596, 1.f);
+	BOOST_CHECK_CLOSE(imagPart, -6.28, 1.f);
+
+}
+
+BOOST_AUTO_TEST_CASE( test_the_rational_square_of_numeric_pi_plus_EI ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(3.14+N[E]I)^2");
+
+	BOOST_REQUIRE( result );
+	BOOST_REQUIRE( result->is<math::ComplexReal>() );
+
+	const float realPart = std::real(result->get<math::ComplexReal>()).convert_to<float>();
+	const float imagPart = std::imag(result->get<math::ComplexReal>()).convert_to<float>();
+
+	BOOST_CHECK_CLOSE(realPart, 2.470, 1.f);
+	BOOST_CHECK_CLOSE(imagPart, 17.0708, 1.f);
+
+}
+
+BOOST_AUTO_TEST_CASE( test_the_rational_square_of_numeric_pi_minus_EI ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("(3.14-N[E]I)^2");
+
+	BOOST_REQUIRE( result );
+	BOOST_REQUIRE( result->is<math::ComplexReal>() );
+
+	const float realPart = std::real(result->get<math::ComplexReal>()).convert_to<float>();
+	const float imagPart = std::imag(result->get<math::ComplexReal>()).convert_to<float>();
+
+	BOOST_CHECK_CLOSE(realPart, 2.470, 1.f);
+	BOOST_CHECK_CLOSE(imagPart, -17.0708, 1.f);
+
+}
+
 //These tests functionality in Times as well
 BOOST_AUTO_TEST_CASE( test_0_over_0  ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("0/0");
