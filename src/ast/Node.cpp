@@ -95,7 +95,7 @@ template<> struct NodeTypeToInt<FunctionCall> {
 namespace detail {
 	template<typename T>
 	bool less(const T& lhs, const T& rhs) {
-		return std::less<T>()(lhs, rhs);
+		return lhs < rhs;
 	}
 } // namespace detail
 
