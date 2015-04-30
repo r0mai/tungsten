@@ -131,20 +131,20 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 template<class T, class... Args>
 Node Node::make(const Args&... args) {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
 		std::is_same<T, math::ComplexReal>::value ||
 		std::is_same<T, math::ComplexRational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	return Node{StoragePtr{new Storage(T(args...))}};
 }
 
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
 	static_assert(
-	    std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
+		std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
 	return Node{StoragePtr{new Storage(T(arg, initializerList))}};
 }
 
@@ -163,26 +163,26 @@ Node Node::makeList() {
 template<class T>
 bool Node::is() const {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
 		std::is_same<T, math::ComplexReal>::value ||
 		std::is_same<T, math::ComplexRational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	return boost::get<T>(&*storagePtr) != nullptr;
 }
 
 template<class T>
 bool Node::is(const T& test) const {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
 		std::is_same<T, math::ComplexReal>::value ||
 		std::is_same<T, math::ComplexRational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	return is<T>() && get<T>() == test;
 }
 
@@ -194,13 +194,13 @@ bool Node::is() const {
 template<class T>
 T& Node::getM() {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
 		std::is_same<T, math::ComplexReal>::value ||
 		std::is_same<T, math::ComplexRational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
 	detach();
 	return boost::get<T>(*storagePtr);
@@ -209,13 +209,13 @@ T& Node::getM() {
 template<class T>
 const T& Node::get() const {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
 		std::is_same<T, math::ComplexReal>::value ||
 		std::is_same<T, math::ComplexRational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
 	return boost::get<T>(*storagePtr);
 }
