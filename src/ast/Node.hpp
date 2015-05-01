@@ -186,9 +186,21 @@ bool Node::is(const T& test) const {
 	return is<T>() && get<T>() == test;
 }
 
+namespace detail {
+
+template<typename... Ts>
+struct IsVisitor : boost::static_visitor<bool> {
+	template<typename T>
+	bool operator()(const T&) const {
+		return boost::mpl::contains<boost::mpl::vector<Ts...>, T>::value;
+	}
+};
+
+} // namespace detail
+
 template<class T, class U, class... Ts>
 bool Node::is() const {
-	return Node::is<T>() || Node::is<U, Ts...>();
+	return boost::apply_visitor(detail::IsVisitor<T, U, Ts...>(), *storagePtr);
 }
 
 template<class T>
