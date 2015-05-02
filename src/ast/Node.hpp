@@ -232,24 +232,27 @@ const T& Node::get() const {
 	return boost::get<T>(*storagePtr);
 }
 
+namespace detail {
+
+template<typename... Ts>
+struct GetVisitor : boost::static_visitor<boost::variant<Ts...>> {
+	template<typename T>
+	typename std::enable_if<boost::mpl::contains<boost::mpl::vector<Ts...>,
+			 T>::value, boost::variant<Ts...>>::type operator()(const T& t) const {
+		return t;
+	}
+	template<typename T>
+	typename std::enable_if<!boost::mpl::contains<boost::mpl::vector<Ts...>,
+			 T>::value, boost::variant<Ts...>>::type operator()(const T&) const {
+		assert(!"Could not construct variant, wrong type present.");
+	}
+};
+
+} // namespace detail
+
 template<class T, class U, class... Ts>
 boost::variant<T, U, Ts...> Node::get() const {
-	assert( (is<T, U, Ts...>()) );
-	using returnType = boost::variant<T, U, Ts...>;
-	using optionalReturn = boost::optional<returnType>;
-
-	std::vector<optionalReturn> matches = {
-			is<T>()?optionalReturn{get<T>()}:boost::none,
-			is<U>()?optionalReturn{get<U>()}:boost::none,
-			is<Ts>()?optionalReturn{get<Ts>()}:boost::none...
-	};
-
-	for(auto& match: matches) {
-		if(match != boost::none) {
-			return *match;
-		}
-	}
-	assert(false);
+	return boost::apply_visitor(detail::GetVisitor<T, U, Ts...>(), *storagePtr);
 }
 
 }} //namespace tungsten::ast
