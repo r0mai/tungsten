@@ -62,14 +62,14 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 
 struct Plus {
 	template<typename T, typename U>
-	auto operator()(const T& x, const U& y) {
+	auto operator()(const T& x, const U& y) const {
 		return x+y;
 	}
 };
 
 struct Times {
 	template<typename T, typename U>
-	auto operator()(const T& x, const U& y) {
+	auto operator()(const T& x, const U& y) const {
 		return x*y;
 	}
 };

@@ -159,7 +159,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::ComplexRational& base, const math::Rational& exponent) {
-		if(math::isInteger(exponent) && exponent > 0) {
+		if (math::isInteger(exponent) && exponent > 0) {
 			return ast::Node::make<math::ComplexRational>(math::power(base, math::asInteger(exponent).convert_to<unsigned long>()));
 		}
 		return operator()<>(base, exponent);
@@ -186,13 +186,13 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
-		if(function.getFunction() != ast::Node::make<ast::Identifier>(ids::DirectedInfinity)) {
+		if (function.getFunction() != ast::Node::make<ast::Identifier>(ids::DirectedInfinity)) {
 			return ast::Node::make<ast::FunctionCall>(ids::Power, {
 					ast::Node::make<ast::FunctionCall>(function),
 					ast::Node::make<math::Real>(exponent)
 			});
 		}
-		if(function.getOperands().empty()) {
+		if (function.getOperands().empty()) {
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { });
 		}
 		assert(function.getOperands().size() == 1);
@@ -303,11 +303,11 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	const auto result = ast::applyVisitor( base, exponent, powerVisitor );
 	if (result.is<math::ComplexReal>()) {
 		const auto real = result.get<math::ComplexReal>();
-		if(std::imag(real)) return result;
+		if (std::imag(real)) return result;
 		return ast::Node::make<math::Real>(std::real(real));
 	} else if (result.is<math::ComplexRational>()) {
 		const auto rational = result.get<math::ComplexRational>();
-		if(std::imag(rational)) return result;
+		if (std::imag(rational)) return result;
 		return ast::Node::make<math::Rational>(std::real(rational));
 	} else {
 		return result;
