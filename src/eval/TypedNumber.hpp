@@ -1,6 +1,6 @@
 
-#ifndef EVAL_REALRATIONALNUMBER_HPP_
-#define EVAL_REALRATIONALNUMBER_HPP_
+#ifndef EVAL_TYPEDNUMBER_HPP_
+#define EVAL_TYPEDNUMBER_HPP_
 
 #include "ast/Node.hpp"
 
@@ -17,35 +17,35 @@ namespace tungsten { namespace eval {
  * a Real
  */
 
-class RealRationalNumber {
+class TypedNumber {
 public:
 
 	/**
 	 * Defaults to Rational(0)
 	 */
-	RealRationalNumber();
-	RealRationalNumber(const math::Real& real);
-	RealRationalNumber(const math::Rational& rational);
-	RealRationalNumber(const math::ComplexReal& real);
-	RealRationalNumber(const math::ComplexRational& rational);
+	TypedNumber();
+	TypedNumber(const math::Real& real);
+	TypedNumber(const math::Rational& rational);
+	TypedNumber(const math::ComplexReal& real);
+	TypedNumber(const math::ComplexRational& rational);
 
 	/**
 	 * Node has to be some sort of number
 	 */
-	RealRationalNumber(const ast::Node& node);
+	TypedNumber(const ast::Node& node);
 
 	ast::Node toNode() const;
 
 	template<class T>
 	bool is() const;
 
-	static RealRationalNumber doPlus(
-			const RealRationalNumber& x,
-			const RealRationalNumber& y);
+	static TypedNumber doPlus(
+			const TypedNumber& x,
+			const TypedNumber& y);
 
-	static RealRationalNumber doTimes(
-			const RealRationalNumber& x,
-			const RealRationalNumber& y);
+	static TypedNumber doTimes(
+			const TypedNumber& x,
+			const TypedNumber& y);
 
 private:
 	typedef boost::variant<math::Real, math::Rational, math::ComplexReal, math::ComplexRational> Number;
@@ -53,7 +53,7 @@ private:
 };
 
 template<class T>
-bool RealRationalNumber::is() const {
+bool TypedNumber::is() const {
 	static_assert( std::is_same<T, math::Real>::value || std::is_same<T, math::Rational>::value ||
 			std::is_same<T, math::ComplexReal>::value || std::is_same<T, math::ComplexRational>::value,
 			"Only ComplexRational, ComplexReal, Real or Rational allowed as T");
@@ -63,4 +63,4 @@ bool RealRationalNumber::is() const {
 
 }} //namespace tungsten::eval
 
-#endif /* EVAL_REALRATIONALNUMBER_HPP_ */
+#endif /* EVAL_TYPEDNUMBER_HPP_ */

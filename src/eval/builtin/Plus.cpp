@@ -12,7 +12,7 @@
 #include <boost/range/algorithm/count_if.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 
-#include "eval/RealRationalNumber.hpp"
+#include "eval/TypedNumber.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/classifyOperands.hpp"
 
@@ -50,7 +50,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>(ids::Plus) );
 
 		ast::Node term = ast::Node::make<ast::FunctionCall>(functionCall);
-		RealRationalNumber coefficient = math::Rational(1);
+		TypedNumber coefficient = math::Rational(1);
 
 		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>(ids::Times) ) {
 
@@ -83,7 +83,7 @@ struct PlusVisitor : boost::static_visitor<void> {
 	}
 
 	//TODO optimalization
-	void insertOrAddInMap(const ast::Node& key, const RealRationalNumber& toAdd) {
+	void insertOrAddInMap(const ast::Node& key, const TypedNumber& toAdd) {
 		CoefficientMap::iterator it = coefficientMap.find(key);
 		if ( it == coefficientMap.end() ) {
 			coefficientMap[key] = ast::Node::make<math::Rational>(0);
@@ -91,20 +91,20 @@ struct PlusVisitor : boost::static_visitor<void> {
 		doAddition( coefficientMap[key], toAdd );
 	}
 
-	void doAddition(RealRationalNumber& value, const RealRationalNumber& toAdd) {
-		value = RealRationalNumber::doPlus( value, toAdd );
+	void doAddition(TypedNumber& value, const TypedNumber& toAdd) {
+		value = TypedNumber::doPlus( value, toAdd );
 	}
 
 	ast::Node resultToNode() const {
 
-//		for ( const std::pair<ast::Node, RealRationalNumber>& term : coefficientMap ) {
+//		for ( const std::pair<ast::Node, TypedNumber>& term : coefficientMap ) {
 //			std::cout << term.first << " : " << term.second.toNode() << std::endl;
 //		}
 
 
 		ast::Operands operands;
 
-		for ( const std::pair<ast::Node, RealRationalNumber>& term : coefficientMap ) {
+		for ( const std::pair<ast::Node, TypedNumber>& term : coefficientMap ) {
 			ast::Node coefficient = term.second.toNode();
 			if ( coefficient == ast::Node::make<math::Rational>(0) ) {
 				/*this space is intentionally left blank*/
@@ -132,9 +132,9 @@ struct PlusVisitor : boost::static_visitor<void> {
 
 	}
 
-	RealRationalNumber constantTerm;
+	TypedNumber constantTerm;
 
-	typedef std::map<ast::Node, RealRationalNumber> CoefficientMap;
+	typedef std::map<ast::Node, TypedNumber> CoefficientMap;
 	CoefficientMap coefficientMap;
 
 	eval::SessionEnvironment& sessionEnvironment;

@@ -1,5 +1,5 @@
 
-#include "RealRationalNumber.hpp"
+#include "TypedNumber.hpp"
 #include "ast/NodeTypes.hpp"
 #include "ast/Node.hpp"
 
@@ -7,22 +7,22 @@
 
 namespace tungsten { namespace eval {
 
-RealRationalNumber::RealRationalNumber() : number(math::Rational(0)) {}
-RealRationalNumber::RealRationalNumber(const math::Real& real) : number(real) {}
-RealRationalNumber::RealRationalNumber(const math::Rational& rational) : number(rational) {}
-RealRationalNumber::RealRationalNumber(const math::ComplexReal& real) : number(real) {}
-RealRationalNumber::RealRationalNumber(const math::ComplexRational& rational) : number(rational) {}
+TypedNumber::TypedNumber() : number(math::Rational(0)) {}
+TypedNumber::TypedNumber(const math::Real& real) : number(real) {}
+TypedNumber::TypedNumber(const math::Rational& rational) : number(rational) {}
+TypedNumber::TypedNumber(const math::ComplexReal& real) : number(real) {}
+TypedNumber::TypedNumber(const math::ComplexRational& rational) : number(rational) {}
 
-RealRationalNumber::RealRationalNumber(const ast::Node& node) :
+TypedNumber::TypedNumber(const ast::Node& node) :
 		number(node.get<math::Real, math::Rational, math::ComplexReal, math::ComplexRational>()) { }
 
 template<typename Op>
-struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
+struct DoOperationVisitor : boost::static_visitor<TypedNumber> {
 	template<class T, class U>
 	typename std::enable_if<
 			math::detail::areOperandsComplex<T, U>::value &&
 			math::detail::areOperandsIrrational<T, U>::value
-	, RealRationalNumber>::type
+	, TypedNumber>::type
 	operator()(const T& x, const U& y) const {
 		const auto left = math::ComplexReal{math::detail::getRealPart(x), math::detail::getImaginaryPart(x)};
 		const auto right = math::ComplexReal{math::detail::getRealPart(y), math::detail::getImaginaryPart(y)};
@@ -33,7 +33,7 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 	typename std::enable_if<
 			math::detail::areOperandsComplex<T, U>::value &&
 			!math::detail::areOperandsIrrational<T, U>::value
-	, RealRationalNumber>::type
+	, TypedNumber>::type
 	operator()(const T& x, const U& y) const {
 		const auto left = math::ComplexRational{math::detail::getRealPart(x), math::detail::getImaginaryPart(x)};
 		const auto right = math::ComplexRational{math::detail::getRealPart(y), math::detail::getImaginaryPart(y)};
@@ -44,7 +44,7 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 	typename std::enable_if<
 			!math::detail::areOperandsComplex<T, U>::value &&
 			math::detail::areOperandsIrrational<T, U>::value
-	, RealRationalNumber>::type
+	, TypedNumber>::type
 	operator()(const T& x, const U& y) const {
 		return math::Real{Op{}(x, y)};
 	}
@@ -53,7 +53,7 @@ struct DoOperationVisitor : boost::static_visitor<RealRationalNumber> {
 	typename std::enable_if<
 			!math::detail::areOperandsComplex<T, U>::value &&
 			!math::detail::areOperandsIrrational<T, U>::value
-	, RealRationalNumber>::type
+	, TypedNumber>::type
 	operator()(const T& x, const U& y) const {
 		return math::Rational{Op{}(x, y)};
 	}
@@ -74,16 +74,16 @@ struct Times {
 	}
 };
 
-RealRationalNumber RealRationalNumber::doPlus(
-			const RealRationalNumber& x,
-			const RealRationalNumber& y)
+TypedNumber TypedNumber::doPlus(
+			const TypedNumber& x,
+			const TypedNumber& y)
 {
 	return boost::apply_visitor(DoOperationVisitor<Plus>{}, x.number, y.number);
 }
 
-RealRationalNumber RealRationalNumber::doTimes(
-			const RealRationalNumber& x,
-			const RealRationalNumber& y)
+TypedNumber TypedNumber::doTimes(
+			const TypedNumber& x,
+			const TypedNumber& y)
 {
 	return boost::apply_visitor(DoOperationVisitor<Times>{}, x.number, y.number);
 }
@@ -110,7 +110,7 @@ struct ToNodeVisitor : boost::static_visitor<ast::Node> {
 	}
 };
 
-ast::Node RealRationalNumber::toNode() const {
+ast::Node TypedNumber::toNode() const {
 	return boost::apply_visitor(ToNodeVisitor{}, number);
 }
 
