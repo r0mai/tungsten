@@ -51,6 +51,7 @@ PatternMap PatternMap::makeDefault() {
 	patternMap.addPattern(ast::Node::make<ast::Identifier>(ids::Dashed), ast::Node::make<ast::FunctionCall>(ids::Dashing, {ast::Node::make<ast::FunctionCall>(ids::List, {ast::Node::make<ast::Identifier>(ids::Small), ast::Node::make<ast::Identifier>(ids::Small)})}));
 	patternMap.addPattern(ast::Node::make<ast::Identifier>(ids::Dotted), ast::Node::make<ast::FunctionCall>(ids::Dashing, {ast::Node::make<ast::FunctionCall>(ids::List, {ast::Node::make<math::Rational>(0), ast::Node::make<ast::Identifier>(ids::Small)})}));
 	patternMap.addPattern(ast::Node::make<ast::Identifier>(ids::DotDashed), ast::Node::make<ast::FunctionCall>(ids::Dashing, {ast::Node::make<ast::FunctionCall>(ids::List, {ast::Node::make<math::Rational>(0), ast::Node::make<ast::Identifier>(ids::Small), ast::Node::make<ast::Identifier>(ids::Small), ast::Node::make<ast::Identifier>(ids::Small)})}));
+	patternMap.addPattern(ast::Node::make<ast::Identifier>(ids::I), ast::Node::make<math::ComplexRational>(math::Rational{0}, math::Rational{1}));
 
 	return patternMap;
 }

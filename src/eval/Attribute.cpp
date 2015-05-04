@@ -87,6 +87,8 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Round, AttributeSet({ids::Listable, ids::ThreadSafe, ids::NumericFunction, ids::Protected}))
 		(ids::IntegerPart, AttributeSet({ids::Listable, ids::ThreadSafe, ids::NumericFunction, ids::Protected}))
 		(ids::FractionalPart, AttributeSet({ids::Listable, ids::ThreadSafe, ids::NumericFunction, ids::Protected}))
+		(ids::Re, AttributeSet({ids::Listable, ids::ThreadSafe, ids::NumericFunction, ids::Protected}))
+		(ids::Im, AttributeSet({ids::Listable, ids::ThreadSafe, ids::NumericFunction, ids::Protected}))
 		(ids::Hold, AttributeSet({ids::HoldAll, ids::Protected}))
 		(ids::Append, AttributeSet({ids::Protected}))
 		(ids::AppendTo, AttributeSet({ids::HoldFirst, ids::Protected}))

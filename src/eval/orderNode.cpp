@@ -11,6 +11,7 @@
 
 namespace tungsten { namespace eval {
 
+
 template<class T> struct NodeTypeToInt;
 
 template<> struct NodeTypeToInt<math::Rational> {
@@ -19,14 +20,20 @@ template<> struct NodeTypeToInt<math::Rational> {
 template<> struct NodeTypeToInt<math::Real> {
 	static const int value = 2;
 };
-template<> struct NodeTypeToInt<ast::String> {
+template<> struct NodeTypeToInt<math::ComplexReal> {
 	static const int value = 3;
 };
-template<> struct NodeTypeToInt<ast::Identifier> {
+template<> struct NodeTypeToInt<math::ComplexRational> {
 	static const int value = 4;
 };
-template<> struct NodeTypeToInt<ast::FunctionCall> {
+template<> struct NodeTypeToInt<ast::String> {
 	static const int value = 5;
+};
+template<> struct NodeTypeToInt<ast::Identifier> {
+	static const int value = 6;
+};
+template<> struct NodeTypeToInt<ast::FunctionCall> {
+	static const int value = 7;
 };
 
 //TODO COEFFsd ../../

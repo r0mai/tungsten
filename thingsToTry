@@ -5,7 +5,7 @@ If[Equal[Slot, List], If[Equal[Length[Slot[1]], 0], {}, CompoundExpression[Set[p
 
 sierpinski := If[ #7 == 0, Polygon[{{#1,#2},{#3,#4},{#5,#6}}],{#0[#1, #2, (#1+#3)/2, (#2+#4)/2, (#1+#5)/2, (#2+#6)/2, #7 - 1],#0[(#1+#3)/2, (#2+#4)/2, #3, #4, (#3+#5)/2, (#4+#6)/2, #7 - 1],#0[(#1+#5)/2, (#2+#6)/2, (#3+#5)/2, (#4+#6)/2, #5, #6, #7 - 1]}]&; Graphics[sierpinski[-1,0,1,0,0,1,5]]
 
-resolution=0.1; iterationCount = 10; complexAdd = {#1[[1]]+#2[[1]], #1[[2]]+#2[[2]]}&; complexMultiply = {#1[[1]] #2[[1]] - #1[[2]] #2[[2]], #1[[2]] #2[[1]] + #1[[1]] #2[[2]]}&; mandelbrot = ( c=#; z={0,0}; n=0; inside=True; While[n < iterationCount && inside, inside = (z[[1]]^2 + z[[2]]^2 < 4); z=complexAdd[c, complexMultiply[z,z]]  ;n=n+1]; n )&; Graphics[Table[{iter = mandelbrot[{x,y}]; If[iter == iterationCount, White, RGBColor[1-iter / iterationCount,1-iter / iterationCount, iter / iterationCount]], Disk[{x,y}, resolution/2]}, {x, -2.5, 1, resolution}, {y, -1, 1, resolution}]]
+resolution = 0.1; iterationCount = 10; mandelbrot = (c = #; z = 0; n = 0; inside = True; While[n < iterationCount && inside, inside = (Re[z]^2 + Im[z]^2 < 4); z = c + z*z; n = n + 1]; n) &; Graphics[Table[{iter = mandelbrot[Complex[x, y]]; If[iter == iterationCount, White, RGBColor[1 - iter/iterationCount, 1 - iter/iterationCount, iter/iterationCount]], Rectangle[{x-resolution/2, y-resolution/2}, {x+resolution/2, y+resolution/2}]}, {x, -2.5, 1, resolution}, {y, -1, 1, resolution}]]
 
 toCFN = Block[{go = If[ Floor[#] - # == 0, {#}, If[ #2 == 0, {}, Prepend[go[ 1/(#-Floor[#]), #2-1], Floor[#] ]] ]&, res = go[#, #2]}, res - Table[ If[i == Length[res], 1, 0] , {i, Length[res]}  ]]& ;
 

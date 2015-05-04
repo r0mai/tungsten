@@ -1,9 +1,10 @@
-
+#include <iostream>
 #include "functions.hpp"
 
 #include <cassert>
 
 #include <boost/range/algorithm/transform.hpp>
+#include <boost/variant/get.hpp>
 
 #include "math/mathFunctions.hpp"
 #include "eval/SessionEnvironment.hpp"
@@ -111,10 +112,8 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Real& base, const math::Real& exponent) {
-		//TODO complex case needs to be handled here
 		if ( base < 0 && !math::isInteger(exponent) ) {
-			//Complex result:
-			return ast::Node::make<ast::Identifier>(ids::Indeterminate);
+			return operator()(math::ComplexReal{base, 0}, math::ComplexReal{exponent, 0});
 		}
 		return ast::Node::make<math::Real>(math::power(base, exponent));
 	}
@@ -130,14 +129,70 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 		return operator()(math::Real(base), exponent);
 	}
 
+	ast::Node operator()(const math::ComplexReal& base, const math::ComplexReal& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base, exponent));
+	}
+
+	ast::Node operator()(const math::ComplexReal& base, const math::Real& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base, exponent));
+	}
+
+	ast::Node operator()(const math::ComplexReal& base, const math::Rational& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base,
+							math::ComplexReal{exponent, math::Real{0}}));
+	}
+
+	ast::Node operator()(const math::ComplexReal& base, const math::ComplexRational& exponent) {
+			return ast::Node::make<math::ComplexReal>(math::power(base,
+							math::ComplexReal{exponent}));
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::ComplexReal& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(base,
+					exponent));
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::Real& exponent) {
+		return ast::Node::make<math::ComplexReal>(math::power(
+					math::ComplexReal{base},
+					math::ComplexReal{exponent}));
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::Rational& exponent) {
+		if (math::isInteger(exponent) && exponent > 0) {
+			return ast::Node::make<math::ComplexRational>(math::power(base, math::asInteger(exponent).convert_to<unsigned long>()));
+		}
+		return operator()<>(base, exponent);
+	}
+
+	ast::Node operator()(const math::ComplexRational& base, const math::ComplexRational& exponent) {
+		return operator()(base, std::real(exponent));
+	}
+
+	ast::Node operator()(const math::Real& base, const math::ComplexRational& exponent) {
+		return operator()(math::ComplexReal{base}, exponent);
+	}
+
+	ast::Node operator()(const math::Real& base, const math::ComplexReal& exponent) {
+		return operator()(math::ComplexReal{base}, exponent);
+	}
+
+	ast::Node operator()(const math::Rational& base, const math::ComplexRational& exponent) {
+		return operator()(math::ComplexRational{base}, exponent);
+	}
+
+	ast::Node operator()(const math::Rational& base, const math::ComplexReal& exponent) {
+		return operator()(math::ComplexRational{base}, exponent);
+	}
+
 	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
-		if(function.getFunction() != ast::Node::make<ast::Identifier>(ids::DirectedInfinity)) {
+		if (function.getFunction() != ast::Node::make<ast::Identifier>(ids::DirectedInfinity)) {
 			return ast::Node::make<ast::FunctionCall>(ids::Power, {
 					ast::Node::make<ast::FunctionCall>(function),
 					ast::Node::make<math::Real>(exponent)
 			});
 		}
-		if(function.getOperands().empty()) {
+		if (function.getOperands().empty()) {
 			return ast::Node::make<ast::FunctionCall>(ids::DirectedInfinity, { });
 		}
 		assert(function.getOperands().size() == 1);
@@ -245,7 +300,18 @@ OptionalNode Power(const ast::Operands& operands, eval::SessionEnvironment& sess
 	}
 
 	PowerVisitor powerVisitor{sessionEnvironment};
-	return ast::applyVisitor( base, exponent, powerVisitor );
+	const auto result = ast::applyVisitor( base, exponent, powerVisitor );
+	if (result.is<math::ComplexReal>()) {
+		const auto real = result.get<math::ComplexReal>();
+		if (std::imag(real)) return result;
+		return ast::Node::make<math::Real>(std::real(real));
+	} else if (result.is<math::ComplexRational>()) {
+		const auto rational = result.get<math::ComplexRational>();
+		if (std::imag(rational)) return result;
+		return ast::Node::make<math::Rational>(std::real(rational));
+	} else {
+		return result;
+	}
 }
 
 OptionalNode Sqrt(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {

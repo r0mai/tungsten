@@ -45,6 +45,9 @@ public:
 	template<class T>
 	bool is(const T& test) const;
 
+	template<class T, class U, class... Ts>
+	bool is() const;
+
 	//These returns true, if this is a FunctionCall, and it's function is 'head'
 	//Doesn't do anything with the operands
 	bool isFunctionCall(const Identifier& head) const;
@@ -63,6 +66,9 @@ public:
 
 	template<class T>
 	const T& get() const;
+
+	template<class T, class U, class... Ts>
+	boost::variant<T, U, Ts...> get() const;
 
 	bool operator==(const Node& other) const;
 	//Fast operator< to be used in sets, maps
@@ -90,7 +96,10 @@ public:
 	std::size_t getByteCount() const;
 
 private:
-	typedef boost::variant<math::Real, math::Rational, FunctionCall, String, Identifier> Storage;
+	typedef boost::variant<
+			math::ComplexReal, math::ComplexRational,
+			math::Real, math::Rational,
+			FunctionCall, String, Identifier> Storage;
 	typedef std::shared_ptr<Storage> StoragePtr;
 	StoragePtr storagePtr;
 
@@ -122,18 +131,20 @@ applyVisitor(const Node& lhs, const Node& rhs, Visitor&& visitor) {
 template<class T, class... Args>
 Node Node::make(const Args&... args) {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	return Node{StoragePtr{new Storage(T(args...))}};
 }
 
 template<class T, class U>
 Node Node::make(const U& arg, std::initializer_list<Node> initializerList) {
 	static_assert(
-	    std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
+		std::is_same<T, ast::FunctionCall>::value, "init list version can only be called for FunctionCall" );
 	return Node{StoragePtr{new Storage(T(arg, initializerList))}};
 }
 
@@ -152,33 +163,56 @@ Node Node::makeList() {
 template<class T>
 bool Node::is() const {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	return boost::get<T>(&*storagePtr) != nullptr;
 }
 
 template<class T>
 bool Node::is(const T& test) const {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	return is<T>() && get<T>() == test;
+}
+
+namespace detail {
+
+template<typename... Ts>
+struct IsVisitor : boost::static_visitor<bool> {
+	template<typename T>
+	bool operator()(const T&) const {
+		return boost::mpl::contains<boost::mpl::vector<Ts...>, T>::value;
+	}
+};
+
+} // namespace detail
+
+template<class T, class U, class... Ts>
+bool Node::is() const {
+	return boost::apply_visitor(detail::IsVisitor<T, U, Ts...>(), *storagePtr);
 }
 
 template<class T>
 T& Node::getM() {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
 	detach();
 	return boost::get<T>(*storagePtr);
@@ -187,13 +221,38 @@ T& Node::getM() {
 template<class T>
 const T& Node::get() const {
 	static_assert(
-	    std::is_same<T, math::Real>::value ||
-	    std::is_same<T, math::Rational>::value ||
-	    std::is_same<T, ast::FunctionCall>::value ||
-	    std::is_same<T, ast::String>::value ||
-	    std::is_same<T, ast::Identifier>::value, "invalid Node type" );
+		std::is_same<T, math::Real>::value ||
+		std::is_same<T, math::Rational>::value ||
+		std::is_same<T, math::ComplexReal>::value ||
+		std::is_same<T, math::ComplexRational>::value ||
+		std::is_same<T, ast::FunctionCall>::value ||
+		std::is_same<T, ast::String>::value ||
+		std::is_same<T, ast::Identifier>::value, "invalid Node type" );
 	assert( is<T>() );
 	return boost::get<T>(*storagePtr);
+}
+
+namespace detail {
+
+template<typename... Ts>
+struct GetVisitor : boost::static_visitor<boost::variant<Ts...>> {
+	template<typename T>
+	typename std::enable_if<boost::mpl::contains<boost::mpl::vector<Ts...>,
+			 T>::value, boost::variant<Ts...>>::type operator()(const T& t) const {
+		return t;
+	}
+	template<typename T>
+	typename std::enable_if<!boost::mpl::contains<boost::mpl::vector<Ts...>,
+			 T>::value, boost::variant<Ts...>>::type operator()(const T&) const {
+		assert(!"Could not construct variant, wrong type present.");
+	}
+};
+
+} // namespace detail
+
+template<class T, class U, class... Ts>
+boost::variant<T, U, Ts...> Node::get() const {
+	return boost::apply_visitor(detail::GetVisitor<T, U, Ts...>(), *storagePtr);
 }
 
 }} //namespace tungsten::ast

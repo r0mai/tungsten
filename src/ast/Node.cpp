@@ -76,22 +76,55 @@ template<> struct NodeTypeToInt<math::Rational> {
 template<> struct NodeTypeToInt<math::Real> {
 	static const int value = 2;
 };
-template<> struct NodeTypeToInt<String> {
+template<> struct NodeTypeToInt<math::ComplexReal> {
 	static const int value = 3;
 };
-template<> struct NodeTypeToInt<Identifier> {
+template<> struct NodeTypeToInt<math::ComplexRational> {
 	static const int value = 4;
 };
-template<> struct NodeTypeToInt<FunctionCall> {
+template<> struct NodeTypeToInt<String> {
 	static const int value = 5;
 };
+template<> struct NodeTypeToInt<Identifier> {
+	static const int value = 6;
+};
+template<> struct NodeTypeToInt<FunctionCall> {
+	static const int value = 7;
+};
 
+namespace detail {
+	template<typename T>
+	bool less(const T& lhs, const T& rhs) {
+		return lhs < rhs;
+	}
+} // namespace detail
 
 struct CompareLessVisitor : boost::static_visitor<bool> {
 
+	template<typename T>
+	typename std::enable_if<(
+			std::is_same<T, math::ComplexReal>::value ||
+			std::is_same<T, math::ComplexRational>::value
+			), bool>::type
+	less(const T& lhs, const T& rhs) const {
+		if (lhs.real() != rhs.real()) {
+			return lhs.real() < rhs.real();
+		}
+		return lhs.imag() < rhs.imag();
+	}
+
+	template<typename T>
+	typename std::enable_if<!(
+			std::is_same<T, math::ComplexReal>::value ||
+			std::is_same<T, math::ComplexRational>::value
+			), bool>::type
+	less(const T& lhs, const T& rhs) const {
+		return detail::less<T>(lhs, rhs);
+	}
+
 	template<class T>
 	bool operator()(const T& lhs, const T& rhs) const {
-		return lhs < rhs;
+		return less(lhs, rhs);
 	}
 
 	template<class T, class U>
@@ -144,6 +177,8 @@ struct GetByteCountVisitor : boost::static_visitor<std::size_t> {
    	}
 	std::size_t operator()(const math::Rational& rational) const { return math::getByteCount(rational); }
 	std::size_t operator()(const math::Real& real) const { return math::getByteCount(real); }
+	std::size_t operator()(const math::ComplexRational& rational) const { return math::getByteCount(rational); }
+	std::size_t operator()(const math::ComplexReal& real) const { return math::getByteCount(real); }
 };
 
 std::size_t Node::getByteCount() const {

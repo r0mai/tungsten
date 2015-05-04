@@ -77,6 +77,79 @@ OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironm
 	//TODO
 	return ast::Node::make<ast::FunctionCall>( ids::FractionalPart, operands );
 }
+
+struct ReVisitor: boost::static_visitor<ast::Node> {
+
+	template<typename T>
+	ast::Node operator()(const T& t) const {
+		return ast::Node::make<typename math::detail::RemoveComplex<T>::type>(
+				math::detail::getRealPart(t));
+	}
+
+};
+
+OptionalNode Re(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1) {
+		sessionEnvironment.raiseMessage( Message(ids::Re, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Re ),
+				ast::Node::make<math::Rational>( operands.size() )
+		}));
+		return EvaluationFailure();
+	}
+	if ( operands[0].is<math::Rational, math::ComplexRational,
+			math::Real, math::ComplexReal>() ) {
+		return ast::applyVisitor(operands.front(), ReVisitor{});
+	} else {
+		return EvaluationFailure();
+	}
+}
+
+struct ImVisitor: boost::static_visitor<ast::Node> {
+
+	template<typename T>
+	ast::Node operator()(const T& t) const {
+		return ast::Node::make<typename math::detail::RemoveComplex<T>::type>(
+				math::detail::getImaginaryPart(t));
+	}
+
+};
+
+OptionalNode Im(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 1) {
+		sessionEnvironment.raiseMessage( Message(ids::Re, ids::argx, {
+				ast::Node::make<ast::Identifier>( ids::Re ),
+				ast::Node::make<math::Rational>( operands.size() )
+		}));
+		return EvaluationFailure();
+	}
+	if ( operands[0].is<math::Rational, math::ComplexRational,
+			math::Real, math::ComplexReal>() ) {
+		const auto numerical = operands.front().get<math::Rational, math::Real,
+						math::ComplexRational, math::ComplexReal>();
+		return boost::apply_visitor(ImVisitor{}, numerical);
+	} else if ( operands[0].is<ast::Identifier>(eval::ids::I) ) {
+		return ast::Node::make<math::Rational>(1);
+	} else{
+		return EvaluationFailure();
+	}
+}
+
+OptionalNode Complex(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment) {
+	if ( operands.size() != 2 ) {
+		return EvaluationFailure();
+	}
+	bool areAllReal = std::all_of(operands.begin(), operands.end(), [](const ast::Node& node) { return node.isNumeric(); });
+	if(areAllReal) {
+		return ast::Node::make<ast::FunctionCall>(ids::Plus, {
+				operands.front(),
+				ast::Node::make<ast::FunctionCall>(ids::Times, {
+						operands.back(),
+						ast::Node::make<ast::Identifier>(ids::I)
+				})});
+	}
+	return EvaluationFailure();
+}
+
 }}} //namespace tungsten::eval::builtin
 
 

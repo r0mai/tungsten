@@ -3,11 +3,11 @@
 
 #include "Fixture.hpp"
 
-BOOST_AUTO_TEST_SUITE( PlusTest )
+BOOST_FIXTURE_TEST_SUITE( PlusTest, BuiltinFunctionFixture )
 
 using namespace tungsten;
 
-BOOST_FIXTURE_TEST_CASE( empty_Plus_is_zero, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( empty_Plus_is_zero ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Plus[]");
 
 	BOOST_REQUIRE( result );
@@ -15,7 +15,7 @@ BOOST_FIXTURE_TEST_CASE( empty_Plus_is_zero, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Rational>(0) );
 }
 
-BOOST_FIXTURE_TEST_CASE( single_argument_Plus_is_identity, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( single_argument_Plus_is_identity ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Plus[x]");
 
 	BOOST_REQUIRE( result );
@@ -23,7 +23,7 @@ BOOST_FIXTURE_TEST_CASE( single_argument_Plus_is_identity, BuiltinFunctionFixtur
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::Identifier>("x") );
 }
 
-BOOST_FIXTURE_TEST_CASE( single_argument_nested_Plus_is_identity, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( single_argument_nested_Plus_is_identity ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("Plus[Plus[x]]");
 
 	BOOST_REQUIRE( result );
@@ -31,7 +31,7 @@ BOOST_FIXTURE_TEST_CASE( single_argument_nested_Plus_is_identity, BuiltinFunctio
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::Identifier>("x") );
 }
 
-BOOST_FIXTURE_TEST_CASE( one_plus_two_is_three, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( one_plus_two_is_three ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1+2");
 
 	BOOST_REQUIRE( result );
@@ -39,7 +39,23 @@ BOOST_FIXTURE_TEST_CASE( one_plus_two_is_three, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Rational>(3) );
 }
 
-BOOST_FIXTURE_TEST_CASE( one_plus_two_plus_x_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( one_plus_i_test ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("1+I");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::ComplexRational>(1, 1) );
+}
+
+BOOST_AUTO_TEST_CASE( one_plus_two_plus_i_test ) {
+	boost::optional<ast::Node> result = parseAndEvaluate("1+2.0+I");
+
+	BOOST_REQUIRE( result );
+
+	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::ComplexReal>(3, 1) );
+}
+
+BOOST_AUTO_TEST_CASE( one_plus_two_plus_x_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1+2+x");
 
 	BOOST_REQUIRE( result );
@@ -47,7 +63,7 @@ BOOST_FIXTURE_TEST_CASE( one_plus_two_plus_x_test, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("x")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_plus_x_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_plus_x_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x+x");
 
 	BOOST_REQUIRE( result );
@@ -55,7 +71,7 @@ BOOST_FIXTURE_TEST_CASE( x_plus_x_test, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(2), ast::Node::make<ast::Identifier>("x")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_plus_x_plus_1_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_plus_x_plus_1_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x+x+1");
 
 	BOOST_REQUIRE( result );
@@ -64,7 +80,7 @@ BOOST_FIXTURE_TEST_CASE( x_plus_x_plus_1_test, BuiltinFunctionFixture ) {
 			ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(2), ast::Node::make<ast::Identifier>("x")})}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_plus_y_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_plus_y_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x+y");
 
 	BOOST_REQUIRE( result );
@@ -72,7 +88,7 @@ BOOST_FIXTURE_TEST_CASE( x_plus_y_test, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<ast::Identifier>("x"), ast::Node::make<ast::Identifier>("y")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_plus_2x_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_plus_2x_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x+2x");
 
 	BOOST_REQUIRE( result );
@@ -80,7 +96,7 @@ BOOST_FIXTURE_TEST_CASE( x_plus_2x_test, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("x")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_plus_2x_plus_2y_plus_y_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_plus_2x_plus_2y_plus_y_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x+2x+2y+y");
 
 	BOOST_REQUIRE( result );
@@ -90,7 +106,7 @@ BOOST_FIXTURE_TEST_CASE( x_plus_2x_plus_2y_plus_y_test, BuiltinFunctionFixture )
 			ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_minus_x_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_minus_x_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x-x");
 
 	BOOST_REQUIRE( result );
@@ -98,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE( x_minus_x_test, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Rational>(0) );
 }
 
-BOOST_FIXTURE_TEST_CASE( x_minus_x_minus_3_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( x_minus_x_minus_3_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("x-x-3");
 
 	BOOST_REQUIRE( result );
@@ -106,7 +122,7 @@ BOOST_FIXTURE_TEST_CASE( x_minus_x_minus_3_test, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Rational>(-3) );
 }
 
-BOOST_FIXTURE_TEST_CASE( y_plus_x_minus_x_plus_3_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( y_plus_x_minus_x_plus_3_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("y+x-x+3");
 
 	BOOST_REQUIRE( result );
@@ -114,7 +130,7 @@ BOOST_FIXTURE_TEST_CASE( y_plus_x_minus_x_plus_3_test, BuiltinFunctionFixture ) 
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("y")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( y_plus_2x_minus_2x_plus_3_test, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( y_plus_2x_minus_2x_plus_3_test ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("y+2x-2x+3");
 
 	BOOST_REQUIRE( result );
@@ -122,7 +138,7 @@ BOOST_FIXTURE_TEST_CASE( y_plus_2x_minus_2x_plus_3_test, BuiltinFunctionFixture 
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Plus", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("y")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( Real_plus_Rational_is_real, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( Real_plus_Rational_is_real ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("3.5+1");
 
 	BOOST_REQUIRE( result );
@@ -130,7 +146,7 @@ BOOST_FIXTURE_TEST_CASE( Real_plus_Rational_is_real, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Real>(4.5) );
 }
 
-BOOST_FIXTURE_TEST_CASE( Rational_plus_Real_is_real, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( Rational_plus_Real_is_real ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1+3.5");
 
 	BOOST_REQUIRE( result );
@@ -138,7 +154,7 @@ BOOST_FIXTURE_TEST_CASE( Rational_plus_Real_is_real, BuiltinFunctionFixture ) {
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<math::Real>(4.5) );
 }
 
-BOOST_FIXTURE_TEST_CASE( only_Real_identifier_coefficients_is_Real, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( only_Real_identifier_coefficients_is_Real ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1.5x+1.0x");
 
 	BOOST_REQUIRE( result );
@@ -146,7 +162,7 @@ BOOST_FIXTURE_TEST_CASE( only_Real_identifier_coefficients_is_Real, BuiltinFunct
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Real>(2.5), ast::Node::make<ast::Identifier>("x")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( mixed_Numeric_identifier_coefficients_is_Real, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( mixed_Numeric_identifier_coefficients_is_Real ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1.5x+2x");
 
 	BOOST_REQUIRE( result );
@@ -154,7 +170,7 @@ BOOST_FIXTURE_TEST_CASE( mixed_Numeric_identifier_coefficients_is_Real, BuiltinF
 	BOOST_CHECK_EQUAL( *result, ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Real>(3.5), ast::Node::make<ast::Identifier>("x")}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( real_coefficient_doesnt_alter_other_coefficients, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( real_coefficient_doesnt_alter_other_coefficients ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1.5x+x*2+3y");
 
 	BOOST_REQUIRE( result );
@@ -164,7 +180,7 @@ BOOST_FIXTURE_TEST_CASE( real_coefficient_doesnt_alter_other_coefficients, Built
 			ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Rational>(3), ast::Node::make<ast::Identifier>("y")})}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( real_coefficient_doesnt_alter_constant, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( real_coefficient_doesnt_alter_constant ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("1.5x+2x+3");
 
 	BOOST_REQUIRE( result );
@@ -174,7 +190,7 @@ BOOST_FIXTURE_TEST_CASE( real_coefficient_doesnt_alter_constant, BuiltinFunction
 			ast::Node::make<ast::FunctionCall>("Times", {ast::Node::make<math::Real>(3.5), ast::Node::make<ast::Identifier>("x")})}) );
 }
 
-BOOST_FIXTURE_TEST_CASE( complex_expression_as_variable, BuiltinFunctionFixture ) {
+BOOST_AUTO_TEST_CASE( complex_expression_as_variable ) {
 	boost::optional<ast::Node> result = parseAndEvaluate("2x^2+3x^2");
 
 	BOOST_REQUIRE( result );

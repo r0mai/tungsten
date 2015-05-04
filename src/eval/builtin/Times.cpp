@@ -12,7 +12,7 @@
 #include <boost/range/algorithm/count_if.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 
-#include "eval/RealRationalNumber.hpp"
+#include "eval/TypedNumber.hpp"
 #include "eval/SessionEnvironment.hpp"
 #include "eval/classifyOperands.hpp"
 
@@ -30,6 +30,14 @@ struct TimesVisitor : boost::static_visitor<void> {
 		doMultiplication(constantFactor, rational);
 	}
 
+	void operator()(const math::ComplexReal& real) {
+		doMultiplication(constantFactor, real);
+	}
+
+	void operator()(const math::ComplexRational& rational) {
+		doMultiplication(constantFactor, rational);
+	}
+
 	void operator()(const ast::String& string) {
 		insertOrMultiplyInMap(ast::Node::make<ast::String>(string), math::Rational(1));
 	}
@@ -42,7 +50,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 		assert( functionCall.getFunction() != ast::Node::make<ast::Identifier>(ids::Times) );
 
 		ast::Node factor = ast::Node::make<ast::FunctionCall>(functionCall);
-		RealRationalNumber exponent = math::Rational(1);
+		TypedNumber exponent = math::Rational(1);
 
 		if ( functionCall.getFunction() == ast::Node::make<ast::Identifier>(ids::Power) ) {
 
@@ -59,7 +67,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 	}
 
 	//TODO optimalization
-	void insertOrMultiplyInMap(const ast::Node& key, const RealRationalNumber& toMultiply) {
+	void insertOrMultiplyInMap(const ast::Node& key, const TypedNumber& toMultiply) {
 		ExponentMap::iterator it = exponentMap.find(key);
 		if ( it == exponentMap.end() ) {
 			exponentMap[key] = ast::Node::make<math::Rational>(0);
@@ -67,21 +75,17 @@ struct TimesVisitor : boost::static_visitor<void> {
 		doAddition( exponentMap[key], toMultiply );
 	}
 
-	void doMultiplication(RealRationalNumber& value, const RealRationalNumber& toMultiply) {
-		value = RealRationalNumber::doOperation( value, toMultiply,
-						[](const math::Rational& x, const math::Rational& y) { return x*y; },
-						[](const math::Real& x, const math::Real& y) { return x*y; } );
+	void doMultiplication(TypedNumber& value, const TypedNumber& toMultiply) {
+		value = TypedNumber::doTimes( value, toMultiply );
 	}
 
-	void doAddition(RealRationalNumber& value, const RealRationalNumber& toMultiply) {
-		value = RealRationalNumber::doOperation( value, toMultiply,
-						[](const math::Rational& x, const math::Rational& y) { return x+y; },
-						[](const math::Real& x, const math::Real& y) { return x+y; } );
+	void doAddition(TypedNumber& value, const TypedNumber& toMultiply) {
+		value = TypedNumber::doPlus( value, toMultiply );
 	}
 
 	ast::Node resultToNode() const {
 
-//		for ( const std::pair<ast::Node, RealRationalNumber>& factor : exponentMap ) {
+//		for ( const std::pair<ast::Node, TypedNumber>& factor : exponentMap ) {
 //			std::cout << factor.first << " : " << factor.second.toNode() << std::endl;
 //		}
 
@@ -91,7 +95,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 		ast::Node constantFactorNode = constantFactor.toNode();
 
 		auto isSpecial = [](const ast::Node& node) { return node.isFunctionCall(ids::DirectedInfinity); };
-		bool areSpecialsPresent = std::find_if(exponentMap.begin(), exponentMap.end(), [&isSpecial](const std::pair<const ast::Node, RealRationalNumber> p) {
+		bool areSpecialsPresent = std::find_if(exponentMap.begin(), exponentMap.end(), [&isSpecial](const std::pair<const ast::Node, TypedNumber> p) {
 				return isSpecial(p.first);
 		}) != exponentMap.end();
 
@@ -106,7 +110,7 @@ struct TimesVisitor : boost::static_visitor<void> {
 		}
 
 
-		for ( const std::pair<ast::Node, RealRationalNumber>& factor : exponentMap ) {
+		for ( const std::pair<ast::Node, TypedNumber>& factor : exponentMap ) {
 			ast::Node exponent = factor.second.toNode();
 			if ( exponent == ast::Node::make<math::Rational>(0) ) {
 				/*this space is intentionally left blank*/
@@ -154,9 +158,9 @@ struct TimesVisitor : boost::static_visitor<void> {
 
 	}
 
-	RealRationalNumber constantFactor;
+	TypedNumber constantFactor;
 
-	typedef std::map<ast::Node, RealRationalNumber> ExponentMap;
+	typedef std::map<ast::Node, TypedNumber> ExponentMap;
 	ExponentMap exponentMap;
 
 	eval::SessionEnvironment& sessionEnvironment;

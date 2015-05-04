@@ -96,6 +96,9 @@ OptionalNode Ceiling(const ast::Operands& operands, eval::SessionEnvironment& se
 OptionalNode Round(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode IntegerPart(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode FractionalPart(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Re(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Im(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode Complex(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in Plot.cpp
 OptionalNode Plot(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -182,6 +185,9 @@ Functions createFunctions() {
 	result[ids::Round] = &Round;
 	result[ids::IntegerPart] = &IntegerPart;
 	result[ids::FractionalPart] = &FractionalPart;
+	result[ids::Re] = &Re;
+	result[ids::Im] = &Im;
+	result[ids::Complex] = &Complex;
 	result[ids::Export] = &Export;
 	result[ids::Append] = &Append;
 	result[ids::Prepend] = &Prepend;
