@@ -14,6 +14,7 @@ from subprocess import Popen, PIPE, STDOUT
 import web
 import string
 from django.utils.encoding import smart_str, smart_unicode
+import urllib
 from web import form
 import libpytungsten
 import ctypes
@@ -68,6 +69,9 @@ def myform(val):
 	return  form.Form( form.Textarea("input", rows="5", cols="40", placeholder="Input here", value=val) )
 
 
+def escapeHashMarks(query):
+	return urllib.quote(query)
+
 class index:
 	def getLog(self):
 		largeString = ""
@@ -117,7 +121,7 @@ class index:
 		if not form.validates() and not name:
 			return render.formtest(form, name,'Invalid input', self.getLog())
 		else:
-			return render.redir(form.d.input)
+			return render.redir(escapeHashMarks(form.d.input))
 
 if __name__=="__main__":
 	terminalThread = threading.Thread(None, terminal)
