@@ -134,12 +134,12 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::ComplexReal& base, const math::Real& exponent) {
-		return ast::Node::make<math::ComplexReal>(math::power(base, exponent));
+		return ast::Node::make<math::ComplexReal>(math::power(base, math::ComplexReal{exponent, 0}));
 	}
 
 	ast::Node operator()(const math::ComplexReal& base, const math::Rational& exponent) {
 		return ast::Node::make<math::ComplexReal>(math::power(base,
-							math::ComplexReal{exponent, math::Real{0}}));
+							math::ComplexReal{exponent, 0}));
 	}
 
 	ast::Node operator()(const math::ComplexReal& base, const math::ComplexRational& exponent) {
@@ -155,7 +155,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	ast::Node operator()(const math::ComplexRational& base, const math::Real& exponent) {
 		return ast::Node::make<math::ComplexReal>(math::power(
 					math::ComplexReal{base},
-					math::ComplexReal{exponent}));
+					math::ComplexReal{exponent, 0}));
 	}
 
 	ast::Node operator()(const math::ComplexRational& base, const math::Rational& exponent) {
@@ -170,11 +170,11 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Real& base, const math::ComplexRational& exponent) {
-		return operator()(math::ComplexReal{base}, exponent);
+		return operator()(math::ComplexReal{base, 0}, exponent);
 	}
 
 	ast::Node operator()(const math::Real& base, const math::ComplexReal& exponent) {
-		return operator()(math::ComplexReal{base}, exponent);
+		return operator()(math::ComplexReal{base, 0}, exponent);
 	}
 
 	ast::Node operator()(const math::Rational& base, const math::ComplexRational& exponent) {
@@ -182,7 +182,7 @@ struct PowerVisitor : boost::static_visitor<ast::Node> {
 	}
 
 	ast::Node operator()(const math::Rational& base, const math::ComplexReal& exponent) {
-		return operator()(math::ComplexRational{base}, exponent);
+		return operator()(math::ComplexRational{base, 0}, exponent);
 	}
 
 	ast::Node operator()(const ast::FunctionCall& function, const math::Rational& exponent) {
