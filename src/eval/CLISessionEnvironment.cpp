@@ -1,5 +1,6 @@
 
 #include "CLISessionEnvironment.hpp"
+#include "builtin/functions.hpp"
 
 #include <iostream>
 #include <string>
@@ -25,11 +26,37 @@ void CLISessionEnvironment::handleMessageString(const ast::String& messageString
 	std::cout << "\033[1;31m" << messageString << "\033[0;00m" << std::endl;
 }
 
+char* nextBuiltinCompletion(const char* textSoFar, int isOldWord) {
+	static int lastIndex = 0;
+	static std::vector<std::string> currentCompletions;
+	if(!isOldWord) {
+		lastIndex = 0;
+		currentCompletions = builtin::builtinFunctionCompletions(textSoFar);
+	}
+
+	if(lastIndex >= currentCompletions.size()) {
+		// no more matches
+		return nullptr;
+	}
+	std::string match = currentCompletions[lastIndex++];
+	match+='[';
+	char* matchArray = new char[match.size()+1];
+	std::memset(matchArray, 0, match.size()+1);
+	std::memcpy(matchArray, match.c_str(), match.size());
+	return matchArray;
+}
+
+char** builtinCompletion(const char* textSoFar, int, int) {
+	return rl_completion_matches(textSoFar, nextBuiltinCompletion);
+}
+
 void CLISessionEnvironment::run() {
 
 	using_history();
 
 	readHistoryFromFile(".tungsten");
+	rl_attempted_completion_function = builtinCompletion;
+
 	for ( int i = 1; ; ++i ) {
 		std::string prompt = "In[" + std::to_string(i) + "] :=   ";
 

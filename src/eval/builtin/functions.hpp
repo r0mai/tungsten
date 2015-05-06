@@ -24,6 +24,8 @@ typedef std::map<ast::Identifier, FunctionPtr> Functions;
 
 Functions createFunctions();
 
+std::vector<std::string> builtinFunctionCompletions(const std::string& textSoFar);
+
 //TODO this has to remain there (for now)
 OptionalNode evaluateFunction(const ast::Operands& functionOperands, const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 

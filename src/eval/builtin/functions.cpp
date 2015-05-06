@@ -1,6 +1,8 @@
 
 #include "functions.hpp"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 namespace tungsten { namespace eval { namespace builtin {
 
 OptionalNode Plus(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -216,6 +218,19 @@ Functions createFunctions() {
 	result[ids::ContinuedFraction] = &ContinuedFraction;
 	result[ids::FromContinuedFraction] = &FromContinuedFraction;
 	return result;
+}
+
+std::vector<std::string> builtinFunctionCompletions(const std::string& textSoFar) {
+	static const auto functionMap = createFunctions();
+	std::vector<std::string> completions;
+
+	for(const auto& functionPair : functionMap) {
+		const std::string& functionName = functionPair.first.toString();
+		if(boost::starts_with(functionName, textSoFar)) {
+			completions.push_back(functionName);
+		}
+	}
+	return completions;
 }
 
 }}} //namespace tungsten::eval::builtin
