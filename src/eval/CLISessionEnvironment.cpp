@@ -58,7 +58,7 @@ void CLISessionEnvironment::run() {
 	rl_attempted_completion_function = builtinCompletion;
 
 	for ( int i = 1; ; ++i ) {
-		std::string prompt = "In[" + std::to_string(i) + "] :=   ";
+		std::string prompt = "\e[0;97mIn[" + std::to_string(i) + "] :=   \e[0m";
 
 		char *input = readline( prompt.c_str() );
 
@@ -72,7 +72,7 @@ void CLISessionEnvironment::run() {
 		ast::Node result = evaluate(std::string(input));
 
 		if ( !result.is<ast::Identifier>(ids::Null) ) {
-			std::cout << "Out[" << i << "] =   " << result << std::endl;
+			std::cout << "\e[0;97mOut[" << i << "] =   \e[0m" << result << std::endl;
 		}
 
 		std::free(input);
