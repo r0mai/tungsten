@@ -91,4 +91,16 @@ bool PatternMap::applyPatterns(const ast::Node& node, ast::Node& result, eval::S
 	return false;
 }
 
+std::vector<ast::Identifier> PatternMap::getSetVariables() const {
+	std::vector<ast::Identifier> results;
+	for(const auto& nodePair: storage) {
+		const auto& node = nodePair.first;
+
+		if(node.is<ast::Identifier>()) {
+			results.push_back(node.get<ast::Identifier>());
+		}
+	}
+	return results;
+}
+
 }} //namespace tungsten::eval

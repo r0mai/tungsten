@@ -27,6 +27,8 @@ public:
 	//Returns true, if a patterns matches node; result will be set to it's new value
 	//Otherwise, result == node
 	bool applyPatterns(const ast::Node& node, ast::Node& result, eval::SessionEnvironment& sessionEnvironment) const;
+	// Returns a vector of assigned variables
+	std::vector<ast::Identifier> getSetVariables() const;
 private:
 	//<pattern, replacement>
 	typedef std::vector<std::pair<ast::Node, ast::Node>> Storage;
