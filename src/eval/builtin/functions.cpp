@@ -32,6 +32,9 @@ OptionalNode Map(const ast::Operands& operands, eval::SessionEnvironment& sessio
 OptionalNode MatchQ(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ByteCount(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
+// These are defined in InternalFunctions.cpp
+OptionalNode Out(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+
 //These are defined in Replace.cpp
 OptionalNode Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode ReplaceAll(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -207,6 +210,7 @@ Functions createFunctions() {
 	result[ids::Sow] = &Sow;
 	result[ids::Timing] = &Timing;
 	result[ids::ByteCount] = &ByteCount;
+	result[ids::Out] = &Out;
 	result[ids::StringLength] = &StringLength;
 	result[ids::Characters] = &Characters;
 	result[ids::StringJoin] = &StringJoin;

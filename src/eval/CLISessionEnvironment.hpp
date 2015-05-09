@@ -15,6 +15,7 @@ public:
 	virtual void printToStdout(const ast::Operands& nodes) override;
 
 	void run();
+	std::string getNthLatestLine(int n) const;
 
 private:
 	void addToReadlineHistory(const std::string& line);

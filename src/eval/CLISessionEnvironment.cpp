@@ -85,6 +85,10 @@ void CLISessionEnvironment::addToReadlineHistory(const std::string& line) {
 	history.push_back(line);
 }
 
+std::string CLISessionEnvironment::getNthLatestLine(int index) const {
+	return *(history.rbegin()+index);
+}
+
 void CLISessionEnvironment::readHistoryFromFile(const std::string& fileName) {
 	std::ifstream historyFile(fileName);
 	if ( historyFile.is_open() ) {
