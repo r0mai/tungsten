@@ -47,6 +47,9 @@ public:
 	ast::Operands popReapStack();
 	void sowToReapStack(const ast::Node& node);
 
+	boost::optional<ast::Node> nthPreviousOutput(std::size_t n) const;
+	boost::optional<ast::Node> nthPreviousInput(std::size_t n) const;
+
 protected:
 	AttributeMap attributeMap;
 	const builtin::Functions builtinFunctions;
@@ -59,6 +62,8 @@ protected:
 
 private:
 	struct EvaluateVisitor;
+	std::vector<ast::Node> inHistory;
+	std::vector<ast::Node> outHistory;
 
 };
 

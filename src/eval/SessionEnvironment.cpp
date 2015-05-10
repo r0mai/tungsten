@@ -101,11 +101,12 @@ ast::Node SessionEnvironment::evaluate(const std::string& inputString) {
 }
 
 ast::Node SessionEnvironment::evaluate(const ast::Node& node) {
-	//TODO history
-
 	assert( reapStack.empty() );
 
-	return recursiveEvaluate(node);
+	inHistory.push_back(node);
+	const auto result = recursiveEvaluate(node);
+	outHistory.push_back(result);
+	return result;
 }
 
 /*
@@ -311,6 +312,16 @@ ast::Operands SessionEnvironment::popReapStack() {
 void SessionEnvironment::sowToReapStack(const ast::Node& node) {
 	assert(!isReapStackEmpty());
 	reapStack.back().push_back(node);
+}
+
+boost::optional<ast::Node> SessionEnvironment::nthPreviousOutput(std::size_t n) const {
+	if(outHistory.size() <= n) return {};
+	return *(outHistory.rbegin()+n);
+}
+
+boost::optional<ast::Node> SessionEnvironment::nthPreviousInput(std::size_t n) const {
+	if(inHistory.size() <= n) return {};
+	return *(inHistory.rbegin()+n);
 }
 
 }} //namespace tungsten::eval
