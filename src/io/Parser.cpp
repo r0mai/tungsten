@@ -576,10 +576,11 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), Skipp
 				( '#' >> (-unsignedIntegerParser)[phx::bind(&makeSlot, _val, _1, ids::Slot)] );
 
 
-
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		primary %= real | signedInteger | string | blankPattern | slotPattern | parenthesizedExpression | list | identifier;
+		outExpression = char_('%')[phx::bind(&createFunctionCallFromString, _val, ids::Out)];
+
+		primary %= real | signedInteger | string | blankPattern | slotPattern | parenthesizedExpression | outExpression | list | identifier;
 
 	}
 
@@ -631,6 +632,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), Skipp
 	qi::rule<Iterator, ast::Node(), Skipper> list;
 	qi::rule<Iterator, ast::Node(), Skipper> unaryPlusMinusOperator;
 	qi::rule<Iterator, ast::Node(), Skipper> parenthesizedExpression;
+	qi::rule<Iterator, ast::Node(), Skipper> outExpression;
 	qi::rule<Iterator, ast::Node(), Skipper> primary;
 
 };
