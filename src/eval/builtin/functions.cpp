@@ -34,6 +34,7 @@ OptionalNode ByteCount(const ast::Operands& operands, eval::SessionEnvironment& 
 
 // These are defined in InternalFunctions.cpp
 OptionalNode Out(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode In(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 //These are defined in Replace.cpp
 OptionalNode Replace(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -211,6 +212,7 @@ Functions createFunctions() {
 	result[ids::Timing] = &Timing;
 	result[ids::ByteCount] = &ByteCount;
 	result[ids::Out] = &Out;
+	result[ids::In] = &In;
 	result[ids::StringLength] = &StringLength;
 	result[ids::Characters] = &Characters;
 	result[ids::StringJoin] = &StringJoin;

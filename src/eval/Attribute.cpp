@@ -210,6 +210,7 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Timing, AttributeSet({ids::HoldAll, ids::Protected, ids::SequenceHold}))
 		(ids::ByteCount, AttributeSet({ids::Protected}))
 		(ids::Out, AttributeSet({ids::Protected, ids::Listable}))
+		(ids::In, AttributeSet({ids::Protected, ids::Listable}))
 		(ids::StringLength, AttributeSet({ids::Listable, ids::ThreadSafe, ids::Protected}))
 		(ids::StringTake, AttributeSet({ids::Protected}))
 		(ids::StringDrop, AttributeSet({ids::Protected}))
