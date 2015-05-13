@@ -314,14 +314,16 @@ void SessionEnvironment::sowToReapStack(const ast::Node& node) {
 	reapStack.back().push_back(node);
 }
 
-boost::optional<ast::Node> SessionEnvironment::nthPreviousOutput(std::size_t n) const {
-	if(outHistory.size() <= n) return {};
-	return *(outHistory.rbegin()+n);
+boost::optional<ast::Node> SessionEnvironment::nthOutput(int n) const {
+	if(n < 0) { return nthOutput(outHistory.size()+n); }
+	if(n < outHistory.size()) { return outHistory[n]; }
+	return {};
 }
 
-boost::optional<ast::Node> SessionEnvironment::nthPreviousInput(std::size_t n) const {
-	if(inHistory.size() <= n) return {};
-	return *(inHistory.rbegin()+n);
+boost::optional<ast::Node> SessionEnvironment::nthInput(int n) const {
+	if(n < 0) { return nthOutput(inHistory.size()+n); }
+	if(n < inHistory.size()) { return inHistory[n]; }
+	return {};
 }
 
 }} //namespace tungsten::eval

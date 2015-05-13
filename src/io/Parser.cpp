@@ -336,6 +336,11 @@ void fillFunctionCall(ast::Node& result, const ast::Operands& operands) {
 	result.getM<ast::FunctionCall>().getOperands() = operands;
 }
 
+void createOutExpression(ast::Node& result, const std::vector<char>& outOperator) {
+	result = ast::Node::make<ast::FunctionCall>( eval::ids::Out, {
+			ast::Node::make<math::Rational>(-int(outOperator.size()))} );
+}
+
 void createPartExpression(ast::Node& indexable, ast::Operands index) {
 	index.insert( index.begin(), indexable );
 	indexable = ast::Node::make<ast::FunctionCall>( ids::Part, index );
@@ -578,7 +583,7 @@ struct TungstenGrammar : boost::spirit::qi::grammar<Iterator, ast::Node(), Skipp
 
 		parenthesizedExpression = '(' >> expression[phx::bind(&operatorParentheses, _val, _1)] >> ')';
 
-		outExpression = char_('%')[phx::bind(&createFunctionCallFromString, _val, ids::Out)];
+		outExpression = (+char_('%'))[phx::bind(&createOutExpression, _val, _1)];
 
 		primary %= real | signedInteger | string | blankPattern | slotPattern | parenthesizedExpression | outExpression | list | identifier;
 

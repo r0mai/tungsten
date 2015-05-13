@@ -47,8 +47,8 @@ public:
 	ast::Operands popReapStack();
 	void sowToReapStack(const ast::Node& node);
 
-	boost::optional<ast::Node> nthPreviousOutput(std::size_t n) const;
-	boost::optional<ast::Node> nthPreviousInput(std::size_t n) const;
+	boost::optional<ast::Node> nthOutput(int n) const;
+	boost::optional<ast::Node> nthInput(int n) const;
 
 protected:
 	AttributeMap attributeMap;

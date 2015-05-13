@@ -3,7 +3,7 @@
 #include "eval/CLISessionEnvironment.hpp"
 
 #include <algorithm>
-
+#include <iostream>
 namespace tungsten { namespace eval { namespace builtin {
 
 OptionalNode Out(const ast::Operands& operands, SessionEnvironment& sessionEnvironment) {
@@ -13,11 +13,11 @@ OptionalNode Out(const ast::Operands& operands, SessionEnvironment& sessionEnvir
 		return EvaluationFailure();
 	}
 
-	int index = 0;
+	int index = -1;
 	if(operands.size() == 1) {
 		index = operands.front().getInteger().convert_to<int>();
 	}
-	const auto& result = sessionEnvironment.nthPreviousOutput(index);
+	const auto& result = sessionEnvironment.nthOutput(index);
 	if(!result) {
 		return EvaluationFailure();
 	}
@@ -32,11 +32,11 @@ OptionalNode In(const ast::Operands& operands, SessionEnvironment& sessionEnviro
 		return EvaluationFailure();
 	}
 
-	int index = 0;
+	int index = -1;
 	if(operands.size() == 1) {
 		index = operands.front().getInteger().convert_to<int>();
 	}
-	const auto& result = sessionEnvironment.nthPreviousInput(index+1);
+	const auto& result = sessionEnvironment.nthInput(index+1);
 	// As we under evaluatiuon, the 0th element points to In[]
 	if(!result) {
 		return EvaluationFailure();
