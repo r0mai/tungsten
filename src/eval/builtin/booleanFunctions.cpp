@@ -118,6 +118,42 @@ OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sess
 	return ast::Node::make<ast::FunctionCall>(ids::Boole, operands);
 }
 
+OptionalNode AllTrue(const ast::Operands& operands,
+		     eval::SessionEnvironment& sessionEnvironment) {
+    if (operands.size() != 2) {
+		sessionEnvironment.raiseMessage(
+			Message(ids::AllTrue, ids::argrx,
+				{ast::Node::make<ast::Identifier>(ids::AllTrue),
+				 ast::Node::make<math::Rational>(operands.size()),
+				 ast::Node::make<math::Rational>(2)}));
+		return EvaluationFailure();
+    }
+
+	if( !operands.front().isFunctionCall(ids::List) ) {
+		sessionEnvironment.raiseMessage(
+				Message(ids::AllTrue, ids::lvlist,
+					{operands.front()}));
+
+		return EvaluationFailure();
+	}
+	const auto& list = operands.front().get<ast::FunctionCall>().getOperands();
+	const auto& predicate = operands.back();
+
+	if(list.empty()) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	}
+
+	// TODO return symbolic result if indeterminate
+
+	for(const auto& element: list) {
+		const auto& returnValue = sessionEnvironment.recursiveEvaluate(
+				ast::Node::make<ast::FunctionCall>(predicate, {element}));
+		if(!returnValue.is<ast::Identifier>() || returnValue.get<ast::Identifier>() != ids::True) {
+			return ast::Node::make<ast::Identifier>(ids::False);
+		}
+	}
+
+	return ast::Node::make<ast::Identifier>(ids::True);
+}
+
 }}} //namespace tungsten::eval::builtin
-
-

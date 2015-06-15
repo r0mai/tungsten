@@ -95,6 +95,7 @@ OptionalNode Not(const ast::Operands& operands, eval::SessionEnvironment& sessio
 OptionalNode And(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Or(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 OptionalNode Boole(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
+OptionalNode AllTrue(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
 
 // Defined in numericFunctions.cpp
 OptionalNode Floor(const ast::Operands& operands, eval::SessionEnvironment& sessionEnvironment);
@@ -182,6 +183,7 @@ Functions createFunctions() {
 	result[ids::And] = &And;
 	result[ids::Or] = &Or;
 	result[ids::Boole] = &Boole;
+	result[ids::AllTrue] = &AllTrue;
 	result[ids::While] = &While;
 	result[ids::Attributes] = &Attributes;
 	result[ids::Print] = &Print;
@@ -240,7 +242,6 @@ std::vector<std::string> builtinFunctionCompletions(const std::string& textSoFar
 }
 
 }}} //namespace tungsten::eval::builtin
-
 
 
 

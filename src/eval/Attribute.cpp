@@ -77,6 +77,7 @@ AttributeMap AttributeMap::makeDefault() {
 		(ids::Or, AttributeSet({ids::Flat, ids::HoldAll, ids::OneIdentity, ids::Protected}))
 		(ids::Not, AttributeSet({ids::Protected}))
 		(ids::Boole, AttributeSet({ids::Listable, ids::ThreadSafe, ids::Protected}))
+		(ids::AllTrue, AttributeSet({ids::ThreadSafe, ids::Protected}))
 		(ids::While, AttributeSet({ids::HoldAll, ids::Protected}))
 		(ids::Attributes, AttributeSet({ids::HoldAll, ids::Listable, ids::Protected}))
 		(ids::Print, AttributeSet({ids::Protected}))
