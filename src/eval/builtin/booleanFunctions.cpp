@@ -143,17 +143,21 @@ OptionalNode AllTrue(const ast::Operands& operands,
 		return ast::Node::make<ast::Identifier>(ids::True);
 	}
 
-	// TODO return symbolic result if indeterminate
+	std::vector<ast::Node> nonTrues;
 
 	for(const auto& element: list) {
-		const auto& returnValue = sessionEnvironment.recursiveEvaluate(
+		auto returnValue = sessionEnvironment.recursiveEvaluate(
 				ast::Node::make<ast::FunctionCall>(predicate, {element}));
 		if(!returnValue.is<ast::Identifier>() || returnValue.get<ast::Identifier>() != ids::True) {
-			return ast::Node::make<ast::Identifier>(ids::False);
+			nonTrues.push_back(std::move(returnValue));
 		}
 	}
 
-	return ast::Node::make<ast::Identifier>(ids::True);
+	if(nonTrues.empty()) {
+		return ast::Node::make<ast::Identifier>(ids::True);
+	} else {
+		return ast::Node::make<ast::Identifier>(ids::False);
+	}
 }
 
 }}} //namespace tungsten::eval::builtin
