@@ -127,7 +127,20 @@ struct NodeToTeXFormVisitor : boost::static_visitor<TeXFormString> {
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::LessEqual) && operands.size() == 2) {
 			result += NodeToTeXFormRecursive(operands[0], -1) + " \\le " + NodeToTeXFormRecursive(operands[1], -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Equal) && operands.size() == 2){
-			result += NodeToTeXFormRecursive(operands[0], -1) + " == " + NodeToTeXFormRecursive(operands[1], -1);
+		    result += NodeToTeXFormRecursive(operands[0], -1) + " == " +
+			      NodeToTeXFormRecursive(operands[1], -1);
+		} else if (function == ast::Node::make<ast::Identifier>(
+					   eval::ids::And) &&
+			   operands.size() >= 2) {
+		    const auto right = operands.back();
+		    auto remainingOperands = operands;
+		    remainingOperands.pop_back();
+
+		    for (const auto& operand : remainingOperands) {
+				result += NodeToTeXFormRecursive(operand, -1);
+				result += " \\wedge ";
+		    }
+		    result += NodeToTeXFormRecursive(right, -1);
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Floor) && operands.size() == 1) {
 			result += "\\lfloor " + NodeToTeXFormRecursive(operands[0], -1) + "\\rfloor ";
 		} else if (function == ast::Node::make<ast::Identifier>( eval::ids::Ceiling) && operands.size() == 1) {
